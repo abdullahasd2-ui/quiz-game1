@@ -471,7 +471,7 @@ async function submitAnswer(idx){
 }
 
 // ===== RESULT =====
-function showResult(d){
+function showResult(d){// FIXED
   clearTimer();
   const q=G.questions[G.qIdx];
   const a0=d.action0,a1=d.action1;
@@ -485,14 +485,20 @@ function showResult(d){
     pts0=c0?10:0;pts1=c1?10:0;
   } else if(a0==='steal'&&a1==='answer'){
     // t0 steals t1's answer
-    if(c1){pts0=20;pts1=0;}else{pts0=-10;pts1=0;}
+    if(c1){pts0=20;pts1=0;}else{pts0=-10;pts1=0;} // steal fail: -10 but floor 0
   } else if(a0==='answer'&&a1==='steal'){
     // t1 steals t0's answer
     if(c0){pts1=20;pts0=0;}else{pts1=-10;pts0=0;}
   }
-  G.teams[0].score=Math.max(0,G.teams[0].score+pts0);
-  G.teams[1].score=Math.max(0,G.teams[1].score+pts1);
-  if(G.isHost)roomRef.update({t0score:G.teams[0].score,t1score:G.teams[1].score});
+  // Only host saves scores to Firebase to avoid double counting
+  if(G.isHost){
+    const newS0=Math.max(0,(d.t0score||0)+pts0);
+    const newS1=Math.max(0,(d.t1score||0)+pts1);
+    G.teams[0].score=newS0;G.teams[1].score=newS1;
+    roomRef.update({t0score:newS0,t1score:newS1});
+  } else {
+    G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
+  }
   // Fill overlay
   document.getElementById('rv1n').textContent=G.teams[0].name;
   document.getElementById('rv2n').textContent=G.teams[1].name;
@@ -503,8 +509,10 @@ function showResult(d){
   document.getElementById('rv1-ans').textContent=ans0>=0?'جواب: '+q.o[ans0]:'لم يجب';
   document.getElementById('rv2-ans').textContent=ans1>=0?'جواب: '+q.o[ans1]:'لم يجب';
   const p0el=document.getElementById('rv1-pts'),p1el=document.getElementById('rv2-pts');
-  p0el.textContent=(pts0>=0?'+':'')+pts0+' نقطة';p0el.className='rv-pts '+(pts0>0?'pts-pos':pts0<0?'pts-neg':'pts-zero');
-  p1el.textContent=(pts1>=0?'+':'')+pts1+' نقطة';p1el.className='rv-pts '+(pts1>0?'pts-pos':pts1<0?'pts-neg':'pts-zero');
+  const disp0=pts0<0?(''+pts0):'+'+pts0;
+  const disp1=pts1<0?(''+pts1):'+'+pts1;
+  p0el.textContent=disp0+' نقطة';p0el.className='rv-pts '+(pts0>0?'pts-pos':pts0<0?'pts-neg':'pts-zero');
+  p1el.textContent=disp1+' نقطة';p1el.className='rv-pts '+(pts1>0?'pts-pos':pts1<0?'pts-neg':'pts-zero');
   let icon='🎯';
   if(bothSteal)icon='⚔️⚔️';
   else if(pts0>=20||pts1>=20)icon='🔥';
