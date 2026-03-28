@@ -142,6 +142,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
   <div class="logo-area">
     <div class="logo"><span style="-webkit-text-fill-color:#000;filter:drop-shadow(0 0 2px #fff);font-size:42px">💣</span> <span style="-webkit-text-fill-color:#a855f7">جاوب</span> <span style="-webkit-text-fill-color:#fff;font-size:32px">أو</span> <span style="-webkit-text-fill-color:#38bdf8">اسرق</span></div>
     <div class="logo-sub">فكر بسرعة — جاوب أو اسرق نقاط خصمك!</div>
+<button onclick="document.getElementById('how-modal').classList.add('show')" style="margin-top:14px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:#aaa;padding:8px 22px;border-radius:20px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#a855f7';this.style.color='#a855f7'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='#aaa'">📖 طريقة اللعب</button>
   </div>
   <div class="card">
     <h3>🎮 إنشاء غرفة جديدة</h3>
@@ -574,5 +575,68 @@ function showFinal(){
   }
 })();
 </script>
+
+<!-- HOW TO PLAY MODAL -->
+<div id="how-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;">
+<div style="background:#0f0f28;border:1px solid #2a2a4a;border-radius:20px;padding:28px 22px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="font-size:20px;font-weight:900;color:#a855f7;">📖 طريقة اللعب</div>
+    <button onclick="document.getElementById('how-modal').classList.remove('show')" style="background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;">✕</button>
+  </div>
+
+  <div style="font-size:14px;line-height:1.9;color:#ccc;">
+
+    <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="color:#a855f7;font-weight:900;font-size:15px;margin-bottom:6px;">🎮 كيف تبدأ اللعبة؟</div>
+      <div>• جهاز يضغط <b style="color:#fff">إنشاء غرفة</b> ويكتب اسم فريقه</div>
+      <div>• الجهاز الثاني يضغط <b style="color:#fff">انضمام</b> ويدخل الكود</div>
+      <div>• المضيف يختار الفئات ويضغط <b style="color:#fff">ابدأ اللعبة</b></div>
+    </div>
+
+    <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="color:#38bdf8;font-weight:900;font-size:15px;margin-bottom:6px;">⚡ كيف تجري كل جولة؟</div>
+      <div>• السؤال يظهر للفريقين في نفس الوقت</div>
+      <div>• كل فريق يختار <b style="color:#fff">سراً</b>: جاوب أو اسرق</div>
+      <div>• بعد اختيار الكل تظهر مرحلة الإجابة</div>
+      <div>• في النهاية تنكشف القرارات والنقاط معاً</div>
+    </div>
+
+    <div style="background:rgba(247,201,72,0.08);border:1px solid rgba(247,201,72,0.25);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="color:#f7c948;font-weight:900;font-size:15px;margin-bottom:8px;">🏆 نظام النقاط</div>
+      <div style="display:grid;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:#27ae60;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">✅ جاوب صح</span>
+          <span style="color:#fff;font-weight:700;">+10 نقاط</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:#e74c3c;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ سرق + خصمه صح</span>
+          <span style="color:#f7c948;font-weight:700;">+20 نقطة دبل!</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:#c0392b;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ سرق + خصمه غلط</span>
+          <span style="color:#e74c3c;font-weight:700;">-10 عقوبة!</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:#555;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️⚔️ كلاهم سرق</span>
+          <span style="color:#888;font-weight:700;">لا نقاط لأحد</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:14px;">
+      <div style="color:#27ae60;font-weight:900;font-size:15px;margin-bottom:6px;">💡 نصيحة</div>
+      <div>إذا أجبت صح وخصمك سرقك — النقاط تروح له! فكر مرتين قبل ما تجاوب 😏</div>
+    </div>
+
+  </div>
+
+  <button onclick="document.getElementById('how-modal').classList.remove('show')" style="width:100%;margin-top:20px;padding:13px;background:linear-gradient(135deg,#a855f7,#38bdf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:900;font-family:'Tajawal',sans-serif;cursor:pointer;">فهمت! نلعب 🚀</button>
+</div>
+</div>
+
+<style>
+#how-modal { display:none; }
+#how-modal.show { display:flex !important; }
+</style>
 </body>
 </html>
