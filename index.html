@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سيف وسؤال ⚔️</title>
+<title>جاوب أو اسرق</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --gold:#f7c948; --gold2:#ff6b35; --blue:#3498db; --red:#e74c3c; --green:#27ae60; --bg:#07071a; --bg2:#0f0f28; --border:#2a2a4a; }
-body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-height:100vh; }
-#app { max-width:820px; margin:0 auto; padding:16px; }
+body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-height:100vh; overflow-x:hidden; }
+#bg-words { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:0.045; }
+#bg-words span { position:absolute; font-family:'Tajawal',sans-serif; font-weight:900; white-space:nowrap; animation:floatWord linear infinite; }
+@keyframes floatWord { from{transform:translateY(100vh)} to{transform:translateY(-120px)} }
+#app { position:relative; z-index:1; max-width:820px; margin:0 auto; padding:16px; }
+
 .screen { display:none; animation:fadeIn 0.3s ease; }
 .screen.active { display:block; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
@@ -131,12 +135,13 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 </style>
 </head>
 <body>
+<div id="bg-words"></div>
 <div id="app">
 
 <div id="s-home" class="screen active">
   <div class="logo-area">
-    <div class="logo">⚔️ سيف وسؤال</div>
-    <div class="logo-sub">اختار سراً — سرقة أو إجابة!</div>
+    <div class="logo">🎯 جاوب أو اسرق</div>
+    <div class="logo-sub">فكر بسرعة — جاوب أو اسرق نقاط خصمك!</div>
   </div>
   <div class="card">
     <h3>🎮 إنشاء غرفة جديدة</h3>
@@ -550,6 +555,24 @@ function showFinal(){
   document.getElementById('ft1s').textContent=G.teams[0].score;
   document.getElementById('ft2s').textContent=G.teams[1].score;
 }
+</script>
+
+<script>
+(function(){
+  const words = ['جاوب','اسرق','⚔️','✅','سرقة','إجابة','نقاط','صح','غلط','دبل','جاوب','اسرق','⚔️','✅'];
+  const colors = ['#f7c948','#ff6b35','#3498db','#e74c3c','#27ae60','#ffffff'];
+  const container = document.getElementById('bg-words');
+  for(let i=0;i<55;i++){
+    const span = document.createElement('span');
+    span.textContent = words[Math.floor(Math.random()*words.length)];
+    span.style.left = Math.random()*100+'%';
+    span.style.fontSize = (12+Math.random()*22)+'px';
+    span.style.color = colors[Math.floor(Math.random()*colors.length)];
+    span.style.animationDuration = (8+Math.random()*20)+'s';
+    span.style.animationDelay = (-Math.random()*25)+'s';
+    container.appendChild(span);
+  }
+})();
 </script>
 </body>
 </html>
