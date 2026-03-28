@@ -9,7 +9,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --gold:#f7c948; --gold2:#ff6b35; --blue:#3498db; --red:#e74c3c; --green:#27ae60; --bg:#07071a; --bg2:#0f0f28; --border:#2a2a4a; }
 body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-height:100vh; overflow-x:hidden; }
-#bg-words { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:0.045; }
+#bg-words { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:0.12; }
 #bg-words span { position:absolute; font-family:'Tajawal',sans-serif; font-weight:900; white-space:nowrap; animation:floatWord linear infinite; }
 @keyframes floatWord { from{transform:translateY(100vh)} to{transform:translateY(-120px)} }
 #app { position:relative; z-index:1; max-width:820px; margin:0 auto; padding:16px; }
@@ -140,7 +140,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 
 <div id="s-home" class="screen active">
   <div class="logo-area">
-    <div class="logo">🎯 جاوب أو اسرق</div>
+    <div class="logo"><span style="-webkit-text-fill-color:#000;filter:drop-shadow(0 0 2px #fff);font-size:42px">💣</span> <span style="-webkit-text-fill-color:#a855f7">جاوب</span> <span style="-webkit-text-fill-color:#fff;font-size:32px">أو</span> <span style="-webkit-text-fill-color:#38bdf8">اسرق</span></div>
     <div class="logo-sub">فكر بسرعة — جاوب أو اسرق نقاط خصمك!</div>
   </div>
   <div class="card">
@@ -560,7 +560,7 @@ function showFinal(){
 <script>
 (function(){
   const words = ['جاوب','اسرق','⚔️','✅','سرقة','إجابة','نقاط','صح','غلط','دبل','جاوب','اسرق','⚔️','✅'];
-  const colors = ['#f7c948','#ff6b35','#3498db','#e74c3c','#27ae60','#ffffff'];
+  const colors = ['#ffffff','#ffffff','#ffffff','#ffffff','#ffffff','#ffffff'];
   const container = document.getElementById('bg-words');
   for(let i=0;i<55;i++){
     const span = document.createElement('span');
