@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>جاوب أو اسرق</title>
+<title>جاوب أو بادل</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -140,8 +140,8 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 
 <div id="s-home" class="screen active">
   <div class="logo-area">
-    <div class="logo"><span style="-webkit-text-fill-color:#000;filter:drop-shadow(0 0 2px #fff);font-size:42px">💣</span> <span style="-webkit-text-fill-color:#a855f7">جاوب</span> <span style="-webkit-text-fill-color:#fff;font-size:32px">أو</span> <span style="-webkit-text-fill-color:#38bdf8">اسرق</span></div>
-    <div class="logo-sub">فكر بسرعة — جاوب أو اسرق نقاط خصمك!</div>
+    <div class="logo"><span style="-webkit-text-fill-color:#000;filter:drop-shadow(0 0 2px #fff);font-size:42px">💣</span> <span style="-webkit-text-fill-color:#a855f7">جاوب</span> <span style="-webkit-text-fill-color:#fff;font-size:32px">أو</span> <span style="-webkit-text-fill-color:#38bdf8">بادل</span></div>
+    <div class="logo-sub">فكر بسرعة — جاوب أو بادل نقاط خصمك!</div>
 <button onclick="document.getElementById('how-modal').classList.add('show')" style="margin-top:14px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:#aaa;padding:8px 22px;border-radius:20px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#a855f7';this.style.color='#a855f7'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='#aaa'">📖 طريقة اللعب</button>
   </div>
   <div class="card">
@@ -196,7 +196,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
     <div class="action-secret">
       <div class="action-secret-title">اختار قرارك سراً — <b id="act-timer">15</b> ثانية</div>
       <div class="action-btns" id="action-btns">
-        <button class="btn-steal" onclick="chooseAction('steal')">⚔️ سرقة<br><small style="font-size:10px;opacity:0.8">اسرق جواب الخصم</small></button>
+        <button class="btn-steal" onclick="chooseAction('steal')">🔄 مبادلة<br><small style="font-size:10px;opacity:0.8">بادل جواب الخصم</small></button>
         <button class="btn-ans" onclick="chooseAction('answer')">✅ إجابة<br><small style="font-size:10px;opacity:0.8">أجاوب بنفسي</small></button>
       </div>
       <div id="secret-done" style="display:none" class="secret-chosen">
@@ -418,7 +418,7 @@ function renderActionPhase(d){
     document.getElementById('action-btns').style.display='none';
     document.getElementById('secret-done').style.display='block';
     document.getElementById('secret-icon').textContent=myA==='steal'?'⚔️':'✅';
-    document.getElementById('secret-txt').textContent=myA==='steal'?'اخترت السرقة!':'اخترت الإجابة!';
+    document.getElementById('secret-txt').textContent=myA==='steal'?'اخترت المبادلة!':'اخترت الإجابة!';
   } else {
     document.getElementById('action-btns').style.display='grid';
     document.getElementById('secret-done').style.display='none';
@@ -432,7 +432,7 @@ async function chooseAction(action){
   document.getElementById('action-btns').style.display='none';
   document.getElementById('secret-done').style.display='block';
   document.getElementById('secret-icon').textContent=action==='steal'?'⚔️':'✅';
-  document.getElementById('secret-txt').textContent=action==='steal'?'اخترت السرقة!':'اخترت الإجابة!';
+  document.getElementById('secret-txt').textContent=action==='steal'?'اخترت المبادلة!':'اخترت الإجابة!';
   clearTimer();
   const key=G.myTeam===0?{action0:action}:{action1:action};
   await roomRef.update(key);
@@ -517,11 +517,11 @@ function showResult(d){// FIXED
   p0el.textContent=disp0+' نقطة';p0el.className='rv-pts '+(pts0>0?'pts-pos':pts0<0?'pts-neg':'pts-zero');
   p1el.textContent=disp1+' نقطة';p1el.className='rv-pts '+(pts1>0?'pts-pos':pts1<0?'pts-neg':'pts-zero');
   let icon='🎯';
-  if(bothSteal)icon='⚔️⚔️';
+  if(bothSteal)icon='🔄🔄';
   else if(pts0>=20||pts1>=20)icon='🔥';
   else if(pts0<0||pts1<0)icon='💀';
   document.getElementById('ov-icon').textContent=icon;
-  document.getElementById('ov-title').textContent=bothSteal?'كلاهم سرقا — لا نقاط!':'كشف القرارات!';
+  document.getElementById('ov-title').textContent=bothSteal?'كلاهم بادلا — لا نقاط!':'كشف القرارات!';
   updateScores();
   document.getElementById('overlay').classList.add('show');
 }
@@ -596,7 +596,7 @@ function showFinal(){
     <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="color:#38bdf8;font-weight:900;font-size:15px;margin-bottom:6px;">⚡ كيف تجري كل جولة؟</div>
       <div>• السؤال يظهر للفريقين في نفس الوقت</div>
-      <div>• كل فريق يختار <b style="color:#fff">سراً</b>: جاوب أو اسرق</div>
+      <div>• كل فريق يختار <b style="color:#fff">سراً</b>: جاوب أو بادل</div>
       <div>• بعد اختيار الكل تظهر مرحلة الإجابة</div>
       <div>• في النهاية تنكشف القرارات والنقاط معاً</div>
     </div>
@@ -609,15 +609,15 @@ function showFinal(){
           <span style="color:#fff;font-weight:700;">+10 نقاط</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span style="background:#e74c3c;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ سرق + خصمه صح</span>
+          <span style="background:#e74c3c;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ بادل + خصمه صح</span>
           <span style="color:#f7c948;font-weight:700;">+20 نقطة دبل!</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span style="background:#c0392b;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ سرق + خصمه غلط</span>
+          <span style="background:#c0392b;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️ بادل + خصمه غلط</span>
           <span style="color:#e74c3c;font-weight:700;">-10 عقوبة!</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span style="background:#555;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">⚔️⚔️ كلاهم سرق</span>
+          <span style="background:#555;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px;">🔄🔄 كلاهم بادل</span>
           <span style="color:#888;font-weight:700;">لا نقاط لأحد</span>
         </div>
       </div>
@@ -625,7 +625,7 @@ function showFinal(){
 
     <div style="background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.25);border-radius:12px;padding:14px;">
       <div style="color:#27ae60;font-weight:900;font-size:15px;margin-bottom:6px;">💡 نصيحة</div>
-      <div>إذا أجبت صح وخصمك سرقك — النقاط تروح له! فكر مرتين قبل ما تجاوب 😏</div>
+      <div>إذا أجبت صح وخصمك بادلك — النقاط تروح له! فكر مرتين قبل ما تجاوب 😏</div>
     </div>
 
   </div>
