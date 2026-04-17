@@ -340,10 +340,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
-firebase.initializeApp({
+const firebaseConfig={
   apiKey:"AIzaSyCHSY9cw5oUbB4cZh3mAQW6YeEYWrXfVH0",
   authDomain:"quiz-game-7379f.firebaseapp.com",
   databaseURL:"https://quiz-game-7379f-default-rtdb.firebaseio.com",
@@ -351,7 +351,8 @@ firebase.initializeApp({
   storageBucket:"quiz-game-7379f.firebasestorage.app",
   messagingSenderId:"279566766264",
   appId:"1:279566766264:web:79b62796fa1c2e9751e44d"
-});
+};
+if(!firebase.apps.length){firebase.initializeApp(firebaseConfig);}
 const db=firebase.database();
 
 // ===== QUESTIONS =====
