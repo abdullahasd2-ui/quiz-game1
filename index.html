@@ -340,20 +340,52 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
-const firebaseConfig={
-  apiKey:"AIzaSyCHSY9cw5oUbB4cZh3mAQW6YeEYWrXfVH0",
-  authDomain:"quiz-game-7379f.firebaseapp.com",
-  databaseURL:"https://quiz-game-7379f-default-rtdb.firebaseio.com",
-  projectId:"quiz-game-7379f",
-  storageBucket:"quiz-game-7379f.firebasestorage.app",
-  messagingSenderId:"279566766264",
-  appId:"1:279566766264:web:79b62796fa1c2e9751e44d"
+// Pure REST API - works on all browsers including Safari
+const DB_URL="https://quiz-game-7379f-default-rtdb.firebaseio.com";
+let _pollInterval=null;
+let _lastVal=null;
+let _currentPath=null;
+let _onValueCb=null;
+
+const db={
+  ref:function(path){
+    return {
+      _path:path,
+      set:async function(val){
+        await fetch(DB_URL+"/"+path+".json",{method:"PUT",body:JSON.stringify(val),headers:{"Content-Type":"application/json"}});
+      },
+      update:async function(val){
+        await fetch(DB_URL+"/"+path+".json",{method:"PATCH",body:JSON.stringify(val),headers:{"Content-Type":"application/json"}});
+      },
+      once:async function(evt){
+        const r=await fetch(DB_URL+"/"+path+".json");
+        const data=await r.json();
+        return{exists:()=>data!==null,val:()=>data};
+      },
+      on:function(evt,cb){
+        _currentPath=path;_onValueCb=cb;_lastVal=null;
+        if(_pollInterval)clearInterval(_pollInterval);
+        _pollInterval=setInterval(async()=>{
+          try{
+            const r=await fetch(DB_URL+"/"+path+".json?_t="+Date.now());
+            const data=await r.json();
+            const str=JSON.stringify(data);
+            if(str!==_lastVal){_lastVal=str;cb({exists:()=>data!==null,val:()=>data});}
+          }catch(e){}
+        },1000);
+        // immediate first call
+        fetch(DB_URL+"/"+path+".json").then(r=>r.json()).then(data=>{
+          _lastVal=JSON.stringify(data);cb({exists:()=>data!==null,val:()=>data});
+        });
+      },
+      off:function(){if(_pollInterval)clearInterval(_pollInterval);}
+    };
+  }
 };
-if(!firebase.apps.length){firebase.initializeApp(firebaseConfig);}
-const db=firebase.database();
+
+// Wrapper to match old API
+function roomRefHelper(path){return db.ref(path);}
 
 // ===== QUESTIONS =====
 const CATS=[
