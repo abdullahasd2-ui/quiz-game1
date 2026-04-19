@@ -268,19 +268,23 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyCHSY9cw5oUbB4cZh3mAQW6YeEYWrXfVH0",
-  authDomain:"quiz-game-7379f.firebaseapp.com",
-  databaseURL:"https://quiz-game-7379f-default-rtdb.firebaseio.com",
-  projectId:"quiz-game-7379f",
-  storageBucket:"quiz-game-7379f.firebasestorage.app",
-  messagingSenderId:"279566766264",
-  appId:"1:279566766264:web:79b62796fa1c2e9751e44d"
-});
-const db=firebase.database();
+// Firebase REST API - works on ALL browsers including Safari iOS
+const FB="https://quiz-game-7379f-default-rtdb.firebaseio.com";
+let _poll=null,_lastSnap=null,_listenPath=null,_listenCb=null;
+
+const db={ref:function(p){return{
+  set:function(v){return fetch(FB+"/"+p+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).then(r=>r.json());},
+  update:function(v){return fetch(FB+"/"+p+".json",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).then(r=>r.json());},
+  once:function(){return fetch(FB+"/"+p+".json?t="+Date.now()).then(r=>r.json()).then(d=>({exists:()=>d!==null,val:()=>d}));},
+  on:function(e,cb){
+    _listenPath=p;_listenCb=cb;_lastSnap=null;
+    if(_poll)clearInterval(_poll);
+    function poll(){fetch(FB+"/"+p+".json?t="+Date.now()).then(r=>r.json()).then(d=>{const s=JSON.stringify(d);if(s!==_lastSnap){_lastSnap=s;cb({exists:()=>d!==null,val:()=>d});}}).catch(()=>{});}
+    poll();_poll=setInterval(poll,1200);
+  },
+  off:function(){if(_poll)clearInterval(_poll);}
+};}};
 
 const CATS=[{id:'history',name:'تاريخ',icon:'🏺'},{id:'geo',name:'جغرافيا',icon:'🗺️'},{id:'football',name:'كرة قدم',icon:'⚽'},{id:'cars',name:'سيارات',icon:'🚗'},{id:'flags',name:'أعلام دول',icon:'🚩'},{id:'reveal',name:'اكتشف الصورة',icon:'🔍'},{id:'brands',name:'براندات نسائية',icon:'👜'}];
 const QDB={
