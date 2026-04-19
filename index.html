@@ -359,7 +359,7 @@ const db={
         await fetch(DB_URL+"/"+path+".json",{method:"PATCH",body:JSON.stringify(val),headers:{"Content-Type":"application/json"}});
       },
       once:async function(evt){
-        const r=await fetch(DB_URL+"/"+path+".json");
+        const r=await fetch(DB_URL+"/"+path+".json?nc="+Date.now());
         const data=await r.json();
         return{exists:()=>data!==null,val:()=>data};
       },
@@ -477,7 +477,7 @@ async function joinRoom(){
   const snap=await roomRef.once('value');
   if(!snap.exists()){toast('الغرفة غير موجودة!');return;}
   const d=snap.val();
-  if(d.status!=='waiting'){toast('اللعبة بدأت بالفعل!');return;}
+  if(d.status!=='waiting'&&d.status!=='lobby'){toast('اللعبة بدأت بالفعل!');return;}
   G.roomCode=code;G.isHost=false;G.myTeam=1;G.teams[0].name=d.t0name;G.teams[1].name=name;
   await roomRef.update({t1name:name,status:'lobby'});
   setupLobby();listenRoom();
