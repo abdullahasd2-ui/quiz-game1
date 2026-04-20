@@ -281,7 +281,7 @@ const db={ref:function(p){return{
     _listenPath=p;_listenCb=cb;_lastSnap=null;
     if(_poll)clearInterval(_poll);
     function poll(){fetch(FB+"/"+p+".json?t="+Date.now()).then(r=>r.json()).then(d=>{const s=JSON.stringify(d);if(s!==_lastSnap){_lastSnap=s;cb({exists:()=>d!==null,val:()=>d});}}).catch(()=>{});}
-    poll();_poll=setInterval(poll,1200);
+    poll();_poll=setInterval(poll,500);
   },
   off:function(){if(_poll)clearInterval(_poll);}
 };}};
