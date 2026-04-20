@@ -268,22 +268,40 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyCHSY9cw5oUbB4cZh3mAQW6YeEYWrXfVH0",
-  authDomain:"quiz-game-7379f.firebaseapp.com",
-  databaseURL:"https://quiz-game-7379f-default-rtdb.firebaseio.com",
-  projectId:"quiz-game-7379f",
-  storageBucket:"quiz-game-7379f.firebasestorage.app",
-  messagingSenderId:"279566766264",
-  appId:"1:279566766264:web:79b62796fa1c2e9751e44d"
-});
-const db=firebase.database();
-// Fix for Safari - keep connection alive
-try{firebase.database().goOnline();}catch(e){}
-setInterval(()=>{try{firebase.database().goOnline();}catch(e){}},30000);
+const FB="https://quiz-game-7379f-default-rtdb.firebaseio.com";
+const db={ref:function(p){
+  return{
+    set:async function(v){
+      const r=await fetch(FB+"/"+p+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});
+      return r.json();
+    },
+    update:async function(v){
+      const r=await fetch(FB+"/"+p+".json",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});
+      return r.json();
+    },
+    once:async function(){
+      const r=await fetch(FB+"/"+p+".json?t="+Date.now());
+      const d=await r.json();
+      return{exists:()=>d!==null,val:()=>d};
+    },
+    on:function(e,cb){
+      let last=null;
+      const id=setInterval(async function(){
+        try{
+          const r=await fetch(FB+"/"+p+".json?t="+Date.now());
+          const d=await r.json();
+          const s=JSON.stringify(d);
+          if(s!==last){last=s;cb({exists:()=>d!==null,val:()=>d});}
+        }catch(err){}
+      },800);
+      this._id=id;
+      // immediate call
+      fetch(FB+"/"+p+".json?t="+Date.now()).then(r=>r.json()).then(d=>{last=JSON.stringify(d);cb({exists:()=>d!==null,val:()=>d});}).catch(()=>{});
+    },
+    off:function(){if(this._id)clearInterval(this._id);}
+  };
+}};
 
 const CATS=[{id:'history',name:'تاريخ',icon:'🏺'},{id:'geo',name:'جغرافيا',icon:'🗺️'},{id:'football',name:'كرة قدم',icon:'⚽'},{id:'cars',name:'سيارات',icon:'🚗'},{id:'flags',name:'أعلام دول',icon:'🚩'},{id:'reveal',name:'اكتشف الصورة',icon:'🔍'},{id:'brands',name:'براندات نسائية',icon:'👜'}];
 const QDB={
@@ -360,8 +378,18 @@ function handleUpdate(d){
       document.getElementById('slot2-name').textContent=G.teams[1].name;
       document.getElementById('slot2-st').innerHTML='<span class="dot dot-green"></span> متصل';
       document.getElementById('slot2').classList.add('connected');
-      if(G.isHost)document.getElementById('host-sec').style.display='block';
-      else document.getElementById('guest-sec').style.display='block';
+      if(G.isHost){
+        document.getElementById('host-sec').style.display='block';
+        document.getElementById('guest-sec').style.display='none';
+      } else {
+        document.getElementById('guest-sec').style.display='block';
+        document.getElementById('host-sec').style.display='none';
+      }
+    }
+    // Always update slot1 name
+    if(d.t0name){
+      G.teams[0].name=d.t0name;
+      document.getElementById('slot1-name').textContent=d.t0name;
     }
     return;
   }
