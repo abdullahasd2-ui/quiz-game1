@@ -269,39 +269,62 @@ body { font-family:'Tajawal',sans-serif; background:var(--bg); color:#fff; min-h
 <div class="toast" id="toast"></div>
 
 <script>
+// ---- Firebase REST helpers ----
 const FB="https://quiz-game-7379f-default-rtdb.firebaseio.com";
-const db={ref:function(p){
-  return{
-    set:async function(v){
-      const r=await fetch(FB+"/"+p+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});
-      return r.json();
-    },
-    update:async function(v){
-      const r=await fetch(FB+"/"+p+".json",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});
-      return r.json();
-    },
-    once:async function(){
-      const r=await fetch(FB+"/"+p+".json?t="+Date.now());
-      const d=await r.json();
-      return{exists:()=>d!==null,val:()=>d};
-    },
-    on:function(e,cb){
-      let last=null;
-      const id=setInterval(async function(){
-        try{
-          const r=await fetch(FB+"/"+p+".json?t="+Date.now());
-          const d=await r.json();
-          const s=JSON.stringify(d);
-          if(s!==last){last=s;cb({exists:()=>d!==null,val:()=>d});}
-        }catch(err){}
-      },800);
-      this._id=id;
-      // immediate call
-      fetch(FB+"/"+p+".json?t="+Date.now()).then(r=>r.json()).then(d=>{last=JSON.stringify(d);cb({exists:()=>d!==null,val:()=>d});}).catch(()=>{});
-    },
-    off:function(){if(this._id)clearInterval(this._id);}
-  };
-}};
+let _pollTimer=null;
+let _pollPath=null;
+let _pollCb=null;
+let _pollLast=null;
+let _pollRunning=false;
+
+async function fbSet(path,val){
+  const r=await fetch(FB+"/"+path+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(val)});
+  return r.json();
+}
+async function fbUpdate(path,val){
+  const r=await fetch(FB+"/"+path+".json",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(val)});
+  return r.json();
+}
+async function fbGet(path){
+  const r=await fetch(FB+"/"+path+".json?nc="+Date.now());
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  return r.json();
+}
+async function _doPoll(){
+  if(!_pollPath||!_pollCb)return;
+  try{
+    const d=await fbGet(_pollPath);
+    const s=JSON.stringify(d);
+    if(s!==_pollLast){
+      _pollLast=s;
+      if(d!==null)_pollCb(d);
+    }
+  }catch(e){console.warn("poll error",e);}
+}
+function fbListen(path,cb){
+  // Stop any existing poll
+  if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}
+  _pollPath=path;
+  _pollCb=cb;
+  _pollLast=null;
+  // First call immediately
+  _doPoll();
+  // Then every 600ms
+  _pollTimer=setInterval(_doPoll,600);
+}
+function fbStopListen(){
+  if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}
+  _pollPath=null;_pollCb=null;_pollLast=null;
+}
+
+// db wrapper for compatibility
+const db={ref:function(p){return{
+  set:function(v){return fbSet(p,v);},
+  update:function(v){return fbUpdate(p,v);},
+  once:async function(){const d=await fbGet(p);return{exists:()=>d!==null,val:()=>d};},
+  on:function(e,cb){fbListen(p,cb);},
+  off:function(){fbStopListen();}
+};}};
 
 const CATS=[{id:'history',name:'تاريخ',icon:'🏺'},{id:'geo',name:'جغرافيا',icon:'🗺️'},{id:'football',name:'كرة قدم',icon:'⚽'},{id:'cars',name:'سيارات',icon:'🚗'},{id:'flags',name:'أعلام دول',icon:'🚩'},{id:'reveal',name:'اكتشف الصورة',icon:'🔍'},{id:'brands',name:'براندات نسائية',icon:'👜'}];
 const QDB={
@@ -324,32 +347,83 @@ function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.ra
 
 async function createRoom(){
   const name=document.getElementById('create-name').value.trim()||'الفريق الأول';
-  const code=genCode();
-  G.roomCode=code;G.isHost=true;G.myTeam=0;G.teams[0].name=name;
-  roomRef=db.ref('rooms/'+code);
-  await roomRef.set({status:'waiting',t0name:name,t1name:'',t0score:0,t1score:0,questions:'',qIdx:0,action0:null,action1:null,answer0:null,answer1:null,ts:Date.now()});
-  setupLobby();listenRoom();
+  const btn=document.querySelector('#s-home .btn-gold');
+  btn.textContent='جاري الإنشاء...';btn.disabled=true;
+  try{
+    const code=genCode();
+    const data={status:'waiting',t0name:name,t1name:'',t0score:0,t1score:0,questions:'',qIdx:0,action0:null,action1:null,answer0:null,answer1:null,ts:Date.now()};
+    const res=await fetch(FB+'/rooms/'+code+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(!res.ok){throw new Error('HTTP '+res.status);}
+    G.roomCode=code;G.isHost=true;G.myTeam=0;
+    G.teams[0].name=name;G.teams[1].name='';
+    G.teams[0].score=0;G.teams[1].score=0;
+    G.questions=[];G.qIdx=0;G.resultShown=false;
+    roomRef=db.ref('rooms/'+code);
+    setupLobby();
+    listenRoom();
+  } catch(err){
+    toast('تعذر الاتصال — تأكد من الإنترنت');
+    console.error('createRoom:',err);
+    btn.textContent='إنشاء غرفة';btn.disabled=false;
+  }
 }
 
 async function joinRoom(){
   const name=document.getElementById('join-name').value.trim()||'الفريق الثاني';
   const code=document.getElementById('join-code').value.trim().toUpperCase();
-  if(code.length!==6){toast('الكود 6 أحرف!');return;}
-  roomRef=db.ref('rooms/'+code);
-  const snap=await roomRef.once('value');
-  if(!snap.exists()){toast('الغرفة غير موجودة!');return;}
-  const d=snap.val();
-  if(d.status==='game'||d.status==='done'){toast('الغرفة غير موجودة!');return;}
-  G.roomCode=code;G.isHost=false;G.myTeam=1;G.teams[0].name=d.t0name;G.teams[1].name=name;
-  await roomRef.update({t1name:name,status:'lobby'});
-  setupLobby();listenRoom();
+  if(code.length!==6){toast('الكود يجب أن يكون 6 أحرف!');return;}
+  const btns=document.querySelectorAll('#s-home .btn-gold');
+  const btn=btns[1];
+  btn.textContent='جاري الانضمام...';btn.disabled=true;
+  try{
+    const res=await fetch(FB+'/rooms/'+code+'.json?nc='+Date.now());
+    if(!res.ok){throw new Error('HTTP '+res.status);}
+    const d=await res.json();
+    if(!d){toast('الغرفة غير موجودة — تأكد من الكود');btn.textContent='انضمام';btn.disabled=false;return;}
+    if(d.status==='game'||d.status==='done'){toast('اللعبة بدأت بالفعل');btn.textContent='انضمام';btn.disabled=false;return;}
+    if(d.t1name&&d.t1name!==''){toast('الغرفة ممتلئة!');btn.textContent='انضمام';btn.disabled=false;return;}
+    // Update room
+    const upd=await fetch(FB+'/rooms/'+code+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({t1name:name,status:'lobby'})});
+    if(!upd.ok){throw new Error('HTTP '+upd.status);}
+    G.roomCode=code;G.isHost=false;G.myTeam=1;
+    G.teams[0].name=d.t0name||'الفريق الأول';
+    G.teams[1].name=name;
+    G.teams[0].score=0;G.teams[1].score=0;
+    G.questions=[];G.qIdx=0;G.resultShown=false;
+    roomRef=db.ref('rooms/'+code);
+    await new Promise(res=>setTimeout(res,400));
+    setupLobby();
+    listenRoom();
+  } catch(err){
+    toast('تعذر الاتصال — تأكد من الإنترنت');
+    console.error('joinRoom:',err);
+    btn.textContent='انضمام';btn.disabled=false;
+  }
 }
 
 function setupLobby(){
   document.getElementById('lob-code').textContent=G.roomCode;
-  document.getElementById('slot1-name').textContent=G.teams[0].name;
-  document.getElementById('slot1').classList.add('connected');
-  if(G.isHost)buildCats();
+  // Team 1 = host (right slot), Team 2 = guest (left slot)
+  if(G.isHost){
+    document.getElementById('slot1-name').textContent=G.teams[0].name;
+    document.getElementById('slot1-st').innerHTML='<span class="dot dot-green"></span> مضيف';
+    document.getElementById('slot1').classList.add('connected');
+    document.getElementById('slot2-name').textContent='في انتظار...';
+    document.getElementById('slot2-st').innerHTML='<span class="dot dot-yellow"></span> ينتظر';
+    document.getElementById('slot2').classList.remove('connected');
+    document.getElementById('host-sec').style.display='none'; // hide until guest joins
+    document.getElementById('guest-sec').style.display='none';
+    buildCats();
+  } else {
+    document.getElementById('slot1-name').textContent=G.teams[1].name;
+    document.getElementById('slot1-st').innerHTML='<span class="dot dot-green"></span> أنت';
+    document.getElementById('slot1').classList.add('connected');
+    document.getElementById('slot2-name').textContent=G.teams[0].name;
+    document.getElementById('slot2-st').innerHTML='<span class="dot dot-green"></span> مضيف';
+    document.getElementById('slot2').classList.add('connected');
+    document.getElementById('host-sec').style.display='none';
+    document.getElementById('guest-sec').style.display='block';
+  }
   showScreen('lobby');
 }
 
@@ -364,32 +438,33 @@ async function hostStart(){
   const pool=[];sel.forEach(id=>{(QDB[id]||[]).forEach(q=>pool.push(Object.assign({},q,{cat:id})));});
   shuffle(pool);
   const qs=pool.slice(0,Math.min(pool.length,12));
-  await roomRef.update({questions:JSON.stringify(qs),status:'game',qIdx:0,t0score:0,t1score:0,action0:null,action1:null,answer0:null,answer1:null});
+  await fbUpdate('rooms/'+G.roomCode,{questions:JSON.stringify(qs),status:'game',qIdx:0,t0score:0,t1score:0,action0:null,action1:null,answer0:null,answer1:null});
 }
 
 function listenRoom(){
-  roomRef.on('value',snap=>{if(!snap.exists())return;handleUpdate(snap.val());});
+  fbListen('rooms/'+G.roomCode,function(d){
+    if(d)handleUpdate(d);
+  });
 }
 
 function handleUpdate(d){
   if(d.status==='lobby'||d.status==='waiting'){
-    if(d.t1name&&d.t1name!==''){
-      G.teams[1].name=d.t1name;
-      document.getElementById('slot2-name').textContent=G.teams[1].name;
-      document.getElementById('slot2-st').innerHTML='<span class="dot dot-green"></span> متصل';
-      document.getElementById('slot2').classList.add('connected');
-      if(G.isHost){
+    if(G.isHost){
+      // Host sees: slot2 = guest
+      if(d.t1name&&d.t1name!==''){
+        G.teams[1].name=d.t1name;
+        document.getElementById('slot2-name').textContent=d.t1name;
+        document.getElementById('slot2-st').innerHTML='<span class="dot dot-green"></span> متصل';
+        document.getElementById('slot2').classList.add('connected');
+        // Show start button only when guest joined
         document.getElementById('host-sec').style.display='block';
-        document.getElementById('guest-sec').style.display='none';
-      } else {
-        document.getElementById('guest-sec').style.display='block';
-        document.getElementById('host-sec').style.display='none';
       }
-    }
-    // Always update slot1 name
-    if(d.t0name){
-      G.teams[0].name=d.t0name;
-      document.getElementById('slot1-name').textContent=d.t0name;
+    } else {
+      // Guest sees: slot2 = host
+      if(d.t0name){
+        G.teams[0].name=d.t0name;
+        document.getElementById('slot2-name').textContent=d.t0name;
+      }
     }
     return;
   }
@@ -475,7 +550,7 @@ async function chooseAction(action){
   document.getElementById('secret-icon').textContent=action==='steal'?'🔄':'✅';
   document.getElementById('secret-txt').textContent=action==='steal'?'اخترت المبادلة!':'اخترت الإجابة!';
   const key=G.myTeam===0?{action0:action}:{action1:action};
-  await roomRef.update(key);
+  await fbUpdate('rooms/'+G.roomCode,key);
 }
 
 function renderAnswerPhase(d){
@@ -509,7 +584,7 @@ async function submitAnswer(idx){
   document.getElementById('waiting-ans').style.display='block';
   document.getElementById('ans-label').innerHTML='<b>انتظار الفريق الثاني...</b>';
   const key=G.myTeam===0?{answer0:idx}:{answer1:idx};
-  await roomRef.update(key);
+  await fbUpdate('rooms/'+G.roomCode,key);
 }
 
 function showResult(d){
@@ -527,7 +602,7 @@ function showResult(d){
     const newS0=Math.max(0,(d.t0score||0)+pts0);
     const newS1=Math.max(0,(d.t1score||0)+pts1);
     G.teams[0].score=newS0;G.teams[1].score=newS1;
-    roomRef.update({t0score:newS0,t1score:newS1});
+    fbUpdate('rooms/'+G.roomCode,{t0score:newS0,t1score:newS1});
   } else {
     G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
   }
@@ -554,8 +629,8 @@ async function goNext(){
   document.getElementById('overlay').classList.remove('show');
   G.resultShown=false;
   const next=G.qIdx+1;
-  if(next>=G.questions.length){await roomRef.update({status:'done'});return;}
-  await roomRef.update({qIdx:next,action0:null,action1:null,answer0:null,answer1:null});
+  if(next>=G.questions.length){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
+  await fbUpdate('rooms/'+G.roomCode,{qIdx:next,action0:null,action1:null,answer0:null,answer1:null});
 }
 
 function startTimer(sec,elId,onDone){
