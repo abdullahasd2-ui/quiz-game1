@@ -752,11 +752,11 @@ function handleMobileGame(d){
   showScreen('game');
   updateMobileScores(d);
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
-  const bothActed=a0!=null&&a1!=null;
-  const bothAnswered=ans0!=null&&ans1!=null;
+  const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
+  const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
   if(bothAnswered&&!G.resultShown){G.resultShown=true;showResult(d);}
   else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
-  else if(!bothActed){renderActionPhase(d);}
+  else{renderActionPhase(d);}
 }
 
 function updateMobileScores(d){
@@ -785,8 +785,8 @@ function renderActionPhase(d){
   document.getElementById('phase-answer').style.display='none';
   document.getElementById('phase-wait').style.display='none';
   document.getElementById('overlay').classList.remove('show');
-  const isP1=G.role==='host';
-  const myA=isP1?d.action0:d.action1;
+  const myTeam=(G.role==='host'||G.role==='p1')?0:1;
+  const myA=myTeam===0?d.action0:d.action1;
   if(myA!=null){
     G.actionLocked=true;
     document.getElementById('action-btns').style.display='none';
@@ -807,20 +807,20 @@ async function chooseAction(action){
   document.getElementById('secret-done').style.display='block';
   document.getElementById('secret-icon').textContent=action==='steal'?'🔄':'✅';
   document.getElementById('secret-txt').textContent=action==='steal'?'اخترت المبادلة!':'اخترت الإجابة!';
-  const isP1=G.role==='host';
-  await fbUpdate('rooms/'+G.roomCode,isP1?{action0:action}:{action1:action});
+  const myTeamIdx=(G.role==='host'||G.role==='p1')?0:1;
+  await fbUpdate('rooms/'+G.roomCode,myTeamIdx===0?{action0:action}:{action1:action});
 }
 
 function renderAnswerPhase(d){
   clearTimer();G.answerLocked=false;
-  const isP1=G.role==='host';
-  const myAction=isP1?d.action0:d.action1;
+  const myTeam=(G.role==='host'||G.role==='p1')?0:1;
+  const myAction=myTeam===0?d.action0:d.action1;
   document.getElementById('phase-action').style.display='none';
   document.getElementById('phase-answer').style.display='block';
   document.getElementById('waiting-ans').style.display='none';
   const q=G.questions[G.qIdx];
   const grid=document.getElementById('opts-grid');grid.innerHTML='';
-  const myAns=isP1?d.answer0:d.answer1;
+  const myAns=myTeam===0?d.answer0:d.answer1;
 
   if(myAction==='steal'){
     G.answerLocked=true;
@@ -828,7 +828,7 @@ function renderAnswerPhase(d){
     q.o.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='opt';btn.textContent=opt;btn.disabled=true;grid.appendChild(btn);});
     document.getElementById('waiting-ans').style.display='block';
     if(myAns==null){
-      setTimeout(async()=>{await fbUpdate('rooms/'+G.roomCode,isP1?{answer0:-1}:{answer1:-1});},500);
+      setTimeout(async()=>{const mt=(G.role==='host'||G.role==='p1')?0:1;await fbUpdate('rooms/'+G.roomCode,mt===0?{answer0:-1}:{answer1:-1});},500);
     }
     return;
   }
@@ -854,8 +854,8 @@ async function submitAnswer(idx){
   if(idx>=0&&opts[idx])opts[idx].classList.add('chosen-opt');
   document.getElementById('waiting-ans').style.display='block';
   document.getElementById('ans-label').innerHTML='<b>انتظار الفريق الثاني...</b>';
-  const isP1=G.role==='host';
-  await fbUpdate('rooms/'+G.roomCode,isP1?{answer0:idx}:{answer1:idx});
+  const mt=(G.role==='host'||G.role==='p1')?0:1;
+  await fbUpdate('rooms/'+G.roomCode,mt===0?{answer0:idx}:{answer1:idx});
 }
 
 // ===== TV GAME =====
@@ -986,7 +986,7 @@ function handleTVPlayerQuestion(d){
   if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
   document.getElementById('phase-wait').style.display='none';
   // Use same action/answer logic as mobile
-  const isP1=G.role==='p1';
+  const myTeam=(G.role==='host'||G.role==='p1')?0:1;
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
   const bothActed=a0!=null&&a1!=null;
   const bothAnswered=ans0!=null&&ans1!=null;
