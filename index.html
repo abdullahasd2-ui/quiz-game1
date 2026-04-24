@@ -951,14 +951,22 @@ function renderTVQuestion(d){
     }
     optsDiv.appendChild(div);
   });
-  // Team status
+  // Team status - hide choices until both answered (so TV doesn't reveal early)
   const statusDiv=document.getElementById('tv-teams-status');statusDiv.innerHTML='';
   [0,1].forEach(t=>{
     const div=document.createElement('div');div.className='tv-team-status '+(t===0?'t1':'t2');
     const action=t===0?a0:a1;const ans=t===0?ans0:ans1;
-    let icon='⏳',txt='في انتظار القرار...';
-    if(action!=null&&ans==null){icon=action==='steal'?'🔄':'✅';txt=action==='steal'?'اختار المبادلة':'اختار الإجابة — ينتظر...';}
-    if(ans!=null){icon=action==='steal'?'🔄':'✅';txt=action==='steal'?'بادل':'أجاب';}
+    let icon,txt;
+    if(!bothAnswered){
+      // Before results: only show if team has decided (not WHAT they chose)
+      const decided=(t===0)?(a0!==null&&a0!==undefined):(a1!==null&&a1!==undefined);
+      icon=decided?'🔒':'⏳';
+      txt=decided?'اختار قراره — ينتظر...':'في انتظار القرار...';
+    } else {
+      // After both answered: reveal everything
+      icon=action==='steal'?'🔄':'✅';
+      txt=action==='steal'?'بادل':'أجاب';
+    }
     div.innerHTML='<div class="tv-ts-name">'+G.teams[t].name+'</div><div class="tv-ts-action">'+icon+'</div><div class="tv-ts-txt">'+txt+'</div>';
     statusDiv.appendChild(div);
   });
