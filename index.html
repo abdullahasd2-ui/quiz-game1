@@ -799,7 +799,7 @@ function renderMobileBoard(d){
     (G.selectedCats||[]).forEach(catId=>{
       const key=catId+'_'+pts;
       const used=G.used[key];
-      row+='<td><button class="cell-btn pts-'+pts+'" '+((used||!isMyTurn)?'disabled':'')+' onclick="mobilePickCell(''+catId+'','+pts+')">'+pts+'</button></td>';
+      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+((used||!isMyTurn)?'disabled':'')+' onclick="mbPick(this)">'+pts+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
@@ -808,6 +808,8 @@ function renderMobileBoard(d){
     :'دور <span style="color:var(--gold);font-weight:700">'+G.teams[d.turn||0].name+'</span> في الاختيار...';
 }
 
+function mbPick(el){mobilePickCell(el.dataset.cat,parseInt(el.dataset.pts));}
+function tvPick(el){tvPickCell(el.dataset.cat,parseInt(el.dataset.pts));}
 async function mobilePickCell(catId,pts){
   const isMyTurn=(G.role==='host'&&G._turn===0)||(G.role==='guest'&&G._turn===1);
   // double check from firebase
@@ -1001,7 +1003,7 @@ function renderTVBoard(d){
     G.selectedCats.forEach(catId=>{
       const key=catId+'_'+pts;
       const used=G.used[key];
-      row+='<td><button class="cell-btn pts-'+pts+'" '+(used?'disabled':'')+' onclick="tvPickCell(\''+catId+'\','+pts+')">'+pts+'</button></td>';
+      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+(used?'disabled':'')+' onclick="tvPick(this)">'+pts+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
