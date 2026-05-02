@@ -604,10 +604,12 @@ function buildCats(gridId){
 async function hostStart(){
   const sel=[...document.querySelectorAll('#cats-grid .cat-chk.sel')].map(d=>d.dataset.id);
   if(sel.length<3){toast('اختر 3 فئات على الأقل!');return;}
-  const pool=[];sel.forEach(id=>(QDB[id]||[]).forEach(q=>pool.push(Object.assign({},q,{cat:id}))));
-  shuffle(pool);
-  const qs=pool.slice(0,Math.min(pool.length,14));
-  await fbUpdate('rooms/'+G.roomCode,{questions:JSON.stringify(qs),status:'game',qIdx:0,t0score:0,t1score:0,action0:null,action1:null,answer0:null,answer1:null,used:'{}'});
+  G.selectedCats=sel;
+  await fbUpdate('rooms/'+G.roomCode,{
+    selectedCats:JSON.stringify(sel),status:'game',phase:'board',
+    turn:0,t0score:0,t1score:0,catId:null,pts:null,qIdxBoard:null,
+    action0:null,action1:null,answer0:null,answer1:null,used:'{}'
+  });
 }
 
 // ===== TV MODE =====
@@ -703,6 +705,7 @@ function handleUpdate(d){
     if(d.mode==='tv'||G.mode==='tv'){
       handleTVGame(d);
     } else {
+      // Mobile mode now uses board system
       handleMobileGame(d);
     }
     return;
@@ -745,18 +748,108 @@ function handleLobbyUpdate(d){
   }
 }
 
-// ===== MOBILE GAME =====
+// ===== MOBILE GAME - board system =====
 function handleMobileGame(d){
-  if(d.questions&&d.questions!==''&&!G.questions.length)G.questions=JSON.parse(d.questions);
-  G.qIdx=d.qIdx||0;
-  showScreen('game');
-  updateMobileScores(d);
+  if(d.selectedCats&&d.selectedCats!==''&&!G.selectedCats.length)G.selectedCats=JSON.parse(d.selectedCats);
+  if(d.used)G.used=JSON.parse(d.used);
+  G.teams[0].score=d.t0score||0;
+  G.teams[1].score=d.t1score||0;
+
+  if(d.phase==='board'){
+    renderMobileBoard(d);
+  } else if(d.phase==='question'){
+    if(d.catId&&d.qIdxBoard!=null){
+      const q=QDB[d.catId]?QDB[d.catId][d.qIdxBoard]:null;
+      if(q){G.questions=[Object.assign({},q,{cat:d.catId})];G.qIdx=0;}
+    }
+    showScreen('game');
+    updateMobileScores(d);
+    // Show pts badge
+    if(d.pts){
+      document.getElementById('q-pts-badge').textContent=d.pts+' نقطة';
+      document.getElementById('q-pts-badge').style.display='inline-block';
+    }
+    const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
+    const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
+    const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
+    if(bothAnswered&&!G.resultShown){G.resultShown=true;showResultMobileBoard(d);}
+    else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
+    else{renderActionPhase(d);}
+  }
+}
+
+function renderMobileBoard(d){
+  clearTimer();
+  showScreen('tv-board'); // reuse TV board screen
+  document.getElementById('tv-sn1').textContent=G.teams[0].name;
+  document.getElementById('tv-sn2').textContent=G.teams[1].name;
+  document.getElementById('tv-sc1').textContent=G.teams[0].score;
+  document.getElementById('tv-sc2').textContent=G.teams[1].score;
+  document.getElementById('tv-sb1').className='score-box'+(d.turn===0?' active-turn':'');
+  document.getElementById('tv-sb2').className='score-box'+(d.turn===1?' active-turn':'');
+  document.getElementById('tv-turn-name').textContent=G.teams[d.turn||0].name;
+  const isMyTurn=(G.role==='host'&&d.turn===0)||(G.role==='guest'&&d.turn===1);
+  const table=document.getElementById('tv-board-table');
+  table.innerHTML='';
+  let hRow='<tr>';
+  (G.selectedCats||[]).forEach(id=>{const c=CATS.find(x=>x.id===id);hRow+='<th>'+(c?c.icon+'<br>'+c.name:id)+'</th>';});
+  table.innerHTML=hRow+'</tr>';
+  PTS.forEach(pts=>{
+    let row='<tr>';
+    (G.selectedCats||[]).forEach(catId=>{
+      const key=catId+'_'+pts;
+      const used=G.used[key];
+      row+='<td><button class="cell-btn pts-'+pts+'" '+((used||!isMyTurn)?'disabled':'')+' onclick="mobilePickCell(''+catId+'','+pts+')">'+pts+'</button></td>';
+    });
+    table.innerHTML+=row+'</tr>';
+  });
+  document.getElementById('tv-turn-lbl').innerHTML=isMyTurn
+    ?'<b style="color:var(--gold)">دورك!</b> اختار سؤالاً'
+    :'دور <span style="color:var(--gold);font-weight:700">'+G.teams[d.turn||0].name+'</span> في الاختيار...';
+}
+
+async function mobilePickCell(catId,pts){
+  const isMyTurn=(G.role==='host'&&G._turn===0)||(G.role==='guest'&&G._turn===1);
+  // double check from firebase
+  const snap=await fbGet('rooms/'+G.roomCode);
+  if(!snap)return;
+  const myTeamNum=(G.role==='host')?0:1;
+  if(snap.turn!==myTeamNum){toast('ليس دورك!');return;}
+  const ptIdx=PTS.indexOf(pts);
+  const used=Object.assign({},G.used);
+  used[catId+'_'+pts]=true;
+  G.used=used;
+  G.resultShown=false;
+  await fbUpdate('rooms/'+G.roomCode,{
+    phase:'question',catId,pts,qIdxBoard:ptIdx,
+    action0:null,action1:null,answer0:null,answer1:null,
+    used:JSON.stringify(used)
+  });
+}
+
+function showResultMobileBoard(d){
+  clearTimer();
+  const q=G.questions[0];
+  const pts=d.pts||100;
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
-  const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
-  const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
-  if(bothAnswered&&!G.resultShown){G.resultShown=true;showResult(d);}
-  else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
-  else{renderActionPhase(d);}
+  const c0=ans0===q.a,c1=ans1===q.a;
+  let pts0=0,pts1=0;
+  const bothSteal=a0==="steal"&&a1==="steal";
+  if(bothSteal){pts0=0;pts1=0;}
+  else if(a0==="answer"&&a1==="answer"){pts0=c0?pts:0;pts1=c1?pts:0;}
+  else if(a0==="steal"&&a1==="answer"){pts1=0;pts0=c1?pts*2:-pts;}
+  else if(a0==="answer"&&a1==="steal"){pts0=0;pts1=c0?pts*2:-pts;}
+  if(G.role==="host"){
+    const ns0=Math.max(0,(d.t0score||0)+pts0);
+    const ns1=Math.max(0,(d.t1score||0)+pts1);
+    G.teams[0].score=ns0;G.teams[1].score=ns1;
+    fbUpdate("rooms/"+G.roomCode,{t0score:ns0,t1score:ns1});
+  } else {
+    G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
+  }
+  fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal);
+  document.getElementById("btn-next").style.display="block";
+  document.getElementById("overlay").classList.add("show");
 }
 
 function updateMobileScores(d){
@@ -773,13 +866,15 @@ function renderQuestionMobile(d){
   const cat=CATS.find(c=>c.id===q.cat);
   document.getElementById('q-cat').textContent=cat?cat.icon+' '+cat.name:'';
   document.getElementById('q-txt').textContent=q.q;
-  document.getElementById('q-pts-badge').style.display='none';
+  if(d.pts){document.getElementById('q-pts-badge').textContent=d.pts+' نقطة';document.getElementById('q-pts-badge').style.display='inline-block';}
+  else document.getElementById('q-pts-badge').style.display='none';
   const iw=document.getElementById('q-img-wrap');iw.innerHTML='';
   if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
 }
 
 function renderActionPhase(d){
   clearTimer();G.actionLocked=false;G.answerLocked=false;
+  G._turn=d.turn||0;
   renderQuestionMobile(d);
   document.getElementById('phase-action').style.display='block';
   document.getElementById('phase-answer').style.display='none';
@@ -1085,19 +1180,13 @@ function fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal){
 async function goNext(){
   document.getElementById('overlay').classList.remove('show');
   G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
-  if(G.mode==='tv'){
-    // Check all cells used
-    const totalCells=G.selectedCats.length*PTS.length;
-    const usedCount=Object.keys(G.used).length;
-    if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
-    const snap=await fbGet('rooms/'+G.roomCode);
-    const nextTurn=1-((snap?snap.turn:0)||0);
-    await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null});
-  } else {
-    const next=G.qIdx+1;
-    if(!G.questions.length||next>=G.questions.length){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
-    await fbUpdate('rooms/'+G.roomCode,{qIdx:next,action0:null,action1:null,answer0:null,answer1:null});
-  }
+  // Both mobile and TV now use board system
+  const totalCells=(G.selectedCats||[]).length*PTS.length;
+  const usedCount=Object.keys(G.used||{}).length;
+  if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
+  const snap=await fbGet('rooms/'+G.roomCode);
+  const nextTurn=1-((snap?snap.turn:0)||0);
+  await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null});
 }
 
 // ===== TIMER =====
