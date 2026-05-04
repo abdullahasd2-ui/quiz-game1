@@ -768,6 +768,9 @@ function handleMobileGame(d){
   G.teams[1].score=d.t1score||0;
 
   if(d.phase==='board'){
+    // Always close overlay and reset when returning to board
+    document.getElementById('overlay').classList.remove('show');
+    G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
     renderMobileBoard(d);
   } else if(d.phase==='question'){
     if(d.catId&&d.qIdxBoard!=null){
