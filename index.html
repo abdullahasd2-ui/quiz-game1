@@ -813,11 +813,10 @@ function renderMobileBoard(d){
   document.getElementById('tv-sn2').textContent=G.teams[1].name;
   document.getElementById('tv-sc1').textContent=G.teams[0].score;
   document.getElementById('tv-sc2').textContent=G.teams[1].score;
-  document.getElementById('tv-sb1').className='score-box'+(turn===0?' active-turn':'');
-  document.getElementById('tv-sb2').className='score-box'+(turn===1?' active-turn':'');
-  document.getElementById('tv-turn-name').textContent=G.teams[turn].name;
-  const turn=d.turn===1?1:0; // default to 0 if undefined
-  const isMyTurn=(G.role==='host'&&turn===0)||(G.role==='guest'&&turn===1);
+  document.getElementById('tv-sb1').className='score-box'+(d.turn===0?' active-turn':'');
+  document.getElementById('tv-sb2').className='score-box'+(d.turn===1?' active-turn':'');
+  document.getElementById('tv-turn-name').textContent=G.teams[d.turn||0].name;
+  const isMyTurn=(G.role==='host'&&d.turn===0)||(G.role==='guest'&&d.turn===1);
   const table=document.getElementById('tv-board-table');
   table.innerHTML='';
   let hRow='<tr>';
@@ -834,17 +833,18 @@ function renderMobileBoard(d){
   });
   document.getElementById('tv-turn-lbl').innerHTML=isMyTurn
     ?'<b style="color:var(--gold)">دورك!</b> اختار سؤالاً'
-    :'دور <span style="color:var(--gold);font-weight:700">'+G.teams[turn].name+'</span> في الاختيار...';
+    :'دور <span style="color:var(--gold);font-weight:700">'+G.teams[d.turn||0].name+'</span> في الاختيار...';
 }
 
 function mbPick(el){mobilePickCell(el.dataset.cat,parseInt(el.dataset.pts));}
 function tvPick(el){tvPickCell(el.dataset.cat,parseInt(el.dataset.pts));}
 async function mobilePickCell(catId,pts){
+  const isMyTurn=(G.role==='host'&&G._turn===0)||(G.role==='guest'&&G._turn===1);
+  // double check from firebase
   const snap=await fbGet('rooms/'+G.roomCode);
   if(!snap)return;
   const myTeamNum=(G.role==='host')?0:1;
-  const currentTurn=snap.turn===1?1:0;
-  if(currentTurn!==myTeamNum){toast('ليس دورك!');return;}
+  if(snap.turn!==myTeamNum){toast('ليس دورك!');return;}
   const ptIdx=PTS.indexOf(pts);
   const used=Object.assign({},G.used);
   used[catId+'_'+pts]=true;
@@ -1026,9 +1026,9 @@ function renderTVBoard(d){
   document.getElementById('tv-sn2').textContent=G.teams[1].name;
   document.getElementById('tv-sc1').textContent=G.teams[0].score;
   document.getElementById('tv-sc2').textContent=G.teams[1].score;
-  document.getElementById('tv-sb1').className='score-box'+(turn===0?' active-turn':'');
-  document.getElementById('tv-sb2').className='score-box'+(turn===1?' active-turn':'');
-  document.getElementById('tv-turn-name').textContent=G.teams[turn].name;
+  document.getElementById('tv-sb1').className='score-box'+(d.turn===0?' active-turn':'');
+  document.getElementById('tv-sb2').className='score-box'+(d.turn===1?' active-turn':'');
+  document.getElementById('tv-turn-name').textContent=G.teams[d.turn||0].name;
 
   const table=document.getElementById('tv-board-table');
   table.innerHTML='';
@@ -1235,8 +1235,7 @@ async function goNext(){
   const usedCount=Object.keys(G.used||{}).length;
   if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
   const snap=await fbGet('rooms/'+G.roomCode);
-  const currentTurn=snap&&snap.turn===1?1:0;
-  const nextTurn=currentTurn===0?1:0;
+  const nextTurn=1-((snap?snap.turn:0)||0);
   await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,showResult:false});
 }
 
