@@ -827,12 +827,17 @@ function renderMobileBoard(d){
   let hRow='<tr>';
   (G.selectedCats||[]).forEach(id=>{const c=CATS.find(x=>x.id===id);hRow+='<th>'+(c?c.icon+'<br>'+c.name:id)+'</th>';});
   table.innerHTML=hRow+'</tr>';
+  // Always use fresh used data from Firebase (d.used), not G.used
+  const usedCells=d.used?JSON.parse(d.used):{};
+  G.used=usedCells; // sync local state
   PTS.forEach(pts=>{
     let row='<tr>';
     (G.selectedCats||[]).forEach(catId=>{
       const key=catId+'_'+pts;
-      const used=G.used[key];
-      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+((used||!isMyTurn)?'disabled':'')+' onclick="mbPick(this)">'+pts+'</button></td>';
+      const isUsed=usedCells[key]===true;
+      const disabled=(isUsed||!isMyTurn)?'disabled':'';
+      const style=isUsed?'style="opacity:0.15;text-decoration:line-through"':'';
+      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+disabled+' '+style+' onclick="mbPick(this)">'+pts+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
