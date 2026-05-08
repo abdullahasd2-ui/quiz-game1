@@ -455,7 +455,7 @@ function fbListen(p,cb){
 function fbStop(){if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}_pollPath=null;_pollCb=null;_pollLast=null;}
 
 // ===== DATA =====
-const CATS=[{id:'history',name:'تاريخ',icon:'🏺'},{id:'geo',name:'جغرافيا',icon:'🗺️'},{id:'football',name:'كرة قدم',icon:'⚽'},{id:'cars',name:'سيارات',icon:'🚗'},{id:'flags',name:'أعلام دول',icon:'🚩'},{id:'reveal',name:'اكتشف الصورة',icon:'🔍'},{id:'brands',name:'براندات نسائية',icon:'👜'},{id:'career',name:'مسيرة لاعب',icon:'🧩'}];
+const CATS=[{id:'history',name:'تاريخ',icon:'🏺'},{id:'geo',name:'جغرافيا',icon:'🗺️'},{id:'football',name:'كرة قدم',icon:'⚽'},{id:'cars',name:'سيارات',icon:'🚗'},{id:'flags',name:'أعلام دول',icon:'🚩'},{id:'reveal',name:'اكتشف الصورة',icon:'🔍'},{id:'brands',name:'براندات نسائية',icon:'👜'}];
 const PTS=[100,200,300,400,500];
 const QDB={
   history:[
@@ -499,18 +499,6 @@ const QDB={
     {q:'ما هذه العلامة التجارية؟',img:true,imgType:'logo_bmw',o:['BMW','مرسيدس','أودي','بورش'],a:0},
     {q:'ما هذه السيارة؟',img:true,imgType:'logo_ferrari',o:['فيراري','لامبورغيني','بوغاتي','ماكلارين'],a:0},
     {q:'ما هذا الشعار؟',img:true,imgType:'logo_nike',o:['نايك','أديداس','ريبوك','بوما'],a:0},
-  ],
-  career:[
-    {q:'لعب في يوفنتوس (2001) ثم ميلان (2011) ثم إنتر ميلان (2015) ثم نيويورك سيتي (2016) — من هو؟',
-     o:['أندري بيرلو','زلاتان إبراهيموفيتش','كاكا','رونالدينيو'],a:0},
-    {q:'لعب في ميلان (2009) ثم باريس سان جيرمان (2012) ثم تشيلسي (2021) — من هو؟',
-     o:['تياغو سيلفا','ليوناردو بونوتشي','جيرار بيكيه','سيرجيو راموس'],a:0},
-    {q:'لعب في دينامو زغرب (2008) ثم توتنهام (2008) ثم ريال مدريد (2012) — من هو؟',
-     o:['لوكا مودريتش','إيفان راكيتيتش','ماتيو كوفاتشيتش','إيفان بيريسيتش'],a:0},
-    {q:'حارس لعب في أوليمبياكوس (2009) ثم سانت إيتيان (2011) ثم أتلتيكو مدريد (2014) — من هو؟',
-     o:['يان أوبلاك','تيبو كورتوا','مارك أندريه تير ستيغن','أليسون بيكر'],a:0},
-    {q:'حارس مغربي لعب في مالقا (2012) ثم إشبيلية (2019) ثم الهلال (2023) ثم باريس سان جيرمان (2024) — من هو؟',
-     o:['ياسين بونو','أدريان','إيكر كاسياس','كلاوديو برافو'],a:0},
   ],
   brands:[
     {q:'ما هذا البراند النسائي؟',img:true,imgType:'brand_chanel',o:['شانيل','ديور','غوتشي','لويس فيتون'],a:0},
@@ -616,12 +604,10 @@ function buildCats(gridId){
 async function hostStart(){
   const sel=[...document.querySelectorAll('#cats-grid .cat-chk.sel')].map(d=>d.dataset.id);
   if(sel.length<3){toast('اختر 3 فئات على الأقل!');return;}
-  G.selectedCats=sel;
-  await fbUpdate('rooms/'+G.roomCode,{
-    selectedCats:JSON.stringify(sel),status:'game',phase:'board',
-    turn:0,t0score:0,t1score:0,catId:null,pts:null,qIdxBoard:null,
-    action0:null,action1:null,answer0:null,answer1:null,used:'{}'
-  });
+  const pool=[];sel.forEach(id=>(QDB[id]||[]).forEach(q=>pool.push(Object.assign({},q,{cat:id}))));
+  shuffle(pool);
+  const qs=pool.slice(0,Math.min(pool.length,14));
+  await fbUpdate('rooms/'+G.roomCode,{questions:JSON.stringify(qs),status:'game',qIdx:0,t0score:0,t1score:0,action0:null,action1:null,answer0:null,answer1:null,used:'{}'});
 }
 
 // ===== TV MODE =====
@@ -717,7 +703,6 @@ function handleUpdate(d){
     if(d.mode==='tv'||G.mode==='tv'){
       handleTVGame(d);
     } else {
-      // Mobile mode now uses board system
       handleMobileGame(d);
     }
     return;
@@ -760,142 +745,18 @@ function handleLobbyUpdate(d){
   }
 }
 
-// ===== MOBILE GAME - board system =====
+// ===== MOBILE GAME =====
 function handleMobileGame(d){
-  if(d.selectedCats&&d.selectedCats!==''&&!G.selectedCats.length)G.selectedCats=JSON.parse(d.selectedCats);
-  if(d.used)G.used=JSON.parse(d.used);
-  G.teams[0].score=d.t0score||0;
-  G.teams[1].score=d.t1score||0;
-
-  if(d.phase==='board'){
-    // Always close overlay and reset when returning to board
-    document.getElementById('overlay').classList.remove('show');
-    G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
-    // Always sync used cells from Firebase
-    G.used=d.used?JSON.parse(d.used):{};
-    renderMobileBoard(d);
-  } else if(d.phase==='question'){
-    if(d.catId&&d.qIdxBoard!=null){
-      const q=QDB[d.catId]?QDB[d.catId][d.qIdxBoard]:null;
-      if(q){G.questions=[Object.assign({},q,{cat:d.catId})];G.qIdx=0;}
-    }
-    showScreen('game');
-    updateMobileScores(d);
-    // Show pts badge
-    if(d.pts){
-      document.getElementById('q-pts-badge').textContent=d.pts+' نقطة';
-      document.getElementById('q-pts-badge').style.display='inline-block';
-    }
-    const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
-    const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
-    const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
-    if(bothAnswered){
-      // Wait for host to calculate scores and set showResult flag
-      if(d.showResult&&!G.resultShown){
-        G.resultShown=true;
-        showResultMobileBoard(d);
-      } else if(!d.showResult&&G.role==='host'&&!G.resultShown){
-        // Host calculates immediately
-        G.resultShown=true;
-        showResultMobileBoard(d);
-      } else if(!G.resultShown){
-        // Guest waits - show waiting state
-        renderAnswerPhase(d);
-      }
-    }
-    else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
-    else{renderActionPhase(d);}
-  }
-}
-
-function renderMobileBoard(d){
-  clearTimer();
-  // Determine turn FIRST before using it
-  const turn=d.turn===1?1:0;
-  const myTeamIdx=(G.role==='host')?0:1;
-  const isMyTurn=(myTeamIdx===turn);
-  showScreen('tv-board');
-  document.getElementById('tv-sn1').textContent=G.teams[0].name;
-  document.getElementById('tv-sn2').textContent=G.teams[1].name;
-  document.getElementById('tv-sc1').textContent=G.teams[0].score;
-  document.getElementById('tv-sc2').textContent=G.teams[1].score;
-  document.getElementById('tv-sb1').className='score-box'+(turn===0?' active-turn':'');
-  document.getElementById('tv-sb2').className='score-box'+(turn===1?' active-turn':'');
-  document.getElementById('tv-turn-name').textContent=G.teams[turn].name;
-  const table=document.getElementById('tv-board-table');
-  table.innerHTML='';
-  let hRow='<tr>';
-  (G.selectedCats||[]).forEach(id=>{const c=CATS.find(x=>x.id===id);hRow+='<th>'+(c?c.icon+'<br>'+c.name:id)+'</th>';});
-  table.innerHTML=hRow+'</tr>';
-  // Always use fresh used data from Firebase (d.used), not G.used
-  const usedCells=d.used?JSON.parse(d.used):{};
-  G.used=usedCells; // sync local state
-  PTS.forEach(pts=>{
-    let row='<tr>';
-    (G.selectedCats||[]).forEach(catId=>{
-      const key=catId+'_'+pts;
-      const isUsed=usedCells[key]===true;
-      const disabled=(isUsed||!isMyTurn)?'disabled':'';
-      const style=isUsed?'style="opacity:0.15;text-decoration:line-through"':'';
-      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+disabled+' '+style+' onclick="mbPick(this)">'+pts+'</button></td>';
-    });
-    table.innerHTML+=row+'</tr>';
-  });
-  document.getElementById('tv-turn-lbl').innerHTML=isMyTurn
-    ?'<b style="color:var(--gold)">دورك!</b> اختار سؤالاً'
-    :'دور <span style="color:var(--gold);font-weight:700">'+G.teams[turn].name+'</span> في الاختيار...';
-}
-
-function mbPick(el){mobilePickCell(el.dataset.cat,parseInt(el.dataset.pts));}
-function tvPick(el){tvPickCell(el.dataset.cat,parseInt(el.dataset.pts));}
-async function mobilePickCell(catId,pts){
-  const snap=await fbGet('rooms/'+G.roomCode);
-  if(!snap)return;
-  const myTeamIdx=(G.role==='host')?0:1;
-  const currentTurn=snap.turn===1?1:0;
-  if(currentTurn!==myTeamIdx){toast('ليس دورك!');return;}
-  // Check if already used
-  const usedNow=snap.used?JSON.parse(snap.used):{};
-  const key=catId+'_'+pts;
-  if(usedNow[key]){toast('هذا السؤال استُخدم بالفعل!');return;}
-  // Mark as used
-  usedNow[key]=true;
-  G.used=usedNow;
-  G.resultShown=false;
-  const ptIdx=PTS.indexOf(pts);
-  await fbUpdate('rooms/'+G.roomCode,{
-    phase:'question',catId,pts,qIdxBoard:ptIdx,
-    action0:null,action1:null,answer0:null,answer1:null,
-    showResult:false,
-    used:JSON.stringify(usedNow)
-  });
-}
-
-function showResultMobileBoard(d){
-  clearTimer();
-  const q=G.questions[0];
-  const pts=d.pts||100;
+  if(d.questions&&d.questions!==''&&!G.questions.length)G.questions=JSON.parse(d.questions);
+  G.qIdx=d.qIdx||0;
+  showScreen('game');
+  updateMobileScores(d);
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
-  const c0=ans0===q.a,c1=ans1===q.a;
-  let pts0=0,pts1=0;
-  const bothSteal=a0==="steal"&&a1==="steal";
-  if(bothSteal){pts0=0;pts1=0;}
-  else if(a0==="answer"&&a1==="answer"){pts0=c0?pts:0;pts1=c1?pts:0;}
-  else if(a0==="steal"&&a1==="answer"){pts1=0;pts0=c1?pts*2:-pts;}
-  else if(a0==="answer"&&a1==="steal"){pts0=0;pts1=c0?pts*2:-pts;}
-  // Only host calculates and saves scores
-  if(G.role==="host"){
-    const ns0=Math.max(0,(d.t0score||0)+pts0);
-    const ns1=Math.max(0,(d.t1score||0)+pts1);
-    G.teams[0].score=ns0;G.teams[1].score=ns1;
-    fbUpdate("rooms/"+G.roomCode,{t0score:ns0,t1score:ns1,showResult:true});
-  } else {
-    G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
-  }
-  fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal);
-  // Only show next button to host
-  document.getElementById("btn-next").style.display=(G.role==="host")?"block":"none";
-  document.getElementById("overlay").classList.add("show");
+  const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
+  const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
+  if(bothAnswered&&!G.resultShown){G.resultShown=true;showResult(d);}
+  else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
+  else{renderActionPhase(d);}
 }
 
 function updateMobileScores(d){
@@ -912,24 +773,13 @@ function renderQuestionMobile(d){
   const cat=CATS.find(c=>c.id===q.cat);
   document.getElementById('q-cat').textContent=cat?cat.icon+' '+cat.name:'';
   document.getElementById('q-txt').textContent=q.q;
-  if(d.pts){document.getElementById('q-pts-badge').textContent=d.pts+' نقطة';document.getElementById('q-pts-badge').style.display='inline-block';}
-  else document.getElementById('q-pts-badge').style.display='none';
+  document.getElementById('q-pts-badge').style.display='none';
   const iw=document.getElementById('q-img-wrap');iw.innerHTML='';
-  if(q.img){
-    const box=document.createElement('div');box.className='img-box';
-    const cv=document.createElement('canvas');
-    cv.width=q.imgType&&q.imgType.startsWith('career_')?210:220;
-    cv.height=q.imgType&&q.imgType.startsWith('career_')?120:140;
-    box.appendChild(cv);
-    const hint=document.createElement('div');hint.className='img-hint';
-    hint.textContent=q.imgType&&q.imgType.startsWith('career_')?'🏟️ اكتشف اللاعب من مسيرته مع الأندية':'🔍 الصورة مغبشة';
-    box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);
-  }
+  if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
 }
 
 function renderActionPhase(d){
   clearTimer();G.actionLocked=false;G.answerLocked=false;
-  G._turn=d.turn||0;
   renderQuestionMobile(d);
   document.getElementById('phase-action').style.display='block';
   document.getElementById('phase-answer').style.display='none';
@@ -1040,9 +890,9 @@ function renderTVBoard(d){
   document.getElementById('tv-sn2').textContent=G.teams[1].name;
   document.getElementById('tv-sc1').textContent=G.teams[0].score;
   document.getElementById('tv-sc2').textContent=G.teams[1].score;
-  document.getElementById('tv-sb1').className='score-box'+(turn===0?' active-turn':'');
-  document.getElementById('tv-sb2').className='score-box'+(turn===1?' active-turn':'');
-  document.getElementById('tv-turn-name').textContent=G.teams[turn].name;
+  document.getElementById('tv-sb1').className='score-box'+(d.turn===0?' active-turn':'');
+  document.getElementById('tv-sb2').className='score-box'+(d.turn===1?' active-turn':'');
+  document.getElementById('tv-turn-name').textContent=G.teams[d.turn||0].name;
 
   const table=document.getElementById('tv-board-table');
   table.innerHTML='';
@@ -1056,7 +906,7 @@ function renderTVBoard(d){
     G.selectedCats.forEach(catId=>{
       const key=catId+'_'+pts;
       const used=G.used[key];
-      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+(used?'disabled':'')+' onclick="tvPick(this)">'+pts+'</button></td>';
+      row+='<td><button class="cell-btn pts-'+pts+'" '+(used?'disabled':'')+' onclick="tvPickCell(\''+catId+'\','+pts+')">'+pts+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
@@ -1141,16 +991,7 @@ function handleTVPlayerQuestion(d){
   document.getElementById('q-pts-badge').style.display='inline-block';
   document.getElementById('q-txt').textContent=q.q;
   const iw=document.getElementById('q-img-wrap');iw.innerHTML='';
-  if(q.img){
-    const box=document.createElement('div');box.className='img-box';
-    const cv=document.createElement('canvas');
-    cv.width=q.imgType&&q.imgType.startsWith('career_')?210:220;
-    cv.height=q.imgType&&q.imgType.startsWith('career_')?120:140;
-    box.appendChild(cv);
-    const hint=document.createElement('div');hint.className='img-hint';
-    hint.textContent=q.imgType&&q.imgType.startsWith('career_')?'🏟️ اكتشف اللاعب من مسيرته مع الأندية':'🔍 الصورة مغبشة';
-    box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);
-  }
+  if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
   document.getElementById('phase-wait').style.display='none';
   // Use same action/answer logic as mobile
   const myTeam=(G.role==='host'||G.role==='p1')?0:1;
@@ -1244,14 +1085,19 @@ function fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal){
 async function goNext(){
   document.getElementById('overlay').classList.remove('show');
   G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
-  // Both mobile and TV now use board system
-  const totalCells=(G.selectedCats||[]).length*PTS.length;
-  const usedCount=Object.keys(G.used||{}).length;
-  if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
-  const snap=await fbGet('rooms/'+G.roomCode);
-  const currentTurn=snap&&snap.turn===1?1:0;
-  const nextTurn=currentTurn===0?1:0;
-  await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,showResult:false});
+  if(G.mode==='tv'){
+    // Check all cells used
+    const totalCells=G.selectedCats.length*PTS.length;
+    const usedCount=Object.keys(G.used).length;
+    if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
+    const snap=await fbGet('rooms/'+G.roomCode);
+    const nextTurn=1-((snap?snap.turn:0)||0);
+    await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null});
+  } else {
+    const next=G.qIdx+1;
+    if(!G.questions.length||next>=G.questions.length){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
+    await fbUpdate('rooms/'+G.roomCode,{qIdx:next,action0:null,action1:null,answer0:null,answer1:null});
+  }
 }
 
 // ===== TIMER =====
@@ -1272,9 +1118,7 @@ function clearTimer(){clearInterval(G.timerInt);}
 // ===== DRAW BLURRED =====
 function drawBlurred(canvas,type){
   const ctx=canvas.getContext('2d');const w=canvas.width,h=canvas.height;
-  ctx.fillStyle='#0f0f28';ctx.fillRect(0,0,w,h);
-  // Career images are clear (no blur), others are blurred
-  if(!type.startsWith('career_')){ctx.filter='blur(10px)';}
+  ctx.fillStyle='#0f0f28';ctx.fillRect(0,0,w,h);ctx.filter='blur(10px)';
   const cx=w/2,cy=h/2;
   if(type==='flag_it'){ctx.fillStyle='#009246';ctx.fillRect(0,0,w/3,h);ctx.fillStyle='#fff';ctx.fillRect(w/3,0,w/3,h);ctx.fillStyle='#ce2b37';ctx.fillRect(w*2/3,0,w/3,h);}
   else if(type==='flag_sa'){ctx.fillStyle='#006c35';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 22px sans-serif';ctx.textAlign='center';ctx.fillText('السعودية',cx,cy+8);}
@@ -1286,94 +1130,7 @@ function drawBlurred(canvas,type){
   else if(type==='brand_gucci'){ctx.strokeStyle='#fff';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx-25,cy,30,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cx+25,cy,30,0,Math.PI*2);ctx.stroke();}
   else if(type==='brand_dior'){ctx.fillStyle='#fff';ctx.font='bold 30px serif';ctx.textAlign='center';ctx.fillText('DIOR',cx,cy+10);}
   else if(type==='brand_hermes'){ctx.fillStyle='#ff6600';ctx.fillRect(15,15,w-30,h-30);ctx.fillStyle='#fff';ctx.font='bold 22px serif';ctx.textAlign='center';ctx.fillText('HERMES',cx,cy+8);}
-  // ===== CAREER DRAWINGS =====
-  else if(type==='career_pirlo'){
-    // يوفنتوس (أسود وأبيض) + ميلان (أحمر وأسود) + إنتر (أسود وأزرق)
-    const clubs=[
-      {color1:'#000000',color2:'#ffffff',name:'JUV'},
-      {color1:'#cc0000',color2:'#000000',name:'ACM'},
-      {color1:'#0068a8',color2:'#000000',name:'INT'},
-    ];
-    clubs.forEach((cl,i)=>{
-      const x=30+i*65;
-      // Shield shape
-      ctx.fillStyle=cl.color1;
-      ctx.beginPath();ctx.moveTo(x+20,20);ctx.lineTo(x+40,20);ctx.lineTo(x+45,55);ctx.lineTo(x+20,70);ctx.lineTo(x-5,55);ctx.closePath();ctx.fill();
-      ctx.fillStyle=cl.color2;
-      ctx.beginPath();ctx.moveTo(x+20,20);ctx.lineTo(x+40,20);ctx.lineTo(x+40,55);ctx.lineTo(x+20,70);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(cl.name,x+20,h-15);
-    });
-  }
-  else if(type==='career_silva'){
-    // PSG (أزرق وأحمر) + تشيلسي (أزرق) + أتلتيكو (أحمر وأبيض)
-    const clubs=[
-      {c1:'#003087',c2:'#ee1b2e',name:'PSG'},
-      {c1:'#034694',c2:'#fff',name:'CHE'},
-      {c1:'#cc0000',c2:'#ffffff',name:'ATM'},
-    ];
-    clubs.forEach((cl,i)=>{
-      const x=30+i*65;
-      ctx.fillStyle=cl.c1;
-      ctx.beginPath();ctx.moveTo(x+20,15);ctx.lineTo(x+42,15);ctx.lineTo(x+48,50);ctx.lineTo(x+20,68);ctx.lineTo(x-8,50);ctx.closePath();ctx.fill();
-      ctx.fillStyle=cl.c2;
-      ctx.fillRect(x+10,30,5,30);ctx.fillRect(x+25,30,5,30);
-      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(cl.name,x+20,h-12);
-    });
-  }
-  else if(type==='career_modric'){
-    // دينامو زغرب (أزرق) + توتنهام (أبيض وأزرق) + ريال مدريد (أبيض)
-    const clubs=[
-      {c1:'#0041aa',c2:'#fff',name:'DZG'},
-      {c1:'#132257',c2:'#fff',name:'TOT'},
-      {c1:'#ffffff',c2:'#00529f',name:'RMA'},
-    ];
-    clubs.forEach((cl,i)=>{
-      const x=30+i*65;
-      ctx.fillStyle=cl.c1;
-      ctx.beginPath();ctx.arc(x+20,42,28,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=cl.c2;
-      ctx.beginPath();ctx.arc(x+20,42,16,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=cl.c1;
-      ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.fillText(cl.name,x+20,46);
-      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.fillText(cl.name,x+20,h-12);
-    });
-  }
-  else if(type==='career_oblak'){
-    // هانوفر (أحمر) + شالكه (أزرق) + أتلتيكو (أحمر وأبيض)
-    const clubs=[
-      {c1:'#e3000f',c2:'#fff',name:'H96'},
-      {c1:'#004d9d',c2:'#fff',name:'S04'},
-      {c1:'#cc0000',c2:'#fff',name:'ATM'},
-    ];
-    clubs.forEach((cl,i)=>{
-      const x=30+i*65;
-      ctx.fillStyle=cl.c1;
-      ctx.fillRect(x-5,20,50,50);
-      ctx.fillStyle=cl.c2;
-      ctx.fillRect(x-5,20,25,50);
-      ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(x-5,20,50,50);
-      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(cl.name,x+20,h-12);
-    });
-  }
-  else if(type==='career_bono'){
-    // مالقا (أزرق وأبيض) + إشبيلية (أحمر وأبيض) + المنتخب المغربي (أحمر)
-    const clubs=[
-      {c1:'#003399',c2:'#fff',name:'MAL'},
-      {c1:'#cc0000',c2:'#fff',name:'SEV'},
-      {c1:'#cc0001',c2:'#006233',name:'MAR'},
-    ];
-    clubs.forEach((cl,i)=>{
-      const x=28+i*68;
-      ctx.fillStyle=cl.c1;
-      ctx.beginPath();ctx.moveTo(x+20,15);ctx.lineTo(x+42,25);ctx.lineTo(x+42,60);ctx.lineTo(x+20,70);ctx.lineTo(x-2,60);ctx.lineTo(x-2,25);ctx.closePath();ctx.fill();
-      ctx.fillStyle=cl.c2;
-      ctx.beginPath();ctx.moveTo(x+20,35);ctx.lineTo(x+32,42);ctx.lineTo(x+28,54);ctx.lineTo(x+12,54);ctx.lineTo(x+8,42);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(cl.name,x+20,h-12);
-    });
-  }
-    ctx.filter='none';
-  // Only add dark overlay for non-career images
-  if(!type.startsWith('career_')){ctx.fillStyle='rgba(7,7,26,0.5)';ctx.fillRect(0,0,w,h);}
+  ctx.filter='none';ctx.fillStyle='rgba(7,7,26,0.5)';ctx.fillRect(0,0,w,h);
 }
 
 // ===== FINAL =====
