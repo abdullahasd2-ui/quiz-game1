@@ -771,6 +771,8 @@ function handleMobileGame(d){
     // Always close overlay and reset when returning to board
     document.getElementById('overlay').classList.remove('show');
     G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
+    // Always sync used cells from Firebase
+    G.used=d.used?JSON.parse(d.used):{};
     renderMobileBoard(d);
   } else if(d.phase==='question'){
     if(d.catId&&d.qIdxBoard!=null){
@@ -847,15 +849,20 @@ async function mobilePickCell(catId,pts){
   const myTeamIdx=(G.role==='host')?0:1;
   const currentTurn=snap.turn===1?1:0;
   if(currentTurn!==myTeamIdx){toast('ليس دورك!');return;}
-  const ptIdx=PTS.indexOf(pts);
-  const used=Object.assign({},G.used);
-  used[catId+'_'+pts]=true;
-  G.used=used;
+  // Check if already used
+  const usedNow=snap.used?JSON.parse(snap.used):{};
+  const key=catId+'_'+pts;
+  if(usedNow[key]){toast('هذا السؤال استُخدم بالفعل!');return;}
+  // Mark as used
+  usedNow[key]=true;
+  G.used=usedNow;
   G.resultShown=false;
+  const ptIdx=PTS.indexOf(pts);
   await fbUpdate('rooms/'+G.roomCode,{
     phase:'question',catId,pts,qIdxBoard:ptIdx,
     action0:null,action1:null,answer0:null,answer1:null,
-    used:JSON.stringify(used)
+    showResult:false,
+    used:JSON.stringify(usedNow)
   });
 }
 
