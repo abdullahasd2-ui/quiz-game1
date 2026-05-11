@@ -870,7 +870,10 @@ function handleTVGame(d){
     }
   } else if(d.phase==='question'){
     if(G.role==='tv'){renderTVQuestion(d);}
-    else{handleTVPlayerQuestion(d);}
+    else if(G.role==='p1'||G.role==='p2'){
+      // Both players must see the question
+      if(d.catId&&d.qIdxBoard!=null){handleTVPlayerQuestion(d);}
+    }
   }
 }
 
@@ -971,11 +974,11 @@ function handleTVPlayerQuestion(d){
   document.getElementById('phase-wait').style.display='none';
   G.questions=[Object.assign({},q,{cat:d.catId})];G.qIdx=0;
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
-  const bothActed=a0!=null&&a1!=null;
-  const bothAnswered=ans0!=null&&ans1!=null;
+  const bothActed=(a0!==null&&a0!==undefined)&&(a1!==null&&a1!==undefined);
+  const bothAnswered=(ans0!==null&&ans0!==undefined)&&(ans1!==null&&ans1!==undefined);
   if(bothAnswered&&!G.resultShown){G.resultShown=true;showResultTV(d);}
   else if(bothActed&&!bothAnswered){renderAnswerPhase(d);}
-  else if(!bothActed){renderActionPhase(d);}
+  else{renderActionPhase(d);}
 }
 
 function showResultTV(d){
