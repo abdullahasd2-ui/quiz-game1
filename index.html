@@ -446,11 +446,11 @@ const QDB={
     {q:'كم نجمة في علم الصين؟',o:['3','4','5','6'],a:2},
   ],
   reveal:[
-    {q:'ما هذا العلم؟',img:true,imgType:'flag_it',o:['إيطاليا','فرنسا','أيرلندا','المكسيك'],a:0},
-    {q:'ما هذا العلم؟',img:true,imgType:'flag_sa',o:['السعودية','الإمارات','الكويت','البحرين'],a:0},
-    {q:'ما هذه العلامة التجارية؟',img:true,imgType:'logo_bmw',o:['BMW','مرسيدس','أودي','بورش'],a:0},
-    {q:'ما هذه السيارة؟',img:true,imgType:'logo_ferrari',o:['فيراري','لامبورغيني','بوغاتي','ماكلارين'],a:0},
-    {q:'ما هذا الشعار؟',img:true,imgType:'logo_nike',o:['نايك','أديداس','ريبوك','بوما'],a:0},
+    {q:'ما هذا المبنى الشهير؟',imgUrl:'https://i.imgur.com/eUQSuVn.jpeg',o:['برج خليفة','برج إيفل','برج الساعة','برج بتروناس'],a:0,pts:100},
+    {q:'ما هذا العلم؟',imgUrl:'https://i.imgur.com/3gL7g1E.jpeg',o:['أمريكا','أستراليا','بريطانيا','فرنسا'],a:0,pts:200},
+    {q:'ما هذا الشيء؟',imgUrl:'https://i.imgur.com/3YvJcf1.jpeg',o:['نظارة','مرآة','إطار','قناع'],a:0,pts:300},
+    {q:'ما هذا الشيء؟',imgUrl:'https://i.imgur.com/7njBLb9.jpeg',o:['كوب','إبريق','وعاء','زجاجة'],a:0,pts:400},
+    {q:'ما هذا الخضار؟',imgUrl:'https://i.imgur.com/Wxh3RnB.jpeg',o:['بصل','تفاح','بطاطا','شمندر'],a:0,pts:500},
   ],
   brands:[
     {q:'ما هذا البراند النسائي؟',img:true,imgType:'brand_chanel',o:['شانيل','ديور','غوتشي','لويس فيتون'],a:0},
@@ -744,7 +744,19 @@ function renderQuestionMobile(d){
   if(d&&d.pts){document.getElementById('q-pts-badge').textContent=d.pts+' نقطة';document.getElementById('q-pts-badge').style.display='inline-block';}
   else document.getElementById('q-pts-badge').style.display='none';
   const iw=document.getElementById('q-img-wrap');iw.innerHTML='';
-  if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
+  if(q.img||q.imgUrl){
+    const box=document.createElement('div');box.className='img-box';
+    if(q.imgUrl){
+      const imgEl=document.createElement('img');
+      imgEl.src=q.imgUrl;imgEl.style.cssText='max-width:100%;max-height:180px;border-radius:8px;';
+      box.appendChild(imgEl);
+    } else {
+      const cv=document.createElement('canvas');cv.width=220;cv.height=140;
+      box.appendChild(cv);drawBlurred(cv,q.imgType);
+    }
+    const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 اكتشف الصورة المغبشة!';
+    box.appendChild(hint);iw.appendChild(box);
+  }
 }
 
 function renderActionPhase(d){
@@ -932,7 +944,15 @@ function renderTVQuestion(d){
   document.getElementById('tvq-sc1').textContent=G.teams[0].score;
   document.getElementById('tvq-sc2').textContent=G.teams[1].score;
   const iw=document.getElementById('tvq-img-wrap');iw.innerHTML='';
-  if(q.img){const cv=document.createElement('canvas');cv.width=280;cv.height=160;iw.appendChild(cv);drawBlurred(cv,q.imgType);}
+  if(q.img||q.imgUrl){
+    if(q.imgUrl){
+      const imgEl=document.createElement('img');
+      imgEl.src=q.imgUrl;imgEl.style.cssText='max-width:100%;max-height:200px;border-radius:10px;margin:10px auto;display:block;';
+      iw.appendChild(imgEl);
+    } else {
+      const cv=document.createElement('canvas');cv.width=280;cv.height=160;iw.appendChild(cv);drawBlurred(cv,q.imgType);
+    }
+  }
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
   const bothAnswered=ans0!=null&&ans1!=null;
   const optsDiv=document.getElementById('tvq-opts');optsDiv.innerHTML='';
@@ -970,7 +990,19 @@ function handleTVPlayerQuestion(d){
   document.getElementById('q-pts-badge').style.display='inline-block';
   document.getElementById('q-txt').textContent=q.q;
   const iw=document.getElementById('q-img-wrap');iw.innerHTML='';
-  if(q.img){const box=document.createElement('div');box.className='img-box';const cv=document.createElement('canvas');cv.width=220;cv.height=140;box.appendChild(cv);const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 الصورة مغبشة';box.appendChild(hint);iw.appendChild(box);drawBlurred(cv,q.imgType);}
+  if(q.img||q.imgUrl){
+    const box=document.createElement('div');box.className='img-box';
+    if(q.imgUrl){
+      const imgEl=document.createElement('img');
+      imgEl.src=q.imgUrl;imgEl.style.cssText='max-width:100%;max-height:180px;border-radius:8px;';
+      box.appendChild(imgEl);
+    } else {
+      const cv=document.createElement('canvas');cv.width=220;cv.height=140;
+      box.appendChild(cv);drawBlurred(cv,q.imgType);
+    }
+    const hint=document.createElement('div');hint.className='img-hint';hint.textContent='🔍 اكتشف الصورة المغبشة!';
+    box.appendChild(hint);iw.appendChild(box);
+  }
   document.getElementById('phase-wait').style.display='none';
   G.questions=[Object.assign({},q,{cat:d.catId})];G.qIdx=0;
   const a0=d.action0,a1=d.action1,ans0=d.answer0,ans1=d.answer1;
@@ -1065,6 +1097,81 @@ function drawBlurred(canvas,type){
   else if(type==='brand_gucci'){ctx.strokeStyle='#fff';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx-25,cy,30,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cx+25,cy,30,0,Math.PI*2);ctx.stroke();}
   else if(type==='brand_dior'){ctx.fillStyle='#fff';ctx.font='bold 30px serif';ctx.textAlign='center';ctx.fillText('DIOR',cx,cy+10);}
   else if(type==='brand_hermes'){ctx.fillStyle='#ff6600';ctx.fillRect(15,15,w-30,h-30);ctx.fillStyle='#fff';ctx.font='bold 22px serif';ctx.textAlign='center';ctx.fillText('HERMES',cx,cy+8);}
+  // ===== FOOTBALL CLUBS =====
+  else if(type==='club_rm'){
+    // ريال مدريد - دائرة بيضاء وبنفسجي وذهبي
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,55,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#5c2d91';ctx.beginPath();ctx.arc(cx,cy,45,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f7c948';ctx.beginPath();ctx.arc(cx,cy,35,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 18px serif';ctx.textAlign='center';ctx.fillText('RM',cx,cy+7);
+  }
+  else if(type==='club_barca'){
+    // برشلونة - أزرق وأحمر وأصفر
+    ctx.fillStyle='#004d98';ctx.beginPath();ctx.arc(cx,cy,55,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#a50044';ctx.beginPath();ctx.arc(cx,cy,55,Math.PI*0.3,Math.PI*1.3);ctx.lineTo(cx,cy);ctx.fill();
+    ctx.fillStyle='#edbb00';ctx.fillRect(cx-6,cy-55,12,110);
+    ctx.fillStyle='#fff';ctx.font='bold 13px serif';ctx.textAlign='center';ctx.fillText('FCB',cx,cy+6);
+  }
+  else if(type==='club_chelsea'){
+    // تشيلسي - أزرق ملكي مع أسد
+    ctx.fillStyle='#034694';ctx.beginPath();ctx.arc(cx,cy,55,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,40,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#034694';ctx.font='bold 14px serif';ctx.textAlign='center';ctx.fillText('CFC',cx,cy+6);
+  }
+  else if(type==='club_liverpool'){
+    // ليفربول - أحمر مع شعار الطائر
+    ctx.fillStyle='#c8102e';ctx.beginPath();ctx.arc(cx,cy,55,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f6eb61';ctx.beginPath();ctx.arc(cx,cy,38,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#c8102e';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('LFC',cx,cy+6);
+  }
+  else if(type==='club_juventus'){
+    // يوفنتوس - أسود وأبيض
+    ctx.fillStyle='#000';ctx.fillRect(cx-55,cy-55,55,110);
+    ctx.fillStyle='#fff';ctx.fillRect(cx,cy-55,55,110);
+    ctx.fillStyle='#f7c948';ctx.beginPath();ctx.arc(cx,cy,20,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#000';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('JUV',cx,cy+5);
+  }
+  // ===== BRANDS =====
+  else if(type==='brand_apple'){
+    // أبل - تفاحة بيضاء
+    ctx.fillStyle='#888';
+    ctx.beginPath();ctx.arc(cx,cy+5,42,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#0f0f28';
+    ctx.beginPath();ctx.arc(cx+15,cy-5,20,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#888';
+    ctx.beginPath();ctx.arc(cx+5,cy-5,16,0,Math.PI*2);ctx.fill();
+    // عنق التفاحة
+    ctx.fillStyle='#888';ctx.fillRect(cx+2,cy-45,6,18);
+  }
+  else if(type==='brand_nike'){
+    ctx.fillStyle='#fff';
+    ctx.beginPath();ctx.moveTo(cx-60,cy+15);
+    ctx.bezierCurveTo(cx-20,cy-35,cx+40,cy-5,cx+65,cy-25);
+    ctx.bezierCurveTo(cx+45,cy+15,cx-10,cy+20,cx-60,cy+15);
+    ctx.fill();
+  }
+  else if(type==='brand_mcdonalds'){
+    // M الذهبية
+    ctx.fillStyle='#f7c948';
+    ctx.beginPath();ctx.arc(cx-22,cy+10,28,Math.PI,0);ctx.fill();
+    ctx.beginPath();ctx.arc(cx+22,cy+10,28,Math.PI,0);ctx.fill();
+    ctx.fillStyle='#0f0f28';ctx.fillRect(cx-50,cy-15,100,30);
+    ctx.fillStyle='#f7c948';ctx.font='bold 50px sans-serif';ctx.textAlign='center';ctx.fillText('M',cx,cy+18);
+  }
+  else if(type==='brand_amazon'){
+    // أمازون - شعار السهم
+    ctx.fillStyle='#ff9900';ctx.font='bold 36px sans-serif';ctx.textAlign='center';ctx.fillText('amazon',cx,cy-5);
+    ctx.strokeStyle='#ff9900';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-40,cy+20);ctx.bezierCurveTo(cx-10,cy+38,cx+20,cy+38,cx+40,cy+20);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+32,cy+14);ctx.lineTo(cx+42,cy+22);ctx.lineTo(cx+30,cy+28);ctx.stroke();
+  }
+  else if(type==='brand_youtube'){
+    // يوتيوب - مستطيل أحمر مع مثلث أبيض
+    ctx.fillStyle='#ff0000';
+    ctx.beginPath();ctx.roundRect(cx-60,cy-30,120,60,12);ctx.fill();
+    ctx.fillStyle='#fff';
+    ctx.beginPath();ctx.moveTo(cx-10,cy-18);ctx.lineTo(cx+25,cy);ctx.lineTo(cx-10,cy+18);ctx.closePath();ctx.fill();
+  }
   ctx.filter='none';ctx.fillStyle='rgba(7,7,26,0.5)';ctx.fillRect(0,0,w,h);
 }
 
