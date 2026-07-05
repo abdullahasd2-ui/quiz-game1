@@ -658,6 +658,7 @@ async function hostStartTV(){
 
 function handleUpdate(d){
   if(!d)return;
+  G.lastData=d;
   if(d.variant)G.variant=d.variant;
   if(d.t0name)G.teams[0].name=d.t0name;
   if(d.t1name)G.teams[1].name=d.t1name;
@@ -759,7 +760,7 @@ function renderMobileBoard(d){
 function mbPick(el){mobilePickCell(el.dataset.cat,parseInt(el.dataset.pts));}
 
 async function mobilePickCell(catId,pts){
-  const snap=await fbGet('rooms/'+G.roomCode);
+  const snap=G.lastData;
   if(!snap)return;
   const myTeamIdx=(G.role==='host')?0:1;
   const currentTurn=snap.turn===1?1:0;
@@ -968,7 +969,7 @@ function tvPick(el){tvPickCell(el.dataset.cat,parseInt(el.dataset.pts));}
 
 async function tvPickCell(catId,pts){
   if(G.role!=='tv')return;
-  const snap=await fbGet('rooms/'+G.roomCode);
+  const snap=G.lastData;
   if(!snap)return;
   const usedNow=snap.used?JSON.parse(snap.used):{};
   const key=catId+'_'+pts;
@@ -1111,7 +1112,7 @@ async function goNext(){
   const totalCells=(G.selectedCats||[]).length*PTS.length;
   const usedCount=Object.keys(G.used||{}).length;
   if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
-  const snap=await fbGet('rooms/'+G.roomCode);
+  const snap=G.lastData;
   const currentTurn=snap&&snap.turn===1?1:0;
   const nextTurn=currentTurn===0?1:0;
   await fbUpdate('rooms/'+G.roomCode,{phase:'board',turn:nextTurn,catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,showResult:false});
