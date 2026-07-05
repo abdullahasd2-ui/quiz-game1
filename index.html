@@ -174,6 +174,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
 </head>
 <body>
 <div id="bg-words"></div>
+<button id="leave-btn" onclick="clearSession();location.reload()" style="display:none;position:fixed;top:10px;left:10px;z-index:600;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;padding:6px 14px;border-radius:20px;font-family:'Tajawal',sans-serif;font-size:12px;cursor:pointer;">🚪 خروج من الغرفة</button>
 <div id="app">
 
 <div id="s-home" class="screen active">
@@ -354,7 +355,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
       <div class="final-card"><div class="final-tname" id="ft1n"></div><div class="final-pts s1" id="ft1s">0</div></div>
       <div class="final-card"><div class="final-tname" id="ft2n"></div><div class="final-pts s2" id="ft2s">0</div></div>
     </div>
-    <button class="btn btn-gold" onclick="location.reload()">🔄 العب مرة ثانية</button>
+    <button class="btn btn-gold" onclick="clearSession();location.reload()">🔄 العب مرة ثانية</button>
   </div>
 </div>
 </div>
@@ -528,6 +529,16 @@ function selectMode(m){
   document.getElementById('section-tv').style.display=m==='tv'?'block':'none';
 }
 
+function saveSession(){
+  try{localStorage.setItem('quizSession',JSON.stringify({roomCode:G.roomCode,role:G.role,mode:G.mode,variant:G.variant}));}catch(e){}
+}
+function clearSession(){
+  try{localStorage.removeItem('quizSession');}catch(e){}
+}
+function loadSession(){
+  try{const s=localStorage.getItem('quizSession');return s?JSON.parse(s):null;}catch(e){return null;}
+}
+
 async function createRoom(){
   const name=document.getElementById('m-create-name').value.trim()||'الفريق الأول';
   const btn=document.getElementById('btn-create');
@@ -547,6 +558,8 @@ async function createRoom(){
     document.getElementById('guest-sec').style.display='none';
     buildCats('cats-grid');
     showScreen('lobby');
+    saveSession();
+    document.getElementById('leave-btn').style.display='block';
     fbListen('rooms/'+code,handleUpdate);
   }catch(e){toast('تعذر الاتصال');console.error(e);}
   finally{btn.textContent='إنشاء غرفة';btn.disabled=false;}
@@ -577,6 +590,8 @@ async function joinRoom(){
     document.getElementById('guest-sec').style.display='block';
     showScreen('lobby');
     await new Promise(r=>setTimeout(r,400));
+    saveSession();
+    document.getElementById('leave-btn').style.display='block';
     fbListen('rooms/'+code,handleUpdate);
   }catch(e){toast('تعذر الاتصال');console.error(e);}
   finally{btn.textContent='انضمام';btn.disabled=false;}
@@ -611,6 +626,8 @@ async function createRoomTV(){
     document.getElementById('lob-tv-code').textContent=code;
     document.getElementById('tv-host-sec').style.display='none';
     showScreen('lobby-tv');
+    saveSession();
+    document.getElementById('leave-btn').style.display='block';
     fbListen('rooms/'+code,handleUpdate);
   }catch(e){toast('تعذر الاتصال');console.error(e);}
   finally{btn.textContent='إنشاء غرفة للتلفاز 📺';btn.disabled=false;}
@@ -644,6 +661,8 @@ async function joinRoomTV(){
     else{document.getElementById('tv-slot2-name').textContent=name;document.getElementById('tv-slot2-st').innerHTML='<span class="dot dot-green"></span> متصل';document.getElementById('tv-slot2').classList.add('connected');}
     showScreen('lobby-tv');
     await new Promise(r=>setTimeout(r,400));
+    saveSession();
+    document.getElementById('leave-btn').style.display='block';
     fbListen('rooms/'+code,handleUpdate);
   }catch(e){toast('تعذر الاتصال');console.error(e);}
   finally{btn.textContent='انضمام كفريق';btn.disabled=false;}
@@ -1243,6 +1262,20 @@ function showFinal(){
     s.style.animationDelay=(-Math.random()*25)+'s';
     c.appendChild(s);
   }
+})();
+
+// ===== AUTO-RESUME SESSION AFTER REFRESH =====
+(async function tryResumeSession(){
+  const s=loadSession();
+  if(!s||!s.roomCode||!s.role)return;
+  try{
+    const d=await fbGet('rooms/'+s.roomCode);
+    if(!d||d.status==='done'){clearSession();return;}
+    G.roomCode=s.roomCode;G.role=s.role;G.mode=s.mode||'mobile';G.variant=s.variant||d.variant||'swap';
+    G.questions=[];G.qIdx=0;G.resultShown=false;G.used={};G.selectedCats=[];
+    document.getElementById('leave-btn').style.display='block';
+    fbListen('rooms/'+s.roomCode,handleUpdate);
+  }catch(e){clearSession();}
 })();
 </script>
 </body>
