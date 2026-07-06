@@ -924,7 +924,7 @@ function showResultBoard(d){
     G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
   }
   fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal,variant);
-  document.getElementById('btn-next').style.display=(G.role==='host')?'block':'none';
+  document.getElementById('btn-next').style.display=(G.mode==='tv')?'none':'block';
   document.getElementById('overlay').classList.add('show');
 }
 
@@ -1126,8 +1126,11 @@ function fillResultOverlay(d,q,a0,a1,ans0,ans1,pts0,pts1,bothSteal,variant){
 async function goNext(){
   document.getElementById('overlay').classList.remove('show');
   G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
-  const isHost=(G.role==='host'||G.role==='tv');
-  if(!isHost)return;
+  // In TV mode only the TV device advances. In mobile mode either device may
+  // trigger the advance — both compute the exact same next state from the
+  // same shared data, so this is safe even if a device's local role got
+  // confused (e.g. after a refresh), preventing the turn from getting stuck.
+  if(G.mode==='tv'&&G.role!=='tv')return;
   const totalCells=(G.selectedCats||[]).length*PTS.length;
   const usedCount=Object.keys(G.used||{}).length;
   if(usedCount>=totalCells){await fbUpdate('rooms/'+G.roomCode,{status:'done'});return;}
