@@ -418,6 +418,20 @@ async function fbGet(p){const r=await fetch(FB+"/"+p+".json?nc="+Date.now());if(
 async function _poll(){if(!_pollPath||!_pollCb)return;try{const d=await fbGet(_pollPath);const s=JSON.stringify(d);if(s!==_pollLast){_pollLast=s;if(d!==null)_pollCb(d);}}catch(e){}}
 function fbListen(p,cb){if(_pollTimer)clearInterval(_pollTimer);_pollPath=p;_pollCb=cb;_pollLast=null;_poll();_pollTimer=setInterval(_poll,600);}
 
+// Mobile browsers pause background timers when the screen locks or the tab
+// is backgrounded. Force an immediate re-fetch the moment the page becomes
+// visible/focused again, so the game recovers on its own without needing a
+// manual refresh.
+let _resumeRegistered=false;
+function registerResumeListeners(){
+  if(_resumeRegistered)return;
+  _resumeRegistered=true;
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){_pollLast=null;_poll();}});
+  window.addEventListener('focus',()=>{_pollLast=null;_poll();});
+  window.addEventListener('pageshow',()=>{_pollLast=null;_poll();});
+}
+registerResumeListeners();
+
 const CATS=[
   {id:'history',name:'تاريخ',icon:'🏺'},
   {id:'geo',name:'جغرافيا',icon:'🗺️'},
