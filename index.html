@@ -507,18 +507,6 @@ const QDB={
 
 const G={mode:'mobile',variant:'swap',role:'host',roomCode:'',teams:[{name:'فريق 1',score:0},{name:'فريق 2',score:0}],questions:[],qIdx:0,timerInt:null,actionLocked:false,answerLocked:false,resultShown:false,used:{},selectedCats:[]};
 
-// A stable per-browser identity, independent of any specific room/session.
-// Used to let a device verify its OWN team assignment against the server's
-// record after a refresh, instead of trusting a fragile locally-cached role.
-function getDeviceId(){
-  try{
-    let id=localStorage.getItem('quizDeviceId');
-    if(!id){id='dev_'+Date.now()+'_'+Math.random().toString(36).slice(2);localStorage.setItem('quizDeviceId',id);}
-    return id;
-  }catch(e){return 'dev_'+Date.now();}
-}
-const G_DEVICE_ID=getDeviceId();
-
 function actionLabel(variant){
   return variant==='flip'
     ? {icon:'🔀',short:'اقلب',full:'قلب',desc:'اقلب جواب الخصم'}
@@ -574,7 +562,7 @@ async function createRoom(){
   btn.textContent='جاري الإنشاء...';btn.disabled=true;
   try{
     const code=genCode();
-    await fbSet('rooms/'+code,{mode:'mobile',variant:G.variant,status:'waiting',t0name:name,t1name:'',t0DeviceId:G_DEVICE_ID,t1DeviceId:'',t0score:0,t1score:0,phase:'board',turn:0,selectedCats:'',catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,used:'{}',showResult:false,ts:Date.now()});
+    await fbSet('rooms/'+code,{mode:'mobile',variant:G.variant,status:'waiting',t0name:name,t1name:'',t0score:0,t1score:0,phase:'board',turn:0,selectedCats:'',catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,used:'{}',showResult:false,ts:Date.now()});
     G.roomCode=code;G.role='host';G.mode='mobile';
     G.teams[0].name=name;G.teams[1].name='';G.teams[0].score=0;G.teams[1].score=0;
     G.questions=[];G.qIdx=0;G.resultShown=false;G.used={};G.selectedCats=[];
@@ -605,7 +593,7 @@ async function joinRoom(){
     if(!d){toast('الغرفة غير موجودة!');return;}
     if(d.status==='game'||d.status==='done'){toast('اللعبة بدأت بالفعل!');return;}
     if(d.t1name&&d.t1name!==''){toast('الغرفة ممتلئة!');return;}
-    await fbUpdate('rooms/'+code,{t1name:name,t1DeviceId:G_DEVICE_ID,status:'lobby'});
+    await fbUpdate('rooms/'+code,{t1name:name,status:'lobby'});
     G.roomCode=code;G.role='guest';G.mode='mobile';G.variant=d.variant||'swap';
     G.teams[0].name=d.t0name;G.teams[1].name=name;
     G.teams[0].score=0;G.teams[1].score=0;
@@ -648,7 +636,7 @@ async function createRoomTV(){
   btn.textContent='جاري الإنشاء...';btn.disabled=true;
   try{
     const code=genCode();
-    await fbSet('rooms/'+code,{mode:'tv',variant:G.variant,status:'waiting',t0name:'',t1name:'',t0DeviceId:'',t1DeviceId:'',t0score:0,t1score:0,phase:'board',turn:0,selectedCats:'',catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,used:'{}',showResult:false,ts:Date.now()});
+    await fbSet('rooms/'+code,{mode:'tv',variant:G.variant,status:'waiting',t0name:'',t1name:'',t0score:0,t1score:0,phase:'board',turn:0,selectedCats:'',catId:null,pts:null,qIdxBoard:null,action0:null,action1:null,answer0:null,answer1:null,used:'{}',showResult:false,ts:Date.now()});
     G.roomCode=code;G.role='tv';G.mode='tv';
     G.teams[0].name='';G.teams[1].name='';G.teams[0].score=0;G.teams[1].score=0;
     G.used={};G.resultShown=false;G.selectedCats=[];
@@ -674,8 +662,8 @@ async function joinRoomTV(){
     if(d.mode!=='tv'){toast('هذه غرفة جوال!');return;}
     if(d.status==='game'||d.status==='done'){toast('اللعبة بدأت!');return;}
     let role,updateObj;
-    if(!d.t0name||d.t0name===''){role='p1';updateObj={t0name:name,t0DeviceId:G_DEVICE_ID,status:'lobby'};}
-    else if(!d.t1name||d.t1name===''){role='p2';updateObj={t1name:name,t1DeviceId:G_DEVICE_ID,status:'lobby'};}
+    if(!d.t0name||d.t0name===''){role='p1';updateObj={t0name:name,status:'lobby'};}
+    else if(!d.t1name||d.t1name===''){role='p2';updateObj={t1name:name,status:'lobby'};}
     else{toast('الغرفة ممتلئة!');return;}
     await fbUpdate('rooms/'+code,updateObj);
     G.roomCode=code;G.role=role;G.mode='tv';G.variant=d.variant||'swap';
@@ -708,16 +696,6 @@ function handleUpdate(d){
   if(!d)return;
   G.lastData=d;
   if(d.variant)G.variant=d.variant;
-  // Self-correct identity: verify our team assignment against the server's
-  // authoritative device-id record. This fixes any local role confusion
-  // (e.g. caused by a page refresh) automatically, on every update.
-  if(d.mode==='mobile'){
-    if(d.t0DeviceId===G_DEVICE_ID)G.role='host';
-    else if(d.t1DeviceId===G_DEVICE_ID)G.role='guest';
-  } else if(d.mode==='tv'&&G.role!=='tv'){
-    if(d.t0DeviceId===G_DEVICE_ID)G.role='p1';
-    else if(d.t1DeviceId===G_DEVICE_ID)G.role='p2';
-  }
   if(d.t0name)G.teams[0].name=d.t0name;
   if(d.t1name)G.teams[1].name=d.t1name;
   G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
