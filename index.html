@@ -83,6 +83,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
 .cell-btn{width:100%;padding:12px 4px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-family:'Tajawal',sans-serif;font-weight:900;font-size:15px;cursor:pointer;transition:all 0.2s;}
 .cell-btn:hover:not(:disabled){transform:scale(1.05);}
 .cell-btn:disabled{opacity:0.2;cursor:default;}
+.cell-btn.cell-used{opacity:0.35!important;filter:grayscale(1);text-decoration:line-through;background:#1a1a2a!important;position:relative;}
 .cell-btn.pts-100{color:#27ae60;border-color:rgba(39,174,96,0.3);}
 .cell-btn.pts-200{color:#3498db;border-color:rgba(52,152,219,0.3);}
 .cell-btn.pts-300{color:#f7c948;border-color:rgba(247,201,72,0.3);}
@@ -817,8 +818,9 @@ function renderMobileBoard(d){
       const key=catId+'_'+pts;
       const isUsed=usedCells[key]===true;
       const disabled=(isUsed||!isMyTurn)?'disabled':'';
-      const style=isUsed?'style="opacity:0.15;text-decoration:line-through"':'';
-      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+disabled+' '+style+' onclick="mbPick(this)">'+pts+'</button></td>';
+      const usedClass=isUsed?' cell-used':'';
+      const label=isUsed?'✅':pts;
+      row+='<td><button class="cell-btn pts-'+pts+usedClass+'" data-cat="'+catId+'" data-pts="'+pts+'" '+disabled+' onclick="mbPick(this)">'+label+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
@@ -834,7 +836,7 @@ async function mobilePickCell(catId,pts){
   if(currentTurn!==myTeamIdx){toast('ليس دورك!');return;}
   const usedNow=snap.used?JSON.parse(snap.used):{};
   const key=catId+'_'+pts;
-  if(usedNow[key]){toast('هذا السؤال استُخدم بالفعل!');return;}
+  if(usedNow[key]){toast('هذا السؤال استُخدم بالفعل!');renderMobileBoard(snap);return;}
   usedNow[key]=true;
   G.used=usedNow;
   G.resultShown=false;
@@ -1025,8 +1027,9 @@ function renderTVBoard(d){
     G.selectedCats.forEach(catId=>{
       const key=catId+'_'+pts;
       const isUsed=usedCells[key]===true;
-      const style=isUsed?'style="opacity:0.15;text-decoration:line-through"':'';
-      row+='<td><button class="cell-btn pts-'+pts+'" data-cat="'+catId+'" data-pts="'+pts+'" '+(isUsed?'disabled':'')+' '+style+' onclick="tvPick(this)">'+pts+'</button></td>';
+      const usedClass=isUsed?' cell-used':'';
+      const label=isUsed?'✅':pts;
+      row+='<td><button class="cell-btn pts-'+pts+usedClass+'" data-cat="'+catId+'" data-pts="'+pts+'" '+(isUsed?'disabled':'')+' onclick="tvPick(this)">'+label+'</button></td>';
     });
     table.innerHTML+=row+'</tr>';
   });
@@ -1040,7 +1043,7 @@ async function tvPickCell(catId,pts){
   if(!snap)return;
   const usedNow=snap.used?JSON.parse(snap.used):{};
   const key=catId+'_'+pts;
-  if(usedNow[key]){toast('هذا السؤال استُخدم!');return;}
+  if(usedNow[key]){toast('هذا السؤال استُخدم!');renderTVBoard(snap);return;}
   usedNow[key]=true;G.used=usedNow;G.resultShown=false;
   const ptIdx=PTS.indexOf(pts);
   const turn=snap.turn===1?1:0;
