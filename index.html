@@ -179,6 +179,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
 <body>
 <div id="bg-words"></div>
 <button id="leave-btn" onclick="clearSession();location.reload()" style="display:none;position:fixed;top:10px;left:10px;z-index:600;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.4);color:#e74c3c;padding:6px 14px;border-radius:20px;font-family:'Tajawal',sans-serif;font-size:12px;cursor:pointer;">🚪 خروج من الغرفة</button>
+<div id="resume-overlay" style="display:none;position:fixed;inset:0;z-index:900;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+  <div style="width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <div style="color:#888;font-size:14px;">جاري استرجاع الغرفة...</div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 <div id="app">
 
 <div id="s-home" class="screen active">
@@ -421,7 +426,7 @@ async function fbSet(p,v){const r=await fetch(FB+"/"+p+".json",{method:"PUT",hea
 async function fbUpdate(p,v){const r=await fetch(FB+"/"+p+".json",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)});if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}
 async function fbGet(p){const r=await fetch(FB+"/"+p+".json?nc="+Date.now());if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}
 async function _poll(){if(!_pollPath||!_pollCb)return;try{const d=await fbGet(_pollPath);const s=JSON.stringify(d);if(s!==_pollLast){_pollLast=s;if(d!==null)_pollCb(d);}}catch(e){}}
-function fbListen(p,cb){if(_pollTimer)clearInterval(_pollTimer);_pollPath=p;_pollCb=cb;_pollLast=null;_poll();_pollTimer=setInterval(_poll,600);}
+function fbListen(p,cb){if(_pollTimer)clearInterval(_pollTimer);_pollPath=p;_pollCb=cb;_pollLast=null;_poll();_pollTimer=setInterval(_poll,400);}
 
 // Mobile browsers pause background timers when the screen locks or the tab
 // is backgrounded. Force an immediate re-fetch the moment the page becomes
@@ -1331,14 +1336,20 @@ function showFinal(){
 (async function tryResumeSession(){
   const s=loadSession();
   if(!s||!s.roomCode||!s.role)return;
+  const overlay=document.getElementById('resume-overlay');
+  overlay.style.display='flex';
   try{
     const d=await fbGet('rooms/'+s.roomCode);
-    if(!d||d.status==='done'){clearSession();return;}
+    if(!d||d.status==='done'){clearSession();overlay.style.display='none';return;}
     G.roomCode=s.roomCode;G.role=s.role;G.mode=s.mode||'mobile';G.variant=s.variant||d.variant||'swap';
     G.questions=[];G.qIdx=0;G.resultShown=false;G.used={};G.selectedCats=[];
     document.getElementById('leave-btn').style.display='block';
+    // Render immediately with the data we already have, instead of waiting
+    // for fbListen's own first poll cycle (avoids a confusing half-loaded flash).
+    handleUpdate(d);
+    overlay.style.display='none';
     fbListen('rooms/'+s.roomCode,handleUpdate);
-  }catch(e){clearSession();}
+  }catch(e){clearSession();overlay.style.display='none';}
 })();
 </script>
 </body>
