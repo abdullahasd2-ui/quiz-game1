@@ -578,12 +578,14 @@ function saveSession(){
 }
 function clearSession(){
   try{localStorage.removeItem('quizSession');}catch(e){}
+  try{sessionStorage.removeItem('quizBoardSig');}catch(e){}
 }
 function loadSession(){
   try{const s=localStorage.getItem('quizSession');return s?JSON.parse(s):null;}catch(e){return null;}
 }
 
 async function createRoom(){
+  try{sessionStorage.removeItem('quizBoardSig');}catch(e){}
   const name=document.getElementById('m-create-name').value.trim()||'الفريق الأول';
   const btn=document.getElementById('btn-create');
   btn.textContent='جاري الإنشاء...';btn.disabled=true;
@@ -610,6 +612,7 @@ async function createRoom(){
 }
 
 async function joinRoom(){
+  try{sessionStorage.removeItem('quizBoardSig');}catch(e){}
   const name=document.getElementById('m-join-name').value.trim()||'الفريق الثاني';
   const code=document.getElementById('m-join-code').value.trim().toUpperCase();
   if(code.length!==6){toast('الكود 6 أحرف!');return;}
@@ -769,6 +772,20 @@ function handleMobileGame(d){
   if(d.selectedCats&&d.selectedCats!==''&&!G.selectedCats.length)G.selectedCats=JSON.parse(d.selectedCats);
   G.teams[0].score=d.t0score||0;G.teams[1].score=d.t1score||0;
   if(d.phase==='board'){
+    // Force a full page refresh on every device whenever a new round's board
+    // appears, to guarantee both devices are always perfectly in sync after
+    // each question (turn, used-cells, scores) instead of relying only on
+    // the live in-page re-render.
+    const usedCount=d.used?Object.keys(JSON.parse(d.used)).length:0;
+    const sig='board_'+(d.turn===1?1:0)+'_'+usedCount;
+    const lastSig=sessionStorage.getItem('quizBoardSig');
+    if(lastSig===null){
+      sessionStorage.setItem('quizBoardSig',sig);
+    } else if(lastSig!==sig){
+      sessionStorage.setItem('quizBoardSig',sig);
+      location.reload();
+      return;
+    }
     document.getElementById('overlay').classList.remove('show');
     G.resultShown=false;G.actionLocked=false;G.answerLocked=false;
     G.used=d.used?JSON.parse(d.used):{};
