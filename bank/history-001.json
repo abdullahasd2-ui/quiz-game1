@@ -1,0 +1,1107 @@
+[
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "في أي قارة قامت إمبراطورية الإنكا؟",
+    "options": [
+      "آسيا",
+      "أفريقيا",
+      "أمريكا الجنوبية",
+      "أوروبا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://ar.wikipedia.org/wiki/إمبراطورية_الإنكا"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "في أي بلد عربي تقع آثار مدينة قرطاج القديمة؟",
+    "options": [
+      "تونس",
+      "الجزائر",
+      "ليبيا",
+      "المغرب"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Carthage"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "ما الشعب الذي اتخذ البتراء عاصمة لمملكته القديمة؟",
+    "options": [
+      "الفينيقيون",
+      "الآشوريون",
+      "السومريون",
+      "الأنباط"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Petra"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "في أي بلد افتتحت قناة السويس عام 1869؟",
+    "options": [
+      "سوريا",
+      "مصر",
+      "لبنان",
+      "العراق"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Suez_Canal"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "إلى أي مدينة هاجر النبي محمد من مكة؟",
+    "options": [
+      "الطائف",
+      "المدينة المنورة",
+      "القدس",
+      "صنعاء"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Hijrah"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من هو أول الخلفاء الراشدين؟",
+    "options": [
+      "عمر بن الخطاب",
+      "عثمان بن عفان",
+      "علي بن أبي طالب",
+      "أبو بكر الصديق"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Rashidun"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "ما عاصمة الدولة الأموية في بلاد الشام؟",
+    "options": [
+      "دمشق",
+      "بغداد",
+      "القاهرة",
+      "المدينة المنورة"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Umayyad_Caliphate"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من هو رابع الخلفاء الراشدين؟",
+    "options": [
+      "عثمان بن عفان",
+      "عمر بن الخطاب",
+      "علي بن أبي طالب",
+      "أبو بكر الصديق"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Rashidun"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "أي دولة حكمها نابليون بونابرت إمبراطورًا؟",
+    "options": [
+      "فرنسا",
+      "إسبانيا",
+      "بريطانيا",
+      "روسيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Napoleon"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "أي حضارة شيدت سور الصين العظيم؟",
+    "options": [
+      "الحضارة الرومانية",
+      "الحضارة الفارسية",
+      "الحضارة الصينية",
+      "الحضارة اليونانية"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Great_Wall_of_China"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من قاد الرحلة البحرية التي وصلت إلى جزر الكاريبي عام 1492؟",
+    "options": [
+      "فاسكو دا غاما",
+      "كريستوفر كولومبوس",
+      "فرديناند ماجلان",
+      "جيمس كوك"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Christopher_Columbus"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "في أي عام بدأت الحرب العالمية الثانية؟",
+    "options": [
+      "1914",
+      "1929",
+      "1945",
+      "1939"
+    ],
+    "correctIndex": 3,
+    "reference": "https://ar.wikipedia.org/wiki/الحرب_العالمية_الثانية"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من أي دولة قاد أدولف هتلر النظام النازي خلال الحرب العالمية الثانية؟",
+    "options": [
+      "إيطاليا",
+      "اليابان",
+      "المجر",
+      "ألمانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Adolf_Hitler"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من هو مؤسس المملكة العربية السعودية الحديثة؟",
+    "options": [
+      "الملك سعود آل سعود",
+      "الملك عبدالعزيز آل سعود",
+      "الملك فيصل آل سعود",
+      "الملك خالد آل سعود"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Ibn_Saud"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "ما عاصمة الدولة السعودية الأولى؟",
+    "options": [
+      "الرياض",
+      "مكة",
+      "الدرعية",
+      "جدة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Emirate_of_Diriyah"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "من هو أول رئيس لدولة الإمارات العربية المتحدة؟",
+    "options": [
+      "الشيخ زايد بن سلطان آل نهيان",
+      "الشيخ خليفة بن زايد آل نهيان",
+      "الشيخ راشد بن سعيد آل مكتوم",
+      "الشيخ مكتوم بن راشد آل مكتوم"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Zayed_bin_Sultan_Al_Nahyan"
+  },
+  {
+    "categorySlug": "history",
+    "points": 100,
+    "text": "أي دولة غزت الكويت في أغسطس 1990؟",
+    "options": [
+      "العراق",
+      "إيران",
+      "سوريا",
+      "الأردن"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Invasion_of_Kuwait"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "من هو الرئيس المصري الذي أعلن تأميم قناة السويس عام 1956؟",
+    "options": [
+      "محمد نجيب",
+      "أنور السادات",
+      "حسني مبارك",
+      "جمال عبدالناصر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Nationalization_of_the_Suez_Canal"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام استقلت الجزائر عن فرنسا؟",
+    "options": [
+      "1956",
+      "1962",
+      "1967",
+      "1971"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Algerian_War"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "من تولى عرش المملكة العربية السورية التي أعلنت في دمشق عام 1920؟",
+    "options": [
+      "فيصل بن الحسين",
+      "عبدالله بن الحسين",
+      "علي بن الحسين",
+      "الحسين بن علي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Arab_Kingdom_of_Syria"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "خلال حملة عسكرية تابعة لأي دولة عثر على حجر رشيد عام 1799؟",
+    "options": [
+      "بريطانيا",
+      "إيطاليا",
+      "فرنسا",
+      "إسبانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Rosetta_Stone"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "من قاد الجيش الذي عبر إلى الأندلس عام 711؟",
+    "options": [
+      "عمرو بن العاص",
+      "سعد بن أبي وقاص",
+      "طارق بن زياد",
+      "خالد بن الوليد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Tariq_ibn_Ziyad"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في عهد أي خليفة اعتمد التقويم الهجري لإدارة شؤون الدولة؟",
+    "options": [
+      "عمر بن الخطاب",
+      "أبو بكر الصديق",
+      "عثمان بن عفان",
+      "علي بن أبي طالب"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Islamic_calendar"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "ما عاصمة الدولة العباسية عند تولي هارون الرشيد الخلافة عام 786؟",
+    "options": [
+      "دمشق",
+      "بغداد",
+      "القاهرة",
+      "قرطبة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Harun_al-Rashid"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "من قاد المسلمين في معركة حطين عام 1187؟",
+    "options": [
+      "نور الدين زنكي",
+      "الظاهر بيبرس",
+      "سيف الدين قطز",
+      "صلاح الدين الأيوبي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Hattin"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام اقتحم الثوار سجن الباستيل في باريس؟",
+    "options": [
+      "1776",
+      "1789",
+      "1804",
+      "1815"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Storming_of_the_Bastille"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام بدأت الحرب العالمية الأولى؟",
+    "options": [
+      "1912",
+      "1917",
+      "1918",
+      "1914"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/World_War_I"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام فتح جدار برلين أمام عبور السكان في الحدث المعروف بسقوط الجدار؟",
+    "options": [
+      "1985",
+      "1991",
+      "1989",
+      "1993"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Fall_of_the_Berlin_Wall"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي مملكة صدرت وثيقة الماغنا كارتا عام 1215؟",
+    "options": [
+      "إنجلترا",
+      "فرنسا",
+      "قشتالة",
+      "البرتغال"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Magna_Carta"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي دولة حالية تقع مدينة كوسكو، عاصمة إمبراطورية الإنكا؟",
+    "options": [
+      "بيرو",
+      "المكسيك",
+      "البرازيل",
+      "الأرجنتين"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Cusco"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام أعلن توحيد البلاد باسم المملكة العربية السعودية؟",
+    "options": [
+      "1926",
+      "1938",
+      "1932",
+      "1945"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Unification_of_Saudi_Arabia"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "في أي عام تأسس مجلس التعاون لدول الخليج العربية؟",
+    "options": [
+      "1971",
+      "1975",
+      "1991",
+      "1981"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Gulf_Cooperation_Council"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "من تولى حكم عمان في يوليو 1970؟",
+    "options": [
+      "السلطان سعيد بن تيمور",
+      "السلطان قابوس بن سعيد",
+      "السلطان تيمور بن فيصل",
+      "السلطان هيثم بن طارق"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Qaboos_bin_Said"
+  },
+  {
+    "categorySlug": "history",
+    "points": 200,
+    "text": "عن أي دولة أنهت البحرين علاقة الحماية عند استقلالها عام 1971؟",
+    "options": [
+      "فرنسا",
+      "بريطانيا",
+      "البرتغال",
+      "هولندا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Bahrain"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "إلى أي شعب ينتمي المستوطنون الذين أسسوا قرطاج قادمين من مدينة صور؟",
+    "options": [
+      "الفينيقيون",
+      "الإغريق",
+      "الرومان",
+      "الفرس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Ancient_Carthage"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "من كان سلطان المماليك عند انتصارهم في عين جالوت عام 1260؟",
+    "options": [
+      "الظاهر بيبرس",
+      "قلاوون",
+      "سيف الدين قطز",
+      "الناصر محمد بن قلاوون"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Ain_Jalut"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "ما المعاهدة التي فرضت الحماية الفرنسية على تونس عام 1881؟",
+    "options": [
+      "معاهدة فاس",
+      "معاهدة باردو",
+      "معاهدة لوزان",
+      "معاهدة سيفر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Bardo"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "ما المعاهدة التي أقامت الحماية الفرنسية على المغرب عام 1912؟",
+    "options": [
+      "معاهدة باردو",
+      "معاهدة لوزان",
+      "معاهدة سيفر",
+      "معاهدة فاس"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Fes"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "في أي معركة هزم العثمانيون المماليك قرب حلب عام 1516؟",
+    "options": [
+      "الريدانية",
+      "جالديران",
+      "أنقرة",
+      "مرج دابق"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Marj_Dabiq"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "أي إمبراطورية واجهها المسلمون في معركة نهاوند؟",
+    "options": [
+      "الإمبراطورية البيزنطية",
+      "الإمبراطورية الساسانية",
+      "الإمبراطورية المغولية",
+      "الإمبراطورية الرومانية الغربية"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Nahavand"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "أي خليفة أموي أمر ببناء قبة الصخرة في القدس؟",
+    "options": [
+      "الوليد بن عبدالملك",
+      "معاوية بن أبي سفيان",
+      "عبدالملك بن مروان",
+      "عمر بن عبدالعزيز"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Dome_of_the_Rock"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "في أي مدينة أسس جامع القرويين في القرن التاسع الميلادي؟",
+    "options": [
+      "فاس",
+      "القيروان",
+      "تلمسان",
+      "مراكش"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/University_of_al-Qarawiyyin"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "أي حرب أوروبية أنهتها معاهدات وستفاليا عام 1648؟",
+    "options": [
+      "حرب المئة عام",
+      "حرب السنوات السبع",
+      "حرب الثلاثين عامًا",
+      "حرب الخلافة الإسبانية"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Peace_of_Westphalia"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "في أي بلد وقعت استعادة ميجي عام 1868؟",
+    "options": [
+      "اليابان",
+      "الصين",
+      "كوريا",
+      "تايلاند"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Meiji_Restoration"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "من قاد النورمان إلى النصر في معركة هاستينغز عام 1066؟",
+    "options": [
+      "ريتشارد قلب الأسد",
+      "هنري الخامس",
+      "إدوارد الأول",
+      "وليام الفاتح"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Hastings"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "بين أي دولتين أبرمت معاهدة توردسيلاس عام 1494؟",
+    "options": [
+      "فرنسا وإنجلترا",
+      "إسبانيا والبرتغال",
+      "إسبانيا وفرنسا",
+      "البرتغال وهولندا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Tordesillas"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "ما المؤتمر الذي اختتم عام 1815 لإعادة ترتيب أوروبا بعد الحروب النابليونية؟",
+    "options": [
+      "مؤتمر برلين",
+      "مؤتمر فيينا",
+      "مؤتمر يالطا",
+      "مؤتمر بوتسدام"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Congress_of_Vienna"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "من أسس الدولة السعودية الثانية باستعادة الرياض عام 1824؟",
+    "options": [
+      "الإمام فيصل بن تركي",
+      "الإمام عبدالله بن فيصل",
+      "الإمام عبدالرحمن بن فيصل",
+      "الإمام تركي بن عبدالله"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Emirate_of_Nejd"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "من تولى عرش المملكة العربية السعودية عام 1964؟",
+    "options": [
+      "الملك فيصل بن عبدالعزيز",
+      "الملك سعود بن عبدالعزيز",
+      "الملك خالد بن عبدالعزيز",
+      "الملك فهد بن عبدالعزيز"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Faisal_of_Saudi_Arabia"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "في أي عام استقلت الكويت وأنهت اتفاقية الحماية البريطانية؟",
+    "options": [
+      "1958",
+      "1965",
+      "1961",
+      "1971"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/History_of_Kuwait"
+  },
+  {
+    "categorySlug": "history",
+    "points": 300,
+    "text": "أي إمارة انضمت إلى دولة الإمارات العربية المتحدة في فبراير 1972؟",
+    "options": [
+      "الشارقة",
+      "الفجيرة",
+      "رأس الخيمة",
+      "أم القيوين"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Ras_Al_Khaimah"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "في أي عام أقر الدستور اللبناني الذي أنشأ الجمهورية اللبنانية في عهد الانتداب؟",
+    "options": [
+      "1920",
+      "1926",
+      "1936",
+      "1943"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Constitution_of_Lebanon"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "كانت الأزمة المتعلقة بأي بلد موضوع مؤتمر الجزيرة الخضراء عام 1906؟",
+    "options": [
+      "تونس",
+      "مصر",
+      "ليبيا",
+      "المغرب"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Algeciras_Conference"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "أي ملك دعا مؤتمر أريحا عام 1948 إلى توحيد فلسطين العربية مع مملكته؟",
+    "options": [
+      "فيصل الأول",
+      "طلال بن عبدالله",
+      "عبدالله الأول",
+      "الحسين بن طلال"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Jericho_Conference"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "يرتبط عيد الجلاء السوري برحيل آخر القوات الفرنسية في أي عام؟",
+    "options": [
+      "1946",
+      "1936",
+      "1943",
+      "1958"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Evacuation_Day_(Syria)"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "أي سلالة صينية واجهت القوات العباسية في معركة طلاس عام 751؟",
+    "options": [
+      "سلالة تانغ",
+      "سلالة سونغ",
+      "سلالة مينغ",
+      "سلالة تشينغ"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Talas"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "من هو الوزير السلجوقي الذي أسس المدرسة النظامية في بغداد؟",
+    "options": [
+      "عميد الملك الكندري",
+      "رشيد الدين فضل الله",
+      "نظام الملك",
+      "الفضل بن سهل"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Al-Nizamiyya_of_Baghdad"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "من أسس دولة الأغالبة في إفريقية عام 800؟",
+    "options": [
+      "زيادة الله الأول",
+      "أبو العباس محمد الأول",
+      "أبو إسحاق إبراهيم الثاني",
+      "إبراهيم بن الأغلب"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ibrahim_I_ibn_al-Aghlab"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "ما المعاهدة التي أنهت الحرب التركية الكبرى عام 1699؟",
+    "options": [
+      "معاهدة أدرنة",
+      "معاهدة كارلوفجة",
+      "معاهدة كوجك قينارجة",
+      "معاهدة باساروفجة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Karlowitz"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "ما المعاهدة التي أنهت الحرب الشمالية الكبرى بين روسيا والسويد عام 1721؟",
+    "options": [
+      "معاهدة أوترخت",
+      "معاهدة تيلسيت",
+      "معاهدة بريست ليتوفسك",
+      "معاهدة نيستاد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Nystad"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "من قاد تمرد تايبينغ في الصين خلال القرن التاسع عشر؟",
+    "options": [
+      "سون يات سن",
+      "هونغ شيوتشوان",
+      "يوان شيكاي",
+      "تشانغ كاي شيك"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Taiping_Rebellion"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "من أعلن استقلال هايتي عام 1804 وأصبح حاكمها؟",
+    "options": [
+      "جان جاك ديسالين",
+      "توسان لوفرتور",
+      "ألكسندر بيتيون",
+      "هنري كريستوف"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Jean-Jacques_Dessalines"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "ما المعركة التي عرفت بمعركة الأباطرة الثلاثة عام 1805؟",
+    "options": [
+      "واترلو",
+      "لايبزيغ",
+      "أوسترليتز",
+      "بورودينو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Austerlitz"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "في أي مدينة بدأ التمرد العسكري الذي أشعل الثورة الهندية عام 1857؟",
+    "options": [
+      "دلهي",
+      "لكناو",
+      "ميروت",
+      "كانبور"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Indian_Rebellion_of_1857"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "من قاد الحملة التي حاصرت الدرعية وأسقطت الدولة السعودية الأولى عام 1818؟",
+    "options": [
+      "إبراهيم باشا",
+      "طوسون باشا",
+      "عباس حلمي الأول",
+      "خورشيد باشا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Siege_of_Diriyah"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "مع أي دولة أبرم الملك عبدالعزيز معاهدة جدة عام 1927 التي اعترفت باستقلال مملكته؟",
+    "options": [
+      "فرنسا",
+      "بريطانيا",
+      "إيطاليا",
+      "ألمانيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Jeddah_(1927)"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "ضد قوات أي دولة خاض القطريون معركة الوجبة عام 1893؟",
+    "options": [
+      "الدولة البرتغالية",
+      "الدولة البريطانية",
+      "الدولة الصفوية",
+      "الدولة العثمانية"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Al_Wajbah"
+  },
+  {
+    "categorySlug": "history",
+    "points": 400,
+    "text": "أي إمام عماني طرد البرتغاليين من مسقط عام 1650؟",
+    "options": [
+      "ناصر بن مرشد اليعربي",
+      "سيف بن سلطان اليعربي",
+      "أحمد بن سعيد البوسعيدي",
+      "سلطان بن سيف اليعربي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Sultan_bin_Saif"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من هو باي تونس الذي وقع اتفاقية المرسى مع بول كامبون عام 1883؟",
+    "options": [
+      "محمد الصادق باي",
+      "أحمد بن مصطفى باي",
+      "علي بن الحسين باي",
+      "محمد المنصف باي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Conventions_of_La_Marsa"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من أسس الأسرة الحسينية الحاكمة في تونس عام 1705؟",
+    "options": [
+      "الحسين بن علي التركي",
+      "علي باشا بن محمد",
+      "حمودة باشا الحسيني",
+      "مراد باي الأول"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Al-Husayn_I_ibn_Ali"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "في أي مدينة أثرية عثر على مسلة شريعة حمورابي في تنقيبات 1901–1902؟",
+    "options": [
+      "بابل في العراق",
+      "نينوى في العراق",
+      "أور في العراق",
+      "سوسة في عيلام"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Code_of_Hammurabi"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "أي ملك موريطاني سلم يوغرطة إلى الرومان عام 105 قبل الميلاد؟",
+    "options": [
+      "يوبا الأول",
+      "بوكوس الأول",
+      "ماسينيسا",
+      "مكيبسا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Bocchus_I"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من قاد الجيش البيزنطي أمام عثمان الأول في معركة بافيوس؟",
+    "options": [
+      "ألكسيوس فيلانثروبينوس",
+      "جورج موزالون",
+      "روجر دي فلور",
+      "يوحنا كانتاكوزينوس"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Bapheus"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "أي سلطان غزنوي هزمه السلاجقة في معركة دندانقان عام 1040؟",
+    "options": [
+      "محمود بن سبكتكين",
+      "إبراهيم بن مسعود",
+      "بهرام شاه بن مسعود",
+      "مسعود بن محمود"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Dandanaqan"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "أي شاه صفوي كان يحكم عند إبرام معاهدة زهاب مع العثمانيين عام 1639؟",
+    "options": [
+      "الشاه صفي الأول",
+      "الشاه عباس الأول",
+      "الشاه طهماسب الأول",
+      "الشاه إسماعيل الثاني"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Safi_of_Persia"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من هو الأمير العباسي الذي قاد الحملة الحاسمة لإنهاء ثورة الزنج عام 883؟",
+    "options": [
+      "المعتصم محمد",
+      "المنتصر محمد",
+      "الموفق طلحة",
+      "المستعين أحمد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Zanj_Rebellion"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "أي إمبراطور أصدر المرسوم الذهبي لعام 1356 لتنظيم انتخاب ملك الرومان؟",
+    "options": [
+      "كارل الرابع",
+      "فريدريك الثالث",
+      "سيغيسموند",
+      "ماكسيميليان الأول"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Golden_Bull_of_1356"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "ما المعاهدة التي نقلت بلغراد من الحكم العثماني إلى حكم هابسبورغ عام 1718؟",
+    "options": [
+      "معاهدة بلغراد",
+      "معاهدة كارلوفجة",
+      "معاهدة باساروفجة",
+      "معاهدة زيشتوف"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Passarowitz"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من تفاوض نيابة عن الإمبراطور كارل الخامس على صلح أوغسبورغ عام 1555؟",
+    "options": [
+      "ماكسيميليان الثاني",
+      "فرديناند الأول",
+      "فيليب الثاني",
+      "رودولف الثاني"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Peace_of_Augsburg"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "أي إمبراطورية هندية هزمت في معركة تاليكوتا عام 1565؟",
+    "options": [
+      "إمبراطورية موريا",
+      "إمبراطورية غوبتا",
+      "إمبراطورية المغول الهندية",
+      "إمبراطورية فيجاياناغارا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Talikota"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "ما المعاهدة التي أبرمتها روسيا مع دولة تشينغ عام 1689 لتنظيم الحدود بينهما؟",
+    "options": [
+      "معاهدة كياختا",
+      "معاهدة آيغون",
+      "معاهدة نانكينغ",
+      "معاهدة نيرتشينسك"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Treaty_of_Nerchinsk"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من هو الضابط البريطاني الذي قتل في معركة جراب عام 1915؟",
+    "options": [
+      "بيرسي كوكس",
+      "وليام شكسبير",
+      "هاري سانت جون فيلبي",
+      "هارولد ديكسون"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Jarrab"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من هو أمير آل رشيد الذي قتل في معركة روضة مهنا عام 1906؟",
+    "options": [
+      "متعب بن عبدالعزيز",
+      "سعود بن عبدالعزيز",
+      "عبدالعزيز بن متعب",
+      "محمد بن عبدالله"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Rawdat_Muhanna"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من وقع المعاهدة البحرية العامة لعام 1820 ممثلًا للحكومة البريطانية؟",
+    "options": [
+      "وليام غرانت كير",
+      "جون مالكولم",
+      "تشارلز إليوت",
+      "جيمس أوترام"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/General_Maritime_Treaty_of_1820"
+  },
+  {
+    "categorySlug": "history",
+    "points": 500,
+    "text": "من انتصر على قوات الإمام عزان بن قيس في معركة ضنك عام 1870؟",
+    "options": [
+      "تركي بن سعيد",
+      "ثويني بن سعيد",
+      "سالم بن ثويني",
+      "فيصل بن تركي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Battle_of_Dhank"
+  }
+]

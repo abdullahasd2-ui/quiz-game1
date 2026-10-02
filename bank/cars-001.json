@@ -1,0 +1,1042 @@
+[
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "ما البلد الأصلي لشركة تويوتا؟",
+    "options": [
+      "الصين",
+      "ألمانيا",
+      "اليابان",
+      "الولايات المتحدة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Toyota"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "من أي بلد نشأت علامة مرسيدس بنز؟",
+    "options": [
+      "ألمانيا",
+      "فرنسا",
+      "إيطاليا",
+      "اليابان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mercedes-Benz"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "ما البلد الأصلي لشركة هيونداي للسيارات؟",
+    "options": [
+      "اليابان",
+      "الصين",
+      "الهند",
+      "كوريا الجنوبية"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Hyundai_Motor_Company"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "في أي بلد تأسست شركة فورد للسيارات؟",
+    "options": [
+      "المملكة المتحدة",
+      "الولايات المتحدة",
+      "ألمانيا",
+      "فرنسا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Ford_Motor_Company"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "ما البلد الأصلي لشركة رينو؟",
+    "options": [
+      "إيطاليا",
+      "فرنسا",
+      "ألمانيا",
+      "إسبانيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Renault"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "من أي بلد نشأت سيارات فولفو؟",
+    "options": [
+      "ألمانيا",
+      "النرويج",
+      "المملكة المتحدة",
+      "السويد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Volvo_Cars"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي علامة سيارات اشتهرت بشعار من أربع حلقات متداخلة؟",
+    "options": [
+      "أودي",
+      "أوبل",
+      "رينو",
+      "فولكس فاغن"
+    ],
+    "correctIndex": 0,
+    "reference": "https://magazine.audi.com.au/article/the-rings"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي علامة سيارات اشتهرت بشعار نجمة ثلاثية الرؤوس داخل دائرة؟",
+    "options": [
+      "بي إم دبليو",
+      "أودي",
+      "مرسيدس بنز",
+      "فولكس فاغن"
+    ],
+    "correctIndex": 2,
+    "reference": "https://group.mercedes-benz.com/company/tradition/mercedes-benz/birth.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "ما الحيوان الذي اشتهرت بيجو باستخدامه في شعارها؟",
+    "options": [
+      "الحصان",
+      "الثور",
+      "النمر",
+      "الأسد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.peugeot.com.au/brand/about-us/peugeot-logo-evolution.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي علامة سيارات يمثل شعارها ثلاث ماسات تلتقي عند المركز؟",
+    "options": [
+      "مازدا",
+      "سوزوكي",
+      "ميتسوبيشي",
+      "سوبارو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.mitsubishi-motors.com/en/company/history/company/index.html?intcid2=company-history-company"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي شركة قدمت طراز كورولا؟",
+    "options": [
+      "هوندا",
+      "تويوتا",
+      "نيسان",
+      "مازدا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Toyota"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "إلى أي علامة سيارات ينتمي طراز سيفيك؟",
+    "options": [
+      "هوندا",
+      "تويوتا",
+      "نيسان",
+      "سوبارو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Honda_Civic"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي شركة قدمت سيارة باترول؟",
+    "options": [
+      "نيسان",
+      "تويوتا",
+      "ميتسوبيشي",
+      "هوندا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Nissan_Patrol"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "تحت أي علامة تجارية طرحت سيارة كامارو؟",
+    "options": [
+      "فورد",
+      "شيفروليه",
+      "دودج",
+      "كرايسلر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Chevrolet_Camaro"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي علامة ألمانية اشتهرت بسيارتها الرياضية 911؟",
+    "options": [
+      "أودي",
+      "أوبل",
+      "بورشه",
+      "بي إم دبليو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Porsche_911"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 100,
+    "text": "أي شركة قدمت طراز غولف؟",
+    "options": [
+      "رينو",
+      "بيجو",
+      "أوبل",
+      "فولكس فاغن"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Volkswagen_Golf"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "من أسس شركة فورد للسيارات عام 1903؟",
+    "options": [
+      "والتر كرايسلر",
+      "ويليام دورانت",
+      "لويس شيفروليه",
+      "هنري فورد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ford_Motor_Company"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "من مؤسس شركة هوندا الذي تحمل الشركة اسم عائلته؟",
+    "options": [
+      "كييتشيرو تويودا",
+      "سويتشيرو هوندا",
+      "ميتشيو سوزوكي",
+      "جوجيرو ماتسودا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Soichiro_Honda"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "من أسس علامة فيراري للسيارات؟",
+    "options": [
+      "إنزو فيراري",
+      "فيروتشيو لامبورغيني",
+      "إيتوري بوغاتي",
+      "هوراسيو باغاني"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Enzo_Ferrari"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "من أسس شركة تويوتا للسيارات عام 1937؟",
+    "options": [
+      "ساكيتشي تويودا",
+      "سويتشيرو هوندا",
+      "كييتشيرو تويودا",
+      "ميتشيو سوزوكي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Toyota"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "ما البلد الأصلي لعلامة رولز رويس للسيارات؟",
+    "options": [
+      "ألمانيا",
+      "فرنسا",
+      "المملكة المتحدة",
+      "الولايات المتحدة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Rolls-Royce_Limited"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "بأي بلد تعرف علامة شكودا بوصفها علامة سيارات وطنية المنشأ؟",
+    "options": [
+      "التشيك",
+      "بولندا",
+      "المجر",
+      "رومانيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/%C5%A0koda_Auto"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "ما البلد الذي تأسست فيه شركة سيات عام 1950؟",
+    "options": [
+      "إيطاليا",
+      "إسبانيا",
+      "فرنسا",
+      "البرتغال"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/SEAT"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "في أي بلد تأسست شركة داسيا عام 1966؟",
+    "options": [
+      "بلغاريا",
+      "المجر",
+      "بولندا",
+      "رومانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Automobile_Dacia"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي شركة يابانية أطلقت علامة لكزس للسيارات الفاخرة؟",
+    "options": [
+      "تويوتا",
+      "نيسان",
+      "هوندا",
+      "مازدا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lexus"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي شركة يابانية أطلقت علامة إنفينيتي؟",
+    "options": [
+      "تويوتا",
+      "هوندا",
+      "ميتسوبيشي",
+      "نيسان"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Infiniti"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي شركة أطلقت علامة أكيورا في أمريكا الشمالية عام 1986؟",
+    "options": [
+      "تويوتا",
+      "نيسان",
+      "هوندا",
+      "سوبارو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Acura"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي شركة أعلنت جينيسيس علامة مستقلة للسيارات الفاخرة عام 2015؟",
+    "options": [
+      "كيا",
+      "هيونداي",
+      "تويوتا",
+      "نيسان"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Genesis_Motor"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي علامة سيارات بريطانية اشتهرت بشعار حرف B بين جناحين؟",
+    "options": [
+      "أستون مارتن",
+      "بنتلي",
+      "رولز رويس",
+      "جاكوار"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.bentleymotors.com/en/about-bentley/history-and-heritage/bentley-story.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي علامة فرنسية اشتهرت بشعار زاويتين متوازيتين تتجه قمتهما إلى الأعلى؟",
+    "options": [
+      "بيجو",
+      "رينو",
+      "سيتروين",
+      "بوغاتي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.media.stellantis.com/em-en/citroen/press/new-citroen-brand-identity-and-logo-signal-exciting-energetic-and-modern-era-to-come"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "أي علامة إيطالية اتخذت رمح نبتون ثلاثي الشعب رمزا لها؟",
+    "options": [
+      "ألفا روميو",
+      "لانشيا",
+      "فيات",
+      "مازيراتي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.maserati.com/om/en/brand/stories-of-audacity/100-years-maserati-trident-logo"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 200,
+    "text": "ما الحيوان الذي يظهر في شعار لامبورغيني؟",
+    "options": [
+      "الثور",
+      "الحصان",
+      "الأسد",
+      "النسر"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.lamborghini.com/en-en/node/3191"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "من أسس شركة بوغاتي للسيارات عام 1909؟",
+    "options": [
+      "إيتوري بوغاتي",
+      "جان بوغاتي",
+      "فيرديناند بورشه",
+      "إنزو فيراري"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Ettore_Bugatti"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "من أسس شركة لامبورغيني للسيارات عام 1963؟",
+    "options": [
+      "إنزو فيراري",
+      "ألفيري مازيراتي",
+      "فيروتشيو لامبورغيني",
+      "باتيستا فارينا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.lamborghini.com/en-en/history?sword_list%5B%5D=logos"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "من أسس شركة سيتروين للسيارات عام 1919؟",
+    "options": [
+      "لويس رينو",
+      "أندريه سيتروين",
+      "أرمان بيجو",
+      "أندريه ميشلان"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Citro%C3%ABn"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "ما الاسم الكامل لمؤسس بنتلي المعروف بالأحرف W. O.؟",
+    "options": [
+      "وليام موريس",
+      "هنري رويس",
+      "ديفيد براون",
+      "والتر أوين بنتلي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.bentleymotors.com/en/about-bentley/history-and-heritage/bentley-story.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي مدينة ألمانية تأسست شركة بورشه عام 1931؟",
+    "options": [
+      "ميونخ",
+      "برلين",
+      "كولونيا",
+      "شتوتغارت"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Porsche"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "إلى أي بلدة إيطالية نقل إنزو فيراري مصنعه عام 1943؟",
+    "options": [
+      "مودينا",
+      "مارانيلو",
+      "تورينو",
+      "بولونيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Ferrari"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي مدينة ألمانية شيد مقر بي إم دبليو المعروف بمبنى الأسطوانات الأربع؟",
+    "options": [
+      "شتوتغارت",
+      "فولفسبورغ",
+      "ميونخ",
+      "فرانكفورت"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/BMW_Headquarters"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي مدينة إيطالية تأسست فيات عام 1899؟",
+    "options": [
+      "تورينو",
+      "ميلانو",
+      "روما",
+      "نابولي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Fiat"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "أين وضع محرك فولكس فاغن بيتل الكلاسيكية بالنسبة إلى المحور الخلفي؟",
+    "options": [
+      "أمام المحور الخلفي مباشرة",
+      "خلف المحور الخلفي",
+      "فوق المحور الأمامي",
+      "أمام المحور الأمامي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Volkswagen_Beetle"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام قدمت مازدا طراز MX-5 للمرة الأولى في معرض شيكاغو؟",
+    "options": [
+      "1989",
+      "1979",
+      "1994",
+      "1999"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mazda_MX-5"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام عرضت بورشه السيارة التي أصبحت 911 للمرة الأولى في معرض فرانكفورت؟",
+    "options": [
+      "1953",
+      "1968",
+      "1973",
+      "1963"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.porsche.com/usa/accessoriesandservice/classic/models/911-f/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام طرحت فورد سيارة موديل تي لأول مرة؟",
+    "options": [
+      "1898",
+      "1918",
+      "1908",
+      "1928"
+    ],
+    "correctIndex": 2,
+    "reference": "https://corporate.ford.com/articles/history/the-model-t.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام ظهرت سيتروين DS لأول مرة في معرض باريس للسيارات؟",
+    "options": [
+      "1945",
+      "1965",
+      "1955",
+      "1975"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.media.stellantis.com/em-en/ds/press/ds-a-70-year-history"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام كشفت جاكوار عن سيارة إي تايب في معرض جنيف؟",
+    "options": [
+      "1951",
+      "1966",
+      "1971",
+      "1961"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.jaguar.com/en-xi/jdx/about-jaguar/jaguar-classic/e-type-60-collection.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "في أي عام بدأ إنتاج لاند روفر سيريز 1؟",
+    "options": [
+      "1948",
+      "1938",
+      "1958",
+      "1968"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Land_Rover_series"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 300,
+    "text": "من صمم سيارة ميني الأصلية التي ظهرت عام 1959؟",
+    "options": [
+      "جورجيتو جوجارو",
+      "أليك إيسيجونيس",
+      "مارسيلو غانديني",
+      "مالكولم ساير"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.mini.com/en_MS/home/heritage/the-creator-of-an-iconic-car-alec-issigonis.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "إلى جانب أودي وهورش ودي كيه دبليو، ما العلامة الرابعة التي مثلتها حلقات اتحاد أوتو يونيون عام 1932؟",
+    "options": [
+      "أوبل",
+      "فاندرر",
+      "بورغفارد",
+      "مايباخ"
+    ],
+    "correctIndex": 1,
+    "reference": "https://magazine.audi.com.au/article/the-rings"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "ما المعنى اللاتيني لاسم أودي الذي اختير ترجمة لاسم هورش؟",
+    "options": [
+      "انطلق",
+      "انتصر",
+      "تقدم",
+      "استمع"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.audi.com/de/unternehmenshistorie-17227"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "في أي مجال لصناعة المحركات بدأت بي إم دبليو نشاطها قبل إنتاج السيارات؟",
+    "options": [
+      "محركات السفن",
+      "محركات القطارات",
+      "محركات الطائرات",
+      "محركات الجرارات"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.bmwgroup.com/en/company/history.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "ما العنقود النجمي الذي يشير إليه اسم سوبارو وتستند إليه نجوم شعارها؟",
+    "options": [
+      "الثريا",
+      "القلائص",
+      "خلية النحل",
+      "عنقود البط البري"
+    ],
+    "correctIndex": 0,
+    "reference": "https://contactus.subaru.com/knowledgebase/article/1000017/en-us"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "أي اسم ديني قديم كان من مصادر إلهام اسم مازدا، بحسب الشركة؟",
+    "options": [
+      "أهورا مزدا",
+      "أماتيراسو",
+      "سوسانو",
+      "تسوكويومي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.mazda.com/en/about/history/mark/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "ما المعنى اللاتيني لاسم فولفو؟",
+    "options": [
+      "أنا أنطلق",
+      "أنا أنتصر",
+      "أنا أتدحرج",
+      "أنا أطير"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.volvocars.com/intl/media/press-releases/33C27609B1603EE7/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "على اسم أي مستكشف فرنسي سميت علامة كاديلاك؟",
+    "options": [
+      "صامويل دو شامبلان",
+      "جاك كارتييه",
+      "رينيه روبير دو لا سال",
+      "أنطوان دو لا موت كاديلاك"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Cadillac"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "أي موقع لسباقات صعود المرتفعات ألهم الجزء الأول من اسم أستون مارتن؟",
+    "options": [
+      "شيلسلي والش",
+      "أستون هيل",
+      "بريسكوت هيل",
+      "غودوود هيل"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Aston_Martin"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "من شعار أي مدينة إيطالية أخذ الصليب الأحمر في شعار ألفا روميو؟",
+    "options": [
+      "تورينو",
+      "بولونيا",
+      "ميلانو",
+      "نابولي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Alfa_Romeo"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "في أي مدينة من إقليم الألزاس أسس إيتوري بوغاتي شركته عام 1909؟",
+    "options": [
+      "كولمار",
+      "مولشيم",
+      "مولوز",
+      "ستراسبورغ"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Bugatti"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "ما أول طراز حمل اسم فيراري عند ظهوره عام 1947؟",
+    "options": [
+      "125 S",
+      "166 MM",
+      "250 GT",
+      "340 America"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Ferrari_125_S"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "أي شركة ألمانية قدمت سيارة Ro 80 ذات المحرك الدوار عام 1967؟",
+    "options": [
+      "أوبل",
+      "بورغفارد",
+      "بي إم دبليو",
+      "إن إس يو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/NSU_Ro_80"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "أي شركة أعلنت عام 1981 إحلال اسمها محل اسم داتسون على سياراتها في الولايات المتحدة؟",
+    "options": [
+      "هوندا",
+      "تويوتا",
+      "سوزوكي",
+      "نيسان"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Datsun"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "ما اسم أول سيارة ركوب إنتاجية قدمتها تويوتا عام 1936؟",
+    "options": [
+      "AA",
+      "A1",
+      "G1",
+      "SA"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Toyota"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "من الأخوان اللذان شاركا لويس رينو في تأسيس شركة رينو عام 1899؟",
+    "options": [
+      "مارسيل وبيير رينو",
+      "مارسيل وفرناند رينو",
+      "فرناند وبول رينو",
+      "بيير وبول رينو"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Renault"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 400,
+    "text": "من الشخصان اللذان قادا تأسيس صناعة سيارات فولفو عام 1927؟",
+    "options": [
+      "تشارلز رولز وهنري رويس",
+      "وليام ليونز ووليام والمسلي",
+      "أسار غابريلسون وغوستاف لارسون",
+      "ليونيل مارتن وروبرت بامفورد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.volvocars.com/intl/media/press-releases/33C27609B1603EE7/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "أي شركة اعترضت على تسمية بورشه 901، مما أدى إلى تغيير الاسم إلى 911 عام 1964؟",
+    "options": [
+      "رينو",
+      "سيتروين",
+      "بيجو",
+      "بانار"
+    ],
+    "correctIndex": 2,
+    "reference": "https://newsroom.porsche.com/en/history/porsche-911-evolutionary-history-754-901-ferry-porsche-14641.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما أول مركبة إنتاجية بأربع عجلات طرحتها هوندا للبيع عام 1963؟",
+    "options": [
+      "T360",
+      "S500",
+      "N360",
+      "S600"
+    ],
+    "correctIndex": 0,
+    "reference": "https://global.honda/en/about/history-digest/75years-history/chapter3/section2_1/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما أول طراز إنتاجي من مازدا زود بمحرك دوار وطرح للبيع عام 1967؟",
+    "options": [
+      "فاميليا روتاري كوبيه",
+      "لوتشي روتاري كوبيه",
+      "سافانا RX-3",
+      "كوزمو سبورت"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www2.mazda.com/en/100th/cars/detail_006_cosmosport.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما تسمية أول سيارة بيعت بعلامة بي إم دبليو عام 1929؟",
+    "options": [
+      "3/20",
+      "3/15",
+      "303",
+      "328"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.press.bmwgroup.com/global/article/detail/T0022917EN/80-years-of-bmw-car-production-the-origins-of-efficientdynamics"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "من المهندس الذي طور سيارة مرسيدس 35 حصانا التي تألقت في سباقات نيس عام 1901؟",
+    "options": [
+      "كارل بنز",
+      "فيلهلم مايباخ",
+      "فيرديناند بورشه",
+      "أوغست هورش"
+    ],
+    "correctIndex": 1,
+    "reference": "https://group.mercedes-benz.com/company/tradition/company-history/140-years-milestones.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "من نحت تمثال روح النشوة الذي اعتمدته رولز رويس عام 1911؟",
+    "options": [
+      "رينيه لاليك",
+      "رامبرانت بوغاتي",
+      "فرانسوا بومبون",
+      "تشارلز سايكس"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.rolls-roycemotorcars.com/en_US/inspiring-greatness/values/the-spirit-of-ecstasy.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما اسم مربي ثيران المصارعة الإسباني الذي ارتبطت به تسمية لامبورغيني ميورا؟",
+    "options": [
+      "إدواردو ميورا",
+      "فيرمين بوهوركيز",
+      "فيكتورينو مارتين",
+      "بابلو روميرو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lamborghini"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "من صنع منحوتة الفيل التي استخدمت زينة لغطاء مبرد بوغاتي رويال؟",
+    "options": [
+      "إيتوري بوغاتي",
+      "جان بوغاتي",
+      "رامبرانت بوغاتي",
+      "كارلو بوغاتي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://newsroom.bugatti.com/press-releases/bugatti-legends-type-41-la-royale-a-royal-vehicle"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "أي نوع من التروس ألهم شعار الزاويتين لدى سيتروين؟",
+    "options": [
+      "التروس المخروطية المستقيمة",
+      "التروس الدودية",
+      "التروس المستقيمة الأسنان",
+      "التروس الحلزونية المزدوجة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.media.stellantis.com/em-en/citroen/press/new-citroen-brand-identity-and-logo-signal-exciting-energetic-and-modern-era-to-come"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "من صمم هيكل سيارة بي إم دبليو M1 التي بدأ إنتاجها عام 1978؟",
+    "options": [
+      "مارسيلو غانديني",
+      "ليوناردو فيورافانتي",
+      "جورجيتو جوجارو",
+      "فرانكو سكاليوني"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.giorgettofabriziogiugiaro.it/projects/vehicles/m1"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "في أي محافظة يابانية يقع نهر إيسوزو الذي أخذت شركة السيارات اسمها منه؟",
+    "options": [
+      "آيتشي",
+      "ميه",
+      "شيزوكا",
+      "توتشيغي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.isuzu.co.jp/museum/tms/2017/english/history/"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "أي شركة صنعت محرك أول سيارة أستون مارتن المعروفة بلقب Coal Scuttle عام 1915؟",
+    "options": [
+      "كوفنتري سيمبلكس",
+      "ميدوز",
+      "بريستول",
+      "كوزوورث"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.astonmartin.com/en/our-world/news/2018/7/18/coal-scuttle"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما رمز محرك بي إم دبليو ذي الاثنتي عشرة أسطوانة المستخدم في ماكلارين F1 المخصصة للطرقات؟",
+    "options": [
+      "S70/2",
+      "S70B56",
+      "M70B50",
+      "M73B54"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.bmw-m.com/de/topics/magazine-article-pool/bmw-m-engines.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "من شارك وليام ليونز في تأسيس شركة سوالو سايدكار، أصل شركة جاكوار، عام 1922؟",
+    "options": [
+      "وليام موريس",
+      "وليام والمسلي",
+      "هربرت أوستن",
+      "سيسيل كيمبر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.jaguar.com/en-au/jdx/news/2024/march/jaguar-the-beginning.html"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "ما رقم طراز بوغاتي الكلاسيكي المعروف باسم رويال؟",
+    "options": [
+      "تايب 35",
+      "تايب 57",
+      "تايب 41",
+      "تايب 55"
+    ],
+    "correctIndex": 2,
+    "reference": "https://newsroom.bugatti.com/press-releases/bugatti-legends-type-41-la-royale-a-royal-vehicle"
+  },
+  {
+    "categorySlug": "cars",
+    "points": 500,
+    "text": "أي دار إيطالية صنعت هيكل النسخة الإنتاجية الأصلية من لامبورغيني 350 GT؟",
+    "options": [
+      "بيرتوني",
+      "بينينفارينا",
+      "غيا",
+      "كاروتزيريا تورينغ"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Lamborghini_350_GT"
+  }
+]

@@ -1,0 +1,1107 @@
+[
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في مانشستر يونايتد (2003) ثم ريال مدريد (2009) ثم يوفنتوس (2018) — من هو اللاعب؟",
+    "options": [
+      "ليونيل ميسي",
+      "واين روني",
+      "كريستيانو رونالدو",
+      "لويس سواريز"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Cristiano_Ronaldo"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في برشلونة (2004) ثم باريس سان جيرمان (2021) ثم إنتر ميامي (2023) — من هو اللاعب؟",
+    "options": [
+      "ليونيل ميسي",
+      "كريستيانو رونالدو",
+      "نيمار",
+      "أنخيل دي ماريا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lionel_Messi"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في آيندهوفن (1994) ثم برشلونة (1996) ثم إنتر ميلان (1997) ثم ريال مدريد (2002) — من هو اللاعب؟",
+    "options": [
+      "روماريو",
+      "غابرييل باتيستوتا",
+      "كريستيان فييري",
+      "رونالدو نازاريو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ronaldo_(Brazilian_footballer)"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في باريس سان جيرمان (2001) ثم برشلونة (2003) ثم ميلان (2008) — من هو اللاعب؟",
+    "options": [
+      "كاكا",
+      "رونالدينيو",
+      "ريفالدو",
+      "ريكيلمي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Ronaldinho"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في بوردو (1992) ثم يوفنتوس (1996) ثم ريال مدريد (2001) — من هو اللاعب؟",
+    "options": [
+      "روي كوستا",
+      "ريفالدو",
+      "زين الدين زيدان",
+      "دينيس بيركامب"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Zinedine_Zidane"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في سانتوس (2009) ثم برشلونة (2013) ثم باريس سان جيرمان (2017) ثم الهلال (2023) — من هو اللاعب؟",
+    "options": [
+      "نيمار",
+      "إيدين هازارد",
+      "غاريث بيل",
+      "أليكسيس سانشيز"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Neymar"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في أياكس (2001) ثم يوفنتوس (2004) ثم إنتر ميلان (2006) ثم برشلونة (2009) — من هو اللاعب؟",
+    "options": [
+      "ديدييه دروغبا",
+      "صامويل إيتو",
+      "دافيد فيا",
+      "زلاتان إبراهيموفيتش"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Zlatan_Ibrahimovi%C4%87"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في ريال مدريد (2009) ثم الاتحاد السعودي (2023) — من هو اللاعب؟",
+    "options": [
+      "روبرت ليفاندوفسكي",
+      "كريم بنزيما",
+      "لويس سواريز",
+      "غونزالو هيغواين"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Karim_Benzema"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في بازل (2012) ثم تشيلسي (2014) ثم فيورنتينا (2015، إعارة) ثم روما (2015، إعارة) ثم ليفربول (2017) — من هو اللاعب؟",
+    "options": [
+      "رياض محرز",
+      "ساديو ماني",
+      "محمد صلاح",
+      "رحيم سترلينغ"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Mohamed_Salah"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في بوروسيا دورتموند (2010) ثم بايرن ميونخ (2014) ثم برشلونة (2022) — من هو اللاعب؟",
+    "options": [
+      "روبرت ليفاندوفسكي",
+      "كريم بنزيما",
+      "هاري كين",
+      "إدين دجيكو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Robert_Lewandowski"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في أياكس (2007) ثم ليفربول (2011) ثم برشلونة (2014) ثم أتلتيكو مدريد (2020) — من هو اللاعب؟",
+    "options": [
+      "إدينسون كافاني",
+      "سيرخيو أغويرو",
+      "راداميل فالكاو",
+      "لويس سواريز"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Luis_Su%C3%A1rez_(footballer%2C_born_1987)"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في موناكو (1994) ثم يوفنتوس (1999) ثم أرسنال (1999) ثم برشلونة (2007) — من هو اللاعب؟",
+    "options": [
+      "دافيد تريزيغيه",
+      "تييري هنري",
+      "نيكولا أنيلكا",
+      "رود فان نيستلروي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Thierry_Henry"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في ريال مدريد (2003) ثم لوس أنجلوس غالاكسي (2007) ثم ميلان (2009، إعارة) — من هو اللاعب؟",
+    "options": [
+      "لويس فيغو",
+      "فريدي ليونغبرغ",
+      "ديفيد بيكهام",
+      "ديفيد بنتلي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/David_Beckham"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في بوكا جونيورز (1981) ثم برشلونة (1982) ثم نابولي (1984) — من هو اللاعب؟",
+    "options": [
+      "دييغو مارادونا",
+      "زيكو",
+      "ميشيل بلاتيني",
+      "إنزو فرانشيسكولي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Diego_Maradona"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في موناكو (2015) ثم باريس سان جيرمان (2017، إعارة) ثم ريال مدريد (2024) — من هو اللاعب؟",
+    "options": [
+      "ماركوس راشفورد",
+      "فينيسيوس جونيور",
+      "رافاييل لياو",
+      "كيليان مبابي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Kylian_Mbapp%C3%A9"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في ساوثهامبتون (2014) ثم ليفربول (2016) ثم بايرن ميونخ (2022) ثم النصر السعودي (2023) — من هو اللاعب؟",
+    "options": [
+      "محمد صلاح",
+      "ساديو ماني",
+      "رياض محرز",
+      "سون هيونغ مين"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Sadio_Man%C3%A9"
+  },
+  {
+    "categorySlug": "career",
+    "points": 100,
+    "text": "لعب في بارما (1995) ثم يوفنتوس (2001) ثم باريس سان جيرمان (2018) — من هو اللاعب؟",
+    "options": [
+      "إيكر كاسياس",
+      "بيتر تشيك",
+      "جانلويجي بوفون",
+      "إدوين فان دير سار"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Gianluigi_Buffon"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في ميلان (2003) ثم ريال مدريد (2009) ثم ميلان (2013) — من هو اللاعب؟",
+    "options": [
+      "كاكا",
+      "رونالدينيو",
+      "بابلو أيمار",
+      "خوان رومان ريكيلمي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Kak%C3%A1"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في برشلونة (1995) ثم ريال مدريد (2000) ثم إنتر ميلان (2005) — من هو اللاعب؟",
+    "options": [
+      "ديفيد بيكهام",
+      "روبير بيريس",
+      "مارك أوفرمارس",
+      "لويس فيغو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Lu%C3%ADs_Figo"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في برشلونة (2004) ثم إنتر ميلان (2009) ثم أنجي ماخاتشكالا (2011) ثم تشيلسي (2013) — من هو اللاعب؟",
+    "options": [
+      "ديدييه دروغبا",
+      "صامويل إيتو",
+      "فريديريك كانوتيه",
+      "إيمانويل أديبايور"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Samuel_Eto'o"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في غانغان (2002) ثم مارسيليا (2003) ثم تشيلسي (2004) — من هو اللاعب؟",
+    "options": [
+      "صامويل إيتو",
+      "ياكوبو أييغبيني",
+      "ديدييه دروغبا",
+      "بيني مكارثي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Didier_Drogba"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في أتلتيكو مدريد (2001) ثم ليفربول (2007) ثم تشيلسي (2011) — من هو اللاعب؟",
+    "options": [
+      "فرناندو توريس",
+      "دافيد فيا",
+      "فرناندو موريانتس",
+      "روبرتو سولدادو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Fernando_Torres"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في ريال سرقسطة (2003) ثم فالنسيا (2005) ثم برشلونة (2010) ثم أتلتيكو مدريد (2013) — من هو اللاعب؟",
+    "options": [
+      "فرناندو توريس",
+      "أريتز أدوريز",
+      "ألفارو نيغريدو",
+      "دافيد فيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/David_Villa"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في آيندهوفن (2002) ثم تشيلسي (2004) ثم ريال مدريد (2007) ثم بايرن ميونخ (2009) — من هو اللاعب؟",
+    "options": [
+      "فرانك ريبيري",
+      "آريين روبن",
+      "فلوران مالودا",
+      "خواكين سانشيز"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Arjen_Robben"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في غلطة سراي (2005) ثم مارسيليا (2005) ثم بايرن ميونخ (2007) ثم فيورنتينا (2019) — من هو اللاعب؟",
+    "options": [
+      "آريين روبن",
+      "فلوران مالودا",
+      "فرانك ريبيري",
+      "ريكاردو كواريزما"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Franck_Rib%C3%A9ry"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في فيردر بريمن (2008) ثم ريال مدريد (2010) ثم أرسنال (2013) — من هو اللاعب؟",
+    "options": [
+      "مسعود أوزيل",
+      "دافيد سيلفا",
+      "خوان ماتا",
+      "شينجي كاغاوا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mesut_%C3%96zil"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في ليفربول (2004) ثم ريال مدريد (2009) ثم بايرن ميونخ (2014) — من هو اللاعب؟",
+    "options": [
+      "مايكل كاريك",
+      "أندريا بيرلو",
+      "سيرجيو بوسكيتس",
+      "تشابي ألونسو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Xabi_Alonso"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في أرسنال (2004) ثم مانشستر يونايتد (2012) ثم فنربخشة (2015) — من هو اللاعب؟",
+    "options": [
+      "كلاس يان هونتيلار",
+      "روبن فان بيرسي",
+      "ديرك كويت",
+      "رود فان نيستلروي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Robin_van_Persie"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في إنديبندينتي (2003) ثم أتلتيكو مدريد (2006) ثم مانشستر سيتي (2011) ثم برشلونة (2021) — من هو اللاعب؟",
+    "options": [
+      "كارلوس تيفيز",
+      "غونزالو هيغواين",
+      "سيرخيو أغويرو",
+      "لويس سواريز"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Sergio_Ag%C3%BCero"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في مانشستر يونايتد (2007، إعارة) ثم مانشستر سيتي (2009) ثم يوفنتوس (2013) — من هو اللاعب؟",
+    "options": [
+      "كارلوس تيفيز",
+      "سيرخيو أغويرو",
+      "واين روني",
+      "دييغو ميليتو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Carlos_Tevez"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في أياكس (2002) ثم ريال مدريد (2007) ثم إنتر ميلان (2009) ثم غلطة سراي (2013) — من هو اللاعب؟",
+    "options": [
+      "رافاييل فان دير فارت",
+      "مسعود أوزيل",
+      "يوهان غوركوف",
+      "ويسلي شنايدر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Wesley_Sneijder"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في سبارتا براغ (2001) ثم رين (2002) ثم تشيلسي (2004) ثم أرسنال (2015) — من هو اللاعب؟",
+    "options": [
+      "بيبي رينا",
+      "بيتر تشيك",
+      "فيكتور فالديس",
+      "إيكر كاسياس"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Petr_%C4%8Cech"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في ريال مدريد (1999) ثم بورتو (2015) — من هو اللاعب؟",
+    "options": [
+      "فيكتور فالديس",
+      "بيبي رينا",
+      "إيكر كاسياس",
+      "سانتياغو كانيزاريس"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Iker_Casillas"
+  },
+  {
+    "categorySlug": "career",
+    "points": 200,
+    "text": "لعب في إشبيلية (2004) ثم ريال مدريد (2005) ثم باريس سان جيرمان (2021) — من هو اللاعب؟",
+    "options": [
+      "سيرخيو راموس",
+      "جيرارد بيكيه",
+      "بيبي",
+      "راؤول ألبيول"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Sergio_Ramos"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في باير ليفركوزن (2001) ثم توتنهام (2006) ثم مانشستر يونايتد (2008) ثم فولهام (2012) — من هو اللاعب؟",
+    "options": [
+      "روبي كين",
+      "رومان بافليوتشينكو",
+      "بيتر كراوتش",
+      "ديميتار برباتوف"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Dimitar_Berbatov"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في فنربخشة (2005) ثم بولتون (2006) ثم تشيلسي (2008) — من هو اللاعب؟",
+    "options": [
+      "لويس ساها",
+      "نيكولا أنيلكا",
+      "جبريل سيسيه",
+      "فريديريك بيكيون"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Nicolas_Anelka"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في فيردر بريمن (2004) ثم بايرن ميونخ (2007) ثم لاتسيو (2011) — من هو اللاعب؟",
+    "options": [
+      "ماريو غوميز",
+      "لوكاس بودولسكي",
+      "ميروسلاف كلوزه",
+      "كيفن كوراني"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Miroslav_Klose"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في مانشستر يونايتد (2002) ثم فياريال (2004) ثم أتلتيكو مدريد (2007) ثم إنتر ميلان (2011) — من هو اللاعب؟",
+    "options": [
+      "دييغو فورلان",
+      "دييغو ميليتو",
+      "كلاوديو بيزارو",
+      "روي ماكاي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Diego_Forl%C3%A1n"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في بارما (1996) ثم لاتسيو (2000) ثم إنتر ميلان (2002) ثم تشيلسي (2003) — من هو اللاعب؟",
+    "options": [
+      "كريستيان فييري",
+      "فينتشنزو مونتيلا",
+      "فيليبو إنزاغي",
+      "هيرنان كريسبو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Hern%C3%A1n_Crespo"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في بارما (1998) ثم لاتسيو (1999) ثم مانشستر يونايتد (2001) ثم تشيلسي (2003) — من هو اللاعب؟",
+    "options": [
+      "بول سكولز",
+      "خوان سيباستيان فيرون",
+      "كلارنس سيدورف",
+      "غايزكا مندييتا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Juan_Sebasti%C3%A1n_Ver%C3%B3n"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في كايزرسلاوترن (1997) ثم باير ليفركوزن (1999) ثم بايرن ميونخ (2002) ثم تشيلسي (2006) — من هو اللاعب؟",
+    "options": [
+      "فرانك لامبارد",
+      "ستيفن جيرارد",
+      "مايكل بالاك",
+      "ديان ستانكوفيتش"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Michael_Ballack"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في باستيا (2000) ثم ليون (2003) ثم تشيلسي (2005) — من هو اللاعب؟",
+    "options": [
+      "مايكل إيسيان",
+      "سولي مونتاري",
+      "ستيفن أبياه",
+      "ديدييه زوكورا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Michael_Essien"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في كورينثيانز (2005) ثم وست هام يونايتد (2006) ثم ليفربول (2007) ثم برشلونة (2010) — من هو اللاعب؟",
+    "options": [
+      "إستيبان كامبياسو",
+      "فرناندو غاغو",
+      "لوكاس ليفا",
+      "خافيير ماسكيرانو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Javier_Mascherano"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في ريال مدريد (2002) ثم إنتر ميلان (2004) ثم ليستر سيتي (2014) ثم أولمبياكوس (2015) — من هو اللاعب؟",
+    "options": [
+      "خافيير ماسكيرانو",
+      "إستيبان كامبياسو",
+      "ديفيد بيتزارو",
+      "كريستيان ليديسما"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Esteban_Cambiasso"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في باير ليفركوزن (2001) ثم بايرن ميونخ (2004) ثم إنتر ميلان (2009) ثم يوفنتوس (2012) — من هو اللاعب؟",
+    "options": [
+      "خوان سيلفيرا",
+      "روكي جونيور",
+      "لوسيو",
+      "كريس"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/L%C3%BAcio"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في روما (2000) ثم ريال مدريد (2004) ثم إنتر ميلان (2005) ثم بازل (2014) — من هو اللاعب؟",
+    "options": [
+      "والتر صامويل",
+      "روبرتو أيالا",
+      "غابرييل ميليتو",
+      "نيكولاس بورديسو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Walter_Samuel"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في سان لورينزو (2002) ثم إسبانيول (2005) ثم مانشستر سيتي (2008) ثم وست هام يونايتد (2017) — من هو اللاعب؟",
+    "options": [
+      "باكاري سانيا",
+      "ألفارو أربيلوا",
+      "غلين جونسون",
+      "بابلو زاباليتا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Pablo_Zabaleta"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في نيس (2000) ثم موناكو (2002) ثم مانشستر يونايتد (2006) ثم يوفنتوس (2014) — من هو اللاعب؟",
+    "options": [
+      "غايل كليشي",
+      "باتريس إيفرا",
+      "إريك أبيدال",
+      "أشلي كول"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Patrice_Evra"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في برشلونة (2000) ثم فياريال (2002) ثم ليفربول (2005) ثم نابولي (2013، إعارة) — من هو اللاعب؟",
+    "options": [
+      "فيكتور فالديس",
+      "دييغو لوبيز",
+      "بيبي رينا",
+      "ميغيل أنخيل مويا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Pepe_Reina"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في برشلونة (2002) ثم مانشستر يونايتد (2015) ثم ستاندار لييج (2016، إعارة) ثم ميدلزبره (2016) — من هو اللاعب؟",
+    "options": [
+      "فيكتور فالديس",
+      "بيبي رينا",
+      "أندريس بالوب",
+      "دييغو لوبيز"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/V%C3%ADctor_Vald%C3%A9s"
+  },
+  {
+    "categorySlug": "career",
+    "points": 300,
+    "text": "لعب في أياكس (1990) ثم يوفنتوس (1999) ثم فولهام (2001) ثم مانشستر يونايتد (2005) — من هو اللاعب؟",
+    "options": [
+      "إد دي خوي",
+      "رود هيسب",
+      "ساندر فيسترفيلد",
+      "إدوين فان دير سار"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Edwin_van_der_Sar"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في بنفيكا (2009) ثم مالقا (2012) ثم أولمبياكوس (2013) ثم هيلاس فيرونا (2014) — من هو اللاعب؟",
+    "options": [
+      "خافيير بورتيو",
+      "خافيير سافيولا",
+      "إرنستو شيفانتون",
+      "ماورو زاراتي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Javier_Saviola"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في فالنسيا (2001) ثم ريال سرقسطة (2006) ثم بنفيكا (2008) — من هو اللاعب؟",
+    "options": [
+      "أندريس داليساندرو",
+      "أرييل إيباغازا",
+      "بابلو أيمار",
+      "خوان رومان ريكيلمي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Pablo_Aimar"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في ريفر بليت (2000) ثم فولفسبورغ (2003) ثم بورتسموث (2006، إعارة) ثم ريال سرقسطة (2006، إعارة) — من هو اللاعب؟",
+    "options": [
+      "أندريس داليساندرو",
+      "بابلو أيمار",
+      "داميان مانسو",
+      "فيديريكو إنسوا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Andr%C3%A9s_D'Alessandro"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في سبارتا براغ (1998) ثم بوروسيا دورتموند (2001) ثم أرسنال (2006) — من هو اللاعب؟",
+    "options": [
+      "ألكسندر هليب",
+      "تيم بوروفسكي",
+      "بيوتر تروخوفسكي",
+      "توماش روزيتسكي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Tom%C3%A1%C5%A1_Rosick%C3%BD"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في شتوتغارت (2000) ثم أرسنال (2005) ثم برشلونة (2008) ثم شتوتغارت (2009، إعارة) — من هو اللاعب؟",
+    "options": [
+      "توماش روزيتسكي",
+      "ألكسندر هليب",
+      "ألكسندر موستوفوي",
+      "أندريه أرشافين"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Alexander_Hleb"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في راسينغ سانتاندير (2002) ثم وست هام يونايتد (2005) ثم ليفربول (2007) ثم تشيلسي (2010) — من هو اللاعب؟",
+    "options": [
+      "لويس غارسيا",
+      "ستيد مالبرانك",
+      "يوسي بنعيون",
+      "ستيفن بينار"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Yossi_Benayoun"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في بوروسيا دورتموند (2006) ثم إيفرتون (2007، إعارة) ثم توتنهام (2011) — من هو اللاعب؟",
+    "options": [
+      "ستيفن بينار",
+      "ليون عثمان",
+      "نيكو كرانيتشار",
+      "يوسي بنعيون"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Steven_Pienaar"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في هايدوك سبليت (2005) ثم بورتسموث (2006) ثم توتنهام (2009) ثم دينامو كييف (2012) — من هو اللاعب؟",
+    "options": [
+      "يوسي بنعيون",
+      "ستيفن بينار",
+      "توماش روزيتسكي",
+      "نيكو كرانيتشار"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Niko_Kranj%C4%8Dar"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في فولفسبورغ (2001) ثم أتلتيكو مدريد (2005) ثم مانشستر سيتي (2007) ثم بولتون (2010) — من هو اللاعب؟",
+    "options": [
+      "ستيوارت داونينغ",
+      "مارتن بيتروف",
+      "مورتن غامست بيدرسن",
+      "ألبرت رييرا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Martin_Petrov"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في رين (2004) ثم ليون (2006) ثم سبارتاك موسكو (2012) ثم أرسنال (2014، إعارة) — من هو اللاعب؟",
+    "options": [
+      "سيباستيان لارسن",
+      "أندرس سفينسون",
+      "كيم كالستروم",
+      "توبياس ليندروث"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Kim_K%C3%A4llstr%C3%B6m"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في نانت (2001) ثم ليون (2006) ثم مالقا (2011) ثم موناكو (2013) — من هو اللاعب؟",
+    "options": [
+      "جيريمي تولالان",
+      "ألو ديارا",
+      "ريو مافوبا",
+      "جيريمي كليمان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/J%C3%A9r%C3%A9my_Toulalan"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في ليل (2001) ثم ليون (2008) ثم أستون فيلا (2011) ثم أولمبياكوس (2011، إعارة) — من هو اللاعب؟",
+    "options": [
+      "ستيفان مبيا",
+      "أشيل إيمانا",
+      "لاندري نغويمو",
+      "جان ماكون"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Jean_Makoun"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في فالنسيا (2003) ثم ليفربول (2005) ثم يوفنتوس (2008) ثم باريس سان جيرمان (2011) — من هو اللاعب؟",
+    "options": [
+      "سولي مونتاري",
+      "محمد سيسوكو",
+      "ألو ديارا",
+      "ديدييه زوكورا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Mohamed_Sissoko"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في كليرمون (2008) ثم أودينيزي (2010) ثم روما (2013) ثم بايرن ميونخ (2014) — من هو اللاعب؟",
+    "options": [
+      "أيمن عبد النور",
+      "برونو ألفيش",
+      "مهدي بنعطية",
+      "فيديريكو فازيو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Medhi_Benatia"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في كييفو (2003) ثم باليرمو (2004) ثم فولفسبورغ (2008) ثم يوفنتوس (2011) — من هو اللاعب؟",
+    "options": [
+      "أندريا بارزالي",
+      "كريستيان زاكاردو",
+      "نيكولا ليغروتاليي",
+      "دانييلي بونيرا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Andrea_Barzagli"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في فيورنتينا (2005، إعارة) ثم جنوى (2011) ثم بورصة سبور (2013) — من هو اللاعب؟",
+    "options": [
+      "مورغان دي سانكتيس",
+      "فابيان كاريني",
+      "ماركو أميليا",
+      "سيباستيان فراي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/S%C3%A9bastien_Frey"
+  },
+  {
+    "categorySlug": "career",
+    "points": 400,
+    "text": "لعب في كروزيرو (2002) ثم آيندهوفن (2004) ثم توتنهام (2008) ثم هوفنهايم (2013، إعارة) — من هو اللاعب؟",
+    "options": [
+      "دوني",
+      "إيوريلو غوميز",
+      "جوليو سيزار",
+      "هيلتون"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Heurelho_Gomes"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في ميسينا (1989) ثم باري (1992) ثم لاتسيو (1996) ثم نابولي (1997، إعارة) — من هو اللاعب؟",
+    "options": [
+      "داريو هوبنر",
+      "أندريا سيلينزي",
+      "إيغور بروتي",
+      "ماوريزيو غانز"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Igor_Protti"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في تشيزينا (1992) ثم بريشيا (1997) ثم بياتشينزا (2001) — من هو اللاعب؟",
+    "options": [
+      "داريو هوبنر",
+      "إيغور بروتي",
+      "باسكواله لويسو",
+      "ستيفان شوخ"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Dario_H%C3%BCbner"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في أتالانتا (2005) ثم تورينو (2007) ثم نوفارا (2009) — من هو اللاعب؟",
+    "options": [
+      "نيكولا بوتزي",
+      "إميليانو بوناتزولي",
+      "دافيد دي ميكيلي",
+      "نيكولا فينتولا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Nicola_Ventola"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في سيينا (2007) ثم باليرمو (2010) ثم سامبدوريا (2011) ثم إمبولي (2012، إعارة) — من هو اللاعب؟",
+    "options": [
+      "ماسيمو مارازينا",
+      "ماسيمو ماكاروني",
+      "برناردو كورادي",
+      "توماسو روكي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Massimo_Maccarone"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في مودينا (2003) ثم ميسينا (2004) ثم ريجينا (2005) ثم تورينو (2008) — من هو اللاعب؟",
+    "options": [
+      "كريستيانو لوكاريلي",
+      "روبرتو موتسي",
+      "نيكولا أموروزو",
+      "نيكولا كاتشا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Nicola_Amoruso"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في ساسولو (2014) ثم بولونيا (2015) ثم بيروجيا (2016) ثم إمبولي (2018) — من هو اللاعب؟",
+    "options": [
+      "ماتيو بريغي",
+      "دافيد بيونديني",
+      "دانييلي ديسينا",
+      "دانييلي غالوبا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Matteo_Brighi"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في سلتيك (2007) ثم باري (2009) ثم باليرمو (2012) ثم هيلاس فيرونا (2013) — من هو اللاعب؟",
+    "options": [
+      "ماركو دوناديل",
+      "مانويلي بلازي",
+      "كريستيان بروكي",
+      "ماسيمو دوناتي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Massimo_Donati"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في فيورنتينا (2004) ثم إشبيلية (2005) ثم أولمبياكوس (2009) ثم مالقا (2011) — من هو اللاعب؟",
+    "options": [
+      "فينتشنزو غريلا",
+      "إنزو ماريسكا",
+      "سيموني باروني",
+      "مانويلي بلازي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Enzo_Maresca"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في ستراسبورغ (1992) ثم إيفرتون (1998) ثم لانس (1999) ثم ليدز يونايتد (2000) — من هو اللاعب؟",
+    "options": [
+      "سابري لموشي",
+      "بنوا كويه",
+      "أوليفييه داكور",
+      "ليونيل ليتزي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Olivier_Dacourt"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في نيس (2004) ثم ليل (2008) ثم ديجون (2016) — من هو اللاعب؟",
+    "options": [
+      "فلوران بالمون",
+      "بنوا بيدريتي",
+      "غريغوري برو مونتيرو",
+      "رومان بيتو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Florent_Balmont"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في نانت (1996) ثم باريس سان جيرمان (2006) ثم ليل (2009) ثم باستيا (2012) — من هو اللاعب؟",
+    "options": [
+      "نيكولا دوشيز",
+      "تيدي ريشير",
+      "جانوفا",
+      "ميكايل لاندرو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Micka%C3%ABl_Landreau"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في كريتاي (1998) ثم نيس (2001) ثم سوشو (2004) ثم مونبلييه (2009) — من هو اللاعب؟",
+    "options": [
+      "دافيد هيلبويك",
+      "رومان بيتو",
+      "ستيفان دالمات",
+      "لوران باتليس"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Romain_Pitau"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في ريكرياتيفو هويلفا (2006) ثم أتلتيكو مدريد (2008) ثم سبورتينغ لشبونة (2010) ثم ريال سرقسطة (2010، إعارة) — من هو اللاعب؟",
+    "options": [
+      "أنطوني لو تاليك",
+      "دافيد بيليون",
+      "فلوران سيناما بونغول",
+      "جيريمي ألياديير"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Florent_Sinama_Pongolle"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في رويال أنتويرب (2017) ثم غينت (2020) ثم فيسترلو (2022) — من هو اللاعب؟",
+    "options": [
+      "سنان بولات",
+      "سيلفيو لونغ الابن",
+      "سيركان كيرينتيلي",
+      "فولكان باباجان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Sinan_Bolat"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في دينامو زغرب (1992) ثم إنتر ميلان (1999) ثم ميلان (2002) ثم موناكو (2008) — من هو اللاعب؟",
+    "options": [
+      "إيغور تودور",
+      "روبرت كوفاتش",
+      "يوسيب شيمونيتش",
+      "داريو شيميتش"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Dario_%C5%A0imi%C4%87"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في ليون (2003) ثم نابولي (2013) ثم سندرلاند (2014) — من هو اللاعب؟",
+    "options": [
+      "فرانسوا كلير",
+      "أنتوني ريفيير",
+      "أنطوني فان دين بوري",
+      "رود فاني"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Anthony_R%C3%A9veill%C3%A8re"
+  },
+  {
+    "categorySlug": "career",
+    "points": 500,
+    "text": "لعب في غونيون (1994) ثم باستيا (1997) ثم موناكو (2000) ثم مارسيليا (2001، إعارة) — من هو اللاعب؟",
+    "options": [
+      "سيلفان أرمان",
+      "ستيفان بيشوت",
+      "فرانك جورييتي",
+      "غريغوري تافورو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Franck_Jurietti"
+  }
+]

@@ -1,0 +1,1107 @@
+[
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة المملكة العربية السعودية؟",
+    "options": [
+      "الرياض",
+      "جدة",
+      "مكة المكرمة",
+      "الدمام"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Riyadh"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة مصر في عام 2020؟",
+    "options": [
+      "الإسكندرية",
+      "الأقصر",
+      "أسوان",
+      "القاهرة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Cairo"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة فرنسا؟",
+    "options": [
+      "ليون",
+      "مرسيليا",
+      "باريس",
+      "نيس"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Paris"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة اليابان؟",
+    "options": [
+      "أوساكا",
+      "طوكيو",
+      "كيوتو",
+      "ناغويا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Tokyo"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة المملكة المتحدة؟",
+    "options": [
+      "مانشستر",
+      "لندن",
+      "ليفربول",
+      "برمنغهام"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/London"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة إيطاليا؟",
+    "options": [
+      "روما",
+      "ميلانو",
+      "نابولي",
+      "تورينو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Rome"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة إسبانيا؟",
+    "options": [
+      "برشلونة",
+      "إشبيلية",
+      "فالنسيا",
+      "مدريد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Madrid"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "في أي قارة تقع البرازيل؟",
+    "options": [
+      "أمريكا الشمالية",
+      "أفريقيا",
+      "أمريكا الجنوبية",
+      "أوروبا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Brazil"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "على أي بحر تقع مدينة جدة؟",
+    "options": [
+      "البحر المتوسط",
+      "البحر الأسود",
+      "البحر الأحمر",
+      "بحر العرب"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Jeddah"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما النهر الذي يمر بمدينة القاهرة؟",
+    "options": [
+      "دجلة",
+      "النيل",
+      "الفرات",
+      "الأردن"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Cairo"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "في أي دولة يقع جبل فوجي؟",
+    "options": [
+      "اليابان",
+      "الصين",
+      "الهند",
+      "تايلاند"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mount_Fuji"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "في أي مدينة مصرية تقع أهرامات خوفو وخفرع ومنقرع؟",
+    "options": [
+      "أسوان",
+      "بورسعيد",
+      "الإسماعيلية",
+      "الجيزة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Giza_pyramid_complex"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "في أي دولة تقع مدينة دبي؟",
+    "options": [
+      "المملكة العربية السعودية",
+      "سلطنة عمان",
+      "مملكة البحرين",
+      "الإمارات العربية المتحدة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Dubai"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "في أي دولة تقع مدينة مراكش؟",
+    "options": [
+      "الجزائر",
+      "تونس",
+      "المغرب",
+      "ليبيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Marrakesh"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما عاصمة لبنان؟",
+    "options": [
+      "طرابلس",
+      "بيروت",
+      "صيدا",
+      "صور"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Beirut"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "ما المحيط الذي يقع بين آسيا والأمريكتين؟",
+    "options": [
+      "المحيط الهادئ",
+      "المحيط الأطلسي",
+      "المحيط الهندي",
+      "المحيط الجنوبي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Pacific_Ocean"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 100,
+    "text": "إلى أي سلسلة جبلية ينتمي جبل إيفرست؟",
+    "options": [
+      "الهيمالايا",
+      "الألب",
+      "الأنديز",
+      "الأطلس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mount_Everest"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة كندا؟",
+    "options": [
+      "تورونتو",
+      "مونتريال",
+      "فانكوفر",
+      "أوتاوا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ottawa"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة تركيا؟",
+    "options": [
+      "إسطنبول",
+      "إزمير",
+      "أنقرة",
+      "بورصة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Ankara"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة المغرب؟",
+    "options": [
+      "الدار البيضاء",
+      "الرباط",
+      "فاس",
+      "طنجة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Rabat"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة سلطنة عمان؟",
+    "options": [
+      "صلالة",
+      "مسقط",
+      "نزوى",
+      "صحار"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Muscat"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة الإمارات العربية المتحدة؟",
+    "options": [
+      "أبوظبي",
+      "دبي",
+      "الشارقة",
+      "عجمان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Abu_Dhabi"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما النهر الذي يمر وسط مدينة بغداد؟",
+    "options": [
+      "الفرات",
+      "العاصي",
+      "الليطاني",
+      "دجلة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Baghdad"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما النهر المرتبط بمدينة دمشق ويمر فيها؟",
+    "options": [
+      "العاصي",
+      "الأردن",
+      "بردى",
+      "الليطاني"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Barada"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما البحران اللذان تصل بينهما قناة السويس؟",
+    "options": [
+      "البحر الأسود والبحر الأحمر",
+      "البحر المتوسط وبحر العرب",
+      "البحر المتوسط والبحر الأحمر",
+      "البحر الأسود وبحر قزوين"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Suez_Canal"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما المضيق الذي يصل البحر المتوسط بالمحيط الأطلسي؟",
+    "options": [
+      "مضيق هرمز",
+      "مضيق جبل طارق",
+      "مضيق باب المندب",
+      "مضيق البوسفور"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Strait_of_Gibraltar"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "في أي قارة تمتد جبال الأنديز؟",
+    "options": [
+      "أمريكا الجنوبية",
+      "أمريكا الشمالية",
+      "أوروبا",
+      "أفريقيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Andes"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "في أي دولة يقع جبل كليمنجارو؟",
+    "options": [
+      "كينيا",
+      "أوغندا",
+      "إثيوبيا",
+      "تنزانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Mount_Kilimanjaro"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "إلى أي مملكة كانت غرينلاند تنتمي بوصفها إقليما يتمتع بالحكم الذاتي في عام 2020؟",
+    "options": [
+      "النرويج",
+      "السويد",
+      "هولندا",
+      "الدنمارك"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Greenland"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "إلى أي دولة تنتمي جزيرة صقلية؟",
+    "options": [
+      "اليونان",
+      "إسبانيا",
+      "إيطاليا",
+      "فرنسا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Sicily"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما النهر الذي يفصل بين بودا وبست في العاصمة المجرية؟",
+    "options": [
+      "الراين",
+      "الدانوب",
+      "السين",
+      "التايمز"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Budapest"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما عاصمة هولندا؟",
+    "options": [
+      "أمستردام",
+      "روتردام",
+      "لاهاي",
+      "أوتريخت"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Amsterdam"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "في أي دولة تقع مدينة كيب تاون؟",
+    "options": [
+      "جنوب أفريقيا",
+      "ناميبيا",
+      "أنغولا",
+      "موزمبيق"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Cape_Town"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 200,
+    "text": "ما القارتان اللتان يفصل بينهما البحر الأحمر؟",
+    "options": [
+      "أوروبا وآسيا",
+      "أفريقيا وأوروبا",
+      "أستراليا وآسيا",
+      "أفريقيا وآسيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Red_Sea"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما عاصمة سلوفينيا؟",
+    "options": [
+      "زغرب",
+      "براتيسلافا",
+      "ليوبليانا",
+      "سراييفو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Ljubljana"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما عاصمة إستونيا؟",
+    "options": [
+      "ريغا",
+      "تالين",
+      "فيلنيوس",
+      "هلسنكي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Tallinn"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما عاصمة لاوس؟",
+    "options": [
+      "بنوم بنه",
+      "فيينتيان",
+      "هانوي",
+      "بانكوك"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Vientiane"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما عاصمة أرمينيا؟",
+    "options": [
+      "يريفان",
+      "تبليسي",
+      "باكو",
+      "كيشيناو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Yerevan"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما البحران اللذان يربط بينهما مضيق البوسفور؟",
+    "options": [
+      "بحر مرمرة وبحر إيجة",
+      "البحر الأدرياتيكي والبحر الأيوني",
+      "البحر الأحمر وبحر العرب",
+      "البحر الأسود وبحر مرمرة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Bosphorus"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما البحران اللذان يربط بينهما مضيق الدردنيل؟",
+    "options": [
+      "البحر الأسود وبحر مرمرة",
+      "البحر الأيوني والبحر التيراني",
+      "بحر مرمرة وبحر إيجة",
+      "البحر الأحمر والبحر المتوسط"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Dardanelles"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "إلى أي سلسلة جبلية ينتمي جبل توبقال في المغرب؟",
+    "options": [
+      "الأطلس المتوسط",
+      "الأطلس الصغير",
+      "الأطلس الكبير",
+      "جبال الريف"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Toubkal"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "في أي دولة تقع قمة أكونكاغوا؟",
+    "options": [
+      "تشيلي",
+      "الأرجنتين",
+      "بيرو",
+      "بوليفيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Aconcagua"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما الدولتان اللتان تتقاسمان بحيرة تيتيكاكا؟",
+    "options": [
+      "بيرو وبوليفيا",
+      "بيرو والإكوادور",
+      "تشيلي والأرجنتين",
+      "بوليفيا وباراغواي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Titicaca"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما الدول الثلاث التي تطل على بحيرة فيكتوريا؟",
+    "options": [
+      "تنزانيا ورواندا وبوروندي",
+      "كينيا وإثيوبيا وأوغندا",
+      "أوغندا ورواندا وجنوب السودان",
+      "تنزانيا وأوغندا وكينيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Victoria"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "في أي دولة تقع بحيرة بايكال؟",
+    "options": [
+      "منغوليا",
+      "كازاخستان",
+      "الصين",
+      "روسيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Baikal"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما المدينة الجزائرية التي تقع على ضفتي وادي الرمال وتشتهر بجسورها؟",
+    "options": [
+      "وهران",
+      "تلمسان",
+      "قسنطينة",
+      "عنابة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Constantine,_Algeria"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "في أي محافظة عمانية تقع مدينة نزوى؟",
+    "options": [
+      "الظاهرة",
+      "الداخلية",
+      "البريمي",
+      "مسندم"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Nizwa"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "على أي بحر تقع مدينة المكلا اليمنية؟",
+    "options": [
+      "بحر العرب",
+      "البحر الأحمر",
+      "البحر المتوسط",
+      "بحر قزوين"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Mukalla"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "ما الاسم الذي يطلق على الجزء السوداني من البحيرة التي تكونت خلف السد العالي؟",
+    "options": [
+      "بحيرة النوبة",
+      "بحيرة تانا",
+      "بحيرة ألبرت",
+      "بحيرة توركانا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Nasser"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "في أي بحر يصب نهر الراين؟",
+    "options": [
+      "بحر البلطيق",
+      "البحر الأسود",
+      "البحر الأدرياتيكي",
+      "بحر الشمال"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Rhine"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 300,
+    "text": "في أي مسطح مائي يصب نهر الفولغا؟",
+    "options": [
+      "البحر الأسود",
+      "بحر البلطيق",
+      "بحر قزوين",
+      "بحر آزوف"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Volga"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما عاصمة طاجيكستان؟",
+    "options": [
+      "طشقند",
+      "دوشنبه",
+      "بشكيك",
+      "عشق آباد"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Dushanbe"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما عاصمة بوتان؟",
+    "options": [
+      "كاتماندو",
+      "تيمفو",
+      "داكا",
+      "نايبيداو"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Thimphu"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما عاصمة سورينام؟",
+    "options": [
+      "باراماريبو",
+      "جورج تاون",
+      "كايين",
+      "كاستريس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Paramaribo"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما عاصمة بالاو؟",
+    "options": [
+      "كورور",
+      "بالكير",
+      "ماجورو",
+      "نغيرولمود"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ngerulmud"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما المضيق الذي يفصل الجزيرة الجنوبية لنيوزيلندا عن جزيرة ستيوارت؟",
+    "options": [
+      "مضيق كوك",
+      "مضيق باس",
+      "مضيق فوفو",
+      "مضيق توريس"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Foveaux_Strait"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما الاسم الذي يعرف به نهر براهمابوترا في التبت؟",
+    "options": [
+      "لانسانغ",
+      "نو جيانغ",
+      "يارلونغ تسانغبو",
+      "جينشا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Yarlung_Tsangpo"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "على أي جزيرة سويدية تقع مدينة فيسبي؟",
+    "options": [
+      "أولاند",
+      "غوتلاند",
+      "أوروست",
+      "تيورن"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Visby"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "في أي دولة تقع مدينة كوتور على ساحل البحر الأدرياتيكي؟",
+    "options": [
+      "الجبل الأسود",
+      "كرواتيا",
+      "ألبانيا",
+      "سلوفينيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Kotor"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "في أي محافظة عمانية تقع مدينة صلالة؟",
+    "options": [
+      "مسندم",
+      "البريمي",
+      "الظاهرة",
+      "ظفار"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Salalah"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "في أي دولة يقع وادي مزاب الذي يضم مدينة غرداية؟",
+    "options": [
+      "تونس",
+      "المغرب",
+      "ليبيا",
+      "الجزائر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/M%27zab"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "إلى أي سلسلة جبلية تنتمي قمة كي 2؟",
+    "options": [
+      "هندوكوش",
+      "بامير",
+      "قراقرم",
+      "تيان شان"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/K2"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "إلى أي سلسلة جبلية تنتمي قمة تريغلاف في سلوفينيا؟",
+    "options": [
+      "الألب البينينية",
+      "الألب اليوليانية",
+      "الألب الغرايانية",
+      "الألب البرنية"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Triglav"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "على الحدود بين أي دولتين يقع جزء من جبال دراكنزبرغ؟",
+    "options": [
+      "جنوب أفريقيا وليسوتو",
+      "ناميبيا وأنغولا",
+      "كينيا وتنزانيا",
+      "زامبيا وزيمبابوي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Drakensberg"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "في أي دولة تقع دلتا أوكافانغو الداخلية؟",
+    "options": [
+      "بوتسوانا",
+      "ناميبيا",
+      "أنغولا",
+      "زامبيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Okavango_Delta"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "في أي دولة تقع بحيرة سيفان؟",
+    "options": [
+      "جورجيا",
+      "أذربيجان",
+      "تركيا",
+      "أرمينيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Sevan"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما الجزيرتان اللتان يفصل بينهما مضيق بونيفاسيو؟",
+    "options": [
+      "صقلية ومالطا",
+      "كريت ورودس",
+      "كورسيكا وسردينيا",
+      "مايوركا ومينوركا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Strait_of_Bonifacio"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 400,
+    "text": "ما الدولتان اللتان تقع بحيرة خانكا على حدودهما؟",
+    "options": [
+      "روسيا ومنغوليا",
+      "روسيا والصين",
+      "الصين وكازاخستان",
+      "الصين وقرغيزستان"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Khanka"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما المجرى المائي الطبيعي الذي يتفرع من أورينوكو ويصب في ريو نيغرو، رابطا نظامي أورينوكو والأمازون؟",
+    "options": [
+      "أبوري",
+      "كاسيكياري",
+      "كاروني",
+      "ميتا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Casiquiare_canal"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يتكون من التقاء نهري شيلكا وأرغون؟",
+    "options": [
+      "آمور",
+      "لينا",
+      "ينيسي",
+      "أوبي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Amur"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر السيبيري الذي يتكون من التقاء نهري بيا وكاتون؟",
+    "options": [
+      "آمور",
+      "لينا",
+      "ينيسي",
+      "أوبي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Ob_(river)"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يتكون عند التقاء نهري تامبو وأوروبامبا في بيرو؟",
+    "options": [
+      "مارانيون",
+      "نابو",
+      "أوكايالي",
+      "بوتومايو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Ucayali_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يلتقي بنهر مادري دي ديوس قرب مدينة ريبيرالتا في بوليفيا؟",
+    "options": [
+      "ماموري",
+      "غوابوري",
+      "بيني",
+      "ياكوما"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Madre_de_Dios_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما المضيق الذي يفصل شبه جزيرة تايمير عن جزيرة بولشيفيك ويصل بحر كارا ببحر لابتيف؟",
+    "options": [
+      "مضيق ساننيكوف",
+      "مضيق فيلكيتسكي",
+      "مضيق لونغ",
+      "مضيق بيرينغ"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Vilkitsky_Strait"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما المضيق الذي يفصل جزيرة لياخوفسكي الكبرى عن البر الآسيوي ويصل بحر لابتيف ببحر سيبيريا الشرقي؟",
+    "options": [
+      "مضيق دميتري لابتيف",
+      "مضيق ساننيكوف",
+      "مضيق فيلكيتسكي",
+      "مضيق ماتوتشكين"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Dmitry_Laptev_Strait"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما الجزيرة التي يفصلها مضيق كارا عن الطرف الجنوبي لأرخبيل نوفايا زيمليا؟",
+    "options": [
+      "بولشيفيك",
+      "رانغل",
+      "كولغوييف",
+      "فايغاتش"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Kara_Strait"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما أعلى قمة في سلسلة جبال تيان شان؟",
+    "options": [
+      "خان تنغري",
+      "قمة لينين",
+      "قمة إسماعيل ساماني",
+      "جينغيش تشوكوسو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Jengish_Chokusu"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "إلى أي سلسلة جبلية في القارة القطبية الجنوبية ينتمي جبل سيدلي؟",
+    "options": [
+      "سلسلة سينتينل",
+      "سلسلة كوين ألكسندرا",
+      "سلسلة اللجنة التنفيذية",
+      "سلسلة الأمير ألبرت"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Mount_Sidley"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يشكل المخرج النهري لبحيرة زايسان في كازاخستان؟",
+    "options": [
+      "إيلي",
+      "إرتيش",
+      "سير داريا",
+      "إيشيم"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Zaysan"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يصرف مياه بحيرة أونيغا إلى بحيرة لادوغا؟",
+    "options": [
+      "سفير",
+      "نيفا",
+      "فولخوف",
+      "سونا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lake_Onega"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهران اللذان يلتقيان عند بافولابي في مالي لتكوين نهر السنغال؟",
+    "options": [
+      "بافينغ وباكوي",
+      "النيجر وباني",
+      "شاري ولوغون",
+      "فولتا الأسود وفولتا الأبيض"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Senegal_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "إلى أي نهر ينضم نهر لوغون عند نجامينا؟",
+    "options": [
+      "بينوي",
+      "أوبانغي",
+      "كاساي",
+      "شاري"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Logone_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي ينقل مياه بحيرة كيفو إلى بحيرة تنجانيقا؟",
+    "options": [
+      "لوكوجا",
+      "كاجيرا",
+      "روزيزي",
+      "مالاغاراسي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Ruzizi_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "ما النهر الذي يخرج من بحيرة ملاوي ثم يصب في نهر الزامبيزي؟",
+    "options": [
+      "كافوي",
+      "شيري",
+      "لوانغوا",
+      "كواندو"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Shire_River"
+  },
+  {
+    "categorySlug": "geo",
+    "points": 500,
+    "text": "في أي خليج يصب نهر سالوين؟",
+    "options": [
+      "خليج تونكين",
+      "خليج مارتابان",
+      "خليج تايلاند",
+      "خليج عدن"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Salween"
+  }
+]

@@ -35,8 +35,8 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U quiz" --health-interval 2s --health-timeout 3s --health-retries 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build image
         run: |
@@ -86,4 +86,6 @@ jobs:
               if [ "$i" = 30 ]; then docker compose logs --tail 80 app; exit 1; fi
               sleep 2
             done
+            # New files in bank/ arrive as pending proposals; already-loaded questions are skipped.
+            docker compose exec -T app node --import tsx src/scripts/load-bank.ts
             docker image prune -f > /dev/null

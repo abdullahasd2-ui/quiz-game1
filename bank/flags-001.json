@@ -1,0 +1,1042 @@
+[
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتوسط علمها أرزة خضراء على شريط أبيض بين شريطين أحمرين؟",
+    "options": [
+      "لبنان",
+      "الأردن",
+      "العراق",
+      "تونس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Lebanon"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها الأخضر الشهادتين وسيفًا أبيض؟",
+    "options": [
+      "الكويت",
+      "عمان",
+      "السعودية",
+      "الإمارات"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Saudi_Arabia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل تصميم علمها المعتمد عام 1960 خمسين نجمة بيضاء وثلاثة عشر شريطًا أحمر وأبيض؟",
+    "options": [
+      "كندا",
+      "الولايات المتحدة",
+      "أستراليا",
+      "المملكة المتحدة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_United_States"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يعرف علمها باسم «يونيون جاك»، ويجمع صلبانًا حمراء وبيضاء على خلفية زرقاء؟",
+    "options": [
+      "فرنسا",
+      "ألمانيا",
+      "إيطاليا",
+      "المملكة المتحدة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_United_Kingdom"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتكون علمها من ثلاثة أشرطة عمودية، أزرق ثم أبيض ثم أحمر بدءًا من جهة السارية، دون شعار؟",
+    "options": [
+      "هولندا",
+      "روسيا",
+      "فرنسا",
+      "بلجيكا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_France"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتكون علمها من ثلاثة أشرطة أفقية: أسود في الأعلى، وأحمر في الوسط، وذهبي في الأسفل؟",
+    "options": [
+      "ألمانيا",
+      "بلجيكا",
+      "إسبانيا",
+      "النمسا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Germany"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتكون علمها من أشرطة عمودية خضراء وبيضاء وحمراء، دون شعار، بدءًا من جهة السارية؟",
+    "options": [
+      "المكسيك",
+      "إيرلندا",
+      "المجر",
+      "إيطاليا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Italy"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة علمها الوطني مربع أحمر يتوسطه صليب أبيض لا يصل إلى الحواف؟",
+    "options": [
+      "الدنمارك",
+      "سويسرا",
+      "السويد",
+      "النرويج"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Switzerland"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها هلالًا أبيض ونجمة بيضاء على خلفية حمراء، دون دائرة تحيط بهما؟",
+    "options": [
+      "تونس",
+      "تركيا",
+      "الجزائر",
+      "باكستان"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Turkey"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتوسط علمها الأخضر معين أصفر بداخله قرص أزرق مرصع بالنجوم؟",
+    "options": [
+      "الأرجنتين",
+      "المكسيك",
+      "البرتغال",
+      "البرازيل"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Brazil"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها شمسًا ذهبية في شريط أبيض بين شريطين أزرقين فاتحين؟",
+    "options": [
+      "الأرجنتين",
+      "أوروغواي",
+      "باراغواي",
+      "تشيلي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Argentina"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها تسعة أشرطة أفقية زرقاء وبيضاء، وصليبًا أبيض في مربع أزرق عند السارية؟",
+    "options": [
+      "فنلندا",
+      "إسرائيل",
+      "اليونان",
+      "السويد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Greece"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتكون علمها من شريط أصفر عريض بين شريطين أحمرين، بعرض يساوي ضعف عرض كل شريط أحمر؟",
+    "options": [
+      "البرتغال",
+      "ألمانيا",
+      "بلجيكا",
+      "إسبانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Spain"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها صليبًا أصفر ممتدًا إلى الحواف على خلفية زرقاء؟",
+    "options": [
+      "فنلندا",
+      "السويد",
+      "الدنمارك",
+      "سويسرا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Sweden"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يتوسط علمها نسر صلاح الدين الذهبي على أشرطة أفقية حمراء وبيضاء وسوداء؟",
+    "options": [
+      "اليمن",
+      "العراق",
+      "مصر",
+      "السودان"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Egypt"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 100,
+    "text": "أي دولة يحمل علمها هلالًا ونجمة أبيضين على مساحة خضراء، مع شريط أبيض عمودي عند السارية؟",
+    "options": [
+      "باكستان",
+      "الجزائر",
+      "تركيا",
+      "ماليزيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Pakistan"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يحمل علمها صليبًا أبيض يصل إلى الحواف على خلفية حمراء، مع اقتراب ذراعه العمودية من السارية؟",
+    "options": [
+      "سويسرا",
+      "الدنمارك",
+      "النرويج",
+      "فنلندا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Denmark"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يحمل علمها صليبًا أزرق داكنًا محاطًا بالأبيض على خلفية حمراء؟",
+    "options": [
+      "آيسلندا",
+      "الدنمارك",
+      "السويد",
+      "النرويج"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Norway"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يحمل علمها المدني صليبًا أزرق ممتدًا إلى الحواف على خلفية بيضاء؟",
+    "options": [
+      "اليونان",
+      "السويد",
+      "فنلندا",
+      "آيسلندا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Finland"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يحمل علمها صليبًا أحمر محاطًا بالأبيض على خلفية زرقاء؟",
+    "options": [
+      "آيسلندا",
+      "النرويج",
+      "فنلندا",
+      "الدنمارك"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Iceland"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يقسم علمها صليب قطري ذهبي إلى مثلثين أخضرين في الأعلى والأسفل ومثلثين أسودين على الجانبين؟",
+    "options": [
+      "جنوب أفريقيا",
+      "تنزانيا",
+      "كينيا",
+      "جامايكا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Jamaica"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون علمها من دائرة حمراء مائلة قليلًا نحو السارية على خلفية خضراء؟",
+    "options": [
+      "اليابان",
+      "بنغلاديش",
+      "بالاو",
+      "المالديف"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Bangladesh"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتوسط علمها الأبيض نجمة داود الزرقاء بين خطين أفقيين أزرقين؟",
+    "options": [
+      "إسرائيل",
+      "اليونان",
+      "فنلندا",
+      "هندوراس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Israel"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتوسط علمها الأبيض قرص أحمر وأزرق تحيط به أربع مجموعات من الخطوط السوداء؟",
+    "options": [
+      "اليابان",
+      "منغوليا",
+      "كوريا الجنوبية",
+      "كوريا الشمالية"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_South_Korea"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون علمها الوطني من نجمة صفراء خماسية واحدة في وسط خلفية حمراء فقط؟",
+    "options": [
+      "الصين",
+      "المغرب",
+      "فيتنام",
+      "تونس"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Vietnam"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يضم علمها الأزرق العلم البريطاني وست نجوم بيضاء، منها نجمة كبيرة أسفله مباشرة؟",
+    "options": [
+      "أستراليا",
+      "نيوزيلندا",
+      "فيجي",
+      "توفالو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Australia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يضم علمها الأزرق العلم البريطاني وأربع نجوم حمراء ذات حواف بيضاء؟",
+    "options": [
+      "أستراليا",
+      "نيوزيلندا",
+      "فيجي",
+      "ساموا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_New_Zealand"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون شكل علمها من رايتين مثلثتين متصلتين، باللون الأحمر وحافة زرقاء، وفيه رمزا الشمس والقمر؟",
+    "options": [
+      "بوتان",
+      "سريلانكا",
+      "بنغلاديش",
+      "نيبال"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Nepal"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يضم علمها المعتمد عام 1994 شريطًا أخضر على هيئة حرف Y أفقي ومثلثًا أسود عند السارية؟",
+    "options": [
+      "جنوب أفريقيا",
+      "ناميبيا",
+      "زيمبابوي",
+      "تنزانيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_South_Africa"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون علمها من قسم أخضر عند السارية وقسم أحمر أوسع، ويتوسط الحد بينهما شعار الدولة؟",
+    "options": [
+      "إسبانيا",
+      "ليتوانيا",
+      "البرتغال",
+      "رومانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Portugal"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون علمها المدني من ثلاثة أشرطة أفقية متساوية: أحمر ثم أبيض ثم أحمر، دون شعار؟",
+    "options": [
+      "لاتفيا",
+      "بولندا",
+      "إندونيسيا",
+      "النمسا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Austria"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 200,
+    "text": "أي دولة يتكون علمها من شريطين أفقيين متساويين، أزرق في الأعلى وأصفر في الأسفل؟",
+    "options": [
+      "السويد",
+      "أوكرانيا",
+      "كازاخستان",
+      "ليتوانيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Ukraine"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يتوسط علمها تنين أبيض فوق خلفية مقسومة قطريًا إلى أصفر وبرتقالي؟",
+    "options": [
+      "نيبال",
+      "منغوليا",
+      "بوتان",
+      "سريلانكا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Bhutan"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها الأبيض خريطة جزيرة بلون نحاسي فوق غصني زيتون أخضرين؟",
+    "options": [
+      "قبرص",
+      "مالطا",
+      "اليونان",
+      "آيسلندا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Cyprus"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها نسرًا أسود ذا رأسين على خلفية حمراء؟",
+    "options": [
+      "صربيا",
+      "الجبل الأسود",
+      "مولدوفا",
+      "ألبانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Albania"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها الأزرق السماوي شمسًا ذهبية ونسرًا محلقًا وزخرفة عمودية قرب السارية؟",
+    "options": [
+      "أوزبكستان",
+      "كازاخستان",
+      "قيرغيزستان",
+      "تركمانستان"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Kazakhstan"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها رمز «سويومبو» الذهبي على شريط أحمر عند السارية، بجوار شريط أزرق وآخر أحمر؟",
+    "options": [
+      "منغوليا",
+      "بوتان",
+      "كازاخستان",
+      "قيرغيزستان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Mongolia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها أسدًا ذهبيًا يمسك سيفًا، مع شريطين عموديين أخضر وبرتقالي عند السارية؟",
+    "options": [
+      "بوتان",
+      "ميانمار",
+      "سريلانكا",
+      "نيبال"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Sri_Lanka"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يظهر معبد أنغكور وات بالأبيض في وسط علمها؟",
+    "options": [
+      "تايلاند",
+      "كمبوديا",
+      "لاوس",
+      "ميانمار"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Cambodia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يظهر في وسط علمها نسر يقف على صبار ويمسك أفعى، بين شريطين أخضر وأحمر؟",
+    "options": [
+      "غواتيمالا",
+      "الإكوادور",
+      "بوليفيا",
+      "المكسيك"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Mexico"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يتوسط علمها درع ماساي ورمحان متقاطعان، فوق أشرطة سوداء وحمراء وخضراء تفصلها خطوط بيضاء؟",
+    "options": [
+      "أوغندا",
+      "تنزانيا",
+      "إسواتيني",
+      "كينيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Kenya"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها بندقية كلاشينكوف متقاطعة مع معول فوق كتاب مفتوح؟",
+    "options": [
+      "أنغولا",
+      "موزمبيق",
+      "زامبيا",
+      "زيمبابوي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Mozambique"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها طائرًا ذهبيًا فوق نجمة حمراء داخل مثلث أبيض، مع سبعة أشرطة أفقية؟",
+    "options": [
+      "زامبيا",
+      "أوغندا",
+      "زيمبابوي",
+      "كينيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Zimbabwe"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يتوسط علمها طائر كركي داخل دائرة بيضاء فوق ستة أشرطة تكرر الأسود والأصفر والأحمر؟",
+    "options": [
+      "أوغندا",
+      "كينيا",
+      "زيمبابوي",
+      "تنزانيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Uganda"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها شمسًا ذهبية في الزاوية العليا البعيدة عن السارية، فوق أشرطة زرقاء وصفراء وخضراء؟",
+    "options": [
+      "الغابون",
+      "رواندا",
+      "إثيوبيا",
+      "ناميبيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Rwanda"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها الأحمر شمسًا صفراء تمتد منها ثمانية أشعة عريضة إلى الحواف؟",
+    "options": [
+      "قيرغيزستان",
+      "كازاخستان",
+      "الجبل الأسود",
+      "مقدونيا الشمالية"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_North_Macedonia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يحمل علمها الأحمر إطارًا ذهبيًا وشعارًا يتضمن نسرًا ذهبيًا ذا رأسين؟",
+    "options": [
+      "الجبل الأسود",
+      "ألبانيا",
+      "صربيا",
+      "مولدوفا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Montenegro"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 300,
+    "text": "أي دولة يتكون علمها من قسمين عموديين أصفر وأبيض، ويحمل القسم الأبيض تاجًا بابويًا ومفتاحين متقاطعين؟",
+    "options": [
+      "سان مارينو",
+      "مالطا",
+      "الفاتيكان",
+      "ليختنشتاين"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Vatican_City"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها الأزرق شريطين أحمرين عند الحافتين العليا والسفلى، ودائرة بيضاء فيها رجلان يسندان درعًا؟",
+    "options": [
+      "غواتيمالا",
+      "هندوراس",
+      "السلفادور",
+      "بليز"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Belize"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها ذو الأشرطة العمودية الزرقاء والبيضاء طائر الكيتزال ولفافة بتاريخ 15 سبتمبر 1821؟",
+    "options": [
+      "هندوراس",
+      "غواتيمالا",
+      "نيكاراغوا",
+      "كوستاريكا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Guatemala"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة تحمل نسخة علمها المخصصة للمباني والمكاتب العامة عبارة «DIOS UNION LIBERTAD» بين شريطين أزرقين؟",
+    "options": [
+      "السلفادور",
+      "نيكاراغوا",
+      "هندوراس",
+      "غواتيمالا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_El_Salvador"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها الأزرق والأبيض شعارًا مثلثًا فيه خمسة براكين وقوس قزح، تحيط به كتابة ذهبية دون إكليل غار؟",
+    "options": [
+      "السلفادور",
+      "غواتيمالا",
+      "نيكاراغوا",
+      "كوستاريكا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Nicaragua"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة تتوسط علمها خمس نجوم زرقاء مرتبة على هيئة حرف X، على شريط أبيض بين شريطين أزرقين؟",
+    "options": [
+      "السلفادور",
+      "هندوراس",
+      "نيكاراغوا",
+      "غواتيمالا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Honduras"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يتكون علمها المدني من خمسة أشرطة أفقية: أزرق وأبيض وأحمر وأبيض وأزرق، والأحمر ضعف عرض كل شريط آخر؟",
+    "options": [
+      "تايلاند",
+      "باراغواي",
+      "هندوراس",
+      "كوستاريكا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Costa_Rica"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يقسم علمها إلى أربعة أرباع، اثنان أبيضان يحمل أحدهما نجمة زرقاء والآخر نجمة حمراء، وربع أحمر وآخر أزرق؟",
+    "options": [
+      "كوستاريكا",
+      "كوبا",
+      "بنما",
+      "جمهورية الدومينيكان"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Panama"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها مثلثًا أسود عند السارية، وشريطًا ذهبيًا بين شريطين بلون أزرق مخضر؟",
+    "options": [
+      "جزر البهاما",
+      "بربادوس",
+      "جامايكا",
+      "ترينيداد وتوباغو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_the_Bahamas"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يقطع علمها الأزرق الفاتح شريط أفقي أسود تحيط به حافتان بيضاوان رفيعتان؟",
+    "options": [
+      "بوتسوانا",
+      "ليسوتو",
+      "إسواتيني",
+      "ناميبيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Botswana"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يتوسط علمها درع أسود وأبيض فوق رمحين وعصا، على شريط أحمر تحيط به خطوط صفراء وشريطان أزرقان؟",
+    "options": [
+      "كينيا",
+      "ليسوتو",
+      "إسواتيني",
+      "بوتسوانا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Eswatini"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يتوسط علمها المعتمد عام 2006 رسم أسود لقبعة تقليدية، على أشرطة أفقية زرقاء وبيضاء وخضراء؟",
+    "options": [
+      "إسواتيني",
+      "بوتسوانا",
+      "رواندا",
+      "ليسوتو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Lesotho"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة تتفرع ألوان علمها الخمسة كالأشعة من الزاوية السفلى عند السارية، بترتيب أزرق وأصفر وأحمر وأبيض وأخضر؟",
+    "options": [
+      "موريشيوس",
+      "سيشل",
+      "جزر القمر",
+      "الرأس الأخضر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Seychelles"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يتكون علمها من أربعة أشرطة أفقية متساوية، بالترتيب من الأعلى: أحمر وأزرق وأصفر وأخضر؟",
+    "options": [
+      "سيشل",
+      "جزر القمر",
+      "موريشيوس",
+      "مدغشقر"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Mauritius"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها هلالًا أبيض داخل مستطيل أخضر تحيط به مساحة حمراء من الجهات الأربع؟",
+    "options": [
+      "المالديف",
+      "باكستان",
+      "بنغلاديش",
+      "موريتانيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_the_Maldives"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها الأصفر شريطين قطريين أبيض وأسود، وشعارًا أحمر في الوسط؟",
+    "options": [
+      "ماليزيا",
+      "بروناي",
+      "بوتان",
+      "سريلانكا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Brunei"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 400,
+    "text": "أي دولة يحمل علمها أربعة عشر شريطًا أحمر وأبيض، وهلالًا ونجمة صفراء ذات أربعة عشر رأسًا في مستطيل أزرق؟",
+    "options": [
+      "الولايات المتحدة",
+      "ليبيريا",
+      "سنغافورة",
+      "ماليزيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Malaysia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ما نوع الببغاء الذي يظهر داخل القرص الأحمر في علم دومينيكا؟",
+    "options": [
+      "الببغاء الإمبراطوري «سيسيرو»",
+      "الببغاء الرمادي الأفريقي",
+      "ببغاء المكاو القرمزي",
+      "ببغاء الكاكابو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Dominica"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "إلى أي معلم طبيعي يرمز المثلثان المتراكبان في علم سانت لوسيا؟",
+    "options": [
+      "شلالات دياموند",
+      "خليج ماريغو",
+      "قمتي البيتون البركانيتين",
+      "بحيرة الكبريت"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Saint_Lucia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها نجمتين بيضاوين على شريط قطري أسود ذي حافتين صفراوين، بين مثلث أخضر وآخر أحمر؟",
+    "options": [
+      "أنتيغوا وباربودا",
+      "سانت كيتس ونيفيس",
+      "سانت فنسنت والغرينادين",
+      "ترينيداد وتوباغو"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Saint_Kitts_and_Nevis"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها شمسًا ذهبية صاعدة فوق شريط أسود، وتحته أزرق وأبيض، داخل مثلث مقلوب تحيط به مساحتان حمراوان؟",
+    "options": [
+      "سانت كيتس ونيفيس",
+      "سانت لوسيا",
+      "غرينادا",
+      "أنتيغوا وباربودا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Antigua_and_Barbuda"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ما النبات الذي يمثل صادرات زراعية ويظهر رمزه قرب السارية في علم غرينادا؟",
+    "options": [
+      "الكاكاو",
+      "القرنفل",
+      "جوزة الطيب",
+      "البن"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Grenada"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها ثلاثة معينات خضراء مرتبة على شكل حرف V في شريط أصفر عريض بين الأزرق والأخضر؟",
+    "options": [
+      "سانت فنسنت والغرينادين",
+      "سانت كيتس ونيفيس",
+      "أنتيغوا وباربودا",
+      "ترينيداد وتوباغو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Saint_Vincent_and_the_Grenadines"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "كم شعاعًا للشمس الذهبية التي يحلق فوقها طائر الفرقاطة في علم كيريباتي المعتمد عام 1979؟",
+    "options": [
+      "16",
+      "18",
+      "24",
+      "17"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Kiribati"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ماذا تمثل النجوم الصفراء التسع في علم توفالو المعتمد عند الاستقلال عام 1978؟",
+    "options": [
+      "عشائر البلاد التسع",
+      "جزر البلاد التسع",
+      "المقاطعات الانتخابية التسع",
+      "السفن الاستكشافية التسع"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Tuvalu"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ماذا تمثل رؤوس النجمة البيضاء الاثنا عشر في علم ناورو؟",
+    "options": [
+      "جزر الأرخبيل الاثنتي عشرة",
+      "القبائل الأصلية الاثنتي عشرة",
+      "المقاطعات الاثنتي عشرة",
+      "أشهر السنة الاثنا عشر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Nauru"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها الأزرق شريطين قطريين برتقاليًا وأبيض، ونجمة بيضاء ذات 24 شعاعًا، أربعة منها أطول من البقية؟",
+    "options": [
+      "ولايات ميكرونيسيا المتحدة",
+      "جزر سليمان",
+      "كيريباتي",
+      "جزر مارشال"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_the_Marshall_Islands"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة تمثل نجوم علمها البيضاء الأربع ولايات ياب وتشوك وبوهنبي وكوسراي؟",
+    "options": [
+      "ولايات ميكرونيسيا المتحدة",
+      "جزر مارشال",
+      "بالاو",
+      "جزر سليمان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_the_Federated_States_of_Micronesia"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "إلى أي جرم سماوي يرمز القرص الأصفر المائل نحو السارية في علم بالاو؟",
+    "options": [
+      "الشمس عند الشروق",
+      "كوكب الزهرة",
+      "القمر المكتمل",
+      "النجم القطبي"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Palau"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها داخل مثلث أسود ناب خنزير بري يحيط بورقتين متقاطعتين من نبات ناميلي؟",
+    "options": [
+      "فيجي",
+      "جزر سليمان",
+      "بابوا غينيا الجديدة",
+      "فانواتو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Vanuatu"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ما الثمرة التي يمسكها الأسد في أعلى الدرع المرسوم على علم فيجي؟",
+    "options": [
+      "ثمرة جوز هند",
+      "ثمرة كاكاو",
+      "ثمرة أناناس",
+      "ثمرة خبز"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_Fiji"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "ما الذي مثلته النجوم البيضاء الخمس عند اعتماد علم جزر سليمان عام 1977؟",
+    "options": [
+      "أكبر خمس جزر في البلاد",
+      "خمس قبائل مؤسسة للدولة",
+      "التقسيمات الإدارية الخمسة آنذاك",
+      "خمس مجموعات لغوية"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_the_Solomon_Islands"
+  },
+  {
+    "categorySlug": "flags",
+    "points": 500,
+    "text": "أي دولة يحمل علمها الأحمر مثلثًا أسود عند السارية بداخله نجمة بيضاء، ويتراكب المثلث الأسود فوق مثلث أصفر أكبر؟",
+    "options": [
+      "تيمور الشرقية",
+      "فانواتو",
+      "بابوا غينيا الجديدة",
+      "جزر سليمان"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Flag_of_East_Timor"
+  }
+]

@@ -1,0 +1,1107 @@
+[
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب مثله ليونيل ميسي في كأس العالم 2022؟",
+    "options": [
+      "الأرجنتين",
+      "إسبانيا",
+      "البرازيل",
+      "البرتغال"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Lionel_Messi"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب مثله كريستيانو رونالدو في كأس العالم 2022؟",
+    "options": [
+      "فرنسا",
+      "البرتغال",
+      "إيطاليا",
+      "إسبانيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Cristiano_Ronaldo"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب مثله محمد صلاح في كأس العالم 2018؟",
+    "options": [
+      "الجزائر",
+      "تونس",
+      "المغرب",
+      "مصر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Mohamed_Salah"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "في أي دولة تأسس نادي ريال مدريد؟",
+    "options": [
+      "إيطاليا",
+      "إنجلترا",
+      "فرنسا",
+      "إسبانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Real_Madrid_CF"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "من طرفا مباراة الكلاسيكو الإسباني الشهيرة؟",
+    "options": [
+      "برشلونة وإسبانيول",
+      "إشبيلية وريال بيتيس",
+      "ريال مدريد وبرشلونة",
+      "ريال مدريد وأتلتيكو مدريد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/FC_Barcelona#El_Clásico"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "في أي دولة تأسس نادي بايرن ميونخ؟",
+    "options": [
+      "ألمانيا",
+      "هولندا",
+      "النمسا",
+      "سويسرا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/FC_Bayern_Munich"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "في أي دولة تأسس النادي الأهلي القاهري؟",
+    "options": [
+      "المغرب",
+      "تونس",
+      "السعودية",
+      "مصر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Al_Ahly_SC"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "في أي مدينة سعودية تأسس نادي الهلال؟",
+    "options": [
+      "الرياض",
+      "جدة",
+      "الدمام",
+      "مكة المكرمة"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Al_Hilal_SFC"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "في أي مدينة سعودية تأسس نادي الاتحاد؟",
+    "options": [
+      "المدينة المنورة",
+      "الرياض",
+      "الدمام",
+      "جدة"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/Al-Ittihad_Club_(Jeddah)"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "إلى أي دولة ينتمي نادي الوداد الرياضي؟",
+    "options": [
+      "الجزائر",
+      "المغرب",
+      "تونس",
+      "مصر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Wydad_AC"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب فاز بكأس العالم 2022؟",
+    "options": [
+      "فرنسا",
+      "البرازيل",
+      "الأرجنتين",
+      "ألمانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب فاز بكأس العالم 2018؟",
+    "options": [
+      "البرازيل",
+      "فرنسا",
+      "كرواتيا",
+      "ألمانيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/2018_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب فاز بكأس العالم 2014؟",
+    "options": [
+      "ألمانيا",
+      "هولندا",
+      "البرازيل",
+      "الأرجنتين"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب فاز بكأس العالم 2010؟",
+    "options": [
+      "هولندا",
+      "الأرجنتين",
+      "إسبانيا",
+      "ألمانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/2010_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب مثله أسطورة كرة القدم بيليه؟",
+    "options": [
+      "أوروغواي",
+      "الأرجنتين",
+      "البرازيل",
+      "البرتغال"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Pel%C3%A9"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "أي منتخب قاده دييغو مارادونا لاعبًا إلى لقب كأس العالم 1986؟",
+    "options": [
+      "إيطاليا",
+      "الأرجنتين",
+      "إسبانيا",
+      "البرازيل"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Diego_Maradona"
+  },
+  {
+    "categorySlug": "football",
+    "points": 100,
+    "text": "مع أي ناد سعودي بدأ كريستيانو رونالدو اللعب في يناير 2023؟",
+    "options": [
+      "النصر",
+      "الأهلي",
+      "الهلال",
+      "الاتحاد"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Cristiano_Ronaldo"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب فاز بالنسخة الأولى من كأس العالم عام 1930؟",
+    "options": [
+      "أوروغواي",
+      "البرازيل",
+      "الأرجنتين",
+      "إيطاليا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/1930_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب توج بكأس العالم 2006 بعد الفوز على فرنسا بركلات الترجيح؟",
+    "options": [
+      "إيطاليا",
+      "ألمانيا",
+      "إسبانيا",
+      "البرتغال"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2006_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب هزم البرازيل في نهائي كأس العالم 1998؟",
+    "options": [
+      "هولندا",
+      "ألمانيا",
+      "إيطاليا",
+      "فرنسا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/1998_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب فاز ببطولة أمم أوروبا 2012؟",
+    "options": [
+      "إيطاليا",
+      "ألمانيا",
+      "البرتغال",
+      "إسبانيا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/UEFA_Euro_2012_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب أحرز بطولة أمم أوروبا 2016؟",
+    "options": [
+      "فرنسا",
+      "ألمانيا",
+      "البرتغال",
+      "إسبانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/UEFA_Euro_2016_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب فاز ببطولة يورو 2020 التي أقيمت عام 2021؟",
+    "options": [
+      "إنجلترا",
+      "الدنمارك",
+      "إيطاليا",
+      "إسبانيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/UEFA_Euro_2020_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب فاز ببطولة أمم أوروبا 2004 على حساب البرتغال؟",
+    "options": [
+      "فرنسا",
+      "التشيك",
+      "هولندا",
+      "اليونان"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/UEFA_Euro_2004_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد توج بدوري أبطال أوروبا عام 2023؟",
+    "options": [
+      "بايرن ميونخ",
+      "إنتر ميلان",
+      "مانشستر سيتي",
+      "ريال مدريد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/2023_UEFA_Champions_League_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد قلب تأخره بثلاثة أهداف أمام ميلان وفاز بنهائي دوري أبطال أوروبا 2005؟",
+    "options": [
+      "أرسنال",
+      "ليفربول",
+      "تشيلسي",
+      "مانشستر يونايتد"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/2005_UEFA_Champions_League_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد فاز بدوري أبطال أوروبا 2012 على حساب بايرن ميونخ؟",
+    "options": [
+      "مانشستر يونايتد",
+      "تشيلسي",
+      "برشلونة",
+      "ريال مدريد"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/2012_UEFA_Champions_League_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد إيطالي فاز بدوري أبطال أوروبا عام 2010؟",
+    "options": [
+      "إنتر ميلان",
+      "ميلان",
+      "يوفنتوس",
+      "روما"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2010_UEFA_Champions_League_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد فاز بالدوري السعودي موسم 2023-2024؟",
+    "options": [
+      "الأهلي",
+      "الهلال",
+      "النصر",
+      "الاتحاد"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.spl.com.sa/en/news/al-hilal-lift-roshn-saudi-league-trophy-in-glitzy-ceremony"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد فاز بالدوري السعودي موسم 2022-2023؟",
+    "options": [
+      "الهلال",
+      "الاتحاد",
+      "النصر",
+      "الشباب"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/2023%E2%80%9324_Saudi_Pro_League"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد حقق مفاجأة الفوز بالدوري الإنجليزي الممتاز موسم 2015-2016؟",
+    "options": [
+      "توتنهام",
+      "ساوثهامبتون",
+      "ليستر سيتي",
+      "أرسنال"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/2015%E2%80%9316_Leicester_City_F.C._season"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي منتخب عربي وصل إلى نصف نهائي كأس العالم 2022؟",
+    "options": [
+      "تونس",
+      "المغرب",
+      "السعودية",
+      "قطر"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.cafonline.com/en/news/regragui-scoops-cafs-best-coach-of-the-year-prize/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "في أي عام شارك المنتخب السعودي لأول مرة في نهائيات كأس العالم؟",
+    "options": [
+      "1986",
+      "1990",
+      "1998",
+      "1994"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.fifa.com/en/tournaments/mens/worldcup/articles/asia-best-moments"
+  },
+  {
+    "categorySlug": "football",
+    "points": 200,
+    "text": "أي ناد فاز على الزمالك في نهائي دوري أبطال أفريقيا 2020؟",
+    "options": [
+      "الأهلي المصري",
+      "الوداد المغربي",
+      "الترجي التونسي",
+      "الرجاء المغربي"
+    ],
+    "correctIndex": 0,
+    "reference": "https://inside.fifa.com/tournaments/mens/clubworldcup/qatar2020/news/al-ahly-conquer-africa-clinch-club-world-cup-ticket"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من سجل هدف إسبانيا الوحيد في نهائي كأس العالم 2010؟",
+    "options": [
+      "تشافي هيرنانديز",
+      "أندريس إنييستا",
+      "فرناندو توريس",
+      "دافيد فيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/2010_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من سجل هدف ألمانيا الوحيد في نهائي كأس العالم 2014؟",
+    "options": [
+      "ماريو غوتزه",
+      "توماس مولر",
+      "ميروسلاف كلوزه",
+      "أندريه شورله"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من تصدر هدافي كأس العالم 2022 برصيد ثمانية أهداف؟",
+    "options": [
+      "كيليان مبابي",
+      "ليونيل ميسي",
+      "جوليان ألفاريز",
+      "أوليفييه جيرو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من تصدر هدافي كأس العالم 2002 برصيد ثمانية أهداف؟",
+    "options": [
+      "جون دال توماسون",
+      "ميروسلاف كلوزه",
+      "رونالدو البرازيلي",
+      "ريفالدو"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.fifa.com/en/member-associations/france/articles/top-goalscorers-leading-marksmen-golden-boot-fifa-world-cup-qatar-2022"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من كان مدرب برشلونة عند تحقيق الثلاثية: الدوري والكأس ودوري الأبطال، عام 2009؟",
+    "options": [
+      "فرانك ريكارد",
+      "بيب غوارديولا",
+      "تيتو فيلانوفا",
+      "لويس إنريكي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Pep_Guardiola"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من قاد بورتو مدربًا للفوز بدوري أبطال أوروبا عام 2004؟",
+    "options": [
+      "رافاييل بينيتيز",
+      "فيرناندو سانتوس",
+      "أندريه فيلاش بواش",
+      "جوزيه مورينيو"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/2004_UEFA_Champions_League_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من كان مدرب مانشستر يونايتد عند الفوز بدوري أبطال أوروبا عام 1999؟",
+    "options": [
+      "ديفيد مويس",
+      "مات بازبي",
+      "رون أتكينسون",
+      "أليكس فيرغسون"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/024f-0e9981cfa27a-7a6e0cfdd980-1000--zidane-back-at-madrid-the-champions-league-super-coaches/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من قاد ريال مدريد مدربًا للفوز بدوري أبطال أوروبا عام 2016؟",
+    "options": [
+      "زين الدين زيدان",
+      "كارلو أنشيلوتي",
+      "رافاييل بينيتيز",
+      "جوزيه مورينيو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/024f-0e9981cfa27a-7a6e0cfdd980-1000--zidane-back-at-madrid-the-champions-league-super-coaches/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من كان مدرب فرنسا عند الفوز بكأس العالم 2018؟",
+    "options": [
+      "ريمون دومينيك",
+      "إيميه جاكيه",
+      "لوران بلان",
+      "ديدييه ديشان"
+    ],
+    "correctIndex": 3,
+    "reference": "https://fr.wikipedia.org/wiki/%C3%89quipe_de_France_de_football_%C3%A0_la_Coupe_du_monde_2018"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من سجل هدف الفوز للسعودية على الأرجنتين في كأس العالم 2022؟",
+    "options": [
+      "محمد كنو",
+      "صالح الشهري",
+      "سالم الدوسري",
+      "فراس البريكان"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Salem_Al-Dawsari"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من سجل هدف السعودية في الفوز 1-0 على بلجيكا بكأس العالم 1994؟",
+    "options": [
+      "فؤاد أنور",
+      "سعيد العويران",
+      "سامي الجابر",
+      "فهد المهلل"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Saeed_Al-Owairan"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "كم مباراة متتالية سجل فيها جيمي فاردي بالدوري الإنجليزي الممتاز خلال سلسلة أهدافه عام 2015؟",
+    "options": [
+      "11 مباراة",
+      "10 مباريات",
+      "9 مباريات",
+      "12 مباراة"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/2015%E2%80%9316_Premier_League"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من قاد الوداد المغربي مدربًا للفوز بدوري أبطال أفريقيا 2022؟",
+    "options": [
+      "حسين بن عبيشة",
+      "وليد الركراكي",
+      "فوزي البنزرتي",
+      "الحسين عموتة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.cafonline.com/caf-champions-league/news/regragui-wydad-is-a-beautiful-winner"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من سجل هدف فوز الأهلي المصري على الزمالك في نهائي دوري أبطال أفريقيا 2020؟",
+    "options": [
+      "عمرو السولية",
+      "حسين الشحات",
+      "محمد مجدي أفشة",
+      "محمد شريف"
+    ],
+    "correctIndex": 2,
+    "reference": "https://inside.fifa.com/tournaments/mens/clubworldcup/qatar2020/news/al-ahly-conquer-africa-clinch-club-world-cup-ticket"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "من قاد الهلال مدربًا للفوز بدوري أبطال آسيا 2019؟",
+    "options": [
+      "جورجي جيسوس",
+      "رامون دياز",
+      "رازفان لوشيسكو",
+      "ليوناردو جارديم"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.the-afc.com/en/club/fifa_club_world_cup/news/lucescu_missed_chances_cost_us_third_place.html"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "أي منتخب واجهته السعودية في نهائي كأس آسيا 1984؟",
+    "options": [
+      "اليابان",
+      "كوريا الجنوبية",
+      "الصين",
+      "إيران"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/1984_AFC_Asian_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 300,
+    "text": "أي منتخب واجهته تونس في نهائي كأس أمم أفريقيا 2004؟",
+    "options": [
+      "السنغال",
+      "نيجيريا",
+      "مصر",
+      "المغرب"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/2004_Africa_Cup_of_Nations_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "كم هدفًا سجل الفرنسي جوست فونتين في كأس العالم 1958؟",
+    "options": [
+      "12 هدفًا",
+      "13 هدفًا",
+      "11 هدفًا",
+      "14 هدفًا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.fifa.com/en/member-associations/france/articles/top-goalscorers-leading-marksmen-golden-boot-fifa-world-cup-qatar-2022"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من سجل خمسة أهداف لروسيا في مباراة الكاميرون بكأس العالم 1994؟",
+    "options": [
+      "دميتري رادتشينكو",
+      "أوليغ سالينكو",
+      "ألكسندر موستوفوي",
+      "فاليري كاربين"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.fifa.com/en/articles/100-great-world-cup-moments-63-salenko-scoring-record-five-russia-cameroon-1994"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "أمام أي منتخب سجل هاكان شوكور هدفًا بعد نحو 11 ثانية في كأس العالم 2002؟",
+    "options": [
+      "السنغال",
+      "اليابان",
+      "الصين",
+      "كوريا الجنوبية"
+    ],
+    "correctIndex": 3,
+    "reference": "https://as.com/us/2018/04/14/futbol/1523715905_674913.html"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "أي حارس مرمى فاز بالكرة الذهبية عام 1963؟",
+    "options": [
+      "غوردون بانكس",
+      "سيب ماير",
+      "ليف ياشين",
+      "دينو زوف"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/1963_Ballon_d%27Or"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "أي منتخب مثله أنتونين بانينكا عند تسجيل ركلة الترجيح الشهيرة في نهائي أمم أوروبا 1976؟",
+    "options": [
+      "الاتحاد السوفيتي",
+      "تشيكوسلوفاكيا",
+      "المجر",
+      "يوغوسلافيا"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.uefa.com/uefaeuro/history/news/0252-0cdc4f44202f-a028ba3167e3-1000--panenka-the-hero-for-czechoslovakia/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من قاد الدنمارك مدربًا للفوز ببطولة أمم أوروبا 1992؟",
+    "options": [
+      "ريتشارد مولر نيلسن",
+      "مورتن أولسن",
+      "سيب بيونتيك",
+      "بو يوهانسون"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Richard_M%C3%B8ller_Nielsen"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من سجل هدف اليونان الوحيد في نهائي أمم أوروبا 2004؟",
+    "options": [
+      "أنغيلوس خاريستياس",
+      "أنغيلوس باسيناس",
+      "يورغوس كاراغونيس",
+      "ثيودوروس زاغوراكيس"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.uefa.com/uefaeuro/history/news/0254-0d7b673abd33-d04e3bb2cd62-1000--greece-are-crowned-kings-of-europe-after-euro-2004-final-win/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من سجل الهدف الذهبي لألمانيا في نهائي أمم أوروبا 1996؟",
+    "options": [
+      "أندرياس مولر",
+      "يورغن كلينسمان",
+      "ماتياس زامر",
+      "أوليفر بيرهوف"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.uefa.com/uefaeuro/history/news/0253-0d7b2f43dce4-36bc8c73471c-1000--bierhoff-the-hero-of-germany-s-euro-96-final-win-against-czech-/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من سجل هدف مارسيليا الوحيد أمام ميلان في نهائي دوري أبطال أوروبا 1993؟",
+    "options": [
+      "باسيل بولي",
+      "فرانك سوزيه",
+      "رودي فولر",
+      "عبيدي بيليه"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/0119-0e6a0ed00b00-432257e362a9-1000/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من كان مدرب بوروسيا دورتموند عند فوزه بدوري أبطال أوروبا 1997؟",
+    "options": [
+      "ماتياس زامر",
+      "يورغن كلوب",
+      "نيفيو سكالا",
+      "أوتمار هيتسفيلد"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/01e8-0e6a18185aee-6ef03a8764c4-1000--1996-97-borussia-dortmund-3-1-juventus-report/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من قاد نوتنغهام فورست مدربًا للفوز بكأس أوروبا للأندية عام 1979؟",
+    "options": [
+      "بوبي روبسون",
+      "بوب بيزلي",
+      "برايان كلوف",
+      "رون غرينوود"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/021f-0e9afe5f8d7a-99be2faacf0f-1000--brian-clough-and-the-miracle-of-nottingham/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "أي ناد فاز بالدوري السعودي الممتاز موسم 1976-1977؟",
+    "options": [
+      "النصر",
+      "الأهلي",
+      "الهلال",
+      "الاتحاد"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/1976%E2%80%9377_Saudi_Premier_League"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من كان مدرب الفتح عند تتويجه بالدوري السعودي موسم 2012-2013؟",
+    "options": [
+      "جلال القادري",
+      "فتحي الجبال",
+      "ناصيف البياوي",
+      "يوسف الزواوي"
+    ],
+    "correctIndex": 1,
+    "reference": "https://arriyadiyah.com/738514/بـ191-مباراة-..-الجبال-يتزعم-مدربي-المحترفين"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "كم هدفًا سجل حمزة إدريس ليتصدر هدافي الدوري السعودي موسم 1999-2000؟",
+    "options": [
+      "33 هدفًا",
+      "29 هدفًا",
+      "35 هدفًا",
+      "31 هدفًا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.al-jazirah.com/2000/20000516/sp7.htm"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "أي ناد قطري فاز ببطولة الأندية الآسيوية أبطال الدوري موسم 1988-1989؟",
+    "options": [
+      "الغرافة",
+      "العربي",
+      "السد",
+      "الريان"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/Al_Sadd_SC_in_international_football"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "على حساب أي ناد فاز الرجاء المغربي بنهائي دوري أبطال أفريقيا 1999 بركلات الترجيح؟",
+    "options": [
+      "أسيك ميموزا",
+      "الأهلي المصري",
+      "النجم الساحلي",
+      "الترجي التونسي"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/1999_CAF_Champions_League"
+  },
+  {
+    "categorySlug": "football",
+    "points": 400,
+    "text": "من سجل هدف التعادل بالكعب لبورتو في نهائي كأس أوروبا للأندية 1987؟",
+    "options": [
+      "أنطونيو سوزا",
+      "خايمي ماغالهايس",
+      "باولو فوتري",
+      "رابح ماجر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/021f-0e8fdb967775-761b0eca2869-1000--legendary-moments-madjer-s-back-heel/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من أدار نهائي كأس العالم 1930 حكمًا للساحة؟",
+    "options": [
+      "جون لانغينوس",
+      "إيفان إيكليند",
+      "آرثر إليس",
+      "جورج كابدفيل"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/1930_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل هدف فوز إيطاليا في الوقت الإضافي بنهائي كأس العالم 1934؟",
+    "options": [
+      "جيوفاني فيراري",
+      "رايموندو أورسي",
+      "أنجيلو سكيافيو",
+      "جوزيبي مياتزا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/1934_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل أهداف بولندا الأربعة أمام البرازيل في كأس العالم 1938؟",
+    "options": [
+      "ليونارد بيونتيك",
+      "إرنست فيليموفسكي",
+      "غيرارد فوداج",
+      "فريدريك شيرفكه"
+    ],
+    "correctIndex": 1,
+    "reference": "https://en.wikipedia.org/wiki/Ernst_Wilimowski"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "كم بلغ مجموع أهداف مباراة النمسا وسويسرا في ربع نهائي كأس العالم 1954؟",
+    "options": [
+      "13 هدفًا",
+      "11 هدفًا",
+      "10 أهداف",
+      "12 هدفًا"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.fifa.com/en/tournaments/mens/worldcup/articles/highest-scoring-games-matches?searchOverlay=1"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "كم لاعبًا تقاسموا صدارة هدافي كأس العالم 1962 برصيد أربعة أهداف لكل منهم؟",
+    "options": [
+      "3 لاعبين",
+      "6 لاعبين",
+      "4 لاعبين",
+      "5 لاعبين"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.fifa.com/en/member-associations/france/articles/top-goalscorers-leading-marksmen-golden-boot-fifa-world-cup-qatar-2022"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من أدار نهائي كأس العالم 1974 حكمًا للساحة؟",
+    "options": [
+      "رودي غلوكنر",
+      "سيرجيو غونيلا",
+      "جاك تايلور",
+      "غوتفريد دينست"
+    ],
+    "correctIndex": 2,
+    "reference": "https://en.wikipedia.org/wiki/1974_FIFA_World_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل هدف فوز الاتحاد السوفيتي في نهائي كأس أمم أوروبا 1960؟",
+    "options": [
+      "فيكتور بونيديلنيك",
+      "سلافا ميتريفيلي",
+      "فالنتين إيفانوف",
+      "إيغور نيتو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.uefa.com/news-media/news/0264-1106152370e9-60bec0349e66-1000--euro-1960-goal-hero-ponedelnik-passes-away/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "أي منتخب خرج أمام إيطاليا بقرعة العملة بعد تعادلهما في نصف نهائي أمم أوروبا 1968؟",
+    "options": [
+      "الاتحاد السوفيتي",
+      "يوغوسلافيا",
+      "إنجلترا",
+      "تشيكوسلوفاكيا"
+    ],
+    "correctIndex": 0,
+    "reference": "https://www.uefa.com/uefaeuro/history/news/0253-0d7b2f5adb06-fa5820ecb86b-1000/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من حارس ستيوا بوخارست الذي تصدى لأربع ركلات ترجيح أمام برشلونة في نهائي كأس أوروبا 1986؟",
+    "options": [
+      "بوغدان ستيليا",
+      "سيلفيو لونغ",
+      "هيلموت دوكادام",
+      "فلورين برونيا"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/021f-0e8fb376db2f-f8e3d6fb09ab-1000--legendary-moments-steaua-s-historic-triumph/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من كان مدرب النجم الأحمر بلغراد عند فوزه بكأس أوروبا للأندية 1991؟",
+    "options": [
+      "دراجوسلاف شيكولاراتس",
+      "فلاديتسا بوبوفيتش",
+      "فويادين بوشكوف",
+      "ليوبكو بيتروفيتش"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/History_of_Red_Star_Belgrade#Road_to_Bari_(1990–1991)"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل هدف ليفربول الوحيد أمام ريال مدريد في نهائي كأس أوروبا للأندية 1981؟",
+    "options": [
+      "تيري ماكديرموت",
+      "آلان كينيدي",
+      "راي كينيدي",
+      "كيني دالغليش"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/0089-0e6a09dbb4da-9dc4666bbc2c-1000--1980-81-paisley-in-a-class-of-his-own/"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل هدف الهلال أمام استقلال طهران قبل ركلات الترجيح في نهائي بطولة الأندية الآسيوية نسخة 1991؟",
+    "options": [
+      "سامي الجابر",
+      "حسين الحبشي",
+      "يوسف الثنيان",
+      "صالح النعيمة"
+    ],
+    "correctIndex": 1,
+    "reference": "https://www.the-afc.com/en/club/afc_champions_league/news/al_hilal%E2%80%99s_asian_heroes.html"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "أي لاعب من الاتحاد فاز بجائزة أفضل لاعب في دوري أبطال آسيا 2004؟",
+    "options": [
+      "مناف أبو شقير",
+      "حمد المنتشري",
+      "محمد نور",
+      "رضا تكر"
+    ],
+    "correctIndex": 3,
+    "reference": "https://en.wikipedia.org/wiki/2004_AFC_Champions_League"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من أدار نهائي كأس آسيا 1988 بين السعودية وكوريا الجنوبية حكمًا للساحة؟",
+    "options": [
+      "ميشيل فوترو",
+      "جمال الشريف",
+      "علي بوجسيم",
+      "جويل كينيو"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/1988_AFC_Asian_Cup_final"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من تصدر هدافي الدوري السعودي الممتاز موسم 1976-1977؟",
+    "options": [
+      "ماجد عبدالله",
+      "شايع النفيسة",
+      "ناصر عيد",
+      "عيسى خليفة"
+    ],
+    "correctIndex": 2,
+    "reference": "https://www.rsssf.org/tabless/sau77.html"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من المدرب الذي فاز بدوري أبطال أفريقيا مع أسيك ميموزا عام 1998 ثم الرجاء عام 1999؟",
+    "options": [
+      "أوسكار فيلوني",
+      "برونو ميتسو",
+      "فيليب تروسييه",
+      "هنري ميشيل"
+    ],
+    "correctIndex": 0,
+    "reference": "https://en.wikipedia.org/wiki/Oscar_Fullon%C3%A9"
+  },
+  {
+    "categorySlug": "football",
+    "points": 500,
+    "text": "من سجل هدف فوز بورتو بعد تعادل رابح ماجر في نهائي كأس أوروبا للأندية 1987؟",
+    "options": [
+      "باولو فوتري",
+      "أنطونيو سوزا",
+      "خايمي ماغالهايس",
+      "جواري"
+    ],
+    "correctIndex": 3,
+    "reference": "https://www.uefa.com/uefachampionsleague/news/021f-0e8fdb967775-761b0eca2869-1000--legendary-moments-madjer-s-back-heel/"
+  }
+]
