@@ -1,28 +1,35 @@
 import { randomInt } from 'node:crypto';
 import {
   actionInput,
+  platforms,
   answerInput,
   createRoomInput,
   joinRoomInput,
   pickCellInput,
+  POINTS,
   ROOM_CODE_ALPHABET,
   ROOM_CODE_LENGTH,
   startGameInput,
   type Ack,
   type ClientToServerEvents,
+  type LiveStats,
   type ServerToClientEvents,
 } from '@quiz/shared';
 import type { FastifyInstance } from 'fastify';
 import { Server, type Socket } from 'socket.io';
 import { z } from 'zod';
+import { env } from '../env';
 import { drawQuestion as drawFromDb, listPublicCategories } from './catalog';
 import { GameError, GameRoom, type DealtQuestion } from './room';
+import { UsageLog } from './usage';
 
 type SocketData = { deviceId: string; code: string | null };
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
 export type GameServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
 
 const deviceIdSchema = z.string().regex(/^[A-Za-z0-9_-]{8,64}$/);
+// Older clients don't send a platform: they are the website.
+const platformSchema = z.enum(platforms).catch('web');
 /** Empty rooms (everyone gone) and finished games are dropped after this long without activity. */
 const IDLE_ROOM_MS = 30 * 60 * 1000;
 const SWEEP_MS = 60 * 1000;
@@ -40,8 +47,9 @@ const channel = (code: string) => `room:${code}`;
  */
 export function attachGameServer(app: FastifyInstance, opts: GameServerOptions = {}) {
   const drawQuestion = opts.drawQuestion ?? drawFromDb;
-  const io: GameServer = new Server(app.server, { serveClient: false, cors: { origin: false } });
+  const io: GameServer = new Server(app.server, { serveClient: false, cors: { origin: env.NODE_ENV === 'production' ? env.APP_ORIGINS : true } });
   const rooms = new Map<string, GameRoom>();
+  const usage = new UsageLog(app.log);
 
   function newCode() {
     let code: string;
@@ -60,6 +68,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   }
 
   function closeRoom(room: GameRoom, reason: string) {
+    usage.ended(room);
     room.dispose();
     rooms.delete(room.code);
     io.to(channel(room.code)).emit('room:closed', reason);
@@ -121,6 +130,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     if (!parsed.success) return next(new Error('missing device id'));
     socket.data.deviceId = parsed.data;
     socket.data.code = null;
+    usage.visit(parsed.data, platformSchema.parse(socket.handshake.auth?.platform));
     next();
   });
 
@@ -134,6 +144,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         const room = new GameRoom(code, input.mode, input.variant, () => void broadcast(room));
         room.seatHost(deviceId, input.teamName);
         rooms.set(code, room);
+        usage.created(room);
         await enter(socket, room);
         return { data: { code } };
       }),
@@ -174,6 +185,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         // Keep the order the host picked them in.
         const byId = new Map(found.map((c) => [c.id, { id: c.id, name: c.name, icon: c.icon }]));
         room.start(seat, categoryIds.map((id) => byId.get(id)!));
+        usage.started(room);
         return { data: null, room };
       }),
     );
@@ -218,11 +230,15 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       handle(null, async () => {
         const { room, seat } = currentRoom(socket);
         room.next(seat);
+        if (room.status === 'done') usage.ended(room);
         return { data: null, room };
       }),
     );
 
-    socket.on('disconnect', () => void detach(socket));
+    socket.on('disconnect', () => {
+      usage.left(deviceId);
+      void detach(socket);
+    });
   });
 
   const sweeper = setInterval(() => {
@@ -233,13 +249,42 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   }, SWEEP_MS);
   sweeper.unref();
 
+  /** Snapshot for the admin dashboard. */
+  function live(): LiveStats {
+    const devices = new Set([...io.sockets.sockets.values()].map((s) => s.data.deviceId));
+    let playersInRooms = 0;
+    const list = [...rooms.values()]
+      .sort((a, b) => b.lastActivity - a.lastActivity)
+      .map((room) => {
+        playersInRooms += room.teams.filter((t) => t?.connected).length + (room.tv?.connected ? 1 : 0);
+        return {
+          code: room.code,
+          mode: room.mode,
+          variant: room.variant,
+          status: room.status,
+          phase: room.phase,
+          teams: room.teams.map((t) => (t ? { name: t.name, score: t.score, connected: t.connected } : null)),
+          tvConnected: room.mode === 'tv' ? Boolean(room.tv?.connected) : null,
+          categories: room.categories.map((c) => c.name),
+          roundsPlayed: room.used.size,
+          totalRounds: room.categories.length * POINTS.length,
+          idleSeconds: Math.round((Date.now() - room.lastActivity) / 1000),
+        };
+      });
+    return { connections: io.engine.clientsCount, devicesOnline: devices.size, playersInRooms, rooms: list };
+  }
+
   app.addHook('onClose', async () => {
     clearInterval(sweeper);
-    for (const room of rooms.values()) room.dispose();
+    for (const room of rooms.values()) {
+      usage.ended(room);
+      room.dispose();
+    }
+    await usage.flush();
     // Fastify closes the HTTP server itself; only drop the live connections here.
     io.disconnectSockets(true);
     io.engine.close();
   });
 
-  return { io, rooms };
+  return { io, rooms, live };
 }

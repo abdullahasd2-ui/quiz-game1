@@ -1,5 +1,7 @@
 import type { Ack, ClientToServerEvents, ServerToClientEvents } from '@quiz/shared';
 import { io, type Socket } from 'socket.io-client';
+import { platform } from '@/lib/native';
+import { SERVER_URL } from '@/lib/server';
 
 export type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -40,7 +42,8 @@ export const savedRoom = {
 
 let socket: GameSocket | null = null;
 export function getSocket(): GameSocket {
-  socket ??= io({ auth: { deviceId: deviceId() }, transports: ['websocket', 'polling'] });
+  const opts = { auth: { deviceId: deviceId(), platform }, transports: ['websocket', 'polling'] };
+  socket ??= SERVER_URL ? io(SERVER_URL, opts) : io(opts);
   return socket;
 }
 

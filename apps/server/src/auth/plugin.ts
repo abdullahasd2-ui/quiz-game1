@@ -1,7 +1,10 @@
 import cookie from '@fastify/cookie';
 import jwt from '@fastify/jwt';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { eq } from 'drizzle-orm';
 import fp from 'fastify-plugin';
+import { db } from '../db/client';
+import { admins } from '../db/schema';
 import { env } from '../env';
 
 export const AUTH_COOKIE = 'admin_token';
@@ -32,5 +35,8 @@ export const authPlugin = fp(async (app: FastifyInstance) => {
     } catch {
       return reply.status(401).send({ error: 'Unauthorized' });
     }
+    // A deleted admin's token must stop working right away, not when it expires.
+    const [admin] = await db.select({ id: admins.id }).from(admins).where(eq(admins.id, req.user.sub));
+    if (!admin) return reply.status(401).send({ error: 'Unauthorized' });
   });
 });

@@ -9,6 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file=.env src/scripts/migrate.ts",
     "seed:legacy": "tsx --env-file=.env src/scripts/seed-legacy.ts",
+    "bank:load": "tsx --env-file=.env src/scripts/load-bank.ts",
     "admin:create": "tsx --env-file=.env src/scripts/create-admin.ts",
     "test": "vitest run",
     "typecheck": "tsc -p ."

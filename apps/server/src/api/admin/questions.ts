@@ -1,27 +1,33 @@
-import { fieldLabel, questionInput, questionListQuery } from '@quiz/shared';
+import { questionInput, questionListQuery, reviewInput } from '@quiz/shared';
 import { and, asc, count, desc, eq, ilike, inArray, type SQL } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { db } from '../../db/client';
-import { categories, questions } from '../../db/schema';
-import { HttpError, notFound } from '../../lib/errors';
+import { questions } from '../../db/schema';
+import { importItem, importQuestions } from '../../lib/bank';
+import { notFound } from '../../lib/errors';
 
 const idParam = z.object({ id: z.coerce.number().int().positive() });
 
 // `questionInput` has refinements, so partial updates are validated by merging onto the stored row.
 const questionPatch = z.record(z.string(), z.unknown());
 
-const importItem = z.object({ categorySlug: z.string() }).passthrough();
-const importBody = z.object({ questions: z.array(importItem).min(1).max(500) });
+const importBody = z.object({
+  questions: z.array(importItem).min(1).max(500),
+  // `pending` sends the questions to the question bank for review instead of straight into the game.
+  status: z.enum(['approved', 'pending']).default('approved'),
+  source: z.string().trim().max(40).optional(),
+});
 
 export async function adminQuestionRoutes(app: FastifyInstance) {
   app.get('/', async (req) => {
     const q = questionListQuery.parse(req.query);
-    const filters: SQL[] = [];
+    const filters: SQL[] = [eq(questions.status, q.status)];
     if (q.categoryId) filters.push(eq(questions.categoryId, q.categoryId));
+    if (q.points) filters.push(eq(questions.points, q.points));
     if (q.active !== undefined) filters.push(eq(questions.active, q.active));
     if (q.search) filters.push(ilike(questions.text, `%${q.search.replace(/[%_\\]/g, '\\$&')}%`));
-    const where = filters.length ? and(...filters) : undefined;
+    const where = and(...filters);
 
     const [items, [total]] = await Promise.all([
       db
@@ -68,19 +74,14 @@ export async function adminQuestionRoutes(app: FastifyInstance) {
   // All-or-nothing bulk import; each item names its category by slug.
   app.post('/import', async (req, reply) => {
     const body = importBody.parse(req.body);
-    const slugs = [...new Set(body.questions.map((q) => q.categorySlug))];
-    const cats = await db.select({ id: categories.id, slug: categories.slug }).from(categories).where(inArray(categories.slug, slugs));
-    const idBySlug = new Map(cats.map((c) => [c.slug, c.id]));
+    const result = await importQuestions(body.questions, { status: body.status, source: body.source ?? (body.status === 'pending' ? 'import' : null) });
+    return reply.status(201).send(result);
+  });
 
-    const rows = body.questions.map((item, i) => {
-      const { categorySlug, ...rest } = item;
-      const categoryId = idBySlug.get(categorySlug);
-      if (!categoryId) throw new HttpError(400, `السطر ${i + 1}: فئة غير معروفة «${categorySlug}»`);
-      const parsed = questionInput.safeParse({ ...rest, categoryId });
-      if (!parsed.success) throw new HttpError(400, `السطر ${i + 1}: ${parsed.error.issues.map((x) => `${fieldLabel(x.path.join('.'))}: ${x.message}`).join('، ')}`);
-      return parsed.data;
-    });
-    const inserted = await db.insert(questions).values(rows).returning({ id: questions.id });
-    return reply.status(201).send({ inserted: inserted.length });
+  // Question bank: approve, reject or send back to review several questions at once.
+  app.post('/review', async (req) => {
+    const { ids, status } = reviewInput.parse(req.body);
+    const rows = await db.update(questions).set({ status }).where(inArray(questions.id, ids)).returning({ id: questions.id });
+    return { updated: rows.length };
   });
 }

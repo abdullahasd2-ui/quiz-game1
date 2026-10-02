@@ -1,6 +1,8 @@
 import { canAdvance, POINTS, type RoomView } from '@quiz/shared';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { haptic } from '@/lib/native';
+import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { actionLabel, Modal, TEAM_TINT, teamName, WaitDots } from '../ui';
@@ -8,6 +10,10 @@ import { actionLabel, Modal, TEAM_TINT, teamName, WaitDots } from '../ui';
 export function ResultOverlay({ view }: { view: RoomView }) {
   const r = view.result;
   const [busy, setBusy] = useState(false);
+  const myDelta = r && view.you !== 'tv' ? r.deltas[view.you] : null;
+  useEffect(() => {
+    if (myDelta !== null) haptic(myDelta > 0 ? 'success' : myDelta < 0 ? 'error' : 'tap');
+  }, [myDelta]);
   if (!r || !view.question) return null;
   const q = view.question;
   const lbl = actionLabel(view.variant);
@@ -29,7 +35,7 @@ export function ResultOverlay({ view }: { view: RoomView }) {
     <Modal open>
       <div className="mb-2 text-5xl">{icon}</div>
       <h2 className="mb-3 text-xl font-black">{bothSteal ? `كلاهم ${view.variant === 'flip' ? 'قلبا' : 'بادلا'} — لا نقاط!` : 'نتيجة الجولة'}</h2>
-      {picture && <img src={picture} alt="" className="mx-auto mb-3.5 block max-h-56 max-w-full rounded-xl" />}
+      {picture && <img src={serverUrl(picture)} alt="" className="mx-auto mb-3.5 block max-h-56 max-w-full rounded-xl" />}
       <div className="mb-3 rounded-lg bg-q-green/10 px-3 py-2 text-sm text-[#2ecc71]">
         ✅ الإجابة الصحيحة: <b>{q.options[r.correctIndex]}</b>
       </div>

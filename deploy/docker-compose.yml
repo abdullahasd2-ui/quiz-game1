@@ -1,0 +1,48 @@
+# Production stack. On the server: cp .env.example .env, fill it in, then
+#   docker compose up -d
+name: quiz
+
+services:
+  app:
+    image: quiz-game:latest
+    build:
+      context: ..
+    restart: unless-stopped
+    init: true
+    environment:
+      DATABASE_URL: postgres://quiz:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/quiz
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      TRUST_PROXY: "true"
+    ports:
+      # Loopback only: the host's Nginx is the public entry point.
+      - "127.0.0.1:${APP_PORT:-3100}:3000"
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: quiz
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: quiz
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quiz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
+  uploads:

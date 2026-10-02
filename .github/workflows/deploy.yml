@@ -1,0 +1,89 @@
+# On every merge into main: run the checks, build the Docker image here (the server is a
+# small droplet that shouldn't compile anything), copy it over SSH and restart the stack.
+#
+# One-time server setup (see README "النشر التلقائي"):
+#   /opt/quiz/.env with POSTGRES_PASSWORD and JWT_SECRET, Nginx from deploy/nginx.conf.
+# Repository secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY.
+name: Deploy jawabbadel.com
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'apps/mobile/**'
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  DEPLOY_DIR: /opt/quiz
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: quiz
+          POSTGRES_PASSWORD: quiz
+          POSTGRES_DB: quiz
+        ports: ['5434:5432']
+        options: >-
+          --health-cmd "pg_isready -U quiz" --health-interval 2s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t quiz-game:latest -t quiz-game:${{ github.sha }} .
+          docker save quiz-game:latest quiz-game:${{ github.sha }} | gzip > quiz-game.tar.gz
+          mkdir bundle && mv quiz-game.tar.gz bundle/ && cp deploy/docker-compose.yml bundle/
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: bundle/*
+          target: ${{ env.DEPLOY_DIR }}
+          strip_components: 1
+
+      - name: Restart on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_DIR
+          script: |
+            set -e
+            cd "$DEPLOY_DIR"
+            gunzip -c quiz-game.tar.gz | docker load
+            rm quiz-game.tar.gz
+            # Migrations run when the container starts.
+            docker compose up -d --no-build --remove-orphans
+            for i in $(seq 1 30); do
+              if curl -fsS http://127.0.0.1:3100/api/health > /dev/null; then echo "healthy"; break; fi
+              if [ "$i" = 30 ]; then docker compose logs --tail 80 app; exit 1; fi
+              sleep 2
+            done
+            docker image prune -f > /dev/null

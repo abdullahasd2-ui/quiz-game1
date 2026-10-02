@@ -7,9 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { PageHeader } from '../AdminLayout';
+import { usePendingCount } from './BankPage';
 
 export function OverviewPage() {
   const coverage = useQuery({ queryKey: ['coverage'], queryFn: api.coverage });
+  const pending = usePendingCount();
   const rows = coverage.data ?? [];
   const totalActive = rows.reduce((sum, r) => sum + Object.values(r.counts).reduce((a, b) => a + b, 0), 0);
   const playable = rows.filter((r) => POINTS.every((p) => (r.counts[p] ?? 0) > 0)).length;
@@ -17,16 +19,19 @@ export function OverviewPage() {
   return (
     <>
       <PageHeader title="نظرة عامة" description="حالة بنك الأسئلة" />
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="الأسئلة المفعّلة" value={totalActive} loading={coverage.isPending} />
         <Stat label="الفئات" value={rows.length} loading={coverage.isPending} />
         <Stat label="فئات جاهزة للعب" value={`${playable} / ${rows.length}`} loading={coverage.isPending} />
+        <Link to="/admin/bank" className="rounded-xl transition-opacity hover:opacity-80">
+          <Stat label="بانتظار المراجعة في البنك" value={pending.data ?? 0} loading={pending.isPending} />
+        </Link>
       </div>
       <Card>
         <CardHeader>
           <CardTitle>تغطية اللوحة</CardTitle>
           <CardDescription>
-            عدد الأسئلة المفعّلة لكل فئة ونقاط. الخانة الحمراء تعني أن الفئة لا تظهر في اللعبة حتى يُضاف سؤال لها. اضغط على أي خانة لعرض أسئلتها.
+            عدد الأسئلة المعتمدة والمفعّلة لكل فئة ونقاط (المقترحات في البنك لا تُحسب). الخانة الحمراء تعني أن الفئة لا تظهر في اللعبة حتى يُضاف سؤال لها. اضغط على أي خانة لعرض أسئلتها.
           </CardDescription>
         </CardHeader>
         <CardContent className="overflow-x-auto">

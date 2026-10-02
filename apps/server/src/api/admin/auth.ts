@@ -1,4 +1,4 @@
-import { loginInput } from '@quiz/shared';
+import { changeOwnPasswordInput, loginInput } from '@quiz/shared';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
@@ -17,6 +17,7 @@ export async function adminAuthRoutes(app: FastifyInstance) {
     const ok = await bcrypt.compare(password, admin?.passwordHash ?? DUMMY_HASH);
     if (!admin || !ok) return reply.status(401).send({ error: 'Invalid email or password' });
 
+    await db.update(admins).set({ lastLoginAt: new Date() }).where(eq(admins.id, admin.id));
     const token = await reply.jwtSign({ sub: admin.id, email: admin.email });
     reply.setCookie(AUTH_COOKIE, token, {
       httpOnly: true,
@@ -34,4 +35,14 @@ export async function adminAuthRoutes(app: FastifyInstance) {
   });
 
   app.get('/me', { onRequest: [app.requireAdmin] }, async (req) => ({ id: req.user.sub, email: req.user.email }));
+
+  app.post('/me/password', { onRequest: [app.requireAdmin], config: { rateLimit: { max: 10, timeWindow: '15 minutes' } } }, async (req, reply) => {
+    const { currentPassword, password } = changeOwnPasswordInput.parse(req.body);
+    const [admin] = await db.select().from(admins).where(eq(admins.id, req.user.sub));
+    if (!admin || !(await bcrypt.compare(currentPassword, admin.passwordHash))) {
+      return reply.status(400).send({ error: 'كلمة المرور الحالية غير صحيحة' });
+    }
+    await db.update(admins).set({ passwordHash: await bcrypt.hash(password, 12) }).where(eq(admins.id, admin.id));
+    return { ok: true };
+  });
 }

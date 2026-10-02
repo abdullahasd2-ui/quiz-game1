@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { POINTS, questionInput, questionTypes, type Question, type QuestionInput } from '@quiz/shared';
+import { POINTS, questionInput, questionTypes, type Question, type QuestionInput, type QuestionStatus } from '@quiz/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowRightIcon, CheckIcon, Trash2Icon } from 'lucide-react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -29,7 +29,7 @@ type FormValues = z.input<typeof questionInput>;
 
 const toFormValues = (q: Question): FormValues => ({
   categoryId: q.categoryId, type: q.type, text: q.text, options: q.options, correctIndex: q.correctIndex,
-  points: q.points, imageUrl: q.imageUrl, revealUrl: q.revealUrl, active: q.active,
+  points: q.points, imageUrl: q.imageUrl, revealUrl: q.revealUrl, reference: q.reference, active: q.active,
 });
 
 export function QuestionEditPage() {
@@ -48,12 +48,15 @@ export function QuestionEditPage() {
     : {
         categoryId: Number(params.get('categoryId')) || (undefined as unknown as number),
         type: 'text', text: '', options: ['', '', '', ''], correctIndex: 0, points: 100,
-        imageUrl: null, revealUrl: null, active: true,
+        imageUrl: null, revealUrl: null, reference: null, active: true,
       };
-  return <QuestionForm key={questionId ?? 'new'} questionId={questionId} initial={initial} />;
+  return <QuestionForm key={questionId ?? 'new'} questionId={questionId} initial={initial} status={existing.data?.status ?? 'approved'} />;
 }
 
-function QuestionForm({ questionId, initial }: { questionId: number | null; initial: FormValues }) {
+function QuestionForm({ questionId, initial, status }: { questionId: number | null; initial: FormValues; status: QuestionStatus }) {
+  // A proposal from the question bank: it reaches the game only once approved.
+  const inBank = status !== 'approved';
+  const backTo = inBank ? `/admin/bank${status === 'rejected' ? '?tab=rejected' : ''}` : '/admin/questions';
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const categories = useCategories();
@@ -71,9 +74,19 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
   ]);
 
   const save = useMutation({
-    mutationFn: (values: QuestionInput) => (questionId ? api.updateQuestion(questionId, values) : api.createQuestion(values)),
-    onSuccess: async (saved) => {
+    mutationFn: async ({ values, approve }: { values: QuestionInput; approve: boolean }) => {
+      const saved = questionId ? await api.updateQuestion(questionId, values) : await api.createQuestion(values);
+      if (approve) await api.reviewQuestions([saved.id], 'approved');
+      return { saved, approve };
+    },
+    onSuccess: async ({ saved, approve }) => {
       await invalidate();
+      queryClient.removeQueries({ queryKey: ['question', saved.id] });
+      if (approve) {
+        toast.success('تم اعتماد السؤال، وصار يظهر في اللعبة');
+        navigate('/admin/bank');
+        return;
+      }
       queryClient.setQueryData(['question', saved.id], saved);
       toast.success(questionId ? 'تم حفظ التعديلات' : 'تمت إضافة السؤال');
       if (questionId) reset(toFormValues(saved));
@@ -87,7 +100,7 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
     onSuccess: async () => {
       await invalidate();
       toast.success('تم حذف السؤال');
-      navigate('/admin/questions', { replace: true });
+      navigate(backTo, { replace: true });
     },
     onError: (err) => toast.error(errorMessage(err)),
   });
@@ -95,10 +108,11 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
   return (
     <div className="max-w-3xl">
       <Button variant="ghost" size="sm" asChild className="mb-2 -ms-2">
-        <Link to="/admin/questions"><ArrowRightIcon /> الأسئلة</Link>
+        <Link to={backTo}><ArrowRightIcon /> {inBank ? 'بنك الأسئلة' : 'الأسئلة'}</Link>
       </Button>
       <PageHeader
-        title={questionId ? 'تعديل سؤال' : 'سؤال جديد'}
+        title={inBank ? 'مراجعة سؤال مقترح' : questionId ? 'تعديل سؤال' : 'سؤال جديد'}
+        description={inBank ? (status === 'rejected' ? 'هذا السؤال مرفوض. إذا عدّلته واعتمدته يدخل اللعبة.' : 'هذا السؤال لا يظهر في اللعبة حتى تعتمده. صحّح ما يلزم ثم اضغط «حفظ واعتماد».') : undefined}
         actions={questionId && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -118,7 +132,7 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
         )}
       />
 
-      <form onSubmit={handleSubmit((v) => save.mutate(v))}>
+      <form onSubmit={handleSubmit((values) => save.mutate({ values, approve: false }))}>
         <Card>
           <CardContent>
             <FieldGroup>
@@ -208,6 +222,12 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
                 </Field>
               )}
 
+              <Field data-invalid={!!errors.reference}>
+                <FieldLabel htmlFor="reference">المرجع (اختياري)</FieldLabel>
+                <Input id="reference" dir="auto" placeholder="رابط أو ملاحظة يتأكد منها المراجع من الإجابة" aria-invalid={!!errors.reference} {...register('reference')} />
+                <FieldError errors={[errors.reference]} />
+              </Field>
+
               <Field orientation="horizontal">
                 <Controller control={control} name="active" render={({ field }) => (
                   <Switch id="active" checked={field.value} onCheckedChange={field.onChange} />
@@ -217,11 +237,16 @@ function QuestionForm({ questionId, initial }: { questionId: number | null; init
             </FieldGroup>
           </CardContent>
         </Card>
-        <div className="mt-4 flex gap-2">
-          <Button type="submit" disabled={save.isPending || (!!questionId && !isDirty)}>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {inBank && (
+            <Button type="button" disabled={save.isPending} onClick={handleSubmit((values) => save.mutate({ values, approve: true }))}>
+              <CheckIcon /> {save.isPending ? 'جاري الحفظ…' : 'حفظ واعتماد'}
+            </Button>
+          )}
+          <Button type="submit" variant={inBank ? 'outline' : 'default'} disabled={save.isPending || (!!questionId && !isDirty)}>
             {save.isPending ? 'جاري الحفظ…' : questionId ? 'حفظ التعديلات' : 'إضافة السؤال'}
           </Button>
-          <Button type="button" variant="ghost" asChild><Link to="/admin/questions">إلغاء</Link></Button>
+          <Button type="button" variant="ghost" asChild><Link to={backTo}>إلغاء</Link></Button>
         </div>
       </form>
     </div>

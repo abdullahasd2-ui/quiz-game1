@@ -1,22 +1,27 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { FolderTreeIcon, LayoutGridIcon, ListChecksIcon, LogOutIcon, UploadIcon } from 'lucide-react';
+import { ActivityIcon, FolderTreeIcon, InboxIcon, LayoutGridIcon, ListChecksIcon, LogOutIcon, UploadIcon, UsersIcon } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { useMe } from './auth';
+import { usePendingCount } from './pages/BankPage';
 
 const NAV = [
   { to: '/admin', label: 'نظرة عامة', icon: LayoutGridIcon, end: true },
+  { to: '/admin/stats', label: 'الإحصائيات', icon: ActivityIcon },
   { to: '/admin/questions', label: 'الأسئلة', icon: ListChecksIcon },
+  { to: '/admin/bank', label: 'بنك الأسئلة', icon: InboxIcon, badge: true },
   { to: '/admin/categories', label: 'الفئات', icon: FolderTreeIcon },
   { to: '/admin/import', label: 'استيراد', icon: UploadIcon },
+  { to: '/admin/admins', label: 'المشرفون', icon: UsersIcon },
 ];
 
 export function AdminLayout() {
   const me = useMe();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const pending = usePendingCount();
 
   async function logout() {
     await api.logout();
@@ -28,8 +33,9 @@ export function AdminLayout() {
     <div className="min-h-svh md:grid md:grid-cols-[220px_1fr]">
       <aside className="border-b bg-sidebar md:sticky md:top-0 md:flex md:h-svh md:flex-col md:border-b-0 md:border-e">
         <div className="flex items-center justify-between gap-2 px-4 py-4 md:block">
-          <div className="text-lg font-black">
-            <span className="text-primary">جاوب</span> أو <span className="text-sky-500">بادل</span>
+          <div className="flex items-center gap-2 text-lg font-black">
+            <img src="/icons/icon-192.png" alt="" className="size-9 rounded-xl" />
+            <span><span className="text-primary">جاوب</span> أو <span className="text-sky-500">بادل</span></span>
           </div>
           <div className="flex items-center gap-1 md:block">
             <div className="text-xs text-muted-foreground md:mt-0.5">لوحة التحكم</div>
@@ -37,7 +43,7 @@ export function AdminLayout() {
           </div>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-2 pb-2 md:flex-1 md:flex-col md:overflow-visible">
-          {NAV.map(({ to, label, icon: Icon, end }) => (
+          {NAV.map(({ to, label, icon: Icon, end, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -51,6 +57,9 @@ export function AdminLayout() {
             >
               <Icon className="size-4" />
               {label}
+              {badge && !!pending.data && (
+                <span className="ms-auto rounded-full bg-primary px-1.5 text-xs font-semibold tabular-nums text-primary-foreground">{pending.data}</span>
+              )}
             </NavLink>
           ))}
         </nav>

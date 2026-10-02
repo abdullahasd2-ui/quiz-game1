@@ -1,4 +1,5 @@
-import { fieldLabel, type Admin, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput } from '@quiz/shared';
+import { fieldLabel, type Admin, type AdminAccount, type LiveStats, type UsageStats, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput, type QuestionStatus } from '@quiz/shared';
+import { serverUrl } from './server';
 
 export class ApiError extends Error {
   constructor(public status: number, public body: ApiErrorBody) {
@@ -8,7 +9,7 @@ export class ApiError extends Error {
 
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
   const isForm = body instanceof FormData;
-  const res = await fetch(url, {
+  const res = await fetch(serverUrl(url), {
     method,
     credentials: 'same-origin',
     headers: body && !isForm ? { 'content-type': 'application/json' } : undefined,
@@ -20,7 +21,7 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
   return data as T;
 }
 
-export type QuestionFilters = { categoryId?: number; search?: string; active?: boolean; page?: number; pageSize?: number };
+export type QuestionFilters = { categoryId?: number; search?: string; active?: boolean; status?: QuestionStatus; points?: number; page?: number; pageSize?: number };
 export type ImportItem = Omit<QuestionInput, 'categoryId'> & { categorySlug: string };
 
 const qs = (params: Record<string, unknown>) => {
@@ -47,7 +48,9 @@ export const api = {
   createQuestion: (input: QuestionInput) => request<Question>('POST', '/api/admin/questions', input),
   updateQuestion: (id: number, input: Partial<QuestionInput>) => request<Question>('PATCH', `/api/admin/questions/${id}`, input),
   deleteQuestion: (id: number) => request<void>('DELETE', `/api/admin/questions/${id}`),
-  importQuestions: (questions: ImportItem[]) => request<{ inserted: number }>('POST', '/api/admin/questions/import', { questions }),
+  importQuestions: (questions: ImportItem[], opts: { status?: 'approved' | 'pending'; source?: string } = {}) =>
+    request<{ inserted: number; skipped: number }>('POST', '/api/admin/questions/import', { questions, ...opts }),
+  reviewQuestions: (ids: number[], status: QuestionStatus) => request<{ updated: number }>('POST', '/api/admin/questions/review', { ids, status }),
 
   upload: (file: File) => {
     const form = new FormData();
@@ -55,12 +58,22 @@ export const api = {
     return request<{ url: string }>('POST', '/api/admin/upload', form);
   },
   coverage: () => request<CoverageRow[]>('GET', '/api/admin/stats/coverage'),
+  live: () => request<LiveStats>('GET', '/api/admin/stats/live'),
+  usage: (days: number) => request<UsageStats>('GET', `/api/admin/stats/usage?days=${days}`),
+
+  admins: () => request<AdminAccount[]>('GET', '/api/admin/admins'),
+  createAdmin: (email: string, password: string) => request<AdminAccount>('POST', '/api/admin/admins', { email, password }),
+  resetAdminPassword: (id: number, password: string) => request<AdminAccount>('PUT', `/api/admin/admins/${id}/password`, { password }),
+  deleteAdmin: (id: number) => request<void>('DELETE', `/api/admin/admins/${id}`),
+  changeOwnPassword: (currentPassword: string, password: string) =>
+    request<{ ok: true }>('POST', '/api/admin/me/password', { currentPassword, password }),
 };
 
 /** Human-readable message for a failed request, including field-level validation issues. */
 export function errorMessage(err: unknown): string {
   if (err instanceof ApiError) {
-    if (err.status === 409) return err.body.error === 'Already exists' ? 'موجود مسبقًا (المعرّف مكرر)' : 'لا يمكن الحذف: مرتبط ببيانات أخرى';
+    if (err.status === 409 && err.body.error === 'Already exists') return 'موجود مسبقًا (المعرّف مكرر)';
+    if (err.status === 409 && err.body.error === 'Still referenced by other records') return 'لا يمكن الحذف: مرتبط ببيانات أخرى';
     if (err.body.issues?.length) return err.body.issues.map((i) => (i.path ? `${fieldLabel(i.path)}: ${i.message}` : i.message)).join('، ');
     return err.body.error;
   }

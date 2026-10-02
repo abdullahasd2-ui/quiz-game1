@@ -7,6 +7,10 @@ export const LEGACY_DRAW_PREFIX = 'legacy-draw:';
 export const questionTypes = ['text', 'image', 'reveal', 'zoom'] as const;
 export type QuestionType = (typeof questionTypes)[number];
 
+/** Only `approved` questions reach the game; `pending` ones wait in the question bank for review. */
+export const questionStatuses = ['pending', 'approved', 'rejected'] as const;
+export type QuestionStatus = (typeof questionStatuses)[number];
+
 export const categoryInput = z.object({
   slug: z.string().trim().min(1, 'اكتب المعرّف').max(40, 'المعرّف أطول من 40 حرفًا').regex(/^[a-z0-9-]+$/, 'المعرّف: حروف إنجليزية صغيرة وأرقام و «-» فقط'),
   name: z.string().trim().min(1, 'اكتب الاسم').max(60, 'الاسم أطول من 60 حرفًا'),
@@ -28,6 +32,8 @@ export const questionInput = z
     points: z.number({ error: POINTS_MESSAGE }).int(POINTS_MESSAGE).refine((p) => (POINTS as readonly number[]).includes(p), POINTS_MESSAGE),
     imageUrl: z.string().max(1000).nullable().default(null),
     revealUrl: z.string().max(1000).nullable().default(null),
+    // Where the answer can be checked (a link or a short note), shown to the reviewer.
+    reference: z.string().trim().max(500, 'المرجع أطول من 500 حرف').nullish().transform((v) => v || null),
     active: z.boolean().default(true),
   })
   .refine((q) => q.type === 'text' || q.imageUrl, { message: 'الصورة مطلوبة لهذا النوع', path: ['imageUrl'] })
@@ -39,8 +45,15 @@ export const questionListQuery = z.object({
   categoryId: z.coerce.number().int().positive().optional(),
   search: z.string().trim().max(100).optional(),
   active: z.enum(['true', 'false']).transform((v) => v === 'true').optional(),
+  status: z.enum(questionStatuses).default('approved'),
+  points: z.coerce.number().int().optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(25),
+});
+
+export const reviewInput = z.object({
+  ids: z.array(z.number().int().positive()).min(1).max(500),
+  status: z.enum(questionStatuses),
 });
 
 export const loginInput = z.object({
@@ -48,11 +61,33 @@ export const loginInput = z.object({
   password: z.string().min(1, 'اكتب كلمة المرور'),
 });
 
+export const ADMIN_PASSWORD_MIN = 10;
+const adminPassword = z.string().min(ADMIN_PASSWORD_MIN, `كلمة المرور ${ADMIN_PASSWORD_MIN} أحرف على الأقل`).max(200);
+
+export const adminCreateInput = z.object({
+  email: loginInput.shape.email,
+  password: adminPassword,
+});
+
+export const adminPasswordInput = z.object({ password: adminPassword });
+
+export const changeOwnPasswordInput = z.object({
+  currentPassword: z.string().min(1, 'اكتب كلمة المرور الحالية'),
+  password: adminPassword,
+});
+
+/** Where a player's device runs the game; sent in the socket handshake for usage stats. */
+export const platforms = ['web', 'ios', 'android'] as const;
+export type Platform = (typeof platforms)[number];
+
+export const usageQuery = z.object({ days: z.coerce.number().int().min(1).max(365).default(30) });
+
 /** Arabic labels for field paths, used when listing validation issues. */
 export const FIELD_LABELS: Record<string, string> = {
   categoryId: 'الفئة', categorySlug: 'الفئة', type: 'النوع', text: 'نص السؤال', options: 'الخيارات',
-  correctIndex: 'الإجابة الصحيحة', points: 'النقاط', imageUrl: 'الصورة', revealUrl: 'صورة الكشف', active: 'التفعيل',
+  correctIndex: 'الإجابة الصحيحة', points: 'النقاط', imageUrl: 'الصورة', revealUrl: 'صورة الكشف', reference: 'المرجع', active: 'التفعيل',
   slug: 'المعرّف', name: 'الاسم', icon: 'الأيقونة', sortOrder: 'الترتيب',
+  email: 'البريد', password: 'كلمة المرور', currentPassword: 'كلمة المرور الحالية',
 };
 
 /** "options.2" → "الخيارات 3" */
@@ -60,4 +95,16 @@ export function fieldLabel(path: string): string {
   const [head = '', index] = path.split('.');
   const label = FIELD_LABELS[head] ?? head;
   return index !== undefined && /^\d+$/.test(index) ? `${label} ${Number(index) + 1}` : label;
+}
+
+/** Loose form of a question's text for spotting duplicates: no diacritics, unified letter variants, no punctuation. */
+export function normalizeQuestionText(text: string): string {
+  return text
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .toLowerCase();
 }

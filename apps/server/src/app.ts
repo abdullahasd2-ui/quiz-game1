@@ -14,13 +14,16 @@ import { publicCategoryRoutes } from './api/public/categories';
 import { authPlugin } from './auth/plugin';
 import { env } from './env';
 import { errorHandler } from './lib/errors';
+import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
 
 export async function buildApp(gameOptions: GameServerOptions = {}) {
-  const app = Fastify({ logger: env.NODE_ENV === 'test' ? false : { level: 'info' } });
+  const app = Fastify({ logger: env.NODE_ENV === 'test' ? false : { level: 'info' }, trustProxy: env.TRUST_PROXY });
   app.setErrorHandler(errorHandler);
 
-  await app.register(cors, { origin: env.NODE_ENV === 'production' ? false : true, credentials: true });
+  // Production: the web app is same-origin; only the mobile app is cross-origin, and it never sends cookies.
+  const prod = env.NODE_ENV === 'production';
+  await app.register(cors, { origin: prod ? env.APP_ORIGINS : true, credentials: !prod });
   await app.register(rateLimit, { global: false });
   await app.register(multipart, { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } });
   await app.register(authPlugin);
@@ -29,7 +32,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   app.get('/api/health', async () => ({ ok: true }));
   await app.register(publicCategoryRoutes, { prefix: '/api/categories' });
 
-  attachGameServer(app, gameOptions);
+  const game = attachGameServer(app, gameOptions);
 
   await app.register(adminAuthRoutes, { prefix: '/api/admin' });
   await app.register(
@@ -38,7 +41,8 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
       await admin.register(adminCategoryRoutes, { prefix: '/categories' });
       await admin.register(adminQuestionRoutes, { prefix: '/questions' });
       await admin.register(adminUploadRoutes, { prefix: '/upload' });
-      await admin.register(adminStatsRoutes, { prefix: '/stats' });
+      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live });
+      await admin.register(adminAccountRoutes, { prefix: '/admins' });
     },
     { prefix: '/api/admin' },
   );

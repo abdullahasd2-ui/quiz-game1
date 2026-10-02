@@ -1,0 +1,8 @@
+.git
+**/node_modules
+**/dist
+**/.env
+apps/server/uploads
+.test-uploads
+deploy
+apps/mobile

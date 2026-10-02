@@ -21,7 +21,9 @@ export function GamePage() {
       </div>
     );
   } else if (!view) {
-    screen = <HomeScreen initialCode={params.get('code')?.toUpperCase() ?? ''} />;
+    const code = params.get('code')?.toUpperCase() ?? '';
+    // Keyed so an invite link opened while on the home screen refills the form.
+    screen = <HomeScreen key={code} initialCode={code} />;
   } else if (view.status === 'lobby') {
     screen = <LobbyScreen view={view} />;
   } else if (view.status === 'done') {
@@ -39,13 +41,13 @@ export function GamePage() {
         <button
           type="button"
           onClick={leave}
-          className="fixed top-2.5 left-2.5 z-40 rounded-full border border-q-red/40 bg-q-red/15 px-3.5 py-1.5 text-xs text-q-red"
+          className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] left-2.5 z-40 rounded-full border border-q-red/40 bg-q-red/15 px-3.5 py-1.5 text-xs text-q-red"
         >
           🚪 خروج من الغرفة
         </button>
       )}
       {!connected && !resuming && (
-        <div className="fixed inset-x-0 top-0 z-40 bg-q-red/90 py-1 text-center text-xs font-bold" role="status">
+        <div className="fixed inset-x-0 top-0 z-40 bg-q-red/90 pt-[calc(env(safe-area-inset-top)+0.25rem)] pb-1 text-center text-xs font-bold" role="status">
           انقطع الاتصال — جاري إعادة الاتصال...
         </div>
       )}

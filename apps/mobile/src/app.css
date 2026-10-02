@@ -1,0 +1,30 @@
+@import "../../web/src/index.css";
+@import "@fontsource/tajawal/400.css";
+@import "@fontsource/tajawal/500.css";
+@import "@fontsource/tajawal/700.css";
+@import "@fontsource/tajawal/900.css";
+
+/* The screens live in the web app; Tailwind only scans this project by default. */
+@source "../../web/src/game";
+@source "../../web/src/components";
+
+html,
+body {
+  background: var(--color-q-bg);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Keep content and the fixed bars clear of the notch / home indicator. */
+#root {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}

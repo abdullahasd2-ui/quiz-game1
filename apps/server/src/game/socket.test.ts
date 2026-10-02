@@ -4,7 +4,9 @@ import { io as connect, type Socket } from 'socket.io-client';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { buildApp } from '../app';
 import { db, sqlClient } from '../db/client';
-import { categories, questions } from '../db/schema';
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
+import { admins, categories, games, questions } from '../db/schema';
 
 type Client = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -14,8 +16,8 @@ let catIds: number[];
 const clients: Client[] = [];
 
 /** A device: a socket plus the latest room view it received. */
-async function device(deviceId: string) {
-  const socket: Client = connect(url, { auth: { deviceId }, transports: ['websocket'], forceNew: true });
+async function device(deviceId: string, platform?: string) {
+  const socket: Client = connect(url, { auth: { deviceId, platform }, transports: ['websocket'], forceNew: true });
   clients.push(socket);
   const d = { socket, view: null as RoomView | null, closed: null as string | null };
   socket.on('room:state', (v) => (d.view = v));
@@ -166,5 +168,42 @@ describe('live game over sockets', () => {
     await until(() => guest.closed !== null);
     expect(guest.closed).toBe('المضيف أغلق الغرفة');
     expect(await call(guest.socket, 'game:next')).toEqual({ ok: false, error: 'الغرفة غير موجودة!' });
+  });
+
+  it('records visits and games, and shows live rooms to admins', async () => {
+    await sqlClient`truncate daily_visits, games restart identity`;
+    await db.insert(admins).values({ email: 'live@test.dev', passwordHash: await bcrypt.hash('live-password', 4) }).onConflictDoNothing();
+    const login = await app.inject({ method: 'POST', url: '/api/admin/login', payload: { email: 'live@test.dev', password: 'live-password' } });
+    const cookie = String(login.headers['set-cookie']).split(';')[0]!;
+
+    const host = await device('device-host-4', 'ios');
+    const guest = await device('device-guest-4', 'not-a-platform');
+    const created = await call<{ code: string }>(host.socket, 'room:create', { mode: 'mobile', variant: 'flip', teamName: 'النمور' });
+    const code = created.ok ? created.data.code : '';
+    await call(guest.socket, 'room:join', { code, teamName: 'الصقور' });
+    await call(host.socket, 'game:start', { categoryIds: catIds.slice(0, 3) });
+    await until(() => guest.view?.status === 'playing');
+
+    const live = (await app.inject({ method: 'GET', url: '/api/admin/stats/live', headers: { cookie } })).json();
+    expect(live).toMatchObject({ devicesOnline: 2, playersInRooms: 2 });
+    expect(live.rooms.find((r: { code: string }) => r.code === code)).toMatchObject({
+      mode: 'mobile', variant: 'flip', status: 'playing', categories: ['أ', 'ب', 'ج'], roundsPlayed: 0, totalRounds: 15,
+      teams: [{ name: 'النمور', score: 0, connected: true }, { name: 'الصقور', score: 0, connected: true }],
+    });
+
+    const visits = await sqlClient<{ device_id: string; platform: string }[]>`select device_id, platform from daily_visits order by device_id`;
+    expect(visits).toEqual([{ device_id: 'device-guest-4', platform: 'web' }, { device_id: 'device-host-4', platform: 'ios' }]);
+
+    // Stats are written in the background.
+    const gameRow = async (c: string) => (await db.select().from(games).where(eq(games.code, c)))[0];
+    await expect.poll(async () => (await gameRow(code))?.startedAt ?? null).not.toBeNull();
+    expect(await gameRow(code)).toMatchObject({ mode: 'mobile', variant: 'flip', categoryIds: catIds.slice(0, 3), finishedAt: null, abandonedAt: null });
+
+    // A room closed before its last round counts as abandoned.
+    const other = await call<{ code: string }>(guest.socket, 'room:create', { mode: 'tv', variant: 'swap' });
+    const otherCode = other.ok ? other.data.code : '';
+    await call(guest.socket, 'room:leave');
+    await expect.poll(async () => (await gameRow(otherCode))?.abandonedAt ?? null).not.toBeNull();
+    expect(await gameRow(otherCode)).toMatchObject({ startedAt: null, finishedAt: null, roundsPlayed: 0, scores: [0, 0] });
   });
 });

@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
+import { shareInvite } from '@/lib/native';
+import { PUBLIC_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { teamName } from '../ui';
@@ -28,7 +30,8 @@ export function LobbyScreen({ view }: { view: RoomView }) {
   const ready = Boolean(view.teams[0] && view.teams[1]);
 
   async function copyLink() {
-    const link = `${location.origin}/?code=${view.code}`;
+    const link = `${PUBLIC_URL}/?code=${view.code}`;
+    if (await shareInvite(link, `تعال العب معي جاوب أو بادل! كود الغرفة: ${view.code}`)) return;
     try {
       await navigator.clipboard.writeText(link);
       toast.success('تم نسخ رابط الدعوة');
