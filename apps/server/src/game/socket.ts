@@ -1,0 +1,245 @@
+import { randomInt } from 'node:crypto';
+import {
+  actionInput,
+  answerInput,
+  createRoomInput,
+  joinRoomInput,
+  pickCellInput,
+  ROOM_CODE_ALPHABET,
+  ROOM_CODE_LENGTH,
+  startGameInput,
+  type Ack,
+  type ClientToServerEvents,
+  type ServerToClientEvents,
+} from '@quiz/shared';
+import type { FastifyInstance } from 'fastify';
+import { Server, type Socket } from 'socket.io';
+import { z } from 'zod';
+import { drawQuestion as drawFromDb, listPublicCategories } from './catalog';
+import { GameError, GameRoom, type DealtQuestion } from './room';
+
+type SocketData = { deviceId: string; code: string | null };
+type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+export type GameServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+
+const deviceIdSchema = z.string().regex(/^[A-Za-z0-9_-]{8,64}$/);
+/** Empty rooms (everyone gone) and finished games are dropped after this long without activity. */
+const IDLE_ROOM_MS = 30 * 60 * 1000;
+const SWEEP_MS = 60 * 1000;
+
+export type GameServerOptions = {
+  /** Overridable in tests. */
+  drawQuestion?: (categoryId: number, points: number) => Promise<DealtQuestion | null>;
+};
+
+const channel = (code: string) => `room:${code}`;
+
+/**
+ * Live game over Socket.IO. Rooms live in this process's memory, so run a single
+ * server instance (or add a shared adapter + store before scaling out).
+ */
+export function attachGameServer(app: FastifyInstance, opts: GameServerOptions = {}) {
+  const drawQuestion = opts.drawQuestion ?? drawFromDb;
+  const io: GameServer = new Server(app.server, { serveClient: false, cors: { origin: false } });
+  const rooms = new Map<string, GameRoom>();
+
+  function newCode() {
+    let code: string;
+    do {
+      code = Array.from({ length: ROOM_CODE_LENGTH }, () => ROOM_CODE_ALPHABET[randomInt(ROOM_CODE_ALPHABET.length)]).join('');
+    } while (rooms.has(code));
+    return code;
+  }
+
+  /** Every device gets its own view (hidden info differs per seat). */
+  async function broadcast(room: GameRoom) {
+    for (const s of await io.in(channel(room.code)).fetchSockets()) {
+      const seat = room.seatOf(s.data.deviceId);
+      if (seat !== null) s.emit('room:state', room.view(seat));
+    }
+  }
+
+  function closeRoom(room: GameRoom, reason: string) {
+    room.dispose();
+    rooms.delete(room.code);
+    io.to(channel(room.code)).emit('room:closed', reason);
+    io.in(channel(room.code)).socketsLeave(channel(room.code));
+  }
+
+  function currentRoom(socket: GameSocket) {
+    const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+    if (!room) throw new GameError('الغرفة غير موجودة!');
+    const seat = room.seatOf(socket.data.deviceId);
+    if (seat === null) throw new GameError('لست في هذه الغرفة');
+    return { room, seat };
+  }
+
+  /** Is another tab of the same device still in the room? Then it stays "connected". */
+  async function deviceStillHere(room: GameRoom, deviceId: string, except: string) {
+    const sockets = await io.in(channel(room.code)).fetchSockets();
+    return sockets.some((s) => s.id !== except && s.data.deviceId === deviceId);
+  }
+
+  async function detach(socket: GameSocket) {
+    const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+    socket.data.code = null;
+    if (!room) return;
+    await socket.leave(channel(room.code));
+    if (await deviceStillHere(room, socket.data.deviceId, socket.id)) return;
+    room.setConnected(socket.data.deviceId, false);
+    await broadcast(room);
+  }
+
+  async function enter(socket: GameSocket, room: GameRoom) {
+    if (socket.data.code && socket.data.code !== room.code) await detach(socket);
+    socket.data.code = room.code;
+    await socket.join(channel(room.code));
+    await broadcast(room);
+  }
+
+  /** Wraps a handler: validates input, turns GameError/ZodError into `{ok:false}`, broadcasts on success. */
+  function handle<I, T>(schema: z.ZodType<I> | null, fn: (input: I) => Promise<{ data: T; room?: GameRoom }>) {
+    return async (...args: unknown[]) => {
+      const reply = args.at(-1) as ((res: Ack<T>) => void) | undefined;
+      if (typeof reply !== 'function') return;
+      try {
+        const parsed = schema ? schema.safeParse(args[0]) : { success: true as const, data: undefined as I };
+        if (!parsed.success) return reply({ ok: false, error: parsed.error.issues[0]?.message ?? 'طلب غير صالح' });
+        const { data, room } = await fn(parsed.data);
+        reply({ ok: true, data });
+        if (room) await broadcast(room);
+      } catch (err) {
+        if (err instanceof GameError) return reply({ ok: false, error: err.message });
+        app.log.error(err);
+        reply({ ok: false, error: 'حدث خطأ، حاول مرة ثانية' });
+      }
+    };
+  }
+
+  io.use((socket, next) => {
+    const parsed = deviceIdSchema.safeParse(socket.handshake.auth?.deviceId);
+    if (!parsed.success) return next(new Error('missing device id'));
+    socket.data.deviceId = parsed.data;
+    socket.data.code = null;
+    next();
+  });
+
+  io.on('connection', (socket) => {
+    const { deviceId } = socket.data;
+
+    socket.on(
+      'room:create',
+      handle(createRoomInput, async (input) => {
+        const code = newCode();
+        const room = new GameRoom(code, input.mode, input.variant, () => void broadcast(room));
+        room.seatHost(deviceId, input.teamName);
+        rooms.set(code, room);
+        await enter(socket, room);
+        return { data: { code } };
+      }),
+    );
+
+    socket.on(
+      'room:join',
+      handle(joinRoomInput, async ({ code, teamName }) => {
+        const room = rooms.get(code);
+        if (!room) throw new GameError('الغرفة غير موجودة!');
+        room.join(deviceId, teamName);
+        await enter(socket, room);
+        return { data: { code } };
+      }),
+    );
+
+    socket.on(
+      'room:leave',
+      handle(null, async () => {
+        const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+        if (!room) return { data: null };
+        const closes = room.leave(deviceId);
+        socket.data.code = null;
+        await socket.leave(channel(room.code));
+        if (closes) closeRoom(room, 'المضيف أغلق الغرفة');
+        return { data: null, room: closes ? undefined : room };
+      }),
+    );
+
+    socket.on(
+      'game:start',
+      handle(startGameInput, async ({ categoryIds }) => {
+        const { room, seat } = currentRoom(socket);
+        const found = await listPublicCategories(categoryIds);
+        if (found.length !== categoryIds.length) throw new GameError('فئة غير موجودة');
+        const notReady = found.find((c) => !c.playable);
+        if (notReady) throw new GameError(`فئة «${notReady.name}» ليس فيها أسئلة كافية`);
+        // Keep the order the host picked them in.
+        const byId = new Map(found.map((c) => [c.id, { id: c.id, name: c.name, icon: c.icon }]));
+        room.start(seat, categoryIds.map((id) => byId.get(id)!));
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:pick',
+      handle(pickCellInput, async ({ categoryId, points }) => {
+        const { room, seat } = currentRoom(socket);
+        room.assertCanPick(seat, categoryId, points);
+        room.picking = true;
+        try {
+          const question = await drawQuestion(categoryId, points);
+          if (!question) throw new GameError('لا يوجد سؤال مفعّل لهذه الخانة');
+          room.beginRound(categoryId, points, question);
+        } finally {
+          room.picking = false;
+        }
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:action',
+      handle(actionInput, async ({ action }) => {
+        const { room, seat } = currentRoom(socket);
+        room.act(seat, action);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:answer',
+      handle(answerInput, async ({ index }) => {
+        const { room, seat } = currentRoom(socket);
+        room.answer(seat, index);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:next',
+      handle(null, async () => {
+        const { room, seat } = currentRoom(socket);
+        room.next(seat);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on('disconnect', () => void detach(socket));
+  });
+
+  const sweeper = setInterval(() => {
+    const cutoff = Date.now() - IDLE_ROOM_MS;
+    for (const room of rooms.values()) {
+      if (room.lastActivity < cutoff && (!room.hasConnectedDevice || room.status === 'done')) closeRoom(room, 'انتهت مدة الغرفة');
+    }
+  }, SWEEP_MS);
+  sweeper.unref();
+
+  app.addHook('onClose', async () => {
+    clearInterval(sweeper);
+    for (const room of rooms.values()) room.dispose();
+    // Fastify closes the HTTP server itself; only drop the live connections here.
+    io.disconnectSockets(true);
+    io.engine.close();
+  });
+
+  return { io, rooms };
+}
