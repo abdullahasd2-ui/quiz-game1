@@ -207,7 +207,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
     <div class="mode-card" id="variant-flip" onclick="selectVariant('flip')">
       <div class="mode-icon">🔀</div>
       <div class="mode-name">جاوب أو اقلب</div>
-      <div class="mode-desc">الخصم يجاوب: صح = ينقص، غلط = يزيد</div>
+      <div class="mode-desc">اقلب جواب الخصم من صح لغلط أو العكس</div>
     </div>
   </div>
   <div style="font-size:13px;color:#888;text-align:center;margin-bottom:8px;">اختار طريقة اللعب</div>
@@ -410,7 +410,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:#fff;min-height
       <div style="background:rgba(247,201,72,0.08);border:1px solid rgba(247,201,72,0.25);border-radius:12px;padding:12px;">
         <div style="color:var(--gold);font-weight:900;margin-bottom:6px;">🔀 نظام النقاط — جاوب أو اقلب</div>
         <div>✅ جاوب صح = نقاط السؤال</div>
-        <div>🔀 اقلب: الخصم يجاوب — إذا جاوب صح تنقص نقاطه، وإذا جاوب غلط تزيد نقاطه بقيمة السؤال!</div>
+        <div>🔀 اقلب: إذا كان جواب الخصم صح يصير غلط، وإذا كان غلط يصير صح!</div>
         <div>🔀🔀 كلاهم اقلب = لا نقاط لأحد</div>
       </div>
     </div>
@@ -473,7 +473,7 @@ const QDB={
     {q:'كم مرة فاز البرازيل بكأس العالم؟',o:['3','4','5','6'],a:2},
     {q:'كم لاعباً في فريق كرة القدم؟',o:['10','11','12','9'],a:1},
     {q:'أي نادٍ فاز بأكثر دوريات أبطال أوروبا؟',o:['برشلونة','ليفربول','ميلان','ريال مدريد'],a:3},
-    {q:'من هو الهداف التاريخي لكأس العالم؟',o:['بيليه','رونالدو','مولر','ميسي'],a:2},
+    {q:'من هو الهداف التاريخي لكأس العالم؟',o:['بيليه','رونالدو','مولر','ميسي'],a:3},
     {q:'أي دولة استضافت كأس العالم 2022؟',o:['السعودية','الإمارات','قطر','البحرين'],a:2},
   ],
   cars:[
@@ -545,8 +545,8 @@ function computeScores(pts,a0,a1,c0,c1,variant){
   if(bothSpecial){return[0,0];}
   if(a0==='answer'&&a1==='answer'){return[c0?pts:0,c1?pts:0];}
   if(variant==='flip'){
-    if(a0==='steal'&&a1==='answer'){pts0=0;pts1=c1?-pts:pts;}
-    else if(a0==='answer'&&a1==='steal'){pts1=0;pts0=c0?-pts:pts;}
+    if(a0==='steal'&&a1==='answer'){pts0=0;pts1=(!c1)?pts:0;}
+    else if(a0==='answer'&&a1==='steal'){pts1=0;pts0=(!c0)?pts:0;}
   } else {
     if(a0==='steal'&&a1==='answer'){pts1=0;pts0=c1?pts*2:-pts;}
     else if(a0==='answer'&&a1==='steal'){pts0=0;pts1=c0?pts*2:-pts;}
