@@ -7,7 +7,7 @@ export type Points = (typeof POINTS)[number];
 /**
  * Round score deltas for both teams.
  * swap: stealing a correct opponent answer doubles the points, stealing a wrong one is a penalty.
- * flip: stealing flips the opponent's answer (right becomes wrong and vice versa).
+ * flip: the flipper scores nothing; the answering team loses `pts` if correct and gains `pts` if wrong.
  * Both stealing always scores nothing.
  */
 export function computeScores(
@@ -25,7 +25,7 @@ export function computeScores(
   const thief = a0 === 'steal' ? 0 : 1;
   const victimCorrect = thief === 0 ? c1 : c0;
   const out: [number, number] = [0, 0];
-  if (variant === 'flip') out[thief] = victimCorrect ? 0 : pts;
+  if (variant === 'flip') out[1 - thief] = victimCorrect ? -pts : pts;
   else out[thief] = victimCorrect ? pts * 2 : -pts;
   return out;
 }

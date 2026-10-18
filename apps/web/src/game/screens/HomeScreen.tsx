@@ -107,7 +107,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
       <p className="mb-2 text-center text-[13px] text-white/50">اختار نوع اللعبة</p>
       <div className="mb-5 grid grid-cols-2 gap-3.5">
         <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم واسرق نقاطه" />
-        <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="اقلب جواب الخصم من صح لغلط أو العكس" />
+        <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="الخصم يجاوب: صح = ينقص، غلط = يزيد" />
       </div>
 
       <p className="mb-2 text-center text-[13px] text-white/50">اختار طريقة اللعب</p>
@@ -197,7 +197,7 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
         </HowSection>
         <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="🔀 نظام النقاط — جاوب أو اقلب">
           <div>✅ جاوب صح = نقاط السؤال</div>
-          <div>🔀 اقلب: إذا كان جواب الخصم صح يصير غلط، وإذا كان غلط يصير صح!</div>
+          <div>🔀 اقلب: الخصم يجاوب — إذا جاوب صح تنقص نقاطه، وإذا جاوب غلط تزيد نقاطه بقيمة السؤال!</div>
           <div>🔀🔀 كلاهم اقلب = لا نقاط لأحد</div>
         </HowSection>
       </div>
