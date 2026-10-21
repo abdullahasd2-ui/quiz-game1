@@ -31,7 +31,7 @@ describe('seats', () => {
     expect(room.join('dev-guest', 'الصقور')).toBe(1);
     room.setConnected('dev-guest', false);
     expect(room.join('dev-guest')).toBe(1);
-    expect(room.view(1).teams[1]).toEqual({ name: 'الصقور', score: 0, connected: true });
+    expect(room.view(1).teams[1]).toMatchObject({ name: 'الصقور', score: 0, connected: true });
     expect(() => room.join('dev-3')).toThrow('الغرفة ممتلئة!');
   });
 
@@ -175,5 +175,114 @@ describe('shuffleQuestion', () => {
       expect(q.options.slice().sort()).toEqual(['a', 'b', 'c', 'd']);
       expect(q.options[q.correctIndex]).toBe('b');
     }
+  });
+});
+
+describe('team members and voting', () => {
+  /** Mobile room already playing; team 0 has two members (m1, m2), team 1 has one (g1). */
+  function teamsRoom() {
+    const { room, onChange } = mobileRoom();
+    room.join('m1', undefined, 0, 'سعد');
+    room.join('m2', undefined, 0);
+    room.join('g1', undefined, 1);
+    return { room, onChange };
+  }
+
+  it('the first device into a team is its captain, the rest are members, capped at 10', () => {
+    const room = new GameRoom('ABCDEF', 'tv', 'swap');
+    room.seatHost('tv');
+    expect(room.join('c1', 'النمور', 0, 'ليث')).toBe(0);
+    expect(room.seatOf('c1')).toBe(0);
+    for (let i = 1; i < 10; i++) expect(room.join(`p${i}`, undefined, 0)).toBe(0);
+    expect(room.view(0).teams[0]!.members).toHaveLength(10);
+    expect(room.view(0).teams[0]!.members[0]).toEqual({ name: 'ليث', connected: true, captain: true });
+    expect(() => room.join('p10', undefined, 0)).toThrow('الفريق ممتلئ');
+    // Joining the other team is independent, and re-joining keeps your role.
+    expect(room.join('x1', undefined, 1)).toBe(1);
+    expect(room.join('p3')).toBe(0);
+    expect(room.viewerOf('p3')).toEqual({ seat: 0, member: 'p3' });
+  });
+
+  it('a game can start with one player per team; members may join mid-game but not take a captain seat', () => {
+    const { room } = mobileRoom();
+    expect(room.join('late', undefined, 1)).toBe(1);
+    expect(room.view(1, 'late').role).toBe('member');
+    const lobby = new GameRoom('ABCDEF', 'tv', 'swap');
+    lobby.seatHost('tv');
+    lobby.join('a', undefined, 0);
+    lobby.join('b', undefined, 1);
+    lobby.start('tv', CATS);
+    expect(lobby.status).toBe('playing');
+    expect(() => lobby.join('c', undefined, 0)).not.toThrow();
+  });
+
+  it('members vote on action and answer; counts are visible to their own team only; the captain still decides', () => {
+    const { room } = teamsRoom();
+    room.beginRound(1, 100, question(2));
+    room.vote('m1', 'steal');
+    room.vote('m2', 'answer');
+    expect(room.view(0, 'm1').votes).toEqual({ counts: { steal: 1, answer: 1 }, mine: 'steal' });
+    expect(room.view(0).votes).toEqual({ counts: { steal: 1, answer: 1 }, mine: null });
+    expect(room.view(1).votes).toEqual({ counts: {}, mine: null });
+    room.vote('m2', 'steal'); // change of mind
+    expect(room.view(0).votes!.counts).toEqual({ steal: 2 });
+    expect(room.seatOf('m1')).toBeNull(); // members hold no captain seat, so the socket layer refuses their decisions
+    room.act(0, 'answer'); // the captain overrides the vote
+    expect(room.view(0).votes).toBeNull();
+    expect(() => room.vote('m1', 'steal')).toThrow('قرر رئيس الفريق');
+    room.act(1, 'answer');
+    expect(room.phase).toBe('answer');
+    room.vote('m1', '3');
+    expect(room.view(0, 'm1').votes).toEqual({ counts: { 3: 1 }, mine: '3' });
+    expect(() => room.vote('m1', '9')).toThrow('خيار غير صالح');
+    expect(() => room.vote('tv-or-captain', '1')).toThrow('للأعضاء فقط');
+  });
+
+  it('when time runs out the most-voted option is used (earliest vote breaks ties), else the default', () => {
+    const { room } = teamsRoom();
+    room.beginRound(1, 100, question(2));
+    room.vote('m1', 'steal');
+    room.vote('m2', 'steal');
+    vi.advanceTimersByTime(60_000);
+    expect(room.round!.actions).toEqual(['steal', 'answer']);
+    expect(room.phase).toBe('answer');
+
+    const second = teamsRoom().room;
+    second.beginRound(1, 100, question(2));
+    second.act(0, 'answer');
+    second.act(1, 'answer');
+    second.vote('m1', '1');
+    second.vote('m2', '2');
+    vi.advanceTimersByTime(60_000);
+    expect(second.round!.answers[0]).toBe(1); // tie → m1 voted first
+    expect(second.round!.answers[1]).toBe(-1); // no vote, no answer
+  });
+
+  it('members vote on the board cell for their team on its turn (mobile mode only)', () => {
+    const { room } = teamsRoom();
+    room.vote('m1', '1:300');
+    expect(room.view(0, 'm1').votes).toEqual({ counts: { '1:300': 1 }, mine: '1:300' });
+    expect(() => room.vote('g1', '1:300')).toThrow('ليس دور فريقك');
+    expect(() => room.vote('m1', '9:100')).toThrow('غير موجود');
+    room.beginRound(1, 300, question());
+    expect(() => room.vote('m1', '1:300')).toThrow('خيار غير صالح'); // now an action vote, not a cell
+    expect(room.view(0, 'm1').votes).toEqual({ counts: {}, mine: null }); // the cell votes were cleared
+  });
+
+  it('a captain who drops mid-game hands the team to a connected member; leaving the lobby promotes one too', () => {
+    const { room } = teamsRoom();
+    room.setConnected('dev-guest', false);
+    expect(room.teams[1]!.deviceId).toBe('g1');
+    expect(room.view(1, 'dev-guest').role).toBe('member');
+    expect(room.teams[1]!.name).toBe('الصقور'); // team name and score stay with the team
+    expect(room.join('dev-guest')).toBe(1); // back as a member
+
+    const lobby = new GameRoom('ABCDEF', 'mobile', 'swap');
+    lobby.seatHost('h');
+    lobby.join('cap', 'الصقور', 1);
+    lobby.join('mem', undefined, 1);
+    expect(lobby.leave('cap')).toBe(false);
+    expect(lobby.seatOf('mem')).toBe(1);
+    expect(lobby.teams[1]!.name).toBe('الصقور');
   });
 });

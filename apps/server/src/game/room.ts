@@ -4,6 +4,7 @@ import {
   canAdvance,
   canPick,
   cellKey,
+  MAX_TEAM_SIZE,
   computeScores,
   POINTS,
   type Action,
@@ -31,7 +32,10 @@ export type DealtQuestion = {
   revealUrl: string | null;
 };
 
-type Player = { deviceId: string; name: string; score: number; connected: boolean };
+/** The captain of a team: decides for it, owns its name and score. */
+type Player = { deviceId: string; name: string; nick: string; score: number; connected: boolean };
+/** A non-captain team member: can only vote. */
+type Member = { deviceId: string; name: string; connected: boolean };
 
 type Round = {
   categoryId: number;
@@ -62,6 +66,9 @@ export function shuffleQuestion(q: DealtQuestion, random = Math.random): DealtQu
 export class GameRoom {
   status: RoomStatus = 'lobby';
   readonly teams: [Player | null, Player | null] = [null, null];
+  readonly members: [Member[], Member[]] = [[], []];
+  /** Each team's live votes (deviceId → key) for the step in progress; insertion order breaks ties. */
+  private readonly votes: [Map<string, string>, Map<string, string>] = [new Map(), new Map()];
   tv: { deviceId: string; connected: boolean } | null = null;
   categories: BoardCategory[] = [];
   readonly used = new Set<string>();
@@ -90,32 +97,77 @@ export class GameRoom {
     return null;
   }
 
-  /** The device that created the room: team 1's phone in mobile mode, the TV in tv mode. */
-  seatHost(deviceId: string, teamName?: string) {
-    if (this.mode === 'tv') this.tv = { deviceId, connected: true };
-    else this.teams[0] = { deviceId, name: teamName || DEFAULT_NAMES[0], score: 0, connected: true };
+  /** The team a (non-captain) member belongs to. */
+  memberOf(deviceId: string): TeamIndex | null {
+    if (this.members[0].some((m) => m.deviceId === deviceId)) return 0;
+    if (this.members[1].some((m) => m.deviceId === deviceId)) return 1;
+    return null;
   }
 
-  /** Join (or re-join after a refresh — the device id keeps its seat). */
-  join(deviceId: string, teamName?: string): Seat {
+  /** What a device sees: its seat, plus its device id when it is only a member of that team. */
+  viewerOf(deviceId: string): { seat: Seat; member?: string } | null {
+    const seat = this.seatOf(deviceId);
+    if (seat !== null) return { seat };
+    const team = this.memberOf(deviceId);
+    return team === null ? null : { seat: team, member: deviceId };
+  }
+
+  /** The device that created the room: team 1's phone in mobile mode, the TV in tv mode. */
+  seatHost(deviceId: string, teamName?: string, nick?: string) {
+    if (this.mode === 'tv') this.tv = { deviceId, connected: true };
+    else this.teams[0] = { deviceId, name: teamName || DEFAULT_NAMES[0], nick: nick || 'الرئيس', score: 0, connected: true };
+  }
+
+  /**
+   * Join (or re-join after a refresh — the device id keeps its seat or membership).
+   * With `team`, the first device into a team becomes its captain and everyone after is a
+   * member (up to MAX_TEAM_SIZE); without it (older clients) the next free captain seat is taken.
+   */
+  join(deviceId: string, teamName?: string, team?: TeamIndex, nick?: string): Seat {
     const existing = this.seatOf(deviceId);
     if (existing !== null) {
       this.setConnected(deviceId, true);
       return existing;
     }
-    if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
-    const free = ([0, 1] as const).find((i) => !this.teams[i]);
-    if (free === undefined) throw new GameError('الغرفة ممتلئة!');
-    this.teams[free] = { deviceId, name: teamName || DEFAULT_NAMES[free], score: 0, connected: true };
+    const mine = this.memberOf(deviceId);
+    if (mine !== null) {
+      this.setConnected(deviceId, true);
+      return mine;
+    }
+
+    if (team === undefined) {
+      if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
+      const free = ([0, 1] as const).find((i) => !this.teams[i]);
+      if (free === undefined) throw new GameError('الغرفة ممتلئة!');
+      this.teams[free] = { deviceId, name: teamName || DEFAULT_NAMES[free], nick: nick || 'الرئيس', score: 0, connected: true };
+      this.touch();
+      return free;
+    }
+
+    if (!this.teams[team]) {
+      if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
+      this.teams[team] = { deviceId, name: teamName || DEFAULT_NAMES[team], nick: nick || 'الرئيس', score: 0, connected: true };
+    } else {
+      if (1 + this.members[team].length >= MAX_TEAM_SIZE) throw new GameError(`الفريق ممتلئ (${MAX_TEAM_SIZE} لاعبين)!`);
+      this.members[team].push({ deviceId, name: nick || `لاعب ${this.members[team].length + 1}`, connected: true });
+    }
     this.touch();
-    return free;
+    return team;
   }
 
   /**
-   * Leaving the lobby frees the seat; the host leaving closes the room (returns true).
-   * Mid-game the seat is kept so the team can come back with the code.
+   * A member leaving just drops out (and their votes with them). Leaving the lobby frees a captain
+   * seat (a waiting member takes it over); the host leaving closes the room (returns true).
+   * Mid-game a captain's seat is kept so the team can come back with the code.
    */
   leave(deviceId: string): boolean {
+    const member = this.memberOf(deviceId);
+    if (member !== null) {
+      this.members[member] = this.members[member].filter((m) => m.deviceId !== deviceId);
+      this.votes[member].delete(deviceId);
+      this.touch();
+      return false;
+    }
     const seat = this.seatOf(deviceId);
     if (seat === null) return false;
     if (this.status !== 'lobby') {
@@ -124,7 +176,12 @@ export class GameRoom {
     }
     const isHost = this.mode === 'tv' ? seat === 'tv' : seat === 0;
     if (isHost) return true;
-    if (seat !== 'tv') this.teams[seat] = null;
+    if (seat !== 'tv') {
+      const heir = this.members[seat].shift();
+      const captain = this.teams[seat]!;
+      this.teams[seat] = heir ? { ...captain, deviceId: heir.deviceId, nick: heir.name, connected: heir.connected } : null;
+      if (heir) this.votes[seat].delete(heir.deviceId);
+    }
     this.touch();
     return false;
   }
@@ -132,12 +189,42 @@ export class GameRoom {
   setConnected(deviceId: string, connected: boolean) {
     const seat = this.seatOf(deviceId);
     if (seat === 'tv') this.tv!.connected = connected;
-    else if (seat !== null) this.teams[seat]!.connected = connected;
+    else if (seat !== null) {
+      this.teams[seat]!.connected = connected;
+      if (!connected) this.handOverCaptain(seat);
+    } else {
+      const team = this.memberOf(deviceId);
+      const m = team === null ? undefined : this.members[team].find((x) => x.deviceId === deviceId);
+      if (m) m.connected = connected;
+    }
     this.touch();
   }
 
+  /** A captain who drops mid-game would stall their team, so a connected member takes over (the old captain returns as a member). */
+  private handOverCaptain(team: TeamIndex) {
+    if (this.status !== 'playing') return;
+    const captain = this.teams[team]!;
+    const i = this.members[team].findIndex((m) => m.connected);
+    if (i < 0) return;
+    const heir = this.members[team][i]!;
+    this.members[team][i] = { deviceId: captain.deviceId, name: captain.nick, connected: false };
+    this.teams[team] = { ...captain, deviceId: heir.deviceId, nick: heir.name, connected: true };
+    this.votes[team].delete(heir.deviceId);
+  }
+
+  /** Connected devices in the room (captains + members + tv). */
+  get connectedCount() {
+    return (
+      (this.tv?.connected ? 1 : 0) +
+      this.teams.filter((t) => t?.connected).length +
+      this.members.reduce((n, ms) => n + ms.filter((m) => m.connected).length, 0)
+    );
+  }
+
   get hasConnectedDevice() {
-    return Boolean(this.tv?.connected || this.teams[0]?.connected || this.teams[1]?.connected);
+    return Boolean(
+      this.tv?.connected || this.teams.some((t) => t?.connected) || this.members.some((ms) => ms.some((m) => m.connected)),
+    );
   }
 
   // ── Game flow ────────────────────────────────────────────────────────────
@@ -151,6 +238,7 @@ export class GameRoom {
     this.status = 'playing';
     this.phase = 'board';
     this.turn = 0;
+    this.clearVotes();
     this.touch();
   }
 
@@ -168,6 +256,7 @@ export class GameRoom {
     this.used.add(cellKey(categoryId, points));
     this.round = { categoryId, points, question, actions: [null, null], answers: [null, null], deadline: null, deltas: null };
     this.phase = 'action';
+    this.clearVotes();
     this.arm(ACTION_SECONDS, () => this.timeoutActions());
     this.touch();
   }
@@ -202,7 +291,82 @@ export class GameRoom {
       this.turn = this.turn === 0 ? 1 : 0;
       this.phase = 'board';
     }
+    this.clearVotes();
     this.touch();
+  }
+
+  /** A member's vote for the step in progress; they can change it until the captain decides. */
+  vote(deviceId: string, key: string) {
+    const team = this.memberOf(deviceId);
+    if (team === null) throw new GameError('التصويت للأعضاء فقط');
+    if (this.status !== 'playing') throw new GameError('اللعبة لم تبدأ');
+    const err = this.voteError(team, key);
+    if (err) throw new GameError(err);
+    // Delete first so a changed vote counts as the newest one when breaking ties.
+    this.votes[team].delete(deviceId);
+    this.votes[team].set(deviceId, key);
+    this.touch();
+  }
+
+  /** Why `key` can't be voted on right now by `team` (null when it can). */
+  private voteError(team: TeamIndex, key: string): string | null {
+    const round = this.round;
+    if (this.phase === 'board') {
+      if (this.mode !== 'mobile' || this.picking) return 'ليس وقت التصويت';
+      if (team !== this.turn) return 'ليس دور فريقك!';
+      const [cat, pts] = key.split(':').map(Number);
+      const ok = this.categories.some((c) => c.id === cat) && (POINTS as readonly number[]).includes(pts!);
+      if (!ok) return 'هذا السؤال غير موجود في اللوحة';
+      return this.used.has(cellKey(cat!, pts!)) ? 'هذا السؤال استُخدم بالفعل!' : null;
+    }
+    if (this.phase === 'action') {
+      if (!round || round.actions[team]) return 'قرر رئيس الفريق بالفعل';
+      return key === 'answer' || key === 'steal' ? null : 'خيار غير صالح';
+    }
+    if (this.phase === 'answer') {
+      if (!round || round.actions[team] === 'steal' || round.answers[team] !== null) return 'قرر رئيس الفريق بالفعل';
+      const i = Number(key);
+      return Number.isInteger(i) && i >= 0 && i < round.question.options.length ? null : 'خيار غير صالح';
+    }
+    return 'ليس وقت التصويت';
+  }
+
+  /** Is the team still deciding something its members can vote on? */
+  private votingOpen(team: TeamIndex): boolean {
+    if (this.status !== 'playing') return false;
+    const round = this.round;
+    if (this.phase === 'board') return this.mode === 'mobile' && team === this.turn && !this.picking;
+    if (this.phase === 'action') return Boolean(round && !round.actions[team]);
+    if (this.phase === 'answer') return Boolean(round && round.actions[team] !== 'steal' && round.answers[team] === null);
+    return false;
+  }
+
+  private tally(team: TeamIndex): Record<string, number> {
+    const counts: Record<string, number> = {};
+    for (const key of this.votes[team].values()) counts[key] = (counts[key] ?? 0) + 1;
+    return counts;
+  }
+
+  /** The most-voted key among `allowed` (earliest vote wins a tie), or null with no votes. */
+  private leading<K extends string>(team: TeamIndex, allowed: readonly K[]): K | null {
+    const counts = this.tally(team);
+    let best: K | null = null;
+    for (const key of this.votes[team].values()) {
+      if (!(allowed as readonly string[]).includes(key)) continue;
+      if (best === null || counts[key]! > counts[best]!) best = key as K;
+    }
+    return best;
+  }
+
+  private leadingAnswer(team: TeamIndex): number {
+    const options = this.round!.question.options.map((_, i) => String(i));
+    const key = this.leading(team, options);
+    return key === null ? -1 : Number(key);
+  }
+
+  private clearVotes() {
+    this.votes[0].clear();
+    this.votes[1].clear();
   }
 
   dispose() {
@@ -217,6 +381,7 @@ export class GameRoom {
     });
     if (round.answers[0] !== null && round.answers[1] !== null) return this.finishRound();
     this.phase = 'answer';
+    this.clearVotes();
     this.arm(ANSWER_SECONDS, () => this.timeoutAnswers());
   }
 
@@ -237,7 +402,7 @@ export class GameRoom {
   private timeoutActions() {
     const round = this.round;
     if (this.phase !== 'action' || !round) return;
-    round.actions = [round.actions[0] ?? 'answer', round.actions[1] ?? 'answer'];
+    round.actions = [round.actions[0] ?? this.leading(0, ['answer', 'steal']) ?? 'answer', round.actions[1] ?? this.leading(1, ['answer', 'steal']) ?? 'answer'] as [Action, Action];
     this.enterAnswerPhase();
     this.touch();
     this.onChange();
@@ -246,7 +411,7 @@ export class GameRoom {
   private timeoutAnswers() {
     const round = this.round;
     if (this.phase !== 'answer' || !round) return;
-    round.answers = [round.answers[0] ?? -1, round.answers[1] ?? -1];
+    round.answers = [round.answers[0] ?? this.leadingAnswer(0), round.answers[1] ?? this.leadingAnswer(1)];
     this.finishRound();
     this.touch();
     this.onChange();
@@ -280,7 +445,7 @@ export class GameRoom {
 
   // ── View ─────────────────────────────────────────────────────────────────
 
-  view(seat: Seat): RoomView {
+  view(seat: Seat, memberDeviceId?: string): RoomView {
     const round = this.round;
     const team = seat === 'tv' ? null : seat;
     const reveal = this.phase === 'result' && round?.deltas;
@@ -290,6 +455,7 @@ export class GameRoom {
       variant: this.variant,
       status: this.status,
       you: seat,
+      role: seat === 'tv' ? 'tv' : memberDeviceId ? 'member' : 'captain',
       teams: [this.teamView(0), this.teamView(1)],
       tvConnected: Boolean(this.tv?.connected),
       categories: this.categories,
@@ -310,6 +476,10 @@ export class GameRoom {
       decided: [Boolean(round?.actions[0]), Boolean(round?.actions[1])],
       myAction: round && team !== null ? round.actions[team] : null,
       myAnswer: round && team !== null ? round.answers[team] : null,
+      votes:
+        team !== null && this.votingOpen(team)
+          ? { counts: this.tally(team), mine: (memberDeviceId && this.votes[team].get(memberDeviceId)) || null }
+          : null,
       result: reveal
         ? {
             correctIndex: round.question.correctIndex,
@@ -324,6 +494,15 @@ export class GameRoom {
 
   private teamView(t: TeamIndex) {
     const p = this.teams[t];
-    return p ? { name: p.name, score: p.score, connected: p.connected } : null;
+    if (!p) return null;
+    return {
+      name: p.name,
+      score: p.score,
+      connected: p.connected,
+      members: [
+        { name: p.nick, connected: p.connected, captain: true },
+        ...this.members[t].map((m) => ({ name: m.name, connected: m.connected, captain: false })),
+      ],
+    };
   }
 }

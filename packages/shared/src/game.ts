@@ -11,6 +11,8 @@ export const MAX_BOARD_CATEGORIES = 9;
 export const ACTION_SECONDS = 60;
 export const ANSWER_SECONDS = 60;
 export const TEAM_NAME_MAX = 18;
+/** Captain + members. A game can start with any number of players per team (at least the captain). */
+export const MAX_TEAM_SIZE = 10;
 
 export type RoomMode = 'mobile' | 'tv';
 export type TeamIndex = 0 | 1;
@@ -20,7 +22,16 @@ export type RoomStatus = 'lobby' | 'playing' | 'done';
 /** board → action (secret answer/steal) → answer → result → board … */
 export type GamePhase = 'board' | 'action' | 'answer' | 'result';
 
-export type TeamView = { name: string; score: number; connected: boolean };
+export type MemberView = { name: string; connected: boolean; captain: boolean };
+export type TeamView = { name: string; score: number; connected: boolean; members: MemberView[] };
+/** Captain decides for the team; members only vote (the tv hosts and never plays). */
+export type Role = 'captain' | 'member' | 'tv';
+/**
+ * Live team vote on the step in progress, only sent to that team's own devices.
+ * Keys: `answer`/`steal` in the action phase, the option index in the answer phase,
+ * `${categoryId}:${points}` when picking a board cell.
+ */
+export type VoteView = { counts: Record<string, number>; mine: string | null };
 export type BoardCategory = { id: number; name: string; icon: string };
 
 /** A question as players see it: options already shuffled, correct answer withheld. */
@@ -49,6 +60,7 @@ export type RoomView = {
   variant: Variant;
   status: RoomStatus;
   you: Seat;
+  role: Role;
   teams: [TeamView | null, TeamView | null];
   tvConnected: boolean;
   categories: BoardCategory[];
@@ -63,6 +75,7 @@ export type RoomView = {
   decided: [boolean, boolean];
   myAction: Action | null;
   myAnswer: number | null;
+  votes: VoteView | null;
   result: RoundResult | null;
 };
 
@@ -85,12 +98,22 @@ const roomCode = z
   .toUpperCase()
   .length(ROOM_CODE_LENGTH, `الكود ${ROOM_CODE_LENGTH} أحرف`);
 
+const playerName = z.string().trim().max(TEAM_NAME_MAX, `الاسم أطول من ${TEAM_NAME_MAX} حرفًا`);
+
 export const createRoomInput = z.object({
   mode: z.enum(['mobile', 'tv']),
   variant: z.enum(['swap', 'flip']),
   teamName: teamName.optional(),
+  playerName: playerName.optional(),
 });
-export const joinRoomInput = z.object({ code: roomCode, teamName: teamName.optional() });
+export const joinRoomInput = z.object({
+  code: roomCode,
+  /** Name for the team, used only if you are the first to enter it (you become its captain). */
+  teamName: teamName.optional(),
+  /** Which team to join; the first to enter a team is its captain, everyone after is a member. */
+  team: z.union([z.literal(0), z.literal(1)]).optional(),
+  playerName: playerName.optional(),
+});
 export const startGameInput = z.object({
   categoryIds: z
     .array(z.number().int().positive())
@@ -104,6 +127,7 @@ export const pickCellInput = z.object({
 });
 export const actionInput = z.object({ action: z.enum(['answer', 'steal']) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
+export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
 
 export type CreateRoomInput = z.infer<typeof createRoomInput>;
 export type JoinRoomInput = z.infer<typeof joinRoomInput>;
@@ -119,6 +143,7 @@ export interface ClientToServerEvents {
   'game:pick': (input: z.infer<typeof pickCellInput>, reply: Reply) => void;
   'game:action': (input: z.infer<typeof actionInput>, reply: Reply) => void;
   'game:answer': (input: z.infer<typeof answerInput>, reply: Reply) => void;
+  'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;
 }
 

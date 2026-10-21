@@ -117,6 +117,54 @@ describe('live game over sockets', () => {
     expect(await call(guest.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: false, error: 'المضيف فقط يبدأ اللعبة' });
   });
 
+  it('team members join by choosing a team, vote, and only the captain decides', async () => {
+    const host = await device('device-host-m');
+    const created = await call<{ code: string }>(host.socket, 'room:create', { mode: 'mobile', variant: 'swap', teamName: 'النمور' });
+    if (!created.ok) throw new Error(created.error);
+    const code = created.data.code;
+    const captain = await device('device-cap-m');
+    const member = await device('device-mem-m');
+    const rival = await device('device-riv-m');
+    expect(await call(captain.socket, 'room:join', { code, team: 1, teamName: 'الصقور', playerName: 'ليث' })).toEqual({ ok: true, data: { code } });
+    expect(await call(member.socket, 'room:join', { code, team: 1, playerName: 'سعد' })).toEqual({ ok: true, data: { code } });
+    expect(await call(rival.socket, 'room:join', { code, team: 0, playerName: 'خالد' })).toEqual({ ok: true, data: { code } });
+    await until(() => member.view?.teams[1]?.members.length === 2);
+    expect(member.view!.role).toBe('member');
+    expect(captain.view!.role).toBe('captain');
+    expect(member.view!.teams[1]!.members.map((m) => m.name)).toEqual(['ليث', 'سعد']);
+    expect(await call(member.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: false, error: 'رئيس الفريق هو اللي يقرر — صوّت له!' });
+    expect(await call(host.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: true, data: null });
+    await until(() => member.view?.status === 'playing');
+
+    // Team 0 (host + one member) picks; the team-1 member can't vote on the cell.
+    expect(await call(member.socket, 'game:vote', { key: `${catIds[0]}:200` })).toEqual({ ok: false, error: 'ليس دور فريقك!' });
+    expect(await call(rival.socket, 'game:vote', { key: `${catIds[0]}:200` })).toEqual({ ok: true, data: null });
+    await until(() => host.view?.votes?.counts[`${catIds[0]}:200`] === 1);
+    expect(member.view!.votes).toBeNull();
+    expect(await call(rival.socket, 'game:pick', { categoryId: catIds[0], points: 200 })).toEqual({
+      ok: false,
+      error: 'رئيس الفريق هو اللي يقرر — صوّت له!',
+    });
+    await call(host.socket, 'game:pick', { categoryId: catIds[0], points: 200 });
+    await until(() => member.view?.phase === 'action');
+
+    expect(await call(member.socket, 'game:vote', { key: 'steal' })).toEqual({ ok: true, data: null });
+    await until(() => captain.view?.votes?.counts.steal === 1);
+    expect(member.view!.votes!.mine).toBe('steal');
+    expect(rival.view!.votes!.counts).toEqual({});
+    expect(await call(member.socket, 'game:action', { action: 'steal' })).toEqual({ ok: false, error: 'رئيس الفريق هو اللي يقرر — صوّت له!' });
+    await call(captain.socket, 'game:action', { action: 'answer' });
+    await call(host.socket, 'game:action', { action: 'answer' });
+    await until(() => member.view?.phase === 'answer');
+    expect(await call(member.socket, 'game:vote', { key: '2' })).toEqual({ ok: true, data: null });
+    await until(() => captain.view?.votes?.counts['2'] === 1);
+
+    // A member's refresh keeps their role.
+    const again = await device('device-mem-m');
+    expect(await call(again.socket, 'room:join', { code })).toEqual({ ok: true, data: { code } });
+    await until(() => again.view?.role === 'member');
+  });
+
   it('plays a full round: secret choices, shuffled options, scores', async () => {
     const { host, guest } = await startedMobileGame();
     expect(guest.view!.categories.map((c) => c.name)).toEqual(['أ', 'ب', 'ج']);
