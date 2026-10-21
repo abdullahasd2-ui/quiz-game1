@@ -25,13 +25,20 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
   const q = view.question!;
   const cat = useCategory(view);
   const team = view.you as TeamIndex;
+  const isMember = view.role === 'member';
   const other = (team === 0 ? 1 : 0) as TeamIndex;
   const lbl = actionLabel(view.variant);
   // Optimistic lock so a double tap doesn't send twice; the server state replaces it.
   const [sent, setSent] = useState<'action' | 'answer' | null>(null);
   useEffect(() => setSent(null), [view.phase, view.myAction, view.myAnswer]);
 
+  /** Members only vote (and may change it until the captain decides); the captain's tap is final. */
+  async function vote(key: string) {
+    const res = await send('game:vote', { key });
+    if (!res.ok) toast.error(res.error);
+  }
   async function act(action: Action) {
+    if (isMember) return vote(action);
     setSent('action');
     const res = await send('game:action', { action });
     if (!res.ok) {
@@ -40,6 +47,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
     }
   }
   async function answer(index: number) {
+    if (isMember) return vote(String(index));
     setSent('answer');
     const res = await send('game:answer', { index });
     if (!res.ok) {
@@ -47,9 +55,12 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
       toast.error(res.error);
     }
   }
+  const count = (key: string) => view.votes?.counts[key] ?? 0;
+  const voted = (key: string) => view.votes?.mine === key;
+  const teamSize = view.teams[team]?.members.length ?? 1;
 
   const stole = view.myAction === 'steal';
-  const canAnswer = view.phase === 'answer' && !stole && view.myAnswer === null && sent !== 'answer';
+  const canAnswer = view.phase === 'answer' && !stole && view.myAnswer === null && (isMember || sent !== 'answer');
 
   return (
     <div className="animate-fade-up">
@@ -66,26 +77,43 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
       </div>
 
       {view.phase === 'action' &&
-        (view.myAction === null && sent !== 'action' ? (
+        (view.myAction === null && (isMember || sent !== 'action') ? (
           <>
             <div className="mb-2 text-center text-[13px] text-white/50">
-              اختار قرارك <b className="text-white">سراً</b>
+              {isMember ? (
+                <>
+                  صوّت لفريقك — <b className="text-white">الرئيس يقرر</b>
+                </>
+              ) : (
+                <>
+                  اختار قرارك <b className="text-white">سراً</b>
+                  {teamSize > 1 && ' (الأرقام = أصوات أعضاء فريقك)'}
+                </>
+              )}
             </div>
             <div className="mb-2.5 grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => act('steal')}
-                className="rounded-xl bg-linear-to-br from-q-red to-[#c0392b] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5"
+                className={cn(
+                  'rounded-xl bg-linear-to-br from-q-red to-[#c0392b] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
+                  voted('steal') && 'ring-2 ring-white',
+                )}
               >
                 {lbl.icon} {lbl.short}
+                {count('steal') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('steal')}</span>}
                 <small className="block text-[10px] opacity-80">{lbl.desc}</small>
               </button>
               <button
                 type="button"
                 onClick={() => act('answer')}
-                className="rounded-xl bg-linear-to-br from-q-green to-[#1e8449] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5"
+                className={cn(
+                  'rounded-xl bg-linear-to-br from-q-green to-[#1e8449] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
+                  voted('answer') && 'ring-2 ring-white',
+                )}
               >
                 ✅ جاوب
+                {count('answer') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('answer')}</span>}
                 <small className="block text-[10px] opacity-80">أجاوب بنفسي</small>
               </button>
             </div>
@@ -94,6 +122,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
           <div className="rounded-xl border border-q-gold/25 bg-q-gold/8 p-3.5 text-center">
             <div className="mb-1 text-3xl">{view.myAction === 'steal' ? lbl.icon : view.myAction ? '✅' : '🔒'}</div>
             <div className="text-sm font-bold text-q-gold">
+              {isMember ? 'قرر رئيس الفريق: ' : ''}
               {view.myAction === 'steal' ? `اخترت ال${lbl.full}!` : view.myAction ? 'اخترت الإجابة!' : 'قرارك محفوظ!'}
             </div>
             <div className="mt-1 text-[11px] text-white/50">
@@ -112,7 +141,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 {lbl.icon} <b className="text-white">اخترت ال{lbl.full}</b> — في انتظار جواب الخصم...
               </>
             ) : canAnswer ? (
-              <b className="text-white">اختار إجابتك</b>
+              <b className="text-white">{isMember ? 'صوّت على الإجابة — الرئيس يقرر' : 'اختار إجابتك'}</b>
             ) : (
               <b className="text-white">انتظار الفريق الثاني...</b>
             )}
@@ -128,10 +157,12 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                   'rounded-xl border-[1.5px] bg-q-bg px-3 py-3.5 text-sm font-bold transition-colors',
                   optionTone(view, i, view.myAnswer),
                   canAnswer && 'hover:border-q-gold hover:bg-q-gold/6',
+                  canAnswer && voted(String(i)) && 'border-q-cyan bg-q-cyan/10',
                   !canAnswer && 'cursor-default',
                 )}
               >
                 {opt}
+                {canAnswer && count(String(i)) > 0 && <span className="ms-1.5 text-[11px] font-bold text-q-cyan">🗳️ {count(String(i))}</span>}
               </button>
             ))}
           </div>

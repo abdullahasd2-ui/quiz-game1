@@ -21,7 +21,7 @@ export function ResultOverlay({ view }: { view: RoomView }) {
   const icon = bothSteal ? lbl.icon + lbl.icon : r.deltas.some((d) => d >= 200) ? '🔥' : r.deltas.some((d) => d < 0) ? '💀' : '🎯';
   // Reveal/zoom questions have a second "answer" picture; blurred logos are shown sharp.
   const picture = r.revealUrl ?? (q.type === 'image' ? q.imageUrl : null);
-  const mayAdvance = canAdvance(view.mode, view.you);
+  const mayAdvance = canAdvance(view.mode, view.you) && view.role !== 'member';
   const lastRound = view.used.length >= view.categories.length * POINTS.length;
 
   async function next() {

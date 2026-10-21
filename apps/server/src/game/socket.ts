@@ -10,6 +10,7 @@ import {
   ROOM_CODE_ALPHABET,
   ROOM_CODE_LENGTH,
   startGameInput,
+  voteInput,
   type Ack,
   type ClientToServerEvents,
   type LiveStats,
@@ -62,8 +63,8 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   /** Every device gets its own view (hidden info differs per seat). */
   async function broadcast(room: GameRoom) {
     for (const s of await io.in(channel(room.code)).fetchSockets()) {
-      const seat = room.seatOf(s.data.deviceId);
-      if (seat !== null) s.emit('room:state', room.view(seat));
+      const viewer = room.viewerOf(s.data.deviceId);
+      if (viewer) s.emit('room:state', room.view(viewer.seat, viewer.member));
     }
   }
 
@@ -79,7 +80,10 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
     if (!room) throw new GameError('الغرفة غير موجودة!');
     const seat = room.seatOf(socket.data.deviceId);
-    if (seat === null) throw new GameError('لست في هذه الغرفة');
+    if (seat === null) {
+      if (room.memberOf(socket.data.deviceId) !== null) throw new GameError('رئيس الفريق هو اللي يقرر — صوّت له!');
+      throw new GameError('لست في هذه الغرفة');
+    }
     return { room, seat };
   }
 
@@ -142,7 +146,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       handle(createRoomInput, async (input) => {
         const code = newCode();
         const room = new GameRoom(code, input.mode, input.variant, () => void broadcast(room));
-        room.seatHost(deviceId, input.teamName);
+        room.seatHost(deviceId, input.teamName, input.playerName);
         rooms.set(code, room);
         usage.created(room);
         await enter(socket, room);
@@ -152,10 +156,10 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
 
     socket.on(
       'room:join',
-      handle(joinRoomInput, async ({ code, teamName }) => {
+      handle(joinRoomInput, async ({ code, teamName, team, playerName }) => {
         const room = rooms.get(code);
         if (!room) throw new GameError('الغرفة غير موجودة!');
-        room.join(deviceId, teamName);
+        room.join(deviceId, teamName, team, playerName);
         await enter(socket, room);
         return { data: { code } };
       }),
@@ -226,6 +230,16 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     );
 
     socket.on(
+      'game:vote',
+      handle(voteInput, async ({ key }) => {
+        const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+        if (!room) throw new GameError('الغرفة غير موجودة!');
+        room.vote(deviceId, key);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
       'game:next',
       handle(null, async () => {
         const { room, seat } = currentRoom(socket);
@@ -256,7 +270,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     const list = [...rooms.values()]
       .sort((a, b) => b.lastActivity - a.lastActivity)
       .map((room) => {
-        playersInRooms += room.teams.filter((t) => t?.connected).length + (room.tv?.connected ? 1 : 0);
+        playersInRooms += room.connectedCount;
         return {
           code: room.code,
           mode: room.mode,

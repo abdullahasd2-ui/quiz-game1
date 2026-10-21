@@ -1,4 +1,4 @@
-import { MAX_BOARD_CATEGORIES, MIN_BOARD_CATEGORIES, type RoomView, type Seat } from '@quiz/shared';
+import { MAX_BOARD_CATEGORIES, MAX_TEAM_SIZE, MIN_BOARD_CATEGORIES, type MemberView, type RoomView, type Seat } from '@quiz/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -9,7 +9,23 @@ import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { teamName } from '../ui';
 
-function Slot({ avatar, name, role, connected, you, tone }: { avatar: string; name: string | null; role?: string; connected: boolean; you: boolean; tone: string }) {
+function Slot({
+  avatar,
+  name,
+  role,
+  connected,
+  you,
+  tone,
+  members,
+}: {
+  avatar: string;
+  name: string | null;
+  role?: string;
+  connected: boolean;
+  you: boolean;
+  tone: string;
+  members?: MemberView[];
+}) {
   return (
     <div className={cn('rounded-xl border-2 bg-q-panel p-3.5 text-center transition-colors', connected ? 'border-q-green' : tone)}>
       <div className="mb-1 text-3xl">{avatar}</div>
@@ -19,6 +35,21 @@ function Slot({ avatar, name, role, connected, you, tone }: { avatar: string; na
         <span className={cn('inline-block size-1.5 rounded-full', connected ? 'bg-q-green' : 'animate-blink bg-q-gold')} />
         {connected ? (you ? 'أنت' : 'متصل') : name ? 'انقطع الاتصال' : 'ينتظر'}
       </div>
+      {members && members.length > 0 && (
+        <div className="mt-2 border-t border-q-line pt-2 text-[11px] text-white/60">
+          <div className="mb-1 font-bold text-white/80">
+            اللاعبون {members.length}/{MAX_TEAM_SIZE}
+          </div>
+          <ul className="grid gap-0.5">
+            {members.map((m, i) => (
+              <li key={i} className={cn('truncate', !m.connected && 'opacity-40')}>
+                {m.captain ? '👑 ' : '• '}
+                {m.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -26,7 +57,8 @@ function Slot({ avatar, name, role, connected, you, tone }: { avatar: string; na
 export function LobbyScreen({ view }: { view: RoomView }) {
   const isTv = view.mode === 'tv';
   const host: Seat = isTv ? 'tv' : 0;
-  const isHost = view.you === host;
+  const isMember = view.role === 'member';
+  const isHost = view.you === host && !isMember;
   const ready = Boolean(view.teams[0] && view.teams[1]);
 
   async function copyLink() {
@@ -69,11 +101,17 @@ export function LobbyScreen({ view }: { view: RoomView }) {
             role={isTv ? (t === 0 ? 'الفريق الأول' : 'الفريق الثاني') : t === 0 ? 'مضيف' : undefined}
             connected={Boolean(view.teams[t]?.connected)}
             you={view.you === t}
+            members={view.teams[t]?.members}
             tone={t === 0 ? 'border-q-blue/40' : 'border-q-red/40'}
           />
         ))}
       </div>
 
+      {isMember && (
+        <div className="mb-2 rounded-xl border border-q-cyan/30 bg-q-cyan/10 p-2.5 text-center text-xs text-q-cyan">
+          أنت عضو في {teamName(view, view.you as 0 | 1)} — تصوّت مع فريقك والرئيس يقرر
+        </div>
+      )}
       {isHost && ready ? (
         <CategoryPicker tv={isTv} />
       ) : (

@@ -1,4 +1,4 @@
-import { ROOM_CODE_LENGTH, TEAM_NAME_MAX, type RoomMode, type Variant } from '@quiz/shared';
+import { MAX_TEAM_SIZE, ROOM_CODE_LENGTH, TEAM_NAME_MAX, type RoomMode, type TeamIndex, type Variant } from '@quiz/shared';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -39,6 +39,8 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [mode, setMode] = useState<RoomMode>('mobile');
   const [createName, setCreateName] = useState('');
   const [joinName, setJoinName] = useState('');
+  const [joinTeam, setJoinTeam] = useState<TeamIndex | null>(null);
+  const [playerName, setPlayerName] = useState('');
   const [code, setCode] = useState(initialCode);
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
   const [howOpen, setHowOpen] = useState(false);
@@ -55,8 +57,9 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
     e.preventDefault();
     const clean = code.trim().toUpperCase();
     if (clean.length !== ROOM_CODE_LENGTH) return toast.error(`الكود ${ROOM_CODE_LENGTH} أحرف!`);
+    if (joinTeam === null) return toast.error('اختر فريقك: الأول أو الثاني');
     setBusy('join');
-    const res = await send('room:join', { code: clean, teamName: joinName.trim() || undefined });
+    const res = await send('room:join', { code: clean, team: joinTeam, teamName: joinName.trim() || undefined, playerName: playerName.trim() || undefined });
     setBusy(null);
     if (!res.ok) toast.error(res.error);
   }
@@ -64,7 +67,27 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   const joinForm = (
     <form onSubmit={join} className="q-card">
       <h3 className="mb-3.5 text-[15px] font-bold text-q-gold">{mode === 'tv' ? '🎮 انضمام كفريق (الجوال)' : '🔗 الانضمام لغرفة'}</h3>
-      <Field label="اسم فريقك">
+      <p className="mb-1.5 text-xs text-white/50">اختر فريقك (حتى {MAX_TEAM_SIZE} لاعبين في الفريق)</p>
+      <div className="mb-3 grid grid-cols-2 gap-2.5">
+        {([0, 1] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setJoinTeam(t)}
+            aria-pressed={joinTeam === t}
+            className={cn(
+              'rounded-xl border-2 px-3 py-3 text-sm font-black transition-all',
+              joinTeam === t ? (t === 0 ? 'border-q-blue bg-q-blue/10' : 'border-q-red bg-q-red/10') : 'border-q-line bg-q-panel',
+            )}
+          >
+            {t === 0 ? '🦁 الفريق الأول' : '🐯 الفريق الثاني'}
+          </button>
+        ))}
+      </div>
+      <Field label="اسمك (يظهر لفريقك)">
+        <input className="q-input" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="مثال: سعد" maxLength={TEAM_NAME_MAX} />
+      </Field>
+      <Field label="اسم الفريق (فقط إذا كنت أول من يدخله)">
         <input className="q-input" value={joinName} onChange={(e) => setJoinName(e.target.value)} placeholder="مثال: الصقور" maxLength={TEAM_NAME_MAX} />
       </Field>
       <Field label={mode === 'tv' ? 'كود الغرفة من التلفاز' : 'كود الغرفة'}>
@@ -80,7 +103,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         />
       </Field>
       <button className="q-btn-gold" disabled={busy !== null}>
-        {busy === 'join' ? 'جاري الانضمام...' : mode === 'tv' ? 'انضمام كفريق' : 'انضمام'}
+        {busy === 'join' ? 'جاري الانضمام...' : 'انضمام'}
       </button>
     </form>
   );
@@ -177,7 +200,9 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
       </div>
       <div className="grid gap-2.5 text-start text-[13px] leading-loose text-white/80">
         <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="📱 وضع الجوال (جهازين)">
-          <div>• جهاز ينشئ غرفة والثاني ينضم بالكود</div>
+          <div>• جهاز ينشئ غرفة والباقي ينضمون بالكود ويختارون فريقهم</div>
+          <div>• أول من يدخل الفريق هو الرئيس، والبقية أعضاء (حتى 10 لكل فريق)</div>
+          <div>• الأعضاء يصوّتون على كل خطوة، والرئيس يقرر على حسب التصويت</div>
           <div>• الفريق الذي دوره يختار من اللوحة</div>
           <div>• كلاهم يختار سراً جاوب أو بادل ثم يجاوبون</div>
         </HowSection>
