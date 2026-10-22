@@ -4,6 +4,7 @@ import { FinalScreen } from './screens/FinalScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
+import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
 import { FloatingWords } from './ui';
 import { useRoom } from './useRoom';
@@ -46,6 +47,7 @@ export function GamePage() {
           🚪 خروج من الغرفة
         </button>
       )}
+      {view?.status === 'playing' && <PlayersButton view={view} />}
       {!connected && !resuming && (
         <div className="fixed inset-x-0 top-0 z-40 bg-q-red/90 pt-[calc(env(safe-area-inset-top)+0.25rem)] pb-1 text-center text-xs font-bold" role="status">
           انقطع الاتصال — جاري إعادة الاتصال...

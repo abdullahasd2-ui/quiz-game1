@@ -8,6 +8,7 @@ import { PUBLIC_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { teamName } from '../ui';
+import { isSelf, kickPlayer } from './PlayersPanel';
 
 function Slot({
   avatar,
@@ -17,6 +18,8 @@ function Slot({
   you,
   tone,
   members,
+  onKick,
+  canKick,
 }: {
   avatar: string;
   name: string | null;
@@ -25,6 +28,9 @@ function Slot({
   you: boolean;
   tone: string;
   members?: MemberView[];
+  /** Host only: shows a remove button next to each player. */
+  onKick?: (m: MemberView) => void;
+  canKick?: (m: MemberView) => boolean;
 }) {
   return (
     <div className={cn('rounded-xl border-2 bg-q-panel p-3.5 text-center transition-colors', connected ? 'border-q-green' : tone)}>
@@ -41,10 +47,17 @@ function Slot({
             اللاعبون {members.length}/{MAX_TEAM_SIZE}
           </div>
           <ul className="grid gap-0.5">
-            {members.map((m, i) => (
-              <li key={i} className={cn('truncate', !m.connected && 'opacity-40')}>
-                {m.captain ? '👑 ' : '• '}
-                {m.name}
+            {members.map((m) => (
+              <li key={m.id} className={cn('flex items-center justify-between gap-1', !m.connected && 'opacity-40')}>
+                <span className="truncate">
+                  {m.captain ? '👑 ' : '• '}
+                  {m.name}
+                </span>
+                {onKick && canKick?.(m) && (
+                  <button type="button" onClick={() => onKick(m)} aria-label={`طرد ${m.name}`} className="shrink-0 rounded-full border border-q-red/40 px-1.5 text-[10px] text-q-red">
+                    طرد
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -102,6 +115,8 @@ export function LobbyScreen({ view }: { view: RoomView }) {
             connected={Boolean(view.teams[t]?.connected)}
             you={view.you === t}
             members={view.teams[t]?.members}
+            onKick={view.canKick ? kickPlayer : undefined}
+            canKick={(m) => !isSelf(view, t, m)}
             tone={t === 0 ? 'border-q-blue/40' : 'border-q-red/40'}
           />
         ))}

@@ -5,6 +5,7 @@ import {
   answerInput,
   createRoomInput,
   joinRoomInput,
+  kickInput,
   pickCellInput,
   POINTS,
   ROOM_CODE_ALPHABET,
@@ -175,6 +176,22 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         await socket.leave(channel(room.code));
         if (closes) closeRoom(room, 'المضيف أغلق الغرفة');
         return { data: null, room: closes ? undefined : room };
+      }),
+    );
+
+    socket.on(
+      'room:kick',
+      handle(kickInput, async ({ id }) => {
+        const { room, seat } = currentRoom(socket);
+        const removed = room.kick(seat, id);
+        // Every tab of the removed device is told and pulled out of the room's channel.
+        for (const s of await io.in(channel(room.code)).fetchSockets()) {
+          if (s.data.deviceId !== removed) continue;
+          s.emit('room:closed', 'طردك مضيف الغرفة');
+          s.data.code = null;
+          s.leave(channel(room.code));
+        }
+        return { data: null, room };
       }),
     );
 

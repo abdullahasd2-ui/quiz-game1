@@ -195,7 +195,7 @@ describe('team members and voting', () => {
     expect(room.seatOf('c1')).toBe(0);
     for (let i = 1; i < 10; i++) expect(room.join(`p${i}`, undefined, 0)).toBe(0);
     expect(room.view(0).teams[0]!.members).toHaveLength(10);
-    expect(room.view(0).teams[0]!.members[0]).toEqual({ name: 'ليث', connected: true, captain: true });
+    expect(room.view(0).teams[0]!.members[0]).toMatchObject({ name: 'ليث', connected: true, captain: true });
     expect(() => room.join('p10', undefined, 0)).toThrow('الفريق ممتلئ');
     // Joining the other team is independent, and re-joining keeps your role.
     expect(room.join('x1', undefined, 1)).toBe(1);
@@ -284,5 +284,52 @@ describe('team members and voting', () => {
     expect(lobby.leave('cap')).toBe(false);
     expect(lobby.seatOf('mem')).toBe(1);
     expect(lobby.teams[1]!.name).toBe('الصقور');
+  });
+});
+
+describe('kicking players', () => {
+  const idOf = (room: GameRoom, t: 0 | 1, name: string) => room.view(t).teams[t]!.members.find((m) => m.name === name)!.id;
+
+  it('only the host kicks; the removed device is banned; ids never expose device ids', () => {
+    const room = new GameRoom('ABCDEF', 'mobile', 'swap');
+    room.seatHost('dev-host', 'النمور', 'أنا');
+    room.join('cap', 'الصقور', 1, 'ليث');
+    room.join('mem', undefined, 0, 'سعد');
+    expect(JSON.stringify(room.view(1))).not.toContain('dev-host');
+    expect(JSON.stringify(room.view(1))).not.toContain('"mem"');
+    expect(room.view(0).canKick).toBe(true);
+    expect(room.view(1).canKick).toBe(false);
+    expect(room.view(0, 'mem').canKick).toBe(false);
+    expect(() => room.kick(1, idOf(room, 0, 'سعد'))).toThrow('المضيف فقط');
+    expect(room.kick(0, idOf(room, 0, 'سعد'))).toBe('mem');
+    expect(room.memberOf('mem')).toBeNull();
+    expect(() => room.join('mem', undefined, 0)).toThrow('طردك مضيف الغرفة');
+    expect(() => room.kick(0, 'nope')).toThrow('اللاعب غير موجود');
+    expect(() => room.kick(0, room.view(0).teams[0]!.members[0]!.id)).toThrow('تطرد نفسك');
+  });
+
+  it('kicking a captain promotes their first member; a lone captain can only be removed in the lobby', () => {
+    const room = new GameRoom('ABCDEF', 'mobile', 'swap');
+    room.seatHost('dev-host');
+    room.join('cap', 'الصقور', 1, 'ليث');
+    room.join('mem', undefined, 1, 'سعد');
+    expect(room.kick(0, idOf(room, 1, 'ليث'))).toBe('cap');
+    expect(room.seatOf('mem')).toBe(1);
+    expect(room.teams[1]!.name).toBe('الصقور');
+    expect(room.kick(0, room.view(0).teams[1]!.members[0]!.id)).toBe('mem');
+    expect(room.teams[1]).toBeNull(); // lobby: the seat is free again
+
+    const started = mobileRoom().room;
+    expect(() => started.kick(0, started.view(0).teams[1]!.members[0]!.id)).toThrow('الوحيد أثناء اللعب');
+  });
+
+  it('tv mode: the tv kicks any player', () => {
+    const room = new GameRoom('ABCDEF', 'tv', 'swap');
+    room.seatHost('tv');
+    room.join('a', 'أ', 0, 'علي');
+    room.join('b', 'ب', 1, 'بدر');
+    expect(room.view('tv').canKick).toBe(true);
+    expect(room.kick('tv', room.view('tv').teams[0]!.members[0]!.id)).toBe('a');
+    expect(room.teams[0]).toBeNull();
   });
 });

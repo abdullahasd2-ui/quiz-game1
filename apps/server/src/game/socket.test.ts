@@ -165,6 +165,25 @@ describe('live game over sockets', () => {
     await until(() => again.view?.role === 'member');
   });
 
+  it('the host can remove a joined player, who is told and cannot come back', async () => {
+    const host = await device('device-host-k');
+    const created = await call<{ code: string }>(host.socket, 'room:create', { mode: 'mobile', variant: 'swap' });
+    if (!created.ok) throw new Error(created.error);
+    const code = created.data.code;
+    const guest = await device('device-guest-k');
+    const member = await device('device-mem-k');
+    await call(guest.socket, 'room:join', { code, team: 1, playerName: 'ليث' });
+    await call(member.socket, 'room:join', { code, team: 1, playerName: 'سعد' });
+    await until(() => host.view?.teams[1]?.members.length === 2);
+    const target = host.view!.teams[1]!.members.find((m) => m.name === 'سعد')!;
+    expect(await call(guest.socket, 'room:kick', { id: target.id })).toEqual({ ok: false, error: 'المضيف فقط يطرد اللاعبين' });
+    expect(await call(host.socket, 'room:kick', { id: target.id })).toEqual({ ok: true, data: null });
+    await until(() => member.closed !== null);
+    expect(member.closed).toBe('طردك مضيف الغرفة');
+    await until(() => host.view?.teams[1]?.members.length === 1);
+    expect(await call(member.socket, 'room:join', { code, team: 1 })).toEqual({ ok: false, error: 'طردك مضيف الغرفة' });
+  });
+
   it('plays a full round: secret choices, shuffled options, scores', async () => {
     const { host, guest } = await startedMobileGame();
     expect(guest.view!.categories.map((c) => c.name)).toEqual(['أ', 'ب', 'ج']);

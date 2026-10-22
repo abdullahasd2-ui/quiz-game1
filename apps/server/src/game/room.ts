@@ -33,9 +33,9 @@ export type DealtQuestion = {
 };
 
 /** The captain of a team: decides for it, owns its name and score. */
-type Player = { deviceId: string; name: string; nick: string; score: number; connected: boolean };
+type Player = { deviceId: string; pid: string; name: string; nick: string; score: number; connected: boolean };
 /** A non-captain team member: can only vote. */
-type Member = { deviceId: string; name: string; connected: boolean };
+type Member = { deviceId: string; pid: string; name: string; connected: boolean };
 
 type Round = {
   categoryId: number;
@@ -67,6 +67,9 @@ export class GameRoom {
   status: RoomStatus = 'lobby';
   readonly teams: [Player | null, Player | null] = [null, null];
   readonly members: [Member[], Member[]] = [[], []];
+  /** Devices the host removed; they can't come back with the code. */
+  private readonly banned = new Set<string>();
+  private pidCounter = 0;
   /** Each team's live votes (deviceId → key) for the step in progress; insertion order breaks ties. */
   private readonly votes: [Map<string, string>, Map<string, string>] = [new Map(), new Map()];
   tv: { deviceId: string; connected: boolean } | null = null;
@@ -115,7 +118,11 @@ export class GameRoom {
   /** The device that created the room: team 1's phone in mobile mode, the TV in tv mode. */
   seatHost(deviceId: string, teamName?: string, nick?: string) {
     if (this.mode === 'tv') this.tv = { deviceId, connected: true };
-    else this.teams[0] = { deviceId, name: teamName || DEFAULT_NAMES[0], nick: nick || 'الرئيس', score: 0, connected: true };
+    else this.teams[0] = { deviceId, pid: this.newPid(), name: teamName || DEFAULT_NAMES[0], nick: nick || 'الرئيس', score: 0, connected: true };
+  }
+
+  private newPid() {
+    return `p${++this.pidCounter}`;
   }
 
   /**
@@ -129,6 +136,7 @@ export class GameRoom {
       this.setConnected(deviceId, true);
       return existing;
     }
+    if (this.banned.has(deviceId)) throw new GameError('طردك مضيف الغرفة');
     const mine = this.memberOf(deviceId);
     if (mine !== null) {
       this.setConnected(deviceId, true);
@@ -139,17 +147,17 @@ export class GameRoom {
       if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
       const free = ([0, 1] as const).find((i) => !this.teams[i]);
       if (free === undefined) throw new GameError('الغرفة ممتلئة!');
-      this.teams[free] = { deviceId, name: teamName || DEFAULT_NAMES[free], nick: nick || 'الرئيس', score: 0, connected: true };
+      this.teams[free] = { deviceId, pid: this.newPid(), name: teamName || DEFAULT_NAMES[free], nick: nick || 'الرئيس', score: 0, connected: true };
       this.touch();
       return free;
     }
 
     if (!this.teams[team]) {
       if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
-      this.teams[team] = { deviceId, name: teamName || DEFAULT_NAMES[team], nick: nick || 'الرئيس', score: 0, connected: true };
+      this.teams[team] = { deviceId, pid: this.newPid(), name: teamName || DEFAULT_NAMES[team], nick: nick || 'الرئيس', score: 0, connected: true };
     } else {
       if (1 + this.members[team].length >= MAX_TEAM_SIZE) throw new GameError(`الفريق ممتلئ (${MAX_TEAM_SIZE} لاعبين)!`);
-      this.members[team].push({ deviceId, name: nick || `لاعب ${this.members[team].length + 1}`, connected: true });
+      this.members[team].push({ deviceId, pid: this.newPid(), name: nick || `لاعب ${this.members[team].length + 1}`, connected: true });
     }
     this.touch();
     return team;
@@ -179,7 +187,7 @@ export class GameRoom {
     if (seat !== 'tv') {
       const heir = this.members[seat].shift();
       const captain = this.teams[seat]!;
-      this.teams[seat] = heir ? { ...captain, deviceId: heir.deviceId, nick: heir.name, connected: heir.connected } : null;
+      this.teams[seat] = heir ? { ...captain, deviceId: heir.deviceId, pid: heir.pid, nick: heir.name, connected: heir.connected } : null;
       if (heir) this.votes[seat].delete(heir.deviceId);
     }
     this.touch();
@@ -207,8 +215,8 @@ export class GameRoom {
     const i = this.members[team].findIndex((m) => m.connected);
     if (i < 0) return;
     const heir = this.members[team][i]!;
-    this.members[team][i] = { deviceId: captain.deviceId, name: captain.nick, connected: false };
-    this.teams[team] = { ...captain, deviceId: heir.deviceId, nick: heir.name, connected: true };
+    this.members[team][i] = { deviceId: captain.deviceId, pid: captain.pid, name: captain.nick, connected: false };
+    this.teams[team] = { ...captain, deviceId: heir.deviceId, pid: heir.pid, nick: heir.name, connected: true };
     this.votes[team].delete(heir.deviceId);
   }
 
@@ -293,6 +301,38 @@ export class GameRoom {
     }
     this.clearVotes();
     this.touch();
+  }
+
+  /**
+   * The host removes a player (returns the removed device id so the server can disconnect it from the room).
+   * Removed devices are banned from rejoining. A captain is replaced by their first member; a team's only
+   * captain can only be removed from the lobby, since mid-game nobody would be left to decide.
+   */
+  kick(seat: Seat, pid: string): string {
+    if (seat !== (this.mode === 'tv' ? 'tv' : 0)) throw new GameError('المضيف فقط يطرد اللاعبين');
+    for (const t of [0, 1] as const) {
+      const captain = this.teams[t];
+      if (captain?.pid === pid) {
+        if (this.mode === 'mobile' && t === 0) throw new GameError('ما تقدر تطرد نفسك!');
+        const heir = this.members[t][0];
+        if (!heir && this.status !== 'lobby') throw new GameError('ما تقدر تطرد رئيس الفريق الوحيد أثناء اللعب');
+        this.members[t].shift();
+        this.teams[t] = heir ? { ...captain, deviceId: heir.deviceId, pid: heir.pid, nick: heir.name, connected: heir.connected } : null;
+        if (heir) this.votes[t].delete(heir.deviceId);
+        this.banned.add(captain.deviceId);
+        this.touch();
+        return captain.deviceId;
+      }
+      const m = this.members[t].find((x) => x.pid === pid);
+      if (m) {
+        this.members[t] = this.members[t].filter((x) => x !== m);
+        this.votes[t].delete(m.deviceId);
+        this.banned.add(m.deviceId);
+        this.touch();
+        return m.deviceId;
+      }
+    }
+    throw new GameError('اللاعب غير موجود');
   }
 
   /** A member's vote for the step in progress; they can change it until the captain decides. */
@@ -456,6 +496,7 @@ export class GameRoom {
       status: this.status,
       you: seat,
       role: seat === 'tv' ? 'tv' : memberDeviceId ? 'member' : 'captain',
+      canKick: !memberDeviceId && seat === (this.mode === 'tv' ? 'tv' : 0),
       teams: [this.teamView(0), this.teamView(1)],
       tvConnected: Boolean(this.tv?.connected),
       categories: this.categories,
@@ -500,8 +541,8 @@ export class GameRoom {
       score: p.score,
       connected: p.connected,
       members: [
-        { name: p.nick, connected: p.connected, captain: true },
-        ...this.members[t].map((m) => ({ name: m.name, connected: m.connected, captain: false })),
+        { id: p.pid, name: p.nick, connected: p.connected, captain: true },
+        ...this.members[t].map((m) => ({ id: m.pid, name: m.name, connected: m.connected, captain: false })),
       ],
     };
   }
