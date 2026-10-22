@@ -22,7 +22,8 @@ export type RoomStatus = 'lobby' | 'playing' | 'done';
 /** board → action (secret answer/steal) → answer → result → board … */
 export type GamePhase = 'board' | 'action' | 'answer' | 'result';
 
-export type MemberView = { name: string; connected: boolean; captain: boolean };
+/** `id` is a public handle for the host's kick button — never the device id, which is the player's secret. */
+export type MemberView = { id: string; name: string; connected: boolean; captain: boolean };
 export type TeamView = { name: string; score: number; connected: boolean; members: MemberView[] };
 /** Captain decides for the team; members only vote (the tv hosts and never plays). */
 export type Role = 'captain' | 'member' | 'tv';
@@ -61,6 +62,8 @@ export type RoomView = {
   status: RoomStatus;
   you: Seat;
   role: Role;
+  /** True for the room's creator (team 1's captain in mobile mode, the tv in tv mode): may remove players. */
+  canKick: boolean;
   teams: [TeamView | null, TeamView | null];
   tvConnected: boolean;
   categories: BoardCategory[];
@@ -127,6 +130,7 @@ export const pickCellInput = z.object({
 });
 export const actionInput = z.object({ action: z.enum(['answer', 'steal']) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
+export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
 export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
 
 export type CreateRoomInput = z.infer<typeof createRoomInput>;
@@ -143,6 +147,7 @@ export interface ClientToServerEvents {
   'game:pick': (input: z.infer<typeof pickCellInput>, reply: Reply) => void;
   'game:action': (input: z.infer<typeof actionInput>, reply: Reply) => void;
   'game:answer': (input: z.infer<typeof answerInput>, reply: Reply) => void;
+  'room:kick': (input: z.infer<typeof kickInput>, reply: Reply) => void;
   'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;
 }
