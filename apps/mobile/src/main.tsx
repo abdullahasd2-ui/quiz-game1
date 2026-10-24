@@ -1,5 +1,6 @@
 import { App } from '@capacitor/app';
 import { KeepAwake } from '@capacitor-community/keep-awake';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -47,3 +48,5 @@ createRoot(document.getElementById('root')!).render(
 );
 
 void SplashScreen.hide();
+// This bundle started fine; without it the updater rolls back to the previous bundle after 10s.
+CapacitorUpdater.notifyAppReady().catch(() => {});

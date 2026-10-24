@@ -7,6 +7,9 @@
 /* The screens live in the web app; Tailwind only scans this project by default. */
 @source "../../web/src/game";
 @source "../../web/src/components";
+/* Words in the native code would add stray classes, and the server's OTA build (without them) would differ. */
+@source not "../ios";
+@source not "../android";
 
 html,
 body {

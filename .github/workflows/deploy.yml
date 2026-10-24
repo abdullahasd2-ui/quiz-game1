@@ -9,8 +9,11 @@ name: Deploy jawabbadel.com
 on:
   push:
     branches: [main]
+    # apps/mobile's own code still deploys: the image carries the app's OTA bundle.
     paths-ignore:
-      - 'apps/mobile/**'
+      - 'apps/mobile/ios/**'
+      - 'apps/mobile/android/**'
+      - 'apps/mobile/assets/**'
       - '**.md'
   workflow_dispatch:
 
