@@ -105,7 +105,7 @@ const playerName = z.string().trim().max(TEAM_NAME_MAX, `الاسم أطول م�
 
 export const createRoomInput = z.object({
   mode: z.enum(['mobile', 'tv']),
-  variant: z.enum(['swap', 'flip', 'triple']),
+  variant: z.enum(['swap', 'flip']),
   teamName: teamName.optional(),
   playerName: playerName.optional(),
 });
@@ -128,7 +128,7 @@ export const pickCellInput = z.object({
   categoryId: z.number().int().positive(),
   points: z.number().refine((p) => (POINTS as readonly number[]).includes(p)),
 });
-export const actionInput = z.object({ action: z.enum(['answer', 'steal', 'reverse']) });
+export const actionInput = z.object({ action: z.enum(['answer', 'steal']) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
 export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
 export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
