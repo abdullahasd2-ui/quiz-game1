@@ -6,6 +6,7 @@ import {
   cellKey,
   MAX_TEAM_SIZE,
   computeScores,
+  isSpecial,
   POINTS,
   type Action,
   type BoardCategory,
@@ -274,6 +275,7 @@ export class GameRoom {
     const round = this.requireRound('action');
     const team = this.requireTeam(seat);
     if (round.actions[team]) throw new GameError('قرارك محفوظ بالفعل');
+    this.assertActionAllowed(team, action);
     round.actions[team] = action;
     this.touch();
     if (round.actions[0] && round.actions[1]) this.enterAnswerPhase();
@@ -348,6 +350,17 @@ export class GameRoom {
     this.touch();
   }
 
+  /**
+   * In the triple variant only one team per round may use swap or reverse, so the other must answer.
+   * (Telling the second team is what keeps a round from ending 0–0.)
+   */
+  private assertActionAllowed(team: TeamIndex, action: Action) {
+    if (action === 'reverse' && this.variant !== 'triple') throw new GameError('خيار غير صالح');
+    if (this.variant !== 'triple' || !isSpecial(action)) return;
+    const other = this.round!.actions[team === 0 ? 1 : 0];
+    if (other && isSpecial(other)) throw new GameError('الفريق الثاني استخدم بادل أو اعكس — اختر جاوب');
+  }
+
   /** Why `key` can't be voted on right now by `team` (null when it can). */
   private voteError(team: TeamIndex, key: string): string | null {
     const round = this.round;
@@ -361,10 +374,16 @@ export class GameRoom {
     }
     if (this.phase === 'action') {
       if (!round || round.actions[team]) return 'قرر رئيس الفريق بالفعل';
-      return key === 'answer' || key === 'steal' ? null : 'خيار غير صالح';
+      if (key !== 'answer' && key !== 'steal' && key !== 'reverse') return 'خيار غير صالح';
+      try {
+        this.assertActionAllowed(team, key);
+      } catch (e) {
+        return (e as Error).message;
+      }
+      return null;
     }
     if (this.phase === 'answer') {
-      if (!round || round.actions[team] === 'steal' || round.answers[team] !== null) return 'قرر رئيس الفريق بالفعل';
+      if (!round || isSpecial(round.actions[team]!) || round.answers[team] !== null) return 'قرر رئيس الفريق بالفعل';
       const i = Number(key);
       return Number.isInteger(i) && i >= 0 && i < round.question.options.length ? null : 'خيار غير صالح';
     }
@@ -377,7 +396,7 @@ export class GameRoom {
     const round = this.round;
     if (this.phase === 'board') return this.mode === 'mobile' && team === this.turn && !this.picking;
     if (this.phase === 'action') return Boolean(round && !round.actions[team]);
-    if (this.phase === 'answer') return Boolean(round && round.actions[team] !== 'steal' && round.answers[team] === null);
+    if (this.phase === 'answer') return Boolean(round && !isSpecial(round.actions[team]) && round.answers[team] === null);
     return false;
   }
 
@@ -417,7 +436,7 @@ export class GameRoom {
     const round = this.round!;
     // Stealers don't answer; both stealing skips straight to the (scoreless) result.
     round.actions.forEach((a, t) => {
-      if (a === 'steal') round.answers[t] = -1;
+      if (isSpecial(a)) round.answers[t] = -1;
     });
     if (round.answers[0] !== null && round.answers[1] !== null) return this.finishRound();
     this.phase = 'answer';
@@ -442,7 +461,14 @@ export class GameRoom {
   private timeoutActions() {
     const round = this.round;
     if (this.phase !== 'action' || !round) return;
-    round.actions = [round.actions[0] ?? this.leading(0, ['answer', 'steal']) ?? 'answer', round.actions[1] ?? this.leading(1, ['answer', 'steal']) ?? 'answer'] as [Action, Action];
+    const allowed: readonly Action[] = this.variant === 'triple' ? ['answer', 'steal', 'reverse'] : ['answer', 'steal'];
+    const a0: Action = round.actions[0] ?? this.leading(0, allowed) ?? 'answer';
+    let a1: Action = round.actions[1] ?? this.leading(1, allowed) ?? 'answer';
+    // Triple: a team's undecided pick never overrides a special action the other team already locked in,
+    // and if both would pick one the first team keeps it.
+    if (this.variant === 'triple' && isSpecial(a1) && isSpecial(a0)) a1 = round.actions[1] ? a1 : 'answer';
+    round.actions = [a0, a1];
+    if (this.variant === 'triple' && isSpecial(a0) && isSpecial(a1)) round.actions[0] = 'answer';
     this.enterAnswerPhase();
     this.touch();
     this.onChange();
