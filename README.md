@@ -45,7 +45,7 @@ docker compose exec app node --import tsx src/scripts/create-admin.ts you@exampl
 
 ### النشر التلقائي (GitHub Actions)
 
-كل دمج في `main` يشغّل [.github/workflows/deploy.yml](.github/workflows/deploy.yml): الاختبارات، ثم بناء الصورة على GitHub، ونقلها للسيرفر بـ SSH إلى `/opt/quiz`، وإعادة التشغيل مع فحص `/api/health`. السيرفر ما يبني شي. التغييرات في `apps/mobile` وملفات `.md` بس ما تشغّل النشر، ويمكن تشغيله يدويًا من تبويب Actions.
+كل دمج في `main` يشغّل [.github/workflows/deploy.yml](.github/workflows/deploy.yml): الاختبارات، ثم بناء الصورة على GitHub، ونقلها للسيرفر بـ SSH إلى `/opt/quiz`، وإعادة التشغيل مع فحص `/api/health`. السيرفر ما يبني شي. التغييرات في مشاريع `apps/mobile/ios` و`android` و`assets` وملفات `.md` بس ما تشغّل النشر، ويمكن تشغيله يدويًا من تبويب Actions. باقي كود التطبيق يشغّل النشر، لأن الصورة تحمل حزمة التحديث عن بعد (OTA).
 
 تجهيز لمرة وحدة من جذر المشروع: `deploy/bootstrap.sh <مستخدم-SSH>`. يحتاج دخول SSH للسيرفر و`gh` مسجل بحساب له صلاحية على المستودع. السكربت يسوي التالي:
 - يجهز `/opt/quiz` على السيرفر ويولّد `.env` بأسرار عشوائية.
@@ -69,6 +69,14 @@ npm run assets       # إعادة توليد الأيقونات وشاشة ال�
 - Android يحتاج JDK 21: `export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home` ثم `cd android && ./gradlew assembleDebug`.
 - iOS: المعرّف `com.jawabbadel.app` والفريق `77T6JDYJ62`. للرفع على TestFlight ارفع `CURRENT_PROJECT_VERSION` ثم Product ← Archive ← Distribute App.
 
+### التحديث عن بعد (OTA)
+
+التطبيق فيه `@capgo/capacitor-updater` مربوطة بسيرفرنا، بدون خدمة Capgo. كل نشر يبني شاشات التطبيق داخل صورة Docker، والسيرفر يقدّمها من `POST /api/app/update`. التطبيق يسأل عند كل فتح، وينزّل الحزمة الجديدة في الخلفية، ويطبّقها لما يطلع اللاعب من التطبيق. اللعبة بعدها ترجع لنفس الغرفة. إذا ما اشتغلت الحزمة الجديدة خلال 10 ثواني، يرجع التطبيق للحزمة اللي قبلها.
+
+- رقم الحزمة بصمة ملفاتها (`dist/ota.json`). النشر اللي ما يغيّر شاشات التطبيق ما ينزّل شي للجوالات، ونسخة المتجر ما تنزّل نفس حزمتها مرة ثانية.
+- التغيير native (إضافة plugin، أذونات، أيقونة) ما يوصل بـ OTA ويحتاج بناء جديد على المتجر: ارفع `CURRENT_PROJECT_VERSION` في iOS و`versionCode` في Android لنفس الرقم. وإذا صارت الحزمة تستدعي إضافة جديدة، ارفع `MIN_NATIVE_BUILD` في `apps/mobile/vite.config.ts` لنفس الرقم، عشان النسخ الأقدم ما توصلها حزمة ما تقدر تشغّلها.
+- ابنِ نسخة المتجر من `main` بعد نشره. السيرفر يعطي كل جهاز حزمة `main`، فالنسخة المبنية من فرع ثاني ترجع لحزمة `main` أول ما تنفتح.
+
 ## اللعب المباشر
 
 السيرفر هو الحكم: يسحب سؤالًا عشوائيًا مفعّلًا لكل خانة من القاعدة، يخلط الخيارات، يدير المؤقتات (60 ثانية للقرار و60 للإجابة)، ويحسب النقاط. الجهاز يرسل اختياره فقط ويستقبل حالة الغرفة الخاصة به، فلا يعرف قرار الخصم ولا الإجابة الصحيحة قبل النتيجة.
@@ -85,6 +93,7 @@ npm run assets       # إعادة توليد الأيقونات وشاشة ال�
 | المسار | الوصف |
 |---|---|
 | `GET /api/categories` | الفئات المفعّلة، مع `playable` إذا كان فيها سؤال لكل مستوى نقاط |
+| `POST /api/app/update` · `GET /api/app/bundles/:version.zip` | تحديث تطبيق الجوال عن بعد (OTA) |
 | `POST /api/admin/login` · `logout` · `GET me` | جلسة المشرف (cookie) |
 | `GET/POST /api/admin/categories` · `PATCH/DELETE /:id` | إدارة الفئات |
 | `GET/POST /api/admin/questions` · `GET/PATCH/DELETE /:id` | إدارة الأسئلة (`?categoryId&search&active&page&pageSize`) |

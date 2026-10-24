@@ -2,7 +2,11 @@
 **/node_modules
 **/dist
 **/.env
+# The mobile app's OTA bundle is built in the image; it needs the app's public server URL, not the native projects.
+!apps/mobile/.env
 apps/server/uploads
 .test-uploads
 deploy
-apps/mobile
+apps/mobile/ios
+apps/mobile/android
+apps/mobile/assets
