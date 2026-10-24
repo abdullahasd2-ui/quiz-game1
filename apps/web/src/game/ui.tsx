@@ -1,4 +1,4 @@
-import type { QuestionType, RoomView, TeamIndex, Variant } from '@quiz/shared';
+import type { Action, QuestionType, RoomView, TeamIndex, Variant } from '@quiz/shared';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
@@ -7,6 +7,13 @@ export function actionLabel(variant: Variant) {
   return variant === 'flip'
     ? { icon: '🔀', short: 'اقلب', full: 'قلب', desc: 'اقلب جواب الخصم' }
     : { icon: '🔄', short: 'بادل', full: 'مبادلة', desc: 'بادل جواب الخصم' };
+}
+
+/** Icon and wording for a team's chosen action (answering, or swap/flip/reverse). */
+export function actionInfo(variant: Variant, action: Action) {
+  if (action === 'answer') return { icon: '✅', short: 'جاوب', full: 'إجابة', desc: 'أجاوب بنفسي' };
+  if (action === 'reverse') return { icon: '↩️', short: 'اعكس', full: 'عكس', desc: 'جاوب صح = ينقص منك، غلط = يزيد لك' };
+  return actionLabel(variant);
 }
 
 export const TEAM_TEXT = ['text-q-blue', 'text-q-red'] as const;

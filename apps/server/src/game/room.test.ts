@@ -12,7 +12,7 @@ const question = (correctIndex = 2): DealtQuestion => ({
   revealUrl: null,
 });
 
-function mobileRoom(variant: 'swap' | 'flip' = 'swap') {
+function mobileRoom(variant: 'swap' | 'flip' | 'triple' = 'swap') {
   const onChange = vi.fn();
   const room = new GameRoom('ABCDEF', 'mobile', variant, onChange);
   room.seatHost('dev-host', 'النمور');
@@ -331,5 +331,23 @@ describe('kicking players', () => {
     expect(room.view('tv').canKick).toBe(true);
     expect(room.kick('tv', room.view('tv').teams[0]!.members[0]!.id)).toBe('a');
     expect(room.teams[0]).toBeNull();
+  });
+});
+
+describe('triple variant', () => {
+  it('only one team may pick steal/reverse; the other must answer', () => {
+    const { room } = mobileRoom('triple');
+    room.beginRound(1, 100, question());
+    room.act(0, 'reverse');
+    expect(() => room.act(1, 'steal')).toThrow('الفريق الثاني استخدم بادل أو اعكس');
+    expect(() => room.act(1, 'reverse')).toThrow('الفريق الثاني استخدم بادل أو اعكس');
+    room.act(1, 'answer');
+    expect(room.status).toBe('playing');
+  });
+
+  it('reverse is refused outside the triple variant', () => {
+    const { room } = mobileRoom('swap');
+    room.beginRound(1, 100, question());
+    expect(() => room.act(0, 'reverse')).toThrow('خيار غير صالح');
   });
 });

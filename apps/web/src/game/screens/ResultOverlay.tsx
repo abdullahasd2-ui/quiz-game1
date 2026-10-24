@@ -1,11 +1,11 @@
-import { canAdvance, POINTS, type RoomView } from '@quiz/shared';
+import { canAdvance, isSpecial, POINTS, type RoomView } from '@quiz/shared';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/native';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
-import { actionLabel, Modal, TEAM_TINT, teamName, WaitDots } from '../ui';
+import { actionInfo, actionLabel, Modal, TEAM_TINT, teamName, WaitDots } from '../ui';
 
 export function ResultOverlay({ view }: { view: RoomView }) {
   const r = view.result;
@@ -17,7 +17,7 @@ export function ResultOverlay({ view }: { view: RoomView }) {
   if (!r || !view.question) return null;
   const q = view.question;
   const lbl = actionLabel(view.variant);
-  const bothSteal = r.actions[0] === 'steal' && r.actions[1] === 'steal';
+  const bothSteal = isSpecial(r.actions[0]) && isSpecial(r.actions[1]);
   const icon = bothSteal ? lbl.icon + lbl.icon : r.deltas.some((d) => d >= 200) ? '🔥' : r.deltas.some((d) => d < 0) ? '💀' : '🎯';
   // Reveal/zoom questions have a second "answer" picture; blurred logos are shown sharp.
   const picture = r.revealUrl ?? (q.type === 'image' ? q.imageUrl : null);
@@ -41,14 +41,15 @@ export function ResultOverlay({ view }: { view: RoomView }) {
       </div>
       <div className="mb-3.5 grid grid-cols-2 gap-2.5">
         {([0, 1] as const).map((t) => {
-          const stole = r.actions[t] === 'steal';
+          const stole = isSpecial(r.actions[t]);
+          const info = actionInfo(view.variant, r.actions[t]);
           const ans = r.answers[t];
           const d = r.deltas[t];
           return (
             <div key={t} className={cn('rounded-xl border px-2 py-3', TEAM_TINT[t])} data-testid={`result-team-${t}`}>
               <div className="mb-1 truncate text-[11px] text-white/50">{teamName(view, t)}</div>
-              <div className="mb-0.5 text-base">{stole ? lbl.icon : '✅'}</div>
-              <div className="mb-1 text-[11px] text-white/80">{stole ? lbl.full : 'إجابة'}</div>
+              <div className="mb-0.5 text-base">{info.icon}</div>
+              <div className="mb-1 text-[11px] text-white/80">{info.full}</div>
               <div className="mb-1 truncate text-[11px] text-white/60">{stole ? '—' : ans >= 0 ? `جواب: ${q.options[ans]}` : 'لم يجب'}</div>
               <div className={cn('text-xl font-black tabular-nums', d > 0 ? 'text-q-gold' : d < 0 ? 'text-q-red' : 'text-white/50')}>
                 <bdi dir="ltr">{d > 0 ? `+${d}` : d}</bdi> نقطة
