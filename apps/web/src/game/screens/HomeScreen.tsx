@@ -132,9 +132,14 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
       <div className="mb-5 grid grid-cols-2 gap-3.5">
         <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم واسرق نقاطه" />
         <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="الخصم يجاوب: صح = ينقص، غلط = يزيد" />
-        <div className="col-span-2">
-          <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
-        </div>
+        <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
+        <Choice
+          selected={variant === 'triple'}
+          onClick={() => setVariant('triple')}
+          icon="↩️"
+          title="جاوب أو بادل أو اعكس"
+          desc="ثلاثة خيارات — وبادل أو اعكس يستخدمها فريق واحد فقط في الجولة"
+        />
       </div>
 
       <p className="mb-2 text-center text-[13px] text-white/50">اختار طريقة اللعب</p>

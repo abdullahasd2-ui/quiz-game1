@@ -19,7 +19,12 @@ const fmtDay = (day: string) => dayLabel.format(new Date(`${day}T00:00:00Z`));
 
 const PLATFORM_LABEL: Record<Platform, string> = { web: 'الموقع', ios: 'iPhone', android: 'Android' };
 const MODE_LABEL: Record<RoomMode, string> = { mobile: 'جوال', tv: 'تلفاز' };
-const VARIANT_LABEL: Record<Variant, string> = { swap: 'جاوب أو بادل', flip: 'جاوب أو اقلب', hide: 'خبّي أو اكشف' };
+const VARIANT_LABEL: Record<Variant, string> = {
+  swap: 'جاوب أو بادل',
+  flip: 'جاوب أو اقلب',
+  triple: 'جاوب أو بادل أو اعكس',
+  hide: 'خبّي أو اكشف',
+};
 
 export function StatsPage() {
   return (
