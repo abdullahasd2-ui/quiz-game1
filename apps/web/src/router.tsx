@@ -11,9 +11,13 @@ import { QuestionEditPage } from './admin/pages/QuestionEditPage';
 import { QuestionsPage } from './admin/pages/QuestionsPage';
 import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
+import { PrivacyPage } from './legal/PrivacyPage';
+import { SupportPage } from './legal/SupportPage';
 
 export const router = createBrowserRouter([
   { path: '/', element: <GamePage /> },
+  { path: '/privacy', element: <PrivacyPage /> },
+  { path: '/support', element: <SupportPage /> },
   { path: '/admin/login', element: <LoginPage /> },
   {
     path: '/admin',
