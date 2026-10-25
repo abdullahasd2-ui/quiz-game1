@@ -45,7 +45,7 @@ docker compose exec app node --import tsx src/scripts/create-admin.ts you@exampl
 
 ### النشر التلقائي (GitHub Actions)
 
-كل دمج في `main` يشغّل [.github/workflows/deploy.yml](.github/workflows/deploy.yml): الاختبارات، ثم بناء الصورة على GitHub، ونقلها للسيرفر بـ SSH إلى `/opt/quiz`، وإعادة التشغيل مع فحص `/api/health`. السيرفر ما يبني شي. التغييرات في مشاريع `apps/mobile/ios` و`android` و`assets` وملفات `.md` بس ما تشغّل النشر، ويمكن تشغيله يدويًا من تبويب Actions. باقي كود التطبيق يشغّل النشر، لأن الصورة تحمل حزمة التحديث عن بعد (OTA).
+كل دمج في `main` يشغّل [.github/workflows/deploy.yml](.github/workflows/deploy.yml): الاختبارات، ثم بناء الصورة على GitHub، ونقلها للسيرفر بـ SSH إلى `/opt/quiz`، وإعادة التشغيل مع فحص `/api/health`. السيرفر ما يبني شي. التغييرات في مشاريع `apps/mobile/ios` و`android` و`assets` و`store` وملفات `.md` بس ما تشغّل النشر، ويمكن تشغيله يدويًا من تبويب Actions. باقي كود التطبيق يشغّل النشر، لأن الصورة تحمل حزمة التحديث عن بعد (OTA).
 
 تجهيز لمرة وحدة من جذر المشروع: `deploy/bootstrap.sh <مستخدم-SSH>`. يحتاج دخول SSH للسيرفر و`gh` مسجل بحساب له صلاحية على المستودع. السكربت يسوي التالي:
 - يجهز `/opt/quiz` على السيرفر ويولّد `.env` بأسرار عشوائية.
@@ -68,6 +68,7 @@ npm run assets       # إعادة توليد الأيقونات وشاشة ال�
 
 - Android يحتاج JDK 21: `export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home` ثم `cd android && ./gradlew assembleDebug`.
 - iOS: المعرّف `com.jawabbadel.app` والفريق `77T6JDYJ62`. للرفع على TestFlight ارفع `CURRENT_PROJECT_VERSION` ثم Product ← Archive ← Distribute App.
+- الإرسال لـ App Store: بيانات المتجر وملاحظات المراجعة وإجابات الخصوصية في [apps/mobile/store/APP_STORE.md](apps/mobile/store/APP_STORE.md)، واللقطات بمقاسات أبل في `apps/mobile/store/screenshots/`. صفحتا الخصوصية والدعم على `/privacy` و`/support` (الكود في `apps/web/src/legal`، وبريد الدعم في `contact.ts`)، وملف خصوصية iOS في `apps/mobile/ios/App/App/PrivacyInfo.xcprivacy`.
 
 ### التحديث عن بعد (OTA)
 

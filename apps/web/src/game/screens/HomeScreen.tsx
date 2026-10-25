@@ -1,6 +1,7 @@
 import { MAX_TEAM_SIZE, ROOM_CODE_LENGTH, TEAM_NAME_MAX, type RoomMode, type TeamIndex, type Variant } from '@quiz/shared';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { toast } from 'sonner';
+import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { Modal } from '../ui';
@@ -160,6 +161,15 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
       )}
       <div className="my-1.5 text-center text-white/20">—</div>
       {joinForm}
+
+      <nav className="mt-6 flex justify-center gap-4 text-xs text-white/40" aria-label="روابط">
+        <a href={serverUrl('/privacy')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
+          سياسة الخصوصية
+        </a>
+        <a href={serverUrl('/support')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
+          الدعم
+        </a>
+      </nav>
 
       <HowToPlay open={howOpen} onClose={() => setHowOpen(false)} />
     </div>

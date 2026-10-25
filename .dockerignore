@@ -10,3 +10,4 @@ deploy
 apps/mobile/ios
 apps/mobile/android
 apps/mobile/assets
+apps/mobile/store
