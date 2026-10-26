@@ -5,6 +5,8 @@ import { haptic } from '@/lib/native';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
+import { Confetti } from '../fx/Confetti';
+import { CountUp } from '../fx/CountUp';
 import { actionLabel, Modal, TEAM_TINT, teamName, WaitDots } from '../ui';
 
 export function ResultOverlay({ view }: { view: RoomView }) {
@@ -31,9 +33,15 @@ export function ResultOverlay({ view }: { view: RoomView }) {
     if (!res.ok) toast.error(res.error);
   }
 
+  // What this seat sees: confetti and a golden glow when you scored, a shake when you lost points (the tv: any points).
+  const won = (myDelta ?? Math.max(...r.deltas)) > 0;
+  const lost = myDelta !== null && myDelta < 0;
   return (
-    <Modal open>
-      <div className="mb-2 text-5xl">{icon}</div>
+    <Modal open animation={won ? 'motion-safe:animate-fx-win' : lost ? 'motion-safe:animate-fx-lose' : undefined} className={cn(won && 'border-q-gold/60', lost && 'border-q-red/50')}>
+      {won && <Confetti />}
+      <div key={String(won)} className="mb-2 text-5xl motion-safe:animate-fx-drop">
+        {icon}
+      </div>
       <h2 className="mb-3 text-xl font-black">{bothSteal ? `كلاهم ${view.variant === 'flip' ? 'قلبا' : 'بادلا'} — لا نقاط!` : 'نتيجة الجولة'}</h2>
       {picture && <img src={serverUrl(picture)} alt="" className="mx-auto mb-3.5 block max-h-56 max-w-full rounded-xl" />}
       <div className="mb-3 rounded-lg bg-q-green/10 px-3 py-2 text-sm text-[#2ecc71]">
@@ -51,7 +59,10 @@ export function ResultOverlay({ view }: { view: RoomView }) {
               <div className="mb-1 text-[11px] text-white/80">{stole ? lbl.full : 'إجابة'}</div>
               <div className="mb-1 truncate text-[11px] text-white/60">{stole ? '—' : ans >= 0 ? `جواب: ${q.options[ans]}` : 'لم يجب'}</div>
               <div className={cn('text-xl font-black tabular-nums', d > 0 ? 'text-q-gold' : d < 0 ? 'text-q-red' : 'text-white/50')}>
-                <bdi dir="ltr">{d > 0 ? `+${d}` : d}</bdi> نقطة
+                <bdi dir="ltr">
+                  <CountUp to={d} />
+                </bdi>{' '}
+                نقطة
               </div>
             </div>
           );

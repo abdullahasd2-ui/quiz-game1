@@ -1,4 +1,8 @@
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
+import { play, resumeAudioIfNeeded, unlockAudio } from './fx/sound';
+import { SoundToggle } from './fx/SoundToggle';
+import { useGameFx } from './fx/useGameFx';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
 import { FinalScreen } from './screens/FinalScreen';
 import { HomeScreen } from './screens/HomeScreen';
@@ -12,6 +16,13 @@ import { useRoom } from './useRoom';
 export function GamePage() {
   const { view, deadline, connected, resuming, leave } = useRoom();
   const [params] = useSearchParams();
+  useGameFx(view);
+  // iOS suspends audio while the app is in the background.
+  useEffect(() => {
+    const wake = () => document.visibilityState === 'visible' && resumeAudioIfNeeded();
+    document.addEventListener('visibilitychange', wake);
+    return () => document.removeEventListener('visibilitychange', wake);
+  }, []);
 
   let screen;
   if (resuming) {
@@ -36,8 +47,17 @@ export function GamePage() {
   }
 
   return (
-    <div className="dark min-h-dvh bg-q-bg font-sans text-white" dir="rtl">
+    <div
+      className="dark min-h-dvh bg-q-bg font-sans text-white"
+      dir="rtl"
+      onPointerDownCapture={(e) => {
+        unlockAudio();
+        const button = (e.target as HTMLElement).closest('button');
+        if (button && !button.disabled && !button.hasAttribute('data-silent')) play('tap');
+      }}
+    >
       <FloatingWords />
+      <SoundToggle />
       {view && view.status !== 'done' && (
         <button
           type="button"

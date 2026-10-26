@@ -63,7 +63,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
   const canAnswer = view.phase === 'answer' && !stole && view.myAnswer === null && (isMember || sent !== 'answer');
 
   return (
-    <div className="animate-fade-up">
+    <div className="motion-safe:animate-fx-zoom">
       <Scorebar view={view} />
       <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : ACTION_SECONDS} />
 
@@ -96,7 +96,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 type="button"
                 onClick={() => act('steal')}
                 className={cn(
-                  'rounded-xl bg-linear-to-br from-q-red to-[#c0392b] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
+                  'rounded-xl bg-linear-to-br from-q-red to-[#c0392b] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5 motion-safe:animate-fx-ring',
                   voted('steal') && 'ring-2 ring-white',
                 )}
               >
@@ -108,7 +108,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 type="button"
                 onClick={() => act('answer')}
                 className={cn(
-                  'rounded-xl bg-linear-to-br from-q-green to-[#1e8449] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
+                  'rounded-xl bg-linear-to-br from-q-green to-[#1e8449] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5 motion-safe:animate-fx-ring',
                   voted('answer') && 'ring-2 ring-white',
                 )}
               >
@@ -184,7 +184,7 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
   const lbl = actionLabel(view.variant);
 
   return (
-    <div className="animate-fade-up">
+    <div className="motion-safe:animate-fx-zoom">
       <Scorebar view={view} />
       <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : ACTION_SECONDS} />
       <div className="mb-4 rounded-3xl border-2 border-q-gold bg-q-panel p-6 text-center sm:p-8">
