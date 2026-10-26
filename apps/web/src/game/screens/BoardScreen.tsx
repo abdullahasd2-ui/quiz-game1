@@ -60,9 +60,9 @@ export function BoardScreen({ view }: { view: RoomView }) {
             </tr>
           </thead>
           <tbody>
-            {POINTS.map((pts) => (
+            {POINTS.map((pts, row) => (
               <tr key={pts}>
-                {view.categories.map((c) => {
+                {view.categories.map((c, col) => {
                   const key = cellKey(c.id, pts);
                   const used = view.used.includes(key);
                   const votes = used ? 0 : (view.votes?.counts[key] ?? 0);
@@ -74,8 +74,10 @@ export function BoardScreen({ view }: { view: RoomView }) {
                         disabled={used || !(mayPick || mayVote) || pending !== null}
                         onClick={() => pick(c.id, pts)}
                         aria-label={`${c.name} ${pts}`}
+                        // The cells pop in as a diagonal sweep from the top corner, like the board scene of the promo video.
+                        style={{ animationDelay: `${(row + col) * 45}ms` }}
                         className={cn(
-                          'w-full rounded-lg border bg-q-panel px-1 py-3 text-[15px] font-black tabular-nums transition-transform',
+                          'w-full rounded-lg border bg-q-panel px-1 py-3 text-[15px] font-black tabular-nums transition-transform motion-safe:animate-fx-cell',
                           POINT_TONE[pts],
                           used && 'border-transparent bg-[#1a1a2a] line-through opacity-35 grayscale',
                           !used && (mayPick || mayVote) && 'hover:scale-105',

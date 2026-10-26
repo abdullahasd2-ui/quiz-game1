@@ -147,6 +147,16 @@
     --animate-fade-up: fade-up 0.3s ease;
     --animate-blink: blink 1s infinite;
     --animate-trophy: trophy 1s infinite;
+    --animate-fx-zoom: fx-zoom 0.34s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+    --animate-fx-shake: fx-shake 0.45s ease-in-out;
+    --animate-fx-bump: fx-bump 0.45s ease-out;
+    --animate-fx-cell: fx-cell 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    --animate-fx-ring: fx-ring 1.8s ease-out infinite;
+    --animate-fx-glow: fx-glow 1.4s ease-in-out infinite alternate;
+    --animate-fx-drop: fx-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    /* Result card: the usual pop-in, then a golden glow (you scored) or a shake (you lost points). */
+    --animate-fx-win: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-glow 1.4s ease-in-out 0.35s infinite alternate;
+    --animate-fx-lose: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-shake 0.45s ease-in-out 0.35s;
 
     @keyframes float-word {
         from { transform: translateY(100vh); }
@@ -166,6 +176,38 @@
     @keyframes trophy {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-12px); }
+    }
+    /* In-game effects, the app's version of the promo video's motion (see apps/web/src/game/fx). */
+    @keyframes fx-zoom {
+        from { opacity: 0; transform: scale(0.94) translateY(6px); }
+        to { opacity: 1; transform: none; }
+    }
+    @keyframes fx-shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-7px); }
+        40% { transform: translateX(6px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(3px); }
+    }
+    @keyframes fx-bump {
+        0%, 100% { transform: scale(1); }
+        40% { transform: scale(1.35); }
+    }
+    @keyframes fx-cell {
+        from { opacity: 0; transform: scale(0.6); }
+        to { opacity: 1; transform: none; }
+    }
+    @keyframes fx-ring {
+        0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+        70%, 100% { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+    }
+    @keyframes fx-glow {
+        from { box-shadow: 0 0 18px rgba(247, 201, 72, 0.15); }
+        to { box-shadow: 0 0 60px rgba(247, 201, 72, 0.45); }
+    }
+    @keyframes fx-drop {
+        from { opacity: 0; transform: translateY(-24px) scale(0.9); }
+        to { opacity: 1; transform: none; }
     }
 }
 
