@@ -9,7 +9,7 @@ export const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const MIN_BOARD_CATEGORIES = 3;
 export const MAX_BOARD_CATEGORIES = 9;
 export const ACTION_SECONDS = 60;
-export const ANSWER_SECONDS = 60;
+export const ANSWER_SECONDS = 30;
 export const TEAM_NAME_MAX = 18;
 /** Captain + members. A game can start with any number of players per team (at least the captain). */
 export const MAX_TEAM_SIZE = 10;
