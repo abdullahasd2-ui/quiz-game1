@@ -118,7 +118,7 @@ Privacy policy: https://jawabbadel.com/privacy   Support: https://jawabbadel.com
 ## قبل الإرسال
 
 1. **سياسة الخصوصية والدعم لازم تكون شغّالة على الإنترنت** قبل الإرسال: افتح `https://jawabbadel.com/privacy` و`/support`. هذي تنزل مع نشر `main`.
-2. بريد الدعم `support@jawabbadel.com` (ثابت واحد في `apps/web/src/legal/contact.ts`): تأكد أن الصندوق يستقبل رسائل فعلًا، مثل Cloudflare Email Routing.
+2. بريد الدعم `support@jawabbadel.com` (ثابت واحد في `apps/web/src/legal/contact.ts`): **فُعّل في 2026-10-26** عبر Cloudflare Email Routing ← يعيد التوجيه إلى `ahmed@exa.com.sa` (القاعدة Active، والوجهة Verified، وسجلات MX وSPF وDKIM في DNS). قبلها كان النطاق بلا MX ولا يستقبل شيئًا. ما بقي إلا تجربة وصول من بريد خارجي (رسالة اختبار تنرسل لـ support@ وتوصل لبريدك).
 3. اختر **البناء رقم 3** (أو أحدث). البناء 2 ما فيه ملف الخصوصية ولا رابط الخصوصية داخل اللعبة.
 4. اللقطات: حسابك في App Store Connect يعرض خانة الآيفون «6.1"/6.3"» وتقبل 1206×2622 أو 1179×2556 فقط (لا 1320×2868)، فرُفعت من `iphone-6.3/` (5 لقطات، نفس صور `iphone-6.9/` مصغّرة)، ورُفع الآيباد من `ipad-13/` (7 لقطات). أبل تصغّرها تلقائيًا لباقي المقاسات.
 5. فئة «براندات» معطّلة (تحقق: ما تظهر في `https://jawabbadel.com/api/categories`). لا تفعّلها قبل الموافقة.
