@@ -1,6 +1,7 @@
 import {
   ACTION_SECONDS,
   ANSWER_SECONDS,
+  MIN_SCORE,
   canAdvance,
   canPick,
   cellKey,
@@ -434,7 +435,7 @@ export class GameRoom {
     round.deltas = computeScores(round.points, actions, correct, this.variant);
     round.deltas.forEach((d, t) => {
       const team = this.teams[t]!;
-      team.score = Math.max(0, team.score + d);
+      team.score = Math.max(MIN_SCORE, team.score + d);
     });
     this.phase = 'result';
   }
