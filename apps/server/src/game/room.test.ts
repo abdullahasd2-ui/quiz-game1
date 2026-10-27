@@ -167,7 +167,7 @@ describe('round flow', () => {
     let n = 0;
     for (const c of CATS) {
       for (const pts of [100, 200, 300, 400, 500]) {
-        expect(() => room.assertCanPick(room.turn, c.id, pts)).toThrow('ليس دورك!');
+        expect(() => room.assertCanPick(room.turn === 0 ? 1 : 0, c.id, pts)).toThrow('ليس دورك!');
         room.assertCanPick('tv', c.id, pts);
         room.beginRound(c.id, pts, question());
         room.act(0, 'steal');
@@ -343,5 +343,34 @@ describe('kicking players', () => {
     expect(room.view('tv').canKick).toBe(true);
     expect(room.kick('tv', room.view('tv').teams[0]!.members[0]!.id)).toBe('a');
     expect(room.teams[0]).toBeNull();
+  });
+});
+
+describe('tv mode picking', () => {
+  function tvRoom() {
+    const room = new GameRoom('ABCDEF', 'tv', 'swap');
+    room.seatHost('tv');
+    room.join('c0', 'أ', 0);
+    room.join('m0', undefined, 0);
+    room.join('c1', 'ب', 1);
+    room.join('m1', undefined, 1);
+    room.start('tv', CATS);
+    return room;
+  }
+
+  it('only the captain of the team whose turn it is may pick (the TV still can)', () => {
+    const room = tvRoom();
+    const c = CATS[0]!.id;
+    expect(() => room.assertCanPick(1, c, 100)).toThrow('ليس دورك');
+    expect(() => room.assertCanPick(0, c, 100)).not.toThrow();
+    expect(() => room.assertCanPick('tv', c, 100)).not.toThrow();
+  });
+
+  it('members of the turn team vote and the TV sees the tally; the other team cannot vote', () => {
+    const room = tvRoom();
+    const key = `${CATS[0]!.id}:100`;
+    room.vote('m0', key);
+    expect(room.view('tv').votes?.counts).toEqual({ [key]: 1 });
+    expect(() => room.vote('m1', key)).toThrow('ليس دور فريقك');
   });
 });

@@ -88,7 +88,8 @@ export const cellKey = (categoryId: number, points: number) => `${categoryId}:${
 
 /** Who may pick a board cell / advance after a result. */
 export function canPick(mode: RoomMode, seat: Seat, turn: TeamIndex): boolean {
-  return mode === 'tv' ? seat === 'tv' : seat === turn;
+  // In tv mode the TV may still pick, and so may the captain of the team whose turn it is.
+  return mode === 'tv' ? seat === 'tv' || seat === turn : seat === turn;
 }
 export function canAdvance(mode: RoomMode, seat: Seat): boolean {
   return mode === 'tv' ? seat === 'tv' : seat !== 'tv';

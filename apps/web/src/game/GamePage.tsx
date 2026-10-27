@@ -30,7 +30,7 @@ export function GamePage() {
   } else if (view.status === 'done') {
     screen = <FinalScreen view={view} onPlayAgain={leave} />;
   } else if (view.phase === 'board') {
-    screen = view.mode === 'tv' && view.you !== 'tv' ? <WaitingForPick view={view} /> : <BoardScreen view={view} />;
+    screen = view.mode === 'tv' && view.you !== 'tv' && view.you !== view.turn ? <WaitingForPick view={view} /> : <BoardScreen view={view} />;
   } else {
     screen = view.you === 'tv' ? <TvQuestionScreen view={view} deadline={deadline} /> : <QuestionScreen view={view} deadline={deadline} />;
   }
