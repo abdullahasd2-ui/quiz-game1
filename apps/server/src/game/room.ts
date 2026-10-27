@@ -353,7 +353,7 @@ export class GameRoom {
   private voteError(team: TeamIndex, key: string): string | null {
     const round = this.round;
     if (this.phase === 'board') {
-      if (this.mode !== 'mobile' || this.picking) return 'ليس وقت التصويت';
+      if (this.picking) return 'ليس وقت التصويت';
       if (team !== this.turn) return 'ليس دور فريقك!';
       const [cat, pts] = key.split(':').map(Number);
       const ok = this.categories.some((c) => c.id === cat) && (POINTS as readonly number[]).includes(pts!);
@@ -376,7 +376,7 @@ export class GameRoom {
   private votingOpen(team: TeamIndex): boolean {
     if (this.status !== 'playing') return false;
     const round = this.round;
-    if (this.phase === 'board') return this.mode === 'mobile' && team === this.turn && !this.picking;
+    if (this.phase === 'board') return team === this.turn && !this.picking;
     if (this.phase === 'action') return Boolean(round && !round.actions[team]);
     if (this.phase === 'answer') return Boolean(round && round.actions[team] !== 'steal' && round.answers[team] === null);
     return false;
@@ -521,7 +521,10 @@ export class GameRoom {
       votes:
         team !== null && this.votingOpen(team)
           ? { counts: this.tally(team), mine: (memberDeviceId && this.votes[team].get(memberDeviceId)) || null }
-          : null,
+          : // The TV shows the votes of the team that is choosing the next question.
+            seat === 'tv' && this.phase === 'board' && this.votingOpen(this.turn)
+            ? { counts: this.tally(this.turn), mine: null }
+            : null,
       result: reveal
         ? {
             correctIndex: round.question.correctIndex,

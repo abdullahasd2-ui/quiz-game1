@@ -17,7 +17,7 @@ export function BoardScreen({ view }: { view: RoomView }) {
   const isMember = view.role === 'member';
   const mayPick = canPick(view.mode, view.you, view.turn) && !isMember;
   // Members of the team whose turn it is vote on the cell; their captain taps to decide.
-  const mayVote = isMember && view.mode === 'mobile' && view.you === view.turn;
+  const mayVote = isMember && view.you === view.turn;
   const [pending, setPending] = useState<string | null>(null);
   const turnName = teamName(view, view.turn);
 
@@ -109,7 +109,7 @@ export function WaitingForPick({ view }: { view: RoomView }) {
         <p className="text-sm leading-loose text-white/50">
           دور <span className="font-bold text-q-gold">{teamName(view, view.turn)}</span> في اختيار السؤال
           <br />
-          اختاروا السؤال من التلفاز...
+          رئيس الفريق يختار السؤال وبيظهر على التلفاز...
         </p>
       </div>
     </div>
