@@ -110,7 +110,19 @@ describe('round flow', () => {
     room.act(1, 'steal');
     room.answer(0, 0); // wrong → thief is penalised
     expect(room.view(1).result!.deltas).toEqual([0, -500]);
-    expect(room.teams[1]!.score).toBe(0);
+    expect(room.teams[1]!.score).toBe(-500);
+  });
+
+  it('scores can go negative but stop at -1000', () => {
+    const { room } = mobileRoom();
+    for (let i = 0; i < 3; i++) {
+      room.beginRound(2, 500, question(2));
+      room.act(0, 'answer');
+      room.act(1, 'steal');
+      room.answer(0, 0);
+      if (i < 2) room.next(0);
+    }
+    expect(room.teams[1]!.score).toBe(-1000);
   });
 
   it('both stealing skips the answer phase and scores nothing', () => {
