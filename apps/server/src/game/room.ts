@@ -1,6 +1,12 @@
 import {
   ACTION_SECONDS,
   ANSWER_SECONDS,
+  GUESS_SECONDS,
+  HIDE_BOXES,
+  HIDE_POINTS,
+  HIDE_ROUNDS_PER_TEAM,
+  HIDE_SECONDS,
+  HINT_QUESTION_POINTS,
   MIN_SCORE,
   canAdvance,
   canPick,
@@ -11,6 +17,9 @@ import {
   type Action,
   type BoardCategory,
   type GamePhase,
+  type HideOutcome,
+  type HideResult,
+  type HideView,
   type QuestionType,
   type RoomMode,
   type RoomStatus,
@@ -44,8 +53,19 @@ type Round = {
   question: DealtQuestion;
   actions: [Action | null, Action | null];
   answers: [number | null, number | null];
-  deadline: number | null;
   deltas: [number, number] | null;
+};
+
+/** One round of "خبّي أو اكشف": the hiding team is `GameRoom.turn`, the other team guesses. */
+type HideRound = {
+  hidden: number | null;
+  eliminated: number[];
+  hintUsed: boolean;
+  /** The hint question while the guessers answer it. */
+  hint: { categoryId: number; question: DealtQuestion; answer: number | null } | null;
+  hintResult: 'correct' | 'wrong' | null;
+  guess: number | null;
+  result: HideResult | null;
 };
 
 const DEFAULT_NAMES = ['الفريق الأول', 'الفريق الثاني'] as const;
@@ -79,6 +99,11 @@ export class GameRoom {
   turn: TeamIndex = 0;
   phase: GamePhase = 'board';
   round: Round | null = null;
+  hide: HideRound | null = null;
+  /** 0-based index of the hide round in progress. */
+  hideRound = 0;
+  /** When the current timed step ends (epoch ms), or null. */
+  private deadline: number | null = null;
   /** Set while a cell's question is being fetched so a double tap can't deal twice. */
   picking = false;
   lastActivity = Date.now();
@@ -245,9 +270,10 @@ export class GameRoom {
     if (!this.teams[0] || !this.teams[1]) throw new GameError('في انتظار الفريق الثاني');
     this.categories = categories;
     this.status = 'playing';
-    this.phase = 'board';
     this.turn = 0;
     this.clearVotes();
+    if (this.variant === 'hide') this.beginHideRound();
+    else this.phase = 'board';
     this.touch();
   }
 
@@ -263,7 +289,7 @@ export class GameRoom {
 
   beginRound(categoryId: number, points: number, question: DealtQuestion) {
     this.used.add(cellKey(categoryId, points));
-    this.round = { categoryId, points, question, actions: [null, null], answers: [null, null], deadline: null, deltas: null };
+    this.round = { categoryId, points, question, actions: [null, null], answers: [null, null], deltas: null };
     this.phase = 'action';
     this.clearVotes();
     this.arm(ACTION_SECONDS, () => this.timeoutActions());
@@ -281,6 +307,7 @@ export class GameRoom {
   }
 
   answer(seat: Seat, index: number) {
+    if (this.variant === 'hide') return this.answerHint(seat, index);
     const round = this.requireRound('answer');
     const team = this.requireTeam(seat);
     if (round.answers[team] !== null) throw new GameError('جوابك محفوظ بالفعل');
@@ -294,7 +321,16 @@ export class GameRoom {
     if (this.status !== 'playing' || this.phase !== 'result') throw new GameError('الجولة لم تنتهِ بعد');
     if (!canAdvance(this.mode, seat)) throw new GameError('التلفاز فقط ينتقل للسؤال التالي');
     this.round = null;
-    if (this.used.size >= this.categories.length * POINTS.length) {
+    if (this.variant === 'hide') {
+      if (this.hideRound + 1 >= this.totalRounds) {
+        this.hide = null;
+        this.status = 'done';
+      } else {
+        this.hideRound++;
+        this.turn = this.turn === 0 ? 1 : 0;
+        this.beginHideRound();
+      }
+    } else if (this.used.size >= this.categories.length * POINTS.length) {
       this.status = 'done';
     } else {
       this.turn = this.turn === 0 ? 1 : 0;
@@ -351,6 +387,7 @@ export class GameRoom {
 
   /** Why `key` can't be voted on right now by `team` (null when it can). */
   private voteError(team: TeamIndex, key: string): string | null {
+    if (this.variant === 'hide') return this.hideVoteError(team, key);
     const round = this.round;
     if (this.phase === 'board') {
       if (this.picking) return 'ليس وقت التصويت';
@@ -375,6 +412,7 @@ export class GameRoom {
   /** Is the team still deciding something its members can vote on? */
   private votingOpen(team: TeamIndex): boolean {
     if (this.status !== 'playing') return false;
+    if (this.variant === 'hide') return this.hideVotingOpen(team);
     const round = this.round;
     if (this.phase === 'board') return team === this.turn && !this.picking;
     if (this.phase === 'action') return Boolean(round && !round.actions[team]);
@@ -397,6 +435,215 @@ export class GameRoom {
       if (best === null || counts[key]! > counts[best]!) best = key as K;
     }
     return best;
+  }
+
+  // ── خبّي أو اكشف ─────────────────────────────────────────────────────────
+
+  get totalRounds(): number {
+    return this.variant === 'hide' ? HIDE_ROUNDS_PER_TEAM * 2 : this.categories.length * POINTS.length;
+  }
+
+  get roundsPlayed(): number {
+    if (this.variant !== 'hide') return this.used.size;
+    return this.status === 'done' ? this.totalRounds : this.hideRound + (this.phase === 'result' ? 1 : 0);
+  }
+
+  private get guesser(): TeamIndex {
+    return this.turn === 0 ? 1 : 0;
+  }
+
+  private beginHideRound() {
+    this.hide = { hidden: null, eliminated: [], hintUsed: false, hint: null, hintResult: null, guess: null, result: null };
+    this.phase = 'hide';
+    this.clearVotes();
+    this.arm(HIDE_SECONDS, () => this.timeoutHide());
+  }
+
+  private requireHide(phase: GamePhase): HideRound {
+    if (this.variant !== 'hide' || this.status !== 'playing' || this.phase !== phase || !this.hide) throw new GameError('انتهى وقت هذه الخطوة');
+    return this.hide;
+  }
+
+  private assertBox(box: number) {
+    if (!Number.isInteger(box) || box < 0 || box >= HIDE_BOXES) throw new GameError('صندوق غير صالح');
+  }
+
+  /** The hiding team's captain locks the box the prize goes in. */
+  hideIn(seat: Seat, box: number) {
+    const hide = this.requireHide('hide');
+    if (this.requireTeam(seat) !== this.turn) throw new GameError('الفريق الثاني هو اللي يخبّي!');
+    this.assertBox(box);
+    if (hide.hidden !== null) throw new GameError('اخترت الصندوق بالفعل');
+    this.lockHidden(box);
+  }
+
+  private lockHidden(box: number) {
+    this.hide!.hidden = box;
+    this.phase = 'guess';
+    this.clearVotes();
+    this.arm(GUESS_SECONDS, () => this.timeoutGuess());
+    this.touch();
+  }
+
+  /** The guessing team's captain opens a box. */
+  guess(seat: Seat, box: number) {
+    const hide = this.requireHide('guess');
+    if (this.requireTeam(seat) !== this.guesser) throw new GameError('الفريق الثاني هو اللي يخمّن!');
+    this.assertBox(box);
+    if (hide.eliminated.includes(box)) throw new GameError('هذا الصندوق استُبعد بالتلميح');
+    this.finishHide(box);
+  }
+
+  /** Validates a hint request before the (async) question fetch. */
+  assertCanHint(seat: Seat) {
+    const hide = this.requireHide('guess');
+    if (this.picking) throw new GameError('انتظر لحظة...');
+    if (this.requireTeam(seat) !== this.guesser) throw new GameError('التلميح لفريق التخمين!');
+    if (hide.hintUsed) throw new GameError('استخدمت التلميح في هذه الجولة');
+  }
+
+  /** Category ids to try, in random order, for the hint question. */
+  hintCategoryOrder(): number[] {
+    const ids = this.categories.map((c) => c.id);
+    for (let i = ids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ids[i], ids[j]] = [ids[j]!, ids[i]!];
+    }
+    return ids;
+  }
+
+  beginHint(categoryId: number, question: DealtQuestion) {
+    const hide = this.requireHide('guess');
+    hide.hintUsed = true;
+    hide.hint = { categoryId, question, answer: null };
+    this.phase = 'hint';
+    this.clearVotes();
+    this.arm(ANSWER_SECONDS, () => this.timeoutHint());
+    this.touch();
+  }
+
+  private answerHint(seat: Seat, index: number) {
+    const hide = this.requireHide('hint');
+    if (this.requireTeam(seat) !== this.guesser) throw new GameError('سؤال التلميح لفريق التخمين!');
+    if (hide.hint!.answer !== null) throw new GameError('جوابك محفوظ بالفعل');
+    if (!Number.isInteger(index) || index < 0 || index >= hide.hint!.question.options.length) throw new GameError('خيار غير صالح');
+    this.resolveHint(index);
+  }
+
+  /** Right: half of the boxes (never the hidden one) are ruled out. Wrong: the round ends and the hider scores. */
+  private resolveHint(index: number) {
+    const hide = this.hide!;
+    const hint = hide.hint!;
+    hint.answer = index;
+    if (index !== hint.question.correctIndex) {
+      hide.hintResult = 'wrong';
+      return this.finishHide(null, 'hint-failed');
+    }
+    hide.hintResult = 'correct';
+    const empties = Array.from({ length: HIDE_BOXES }, (_, i) => i).filter((i) => i !== hide.hidden && !hide.eliminated.includes(i));
+    for (let i = empties.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [empties[i], empties[j]] = [empties[j]!, empties[i]!];
+    }
+    const remaining = HIDE_BOXES - hide.eliminated.length;
+    hide.eliminated.push(...empties.slice(0, Math.floor(remaining / 2)));
+    this.phase = 'guess';
+    this.clearVotes();
+    this.arm(GUESS_SECONDS, () => this.timeoutGuess());
+    this.touch();
+  }
+
+  private finishHide(guess: number | null, forced?: HideOutcome) {
+    const hide = this.hide!;
+    this.disarm();
+    const hit = guess !== null && guess === hide.hidden;
+    const outcome: HideOutcome = forced ?? (hit ? 'hit' : 'miss');
+    const winner = hit ? this.guesser : this.turn;
+    const deltas: [number, number] = [0, 0];
+    deltas[winner] = HIDE_POINTS;
+    deltas.forEach((d, t) => {
+      const team = this.teams[t]!;
+      team.score = Math.max(MIN_SCORE, team.score + d);
+    });
+    hide.guess = guess;
+    hide.result = { hidden: hide.hidden!, guess, outcome, deltas };
+    this.phase = 'result';
+    this.clearVotes();
+    this.touch();
+  }
+
+  private timeoutHide() {
+    if (this.variant !== 'hide' || this.phase !== 'hide' || !this.hide) return;
+    const keys = Array.from({ length: HIDE_BOXES }, (_, i) => String(i));
+    const key = this.leading(this.turn, keys);
+    this.lockHidden(key === null ? Math.floor(Math.random() * HIDE_BOXES) : Number(key));
+    this.onChange();
+  }
+
+  private timeoutGuess() {
+    if (this.variant !== 'hide' || this.phase !== 'guess' || !this.hide) return;
+    const open = Array.from({ length: HIDE_BOXES }, (_, i) => i).filter((i) => !this.hide!.eliminated.includes(i));
+    const key = this.leading(this.guesser, open.map(String));
+    this.finishHide(key === null ? null : Number(key), key === null ? 'timeout' : undefined);
+    this.onChange();
+  }
+
+  private timeoutHint() {
+    const hide = this.hide;
+    if (this.variant !== 'hide' || this.phase !== 'hint' || !hide?.hint) return;
+    const options = hide.hint.question.options.map((_, i) => String(i));
+    const key = this.leading(this.guesser, options);
+    this.resolveHint(key === null ? -1 : Number(key));
+    this.onChange();
+  }
+
+  private hideVoteError(team: TeamIndex, key: string): string | null {
+    const hide = this.hide;
+    if (!hide) return 'ليس وقت التصويت';
+    const box = /^\d+$/.test(key) ? Number(key) : -1;
+    if (this.phase === 'hide') {
+      if (team !== this.turn) return 'الفريق الثاني هو اللي يخبّي!';
+      return box >= 0 && box < HIDE_BOXES ? null : 'صندوق غير صالح';
+    }
+    if (this.phase === 'guess') {
+      if (team !== this.guesser) return 'الفريق الثاني هو اللي يخمّن!';
+      if (key === 'hint') return hide.hintUsed ? 'استخدمتم التلميح بالفعل' : null;
+      if (box < 0 || box >= HIDE_BOXES) return 'صندوق غير صالح';
+      return hide.eliminated.includes(box) ? 'هذا الصندوق استُبعد بالتلميح' : null;
+    }
+    if (this.phase === 'hint') {
+      if (team !== this.guesser) return 'سؤال التلميح لفريق التخمين!';
+      if (hide.hint?.answer !== null) return 'قرر رئيس الفريق بالفعل';
+      return box >= 0 && box < (hide.hint?.question.options.length ?? 0) ? null : 'خيار غير صالح';
+    }
+    return 'ليس وقت التصويت';
+  }
+
+  private hideVotingOpen(team: TeamIndex): boolean {
+    const hide = this.hide;
+    if (!hide) return false;
+    if (this.phase === 'hide') return team === this.turn && hide.hidden === null;
+    if (this.phase === 'guess') return team === this.guesser;
+    if (this.phase === 'hint') return team === this.guesser && hide.hint?.answer === null;
+    return false;
+  }
+
+  private hideView(seat: Seat): HideView | null {
+    const hide = this.hide;
+    if (this.variant !== 'hide' || !hide) return null;
+    const mayKnow = seat === this.turn || hide.result !== null;
+    return {
+      round: this.hideRound + 1,
+      totalRounds: this.totalRounds,
+      points: HIDE_POINTS,
+      boxes: HIDE_BOXES,
+      hidden: mayKnow ? hide.hidden : null,
+      locked: hide.hidden !== null,
+      eliminated: hide.eliminated,
+      hintUsed: hide.hintUsed,
+      hintResult: hide.hintResult,
+      result: hide.result,
+    };
   }
 
   private leadingAnswer(team: TeamIndex): number {
@@ -460,14 +707,14 @@ export class GameRoom {
 
   private arm(seconds: number, fn: () => void) {
     this.disarm();
-    this.round!.deadline = Date.now() + seconds * 1000;
+    this.deadline = Date.now() + seconds * 1000;
     this.timer = setTimeout(fn, seconds * 1000);
   }
 
   private disarm() {
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;
-    if (this.round) this.round.deadline = null;
+    this.deadline = null;
   }
 
   private requireRound(phase: GamePhase): Round {
@@ -504,7 +751,7 @@ export class GameRoom {
       used: [...this.used],
       turn: this.turn,
       phase: this.phase,
-      question: round
+      question: this.hintQuestionView() ?? (round
         ? {
             categoryId: round.categoryId,
             points: round.points,
@@ -513,8 +760,8 @@ export class GameRoom {
             options: round.question.options,
             imageUrl: round.question.imageUrl,
           }
-        : null,
-      remainingMs: round?.deadline ? Math.max(0, round.deadline - Date.now()) : null,
+        : null),
+      remainingMs: this.deadline ? Math.max(0, this.deadline - Date.now()) : null,
       decided: [Boolean(round?.actions[0]), Boolean(round?.actions[1])],
       myAction: round && team !== null ? round.actions[team] : null,
       myAnswer: round && team !== null ? round.answers[team] : null,
@@ -525,6 +772,7 @@ export class GameRoom {
             seat === 'tv' && this.phase === 'board' && this.votingOpen(this.turn)
             ? { counts: this.tally(this.turn), mine: null }
             : null,
+      hide: this.hideView(seat),
       result: reveal
         ? {
             correctIndex: round.question.correctIndex,
@@ -535,6 +783,13 @@ export class GameRoom {
           }
         : null,
     };
+  }
+
+  private hintQuestionView() {
+    const hint = this.hide?.hint;
+    if (this.variant !== 'hide' || this.phase !== 'hint' || !hint) return null;
+    const q = hint.question;
+    return { categoryId: hint.categoryId, points: HINT_QUESTION_POINTS, type: q.type, text: q.text, options: q.options, imageUrl: q.imageUrl };
   }
 
   private teamView(t: TeamIndex) {

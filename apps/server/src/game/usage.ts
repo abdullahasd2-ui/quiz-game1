@@ -64,7 +64,7 @@ export class UsageLog {
     this.endedRooms.add(room);
     const scores: [number, number] = [room.teams[0]?.score ?? 0, room.teams[1]?.score ?? 0];
     const end = room.status === 'done' ? { finishedAt: new Date() } : { abandonedAt: new Date() };
-    this.update(room, { ...end, roundsPlayed: room.used.size, scores });
+    this.update(room, { ...end, roundsPlayed: room.roundsPlayed, scores });
   }
 
   /** Waits for in-flight writes (on shutdown, before the DB pool closes). */

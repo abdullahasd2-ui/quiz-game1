@@ -4,10 +4,11 @@ import {
   platforms,
   answerInput,
   createRoomInput,
+  hideInput,
+  HINT_QUESTION_POINTS,
   joinRoomInput,
   kickInput,
   pickCellInput,
-  POINTS,
   ROOM_CODE_ALPHABET,
   ROOM_CODE_LENGTH,
   startGameInput,
@@ -247,6 +248,46 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     );
 
     socket.on(
+      'game:hide',
+      handle(hideInput, async ({ box }) => {
+        const { room, seat } = currentRoom(socket);
+        room.hideIn(seat, box);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:guess',
+      handle(hideInput, async ({ box }) => {
+        const { room, seat } = currentRoom(socket);
+        room.guess(seat, box);
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:hint',
+      handle(null, async () => {
+        const { room, seat } = currentRoom(socket);
+        room.assertCanHint(seat);
+        room.picking = true;
+        try {
+          // A medium question from one of the room's categories; try the others if one has none.
+          for (const categoryId of room.hintCategoryOrder()) {
+            const question = await drawQuestion(categoryId, HINT_QUESTION_POINTS);
+            if (question) {
+              room.beginHint(categoryId, question);
+              return { data: null, room };
+            }
+          }
+          throw new GameError('ما لقيت سؤال للتلميح');
+        } finally {
+          room.picking = false;
+        }
+      }),
+    );
+
+    socket.on(
       'game:vote',
       handle(voteInput, async ({ key }) => {
         const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
@@ -297,8 +338,8 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
           teams: room.teams.map((t) => (t ? { name: t.name, score: t.score, connected: t.connected } : null)),
           tvConnected: room.mode === 'tv' ? Boolean(room.tv?.connected) : null,
           categories: room.categories.map((c) => c.name),
-          roundsPlayed: room.used.size,
-          totalRounds: room.categories.length * POINTS.length,
+          roundsPlayed: room.roundsPlayed,
+          totalRounds: room.totalRounds,
           idleSeconds: Math.round((Date.now() - room.lastActivity) / 1000),
         };
       });

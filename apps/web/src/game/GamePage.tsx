@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
 import { FinalScreen } from './screens/FinalScreen';
+import { HideScreen } from './screens/HideScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
@@ -29,6 +30,8 @@ export function GamePage() {
     screen = <LobbyScreen view={view} />;
   } else if (view.status === 'done') {
     screen = <FinalScreen view={view} onPlayAgain={leave} />;
+  } else if (view.variant === 'hide' && view.hide) {
+    screen = <HideScreen view={view} deadline={deadline} />;
   } else if (view.phase === 'board') {
     screen = view.mode === 'tv' && view.you !== 'tv' && view.you !== view.turn ? <WaitingForPick view={view} /> : <BoardScreen view={view} />;
   } else {
