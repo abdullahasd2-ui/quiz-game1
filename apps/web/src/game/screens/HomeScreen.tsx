@@ -132,6 +132,9 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
       <div className="mb-5 grid grid-cols-2 gap-3.5">
         <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم واسرق نقاطه" />
         <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="الخصم يجاوب: صح = ينقص، غلط = يزيد" />
+        <div className="col-span-2">
+          <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
+        </div>
       </div>
 
       <p className="mb-2 text-center text-[13px] text-white/50">اختار طريقة اللعب</p>
@@ -234,6 +237,12 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>✅ جاوب صح = نقاط السؤال</div>
           <div>🔀 اقلب: الخصم يجاوب — إذا جاوب صح تنقص نقاطه، وإذا جاوب غلط تزيد نقاطه بقيمة السؤال!</div>
           <div>🔀🔀 كلاهم اقلب = لا نقاط لأحد</div>
+        </HowSection>
+        <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
+          <div>• 10 صناديق: الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق سراً</div>
+          <div>• الفريق الثاني يخمّن: لقاه = النقاط له، ما لقاه = النقاط للي خبّى</div>
+          <div>• زر 💡 تلميح (مرة بالجولة): يطلع سؤال متوسط — صح = ينشال نص الصناديق، غلط = النقاط للخصم على طول</div>
+          <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات</div>
         </HowSection>
       </div>
       <button type="button" onClick={onClose} className="q-btn-tv mt-3.5">

@@ -12,6 +12,17 @@ export const ACTION_SECONDS = 60;
 export const ANSWER_SECONDS = 30;
 /** A team's score can go negative, but never below this. */
 export const MIN_SCORE = -1000;
+
+// ── خبّي أو اكشف (variant "hide") ──
+export const HIDE_BOXES = 10;
+/** Rounds each team spends hiding; the teams alternate, team 1 first. */
+export const HIDE_ROUNDS_PER_TEAM = 5;
+/** Points won by the hider on a miss, or by the guesser on a hit. */
+export const HIDE_POINTS = 300;
+/** Difficulty of the hint question: the middle level of the board. */
+export const HINT_QUESTION_POINTS = 300;
+export const HIDE_SECONDS = 30;
+export const GUESS_SECONDS = 30;
 export const TEAM_NAME_MAX = 18;
 /** Captain + members. A game can start with any number of players per team (at least the captain). */
 export const MAX_TEAM_SIZE = 10;
@@ -21,8 +32,11 @@ export type TeamIndex = 0 | 1;
 /** Which device you are: one of the two teams, or the TV that hosts a tv-mode room. */
 export type Seat = TeamIndex | 'tv';
 export type RoomStatus = 'lobby' | 'playing' | 'done';
-/** board → action (secret answer/steal) → answer → result → board … */
-export type GamePhase = 'board' | 'action' | 'answer' | 'result';
+/**
+ * board → action (secret answer/steal) → answer → result → board …
+ * hide variant: hide (the hider picks a box) → guess (⇄ hint question) → result → hide …
+ */
+export type GamePhase = 'board' | 'action' | 'answer' | 'result' | 'hide' | 'guess' | 'hint';
 
 /** `id` is a public handle for the host's kick button — never the device id, which is the player's secret. */
 export type MemberView = { id: string; name: string; connected: boolean; captain: boolean };
@@ -56,6 +70,29 @@ export type RoundResult = {
   deltas: [number, number];
 };
 
+/** How a hide round ended. */
+export type HideOutcome = 'hit' | 'miss' | 'timeout' | 'hint-failed';
+export type HideResult = { hidden: number; guess: number | null; outcome: HideOutcome; deltas: [number, number] };
+
+/** State of the hide variant, shared by every device (the hidden box is only sent to the hider's team until the result). */
+export type HideView = {
+  /** 1-based round number and the total. The hiding team is `RoomView.turn`. */
+  round: number;
+  totalRounds: number;
+  points: number;
+  boxes: number;
+  /** The box the hiding team picked, or null for everyone else (and until it is picked). */
+  hidden: number | null;
+  /** Has the hider locked its box? */
+  locked: boolean;
+  /** Boxes the hint ruled out. */
+  eliminated: number[];
+  hintUsed: boolean;
+  /** Outcome of the hint question once answered; `wrong` ends the round. */
+  hintResult: 'correct' | 'wrong' | null;
+  result: HideResult | null;
+};
+
 /** Everything one device needs to render the room; the other team's secrets are hidden until the result. */
 export type RoomView = {
   code: string;
@@ -82,6 +119,8 @@ export type RoomView = {
   myAnswer: number | null;
   votes: VoteView | null;
   result: RoundResult | null;
+  /** Only in the hide variant. */
+  hide: HideView | null;
 };
 
 export const cellKey = (categoryId: number, points: number) => `${categoryId}:${points}`;
@@ -108,7 +147,7 @@ const playerName = z.string().trim().max(TEAM_NAME_MAX, `الاسم أطول م�
 
 export const createRoomInput = z.object({
   mode: z.enum(['mobile', 'tv']),
-  variant: z.enum(['swap', 'flip']),
+  variant: z.enum(['swap', 'flip', 'hide']),
   teamName: teamName.optional(),
   playerName: playerName.optional(),
 });
@@ -132,10 +171,12 @@ export const pickCellInput = z.object({
   points: z.number().refine((p) => (POINTS as readonly number[]).includes(p)),
 });
 export const actionInput = z.object({ action: z.enum(['answer', 'steal']) });
+export const hideInput = z.object({ box: z.number().int().min(0).max(HIDE_BOXES - 1) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
 export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
 export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
 
+export type HideInput = z.infer<typeof hideInput>;
 export type CreateRoomInput = z.infer<typeof createRoomInput>;
 export type JoinRoomInput = z.infer<typeof joinRoomInput>;
 
@@ -150,6 +191,10 @@ export interface ClientToServerEvents {
   'game:pick': (input: z.infer<typeof pickCellInput>, reply: Reply) => void;
   'game:action': (input: z.infer<typeof actionInput>, reply: Reply) => void;
   'game:answer': (input: z.infer<typeof answerInput>, reply: Reply) => void;
+  /** Hide variant: the hider locks its box, the guesser guesses, or asks for a hint. */
+  'game:hide': (input: HideInput, reply: Reply) => void;
+  'game:guess': (input: HideInput, reply: Reply) => void;
+  'game:hint': (reply: Reply) => void;
   'room:kick': (input: z.infer<typeof kickInput>, reply: Reply) => void;
   'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;

@@ -1,4 +1,5 @@
-export type Variant = 'swap' | 'flip';
+/** swap / flip: the board game. hide: "خبّي أو اكشف" — hide a prize in one of the boxes, the other team guesses. */
+export type Variant = 'swap' | 'flip' | 'hide';
 export type Action = 'answer' | 'steal';
 
 export const POINTS = [100, 200, 300, 400, 500] as const;

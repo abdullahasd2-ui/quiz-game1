@@ -374,3 +374,104 @@ describe('tv mode picking', () => {
     expect(() => room.vote('m1', key)).toThrow('ليس دور فريقك');
   });
 });
+
+describe('hide variant (خبّي أو اكشف)', () => {
+  function hideRoom() {
+    const onChange = vi.fn();
+    const room = new GameRoom('ABCDEF', 'mobile', 'hide', onChange);
+    room.seatHost('dev-host', 'النمور');
+    room.join('dev-guest', 'الصقور');
+    room.start(0, CATS);
+    return { room, onChange };
+  }
+
+  it('starts with team 1 hiding; the guesser hits and scores, the hider scores on a miss', () => {
+    const { room } = hideRoom();
+    expect(room.phase).toBe('hide');
+    expect(room.view(0).hide).toMatchObject({ round: 1, totalRounds: 10, hidden: null, locked: false });
+    expect(() => room.hideIn(1, 3)).toThrow('الفريق الثاني هو اللي يخبّي');
+    room.hideIn(0, 3);
+    expect(room.phase).toBe('guess');
+    // Only the hiding team sees the hidden box before the result.
+    expect(room.view(0).hide!.hidden).toBe(3);
+    expect(room.view(1).hide!.hidden).toBeNull();
+    expect(() => room.guess(0, 3)).toThrow('الفريق الثاني هو اللي يخمّن');
+    room.guess(1, 3);
+    expect(room.phase).toBe('result');
+    expect(room.view(1).hide!.result).toMatchObject({ outcome: 'hit', hidden: 3, deltas: [0, 300] });
+    expect(room.teams[1]!.score).toBe(300);
+
+    room.next(0);
+    expect(room.turn).toBe(1);
+    room.hideIn(1, 0);
+    room.guess(0, 5);
+    expect(room.view(0).hide!.result).toMatchObject({ outcome: 'miss', deltas: [0, 300] });
+    expect(room.teams[1]!.score).toBe(600);
+  });
+
+  it('a right hint answer rules out half the boxes but never the hidden one; only one hint per round', () => {
+    const { room } = hideRoom();
+    room.hideIn(0, 7);
+    expect(() => room.assertCanHint(0)).toThrow('التلميح لفريق التخمين');
+    room.assertCanHint(1);
+    room.beginHint(1, question(2));
+    expect(room.phase).toBe('hint');
+    expect(room.view(1).question).toMatchObject({ points: 300 });
+    room.answer(1, 2);
+    expect(room.phase).toBe('guess');
+    const hide = room.view(1).hide!;
+    expect(hide.eliminated).toHaveLength(5);
+    expect(hide.eliminated).not.toContain(7);
+    expect(hide.hintResult).toBe('correct');
+    expect(() => room.assertCanHint(1)).toThrow('استخدمت التلميح');
+    const out = hide.eliminated[0]!;
+    expect(() => room.guess(1, out)).toThrow('استُبعد');
+    room.guess(1, 7);
+    expect(room.view(1).hide!.result!.outcome).toBe('hit');
+  });
+
+  it('a wrong hint answer ends the round and the hider scores at once', () => {
+    const { room } = hideRoom();
+    room.hideIn(0, 4);
+    room.beginHint(1, question(2));
+    room.answer(1, 0);
+    expect(room.phase).toBe('result');
+    expect(room.view(0).hide!.result).toMatchObject({ outcome: 'hint-failed', guess: null, deltas: [300, 0] });
+    expect(room.teams[0]!.score).toBe(300);
+  });
+
+  it('members vote on boxes and the leading box is used on timeout; no vote = a miss', () => {
+    const { room, onChange } = hideRoom();
+    room.join('m0', undefined, 0);
+    room.join('m1', undefined, 1);
+    room.vote('m0', '2');
+    expect(room.view(0, 'm0').votes?.counts).toEqual({ '2': 1 });
+    expect(() => room.vote('m1', '2')).toThrow('الفريق الثاني هو اللي يخبّي');
+    vi.advanceTimersByTime(30_000);
+    expect(onChange).toHaveBeenCalled();
+    expect(room.phase).toBe('guess');
+    expect(room.hide!.hidden).toBe(2);
+    expect(() => room.vote('m0', '1')).toThrow('الفريق الثاني هو اللي يخمّن');
+    room.vote('m1', 'hint');
+    room.vote('m1', '2');
+    vi.advanceTimersByTime(30_000);
+    expect(room.view(1).hide!.result).toMatchObject({ outcome: 'hit' });
+
+    room.next(0);
+    room.hideIn(1, 1);
+    vi.advanceTimersByTime(30_000);
+    expect(room.view(0).hide!.result).toMatchObject({ outcome: 'timeout', deltas: [0, 300] });
+  });
+
+  it('the game ends after five rounds each', () => {
+    const { room } = hideRoom();
+    for (let i = 0; i < 10; i++) {
+      room.hideIn(room.turn, 0);
+      room.guess(room.turn === 0 ? 1 : 0, 0);
+      room.next(0);
+    }
+    expect(room.status).toBe('done');
+    expect(room.teams[0]!.score).toBe(1500);
+    expect(room.teams[1]!.score).toBe(1500);
+  });
+});
