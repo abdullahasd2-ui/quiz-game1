@@ -1,0 +1,93 @@
+html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+#stage {
+  position: relative; overflow: hidden; background: #07071a; color: #fff;
+  font-family: 'Tajawal', 'Apple Color Emoji', sans-serif; direction: rtl;
+  -webkit-font-smoothing: antialiased;
+}
+#stage * { box-sizing: border-box; }
+.layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+canvas.layer { display: block; }
+.abs { position: absolute; left: 0; top: 0; }
+.emoji { font-family: 'Apple Color Emoji', sans-serif; line-height: 1; }
+
+/* شاشة التطبيق: الإحداثيات الداخلية بمقاس اللقطة الأصلي 1320×2868 */
+.scr-root { position: absolute; left: 0; top: 0; width: 1320px; height: 2868px; transform-origin: 0 0; }
+.bezel {
+  position: absolute; left: -46px; top: -46px; width: 1412px; height: 2960px; border-radius: 222px;
+  background: linear-gradient(150deg, #3a3a55 0%, #15151f 18%, #0a0a12 50%, #1c1c2c 85%, #44445e 100%);
+  box-shadow: inset 0 0 0 5px #50506e, inset 0 0 0 16px #08080e, 0 0 0 4px #6c6c90,
+              0 80px 180px rgba(0,0,0,.75), 0 0 260px rgba(168,85,247,.38);
+}
+.scr-vp { position: absolute; left: 0; top: 0; width: 1320px; height: 2868px; overflow: hidden; background: #07071a; }
+.promo .scr-vp { border-radius: 176px; }
+.scr-img { position: absolute; left: 0; top: 0; width: 1320px; height: 2868px; display: block; }
+.crop { position: absolute; background-repeat: no-repeat; transform-origin: 50% 50%; }
+.tint { position: absolute; inset: 0; border-radius: inherit; }
+.sheen {
+  position: absolute; left: -60%; top: -10%; width: 220%; height: 120%; pointer-events: none;
+  background: linear-gradient(112deg, transparent 38%, rgba(255,255,255,.04) 44%, rgba(255,255,255,.26) 48.5%,
+              rgba(255,255,255,.06) 51%, transparent 57%);
+}
+.ripple { position: absolute; border-radius: 50%; }
+
+/* العناوين */
+.title { position: absolute; left: 0; text-align: center; font-weight: 900; white-space: nowrap; }
+.tline { display: block; }
+.word { display: inline-block; white-space: pre; will-change: auto; }
+.w-white { color: #fff; text-shadow: 0 5px 0 rgba(0,0,0,.35), 0 0 34px rgba(168,85,247,.55); }
+.w-soft { color: rgba(255,255,255,.88); font-weight: 700; text-shadow: 0 3px 0 rgba(0,0,0,.35); }
+.w-gold, .w-purple, .w-cyan, .w-green, .w-red {
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  /* مساحة إضافية حتى لا تُقص علامات التشكيل والهمزات خارج صندوق السطر */
+  padding: 0.32em 0.06em 0.22em; margin-top: -0.32em; margin-bottom: -0.22em; margin-right: -0.06em;
+}
+.w-gold { background-image: linear-gradient(90deg, #ff6b35, #f7c948 70%); }
+.w-purple { background-image: linear-gradient(180deg, #c084fc, #a855f7); }
+.w-cyan { background-image: linear-gradient(180deg, #7dd3fc, #38bdf8); }
+.w-green { background-image: linear-gradient(180deg, #4ade80, #27ae60); }
+.w-red { background-image: linear-gradient(180deg, #ff8a7a, #e74c3c); }
+
+/* الشعار */
+.logo { position: absolute; left: 0; display: flex; flex-direction: row; justify-content: center; align-items: center; direction: rtl; font-weight: 900; }
+.logo > span { display: inline-block; line-height: 1.1; }
+.lg-j { color: #a855f7; text-shadow: 0 6px 0 #5b21b6, 0 10px 0 rgba(0,0,0,.35), 0 0 40px rgba(168,85,247,.85), 0 0 110px rgba(168,85,247,.45); }
+.lg-b { color: #38bdf8; text-shadow: 0 6px 0 #0369a1, 0 10px 0 rgba(0,0,0,.35), 0 0 40px rgba(56,189,248,.85), 0 0 110px rgba(56,189,248,.45); }
+.lg-o { color: #fff; text-shadow: 0 5px 0 #6b7280, 0 0 30px rgba(255,255,255,.6); }
+
+.rays { position: absolute; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(168,85,247,.22) 0deg 5deg, rgba(56,189,248,.0) 5deg 11deg, rgba(56,189,248,.16) 11deg 15deg, rgba(0,0,0,0) 15deg 24deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 70%);
+}
+
+/* لافتة القفل */
+.lockbadge { position: absolute; display: flex; align-items: center; gap: 22px; padding: 18px 40px 18px 34px;
+  background: rgba(15,15,40,.94); border: 4px solid #f7c948; border-radius: 999px; font-weight: 900; color: #fff;
+  box-shadow: 0 0 40px rgba(247,201,72,.45), 0 18px 40px rgba(0,0,0,.5); white-space: nowrap; }
+
+/* التقسيم الدرامي */
+.side { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; }
+.side.green { background: radial-gradient(circle at 30% 40%, #3ddc84 0%, #27ae60 40%, #14703c 100%); }
+.side.red { background: radial-gradient(circle at 70% 40%, #ff7a6b 0%, #e74c3c 40%, #8e1f15 100%); }
+.side .stripes { position: absolute; inset: -50%; background: repeating-linear-gradient(115deg, rgba(255,255,255,.07) 0 26px, rgba(255,255,255,0) 26px 70px); }
+.sidec { position: absolute; text-align: center; font-weight: 900; white-space: nowrap; }
+.sidec .big { display: block; color: #fff; text-shadow: 0 8px 0 rgba(0,0,0,.25), 0 0 50px rgba(255,255,255,.35); }
+.sub { display: block; color: #fff; font-weight: 900; text-shadow: 0 4px 0 rgba(0,0,0,.25); }
+.sidec .badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.22); box-shadow: inset 0 0 0 5px rgba(255,255,255,.35); }
+.emblem { position: absolute; border-radius: 50%; background: #0f0f28; border: 7px solid #f7c948; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 60px rgba(247,201,72,.6), 0 0 0 10px rgba(7,7,26,.6); }
+.emblem svg { position: absolute; left: -7px; top: -7px; }
+.emblem b { position: relative; color: #fff; font-weight: 900; line-height: 1; }
+
+/* الخاتمة */
+.icon { position: absolute; border-radius: 22.5%; overflow: hidden; box-shadow: 0 0 0 4px rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.6), 0 0 140px rgba(168,85,247,.7), 0 0 60px rgba(56,189,248,.45); }
+.icon img { width: 100%; height: 100%; display: block; }
+.icon .sheen { left: -120%; width: 340%; }
+.ring { position: absolute; border-radius: 50%; }
+
+.scrim { position: absolute; left: 0; width: 100%; pointer-events: none; }
+#flash { position: absolute; inset: 0; pointer-events: none; }
+#vignette { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 75% 60% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%); }
+.pill { position: absolute; left: 50%; display: inline-flex; align-items: center; gap: 14px; white-space: nowrap; font-weight: 900; color: #fff;
+  background: rgba(15,15,40,.92); border: 3px solid #2a2a4a; border-radius: 999px; box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+.patch { position: absolute; display: flex; align-items: center; justify-content: center; white-space: nowrap; }

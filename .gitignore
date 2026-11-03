@@ -3,3 +3,6 @@ dist/
 .env
 apps/server/uploads/
 .test-uploads/
+# Rendered videos are big and reproducible (apps/mobile/store/video/README.md): keep them out of git.
+apps/mobile/store/video/**/*.mp4
+/*.mp4
