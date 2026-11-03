@@ -132,7 +132,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
       <div className="mb-5 grid grid-cols-2 gap-3.5">
         <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم واسرق نقاطه" />
         <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="الخصم يجاوب: صح = ينقص، غلط = يزيد" />
-        <div className="col-span-2">
+        <div className="col-span-2 w-[calc(50%-0.4375rem)] justify-self-center">
           <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
         </div>
       </div>
