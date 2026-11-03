@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import { haptic } from '@/lib/native';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
+import { Confetti } from '../fx/Confetti';
+import { CountUp } from '../fx/CountUp';
 import { Countdown, Modal, Scorebar, TEAM_TINT, teamName, WaitDots } from '../ui';
 
 const OUTCOME_TEXT: Record<HideOutcome, { icon: string; title: (guesser: string, hider: string) => string }> = {
@@ -197,9 +199,15 @@ function HideResultModal({ view, guesserName, hiderName }: { view: RoomView; gue
     if (!res.ok) toast.error(res.error);
   }
 
+  // Every round goes to one team: confetti and a golden glow for it, a shake for the other (the tv: always a win).
+  const won = (myDelta ?? Math.max(...r.deltas)) > 0;
+  const lost = !won;
   return (
-    <Modal open>
-      <div className="mb-2 text-5xl">{o.icon}</div>
+    <Modal open animation={won ? 'motion-safe:animate-fx-win' : 'motion-safe:animate-fx-lose'} className={cn(won && 'border-q-gold/60', lost && 'border-q-red/50')}>
+      {won && <Confetti />}
+      <div key={String(won)} className="mb-2 text-5xl motion-safe:animate-fx-drop">
+        {o.icon}
+      </div>
       <h2 className="mb-3 text-xl font-black">{o.title(guesserName, hiderName)}</h2>
       <div className="mb-3 rounded-lg bg-q-green/10 px-3 py-2 text-sm text-[#2ecc71]">
         🔑 كان المفتاح في الصندوق رقم <b>{r.hidden + 1}</b>
@@ -210,7 +218,10 @@ function HideResultModal({ view, guesserName, hiderName }: { view: RoomView; gue
           <div key={t} className={cn('rounded-xl border px-2 py-3', TEAM_TINT[t])}>
             <div className="mb-1 truncate text-[11px] text-white/50">{teamName(view, t)}</div>
             <div className={cn('text-xl font-black tabular-nums', r.deltas[t] > 0 ? 'text-q-gold' : 'text-white/50')}>
-              <bdi dir="ltr">{r.deltas[t] > 0 ? `+${r.deltas[t]}` : r.deltas[t]}</bdi> نقطة
+              <bdi dir="ltr">
+                <CountUp to={r.deltas[t]} />
+              </bdi>{' '}
+              نقطة
             </div>
           </div>
         ))}

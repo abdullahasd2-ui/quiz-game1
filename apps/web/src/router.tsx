@@ -18,6 +18,8 @@ export const router = createBrowserRouter([
   { path: '/', element: <GamePage /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/support', element: <SupportPage /> },
+  // Sound and effects gallery for developers; `import.meta.env.DEV` is false in builds, so this route and its code never ship.
+  ...(import.meta.env.DEV ? [{ path: '/fx-demo', lazy: async () => ({ Component: (await import('./game/fx/FxDemo')).FxDemo }) }] : []),
   { path: '/admin/login', element: <LoginPage /> },
   {
     path: '/admin',

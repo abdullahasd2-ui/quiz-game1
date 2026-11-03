@@ -2,6 +2,7 @@ import type { QuestionType, RoomView, TeamIndex, Variant } from '@quiz/shared';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
+import { play } from './fx/sound';
 
 export function actionLabel(variant: Variant) {
   return variant === 'flip'
@@ -66,7 +67,10 @@ export function Scorebar({ view, highlightTurn = false }: { view: RoomView; high
             {view.teams[t] && !view.teams[t].connected && <span title="غير متصل">📵</span>}
             <span className="truncate">{teamName(view, t)}</span>
           </div>
-          <div className={cn('text-2xl font-black tabular-nums', TEAM_TEXT[t])}>{view.teams[t]?.score ?? 0}</div>
+          {/* Keyed by the score so a change replays the bump. */}
+          <div key={view.teams[t]?.score ?? 0} className={cn('text-2xl font-black tabular-nums motion-safe:animate-fx-bump', TEAM_TEXT[t])}>
+            {view.teams[t]?.score ?? 0}
+          </div>
         </div>
       ))}
       <div className="order-2 text-center text-sm font-black text-white/25">VS</div>
@@ -82,8 +86,12 @@ export function Countdown({ deadline, total }: { deadline: number | null; total:
     const id = setInterval(() => tick((n) => n + 1), 250);
     return () => clearInterval(id);
   }, [deadline]);
-  if (deadline === null) return null;
-  const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  const left = deadline === null ? null : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  // The last ten seconds tick, the last three tick faster.
+  useEffect(() => {
+    if (left !== null && left > 0 && left <= 10) play(left <= 3 ? 'tickUrgent' : 'tick');
+  }, [left]);
+  if (deadline === null || left === null) return null;
   const pct = Math.min(100, (left / total) * 100);
   return (
     <div className="mb-3">
@@ -122,12 +130,25 @@ export function QuestionImage({ url, type, revealed = false, large = false }: { 
   );
 }
 
-export function Modal({ open, onClose, children }: { open: boolean; onClose?: () => void; children: ReactNode }) {
+export function Modal({
+  open,
+  onClose,
+  children,
+  className,
+  animation = 'animate-pop-in',
+}: {
+  open: boolean;
+  onClose?: () => void;
+  children: ReactNode;
+  className?: string;
+  /** Replaces the default pop-in (an `animate-*` class), since two animation classes would override each other. */
+  animation?: string;
+}) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/88 p-4" onClick={onClose} role="dialog" aria-modal>
       <div
-        className="max-h-[90dvh] w-full max-w-md animate-pop-in overflow-y-auto rounded-2xl border border-q-line bg-q-panel px-5 py-6 text-center"
+        className={cn('max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-2xl border border-q-line bg-q-panel px-5 py-6 text-center', animation, className)}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
