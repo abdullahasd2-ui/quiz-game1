@@ -59,37 +59,58 @@ jobs:
         run: |
           docker build -t quiz-game:latest -t quiz-game:${{ github.sha }} .
           docker save quiz-game:latest quiz-game:${{ github.sha }} | gzip > quiz-game.tar.gz
-          mkdir bundle && mv quiz-game.tar.gz bundle/ && cp deploy/docker-compose.yml bundle/
+
+      # Every step below shares this one SSH connection. The server's ufw rate-limits port 22
+      # (`ufw limit`: 6 new connections per 30 s per address), and scp-action + ssh-action opened
+      # more than that, so the runner got dropped mid-copy ("dial tcp :22: i/o timeout").
+      - name: Open SSH connection
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          cat > ~/.ssh/config <<EOF
+          Host prod
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+            ControlMaster auto
+            ControlPath ~/.ssh/cm-%C
+            ControlPersist 15m
+            ServerAliveInterval 15
+          EOF
+          ssh -fN prod
 
       - name: Copy image to server
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: bundle/*
-          target: ${{ env.DEPLOY_DIR }}
-          strip_components: 1
+        run: |
+          ssh prod "cat > '$DEPLOY_DIR/quiz-game.tar.gz.part' && mv '$DEPLOY_DIR/quiz-game.tar.gz.part' '$DEPLOY_DIR/quiz-game.tar.gz'" < quiz-game.tar.gz
+          ssh prod "cat > '$DEPLOY_DIR/docker-compose.yml'" < deploy/docker-compose.yml
 
       - name: Restart on server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DEPLOY_DIR
-          script: |
-            set -e
-            cd "$DEPLOY_DIR"
-            gunzip -c quiz-game.tar.gz | docker load
-            rm quiz-game.tar.gz
-            # Migrations run when the container starts.
-            docker compose up -d --no-build --remove-orphans
-            for i in $(seq 1 30); do
-              if curl -fsS http://127.0.0.1:3100/api/health > /dev/null; then echo "healthy"; break; fi
-              if [ "$i" = 30 ]; then docker compose logs --tail 80 app; exit 1; fi
-              sleep 2
-            done
-            # New files in bank/ arrive as pending proposals; already-loaded questions are skipped.
-            docker compose exec -T app node --import tsx src/scripts/load-bank.ts
-            docker image prune -f > /dev/null
+        run: |
+          ssh prod "DEPLOY_DIR='$DEPLOY_DIR' bash -s" <<'EOF'
+          set -e
+          cd "$DEPLOY_DIR"
+          gunzip -c quiz-game.tar.gz | docker load
+          rm quiz-game.tar.gz
+          # Migrations run when the container starts.
+          docker compose up -d --no-build --remove-orphans
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3100/api/health > /dev/null; then echo "healthy"; break; fi
+            if [ "$i" = 30 ]; then docker compose logs --tail 80 app; exit 1; fi
+            sleep 2
+          done
+          # New files in bank/ arrive as pending proposals; already-loaded questions are skipped.
+          # </dev/null: the script itself arrives on stdin, and exec would swallow the lines after it.
+          docker compose exec -T app node --import tsx src/scripts/load-bank.ts < /dev/null
+          docker image prune -f > /dev/null
+          EOF
+
+      - name: Close SSH connection
+        if: always()
+        run: ssh -O exit prod 2>/dev/null || true
