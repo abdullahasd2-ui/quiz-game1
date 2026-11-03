@@ -31,7 +31,15 @@ export function cuesFor(prev: RoomView | null, view: RoomView): Planned[] {
 
   if (view.phase !== prev.phase) {
     if (view.phase === 'result') return resultCues(view);
-    return view.phase === 'action'
+    // خبّي أو اكشف: the key is locked in its box, or the right hint answer ruled out half of the boxes.
+    if (prev.phase === 'hide' && view.phase === 'guess') {
+      return [
+        ['lock', 0],
+        ['whoosh', 0.15],
+      ];
+    }
+    if (prev.phase === 'hint' && view.phase === 'guess') return [['ding', 0]];
+    return view.phase === 'action' || view.phase === 'hint'
       ? [
           ['whoosh', 0],
           ['pop', 0.16],
@@ -46,6 +54,12 @@ export function cuesFor(prev: RoomView | null, view: RoomView): Planned[] {
 
 /** A steal gets its swap whoosh first, then the verdict for the seat that is looking. */
 function resultCues(view: RoomView): Planned[] {
+  const round = view.hide?.result;
+  if (round) {
+    // Every hide round goes to one team: a win for it, a loss for the other (the tv always cheers).
+    const mine = view.you === 'tv' ? null : round.deltas[view.you];
+    return [[mine === null || mine > 0 ? 'win' : 'wrong', 0]];
+  }
   const r = view.result;
   if (!r) return [];
   const steal = r.actions.includes('steal');
