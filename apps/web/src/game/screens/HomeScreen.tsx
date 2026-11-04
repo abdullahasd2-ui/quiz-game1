@@ -243,6 +243,14 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>🔀 اقلب: الخصم يجاوب — إذا جاوب صح تنقص نقاطه، وإذا جاوب غلط تزيد نقاطه بقيمة السؤال!</div>
           <div>🔀🔀 كلاهم اقلب = لا نقاط لأحد</div>
         </HowSection>
+        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="↩️ جاوب أو بادل أو اعكس">
+          <div>✅ جاوب صح = نقاط السؤال</div>
+          <div>🔄 بادل: تاخذ جواب الخصم — صح = ضعف النقاط، غلط = عقوبة</div>
+          <div>
+            ↩️ اعكس: الخصم يجاوب — إذا جاوب صح <span className="text-q-red">ينقص منك</span> نقاط السؤال، وإذا جاوب غلط <span className="text-q-gold">تزيد لك</span>
+          </div>
+          <div>🚫 ما يمديكم الاثنين تختارون بادل أو اعكس — إذا فريق اختارها، الثاني ما يقدر إلا جاوب</div>
+        </HowSection>
         <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
           <div>• 10 صناديق: الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق سراً</div>
           <div>• الفريق الثاني يخمّن: لقاه = النقاط له، ما لقاه = النقاط للي خبّى</div>
