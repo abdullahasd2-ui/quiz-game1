@@ -1,9 +1,9 @@
-import { ACTION_SECONDS, ANSWER_SECONDS, type Action, type RoomView, type TeamIndex } from '@quiz/shared';
+import { ACTION_SECONDS, ANSWER_SECONDS, isSpecial, type Action, type RoomView, type TeamIndex } from '@quiz/shared';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
-import { actionLabel, Countdown, QuestionImage, Scorebar, TEAM_TINT, teamName, WaitDots } from '../ui';
+import { actionInfo, actionLabel, Countdown, QuestionImage, Scorebar, TEAM_TINT, teamName, WaitDots } from '../ui';
 
 function useCategory(view: RoomView) {
   return view.categories.find((c) => c.id === view.question?.categoryId);
@@ -59,7 +59,9 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
   const voted = (key: string) => view.votes?.mine === key;
   const teamSize = view.teams[team]?.members.length ?? 1;
 
-  const stole = view.myAction === 'steal';
+  const stole = isSpecial(view.myAction);
+  const mine = view.myAction ? actionInfo(view.variant, view.myAction) : null;
+  const triple = view.variant === 'triple';
   const canAnswer = view.phase === 'answer' && !stole && view.myAnswer === null && (isMember || sent !== 'answer');
 
   return (
@@ -91,7 +93,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 </>
               )}
             </div>
-            <div className="mb-2.5 grid grid-cols-2 gap-2.5">
+            <div className={cn('mb-2.5 grid gap-2.5', triple ? 'grid-cols-3' : 'grid-cols-2')}>
               <button
                 type="button"
                 onClick={() => act('steal')}
@@ -116,14 +118,28 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 {count('answer') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('answer')}</span>}
                 <small className="block text-[10px] opacity-80">أجاوب بنفسي</small>
               </button>
+              {triple && (
+                <button
+                  type="button"
+                  onClick={() => act('reverse')}
+                  className={cn(
+                    'rounded-xl bg-linear-to-br from-q-purple to-[#6c3483] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
+                    voted('reverse') && 'ring-2 ring-white',
+                  )}
+                >
+                  ↩️ اعكس
+                  {count('reverse') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('reverse')}</span>}
+                  <small className="block text-[10px] opacity-80">صح = ينقص منك، غلط = يزيد لك</small>
+                </button>
+              )}
             </div>
           </>
         ) : (
           <div className="rounded-xl border border-q-gold/25 bg-q-gold/8 p-3.5 text-center">
-            <div className="mb-1 text-3xl">{view.myAction === 'steal' ? lbl.icon : view.myAction ? '✅' : '🔒'}</div>
+            <div className="mb-1 text-3xl">{mine ? mine.icon : '🔒'}</div>
             <div className="text-sm font-bold text-q-gold">
               {isMember ? 'قرر رئيس الفريق: ' : ''}
-              {view.myAction === 'steal' ? `اخترت ال${lbl.full}!` : view.myAction ? 'اخترت الإجابة!' : 'قرارك محفوظ!'}
+              {view.myAction === 'answer' ? 'اخترت الإجابة!' : mine ? `اخترت ال${mine.full}!` : 'قرارك محفوظ!'}
             </div>
             <div className="mt-1 text-[11px] text-white/50">
               <WaitDots /> {view.decided[other] ? 'الفريق الثاني اختار — لحظات...' : 'في انتظار قرار الفريق الثاني'}
@@ -138,7 +154,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
               <b className="text-white">النتيجة</b>
             ) : stole ? (
               <>
-                {lbl.icon} <b className="text-white">اخترت ال{lbl.full}</b> — في انتظار جواب الخصم...
+                {mine?.icon} <b className="text-white">اخترت ال{mine?.full}</b> — في انتظار جواب الخصم...
               </>
             ) : canAnswer ? (
               <b className="text-white">{isMember ? 'صوّت على الإجابة — الرئيس يقرر' : 'اختار إجابتك'}</b>
@@ -206,7 +222,7 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
         {([0, 1] as const).map((t) => {
           const action = view.result?.actions[t];
           const [icon, txt] = action
-            ? [action === 'steal' ? lbl.icon : '✅', action === 'steal' ? lbl.short : 'أجاب']
+            ? [actionInfo(view.variant, action).icon, action === 'answer' ? 'أجاب' : actionInfo(view.variant, action).short]
             : view.phase === 'answer'
               ? ['🔒', 'قرّر — يجاوب الآن...']
               : view.decided[t]
