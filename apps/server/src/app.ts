@@ -17,6 +17,8 @@ import { env } from './env';
 import { errorHandler } from './lib/errors';
 import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
+import { KickChatHub } from './kick/chat';
+import { attachKickRelay } from './kick/socket';
 
 export async function buildApp(gameOptions: GameServerOptions = {}) {
   const app = Fastify({ logger: env.NODE_ENV === 'test' ? false : { level: 'info' }, trustProxy: env.TRUST_PROXY });
@@ -35,6 +37,9 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   await app.register(appUpdateRoutes, { prefix: '/api/app', dir: env.OTA_DIR, publicOrigin: env.PUBLIC_ORIGIN });
 
   const game = attachGameServer(app, gameOptions);
+  const kickHub = new KickChatHub({ onError: (err) => app.log.warn({ err }, 'kick chat lookup failed') });
+  attachKickRelay(game.io, kickHub);
+  app.addHook('onClose', async () => kickHub.closeAll());
 
   await app.register(adminAuthRoutes, { prefix: '/api/admin' });
   await app.register(
