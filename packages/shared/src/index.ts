@@ -2,3 +2,5 @@ export * from './rules';
 export * from './schemas';
 export * from './api';
 export * from './game';
+export * from './puzzle';
+export * from './kick';

@@ -11,11 +11,13 @@ import { QuestionEditPage } from './admin/pages/QuestionEditPage';
 import { QuestionsPage } from './admin/pages/QuestionsPage';
 import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
+import { KickPuzzlePage } from './kick/KickPuzzlePage';
 import { PrivacyPage } from './legal/PrivacyPage';
 import { SupportPage } from './legal/SupportPage';
 
 export const router = createBrowserRouter([
   { path: '/', element: <GamePage /> },
+  { path: '/kick', element: <KickPuzzlePage /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/support', element: <SupportPage /> },
   // Sound and effects gallery for developers; `import.meta.env.DEV` is false in builds, so this route and its code never ship.
