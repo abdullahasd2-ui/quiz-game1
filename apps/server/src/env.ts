@@ -19,6 +19,9 @@ const schema = z.object({
     .string()
     .default('capacitor://localhost,https://localhost')
     .transform((s) => s.split(',').map((o) => o.trim()).filter(Boolean)),
+  // Kick developer app (Settings → Developer). Without them the "link your Kick account" button is off.
+  KICK_CLIENT_ID: z.string().optional(),
+  KICK_CLIENT_SECRET: z.string().optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 

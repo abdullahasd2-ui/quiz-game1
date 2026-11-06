@@ -58,12 +58,15 @@ function describe(e: PuzzleEvent, size: number): FeedItem['text'] | null {
 
 export function KickPuzzlePage() {
   const [stage, setStage] = useState<'setup' | 'play'>('setup');
-  const [channel, setChannel] = useState('');
+  const params = new URLSearchParams(window.location.search);
+  const [linked, setLinked] = useState(params.get('linked') ?? '');
+  const [canLink, setCanLink] = useState(false);
+  const [channel, setChannel] = useState(params.get('linked') ?? '');
   const [chatroom, setChatroom] = useState('');
   const [size, setSize] = useState<number>(4);
   const [image, setImage] = useState<string | null>(null);
   const [test, setTest] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(params.get('kick_error') ?? '');
   const [puzzle, setPuzzle] = useState<PuzzleState>(() => newPuzzle(4));
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [status, setStatus] = useState<KickStatus>({ state: 'connecting' });
@@ -92,13 +95,20 @@ export function KickPuzzlePage() {
   );
 
   useEffect(() => {
+    fetch(`${SERVER_URL}/api/kick/status`)
+      .then((r) => r.json())
+      .then((d: { enabled?: boolean }) => setCanLink(Boolean(d.enabled)))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     if (stage !== 'play' || test) return;
-    const id = Number(chatroom) || undefined;
+    const id = linked ? undefined : Number(chatroom) || undefined;
     // With a chat-room number the browser reads Kick's chat itself (Kick sees a normal viewer, not our server).
     if (id) return connectKickChat({ chatroomId: id, onStatus: setStatus, onMessage: (m) => onChat(m.user, m.text) });
     const socket: KickSocket = io(`${SERVER_URL}/kick`);
     const watch = () =>
-      socket.emit('kick:watch', { channel: channel.trim(), chatroomId: id }, (res) => {
+      socket.emit('kick:watch', { channel: channel.trim(), chatroomId: id, official: Boolean(linked) || undefined }, (res) => {
         if (!res.ok) setStatus({ state: 'error', detail: res.error });
       });
     socket.on('connect', watch);
@@ -108,7 +118,7 @@ export function KickPuzzlePage() {
     return () => {
       socket.disconnect();
     };
-  }, [stage, test, channel, chatroom, onChat]);
+  }, [stage, test, channel, chatroom, linked, onChat]);
 
   async function pickImage(file: File | undefined) {
     if (!file) return;
@@ -140,6 +150,18 @@ export function KickPuzzlePage() {
           <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🧩 لوحة الصورة — بث Kick</h1>
           <p className="mb-5 text-center text-xs text-white/50">المشاهدين يكتبون «دخول» في الشات ويرتّبون قطع الصورة مكانها الصحيح</p>
           <div className="q-card">
+            {canLink && (
+              <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-center">
+                {linked ? (
+                  <p className="text-sm font-black text-emerald-400">✅ تم ربط حسابك: {linked}</p>
+                ) : (
+                  <a href={`${SERVER_URL}/api/kick/login`} className="q-btn-gold inline-block rounded-xl px-4 py-2 text-sm font-black">
+                    🔗 اربط حسابك في Kick
+                  </a>
+                )}
+                <p className="mt-1 text-[11px] text-white/50">الربط يخلي رسائل الشات توصل مباشرة بدون اسم قناة أو رقم شات</p>
+              </div>
+            )}
             <label className="mb-1 block text-xs text-white/60">اسم قناتك في Kick</label>
             <input className="q-input mb-3" dir="ltr" value={channel} onChange={(e) => setChannel(e.target.value)} placeholder="streamer_name" />
             <label className="mb-1 block text-xs text-white/60">الصورة (تنقص لمربع)</label>
