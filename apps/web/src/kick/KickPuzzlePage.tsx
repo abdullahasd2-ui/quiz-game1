@@ -148,6 +148,7 @@ export function KickPuzzlePage() {
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white" dir="rtl">
         <div className="mx-auto max-w-md">
           <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🧩 لوحة الصورة — بث Kick</h1>
+          <a href="/kick/quiz" className="mb-2 block text-center text-xs text-q-cyan underline">🎮 ابغى لعبة جاوب أو بادل بدل الصورة</a>
           <p className="mb-5 text-center text-xs text-white/50">المشاهدين يكتبون «دخول» في الشات ويرتّبون قطع الصورة مكانها الصحيح</p>
           <div className="q-card">
             {canLink && (
