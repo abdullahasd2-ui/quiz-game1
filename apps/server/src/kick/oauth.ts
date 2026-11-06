@@ -19,17 +19,17 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
   const f = opts.fetchImpl ?? fetch;
   const enabled = Boolean(opts.clientId && opts.clientSecret);
   const redirectUri = `${opts.origin}/api/kick/callback`;
-  const pending = new Map<string, { verifier: string; exp: number }>();
+  const pending = new Map<string, { verifier: string; exp: number; next: string }>();
   let publicKey: string | null = null;
 
   app.get('/api/kick/status', async () => ({ enabled }));
 
-  app.get('/api/kick/login', async (_req, reply) => {
+  app.get<{ Querystring: { next?: string } }>('/api/kick/login', async (req, reply) => {
     if (!enabled) return reply.code(503).send({ error: 'ربط Kick غير مفعّل' });
     for (const [k, v] of pending) if (v.exp < Date.now()) pending.delete(k);
     const verifier = b64url(randomBytes(32));
     const state = b64url(randomBytes(16));
-    pending.set(state, { verifier, exp: Date.now() + 10 * 60_000 });
+    pending.set(state, { verifier, exp: Date.now() + 10 * 60_000, next: req.query.next === 'quiz' ? '/kick/quiz' : '/kick' });
     const url = new URL(AUTHORIZE);
     url.search = new URLSearchParams({
       response_type: 'code',
@@ -44,9 +44,10 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
   });
 
   app.get<{ Querystring: { code?: string; state?: string; error?: string } }>('/api/kick/callback', async (req, reply) => {
-    const fail = (why: string) => reply.redirect(`/kick?kick_error=${encodeURIComponent(why)}`);
     const { code, state } = req.query;
     const entry = state ? pending.get(state) : undefined;
+    const back = entry?.next ?? '/kick';
+    const fail = (why: string) => reply.redirect(`${back}?kick_error=${encodeURIComponent(why)}`);
     if (!enabled || req.query.error || !code || !entry || entry.exp < Date.now()) return fail('تعذّر الربط، جرّب مرة ثانية');
     pending.delete(state!);
     try {
@@ -79,7 +80,7 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
         signal: AbortSignal.timeout(10_000),
       });
       if (!subRes.ok) throw new Error(`subscribe ${subRes.status} ${(await subRes.text()).slice(0, 200)}`);
-      return reply.redirect(`/kick?linked=${encodeURIComponent(me.name)}`);
+      return reply.redirect(`${back}?linked=${encodeURIComponent(me.name)}`);
     } catch (err) {
       app.log.warn({ err }, 'kick link failed');
       return fail('تعذّر الربط مع Kick، جرّب مرة ثانية');
