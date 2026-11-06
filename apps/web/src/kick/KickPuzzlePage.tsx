@@ -1,5 +1,6 @@
 import {
   applyChat,
+  connectKickChat,
   cellName,
   isDone,
   leaderboard,
@@ -92,8 +93,10 @@ export function KickPuzzlePage() {
 
   useEffect(() => {
     if (stage !== 'play' || test) return;
-    const socket: KickSocket = io(`${SERVER_URL}/kick`);
     const id = Number(chatroom) || undefined;
+    // With a chat-room number the browser reads Kick's chat itself (Kick sees a normal viewer, not our server).
+    if (id) return connectKickChat({ chatroomId: id, onStatus: setStatus, onMessage: (m) => onChat(m.user, m.text) });
+    const socket: KickSocket = io(`${SERVER_URL}/kick`);
     const watch = () =>
       socket.emit('kick:watch', { channel: channel.trim(), chatroomId: id }, (res) => {
         if (!res.ok) setStatus({ state: 'error', detail: res.error });
