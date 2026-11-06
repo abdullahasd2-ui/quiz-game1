@@ -3,7 +3,7 @@ import type { Ack } from './game';
 /** Kick channel slugs: letters, digits, `_` and `-`. */
 export const KICK_CHANNEL_RE = /^[A-Za-z0-9_-]{1,25}$/;
 
-export type KickWatchInput = { channel: string; /** Skip the lookup when the server can't resolve the chat room by itself. */ chatroomId?: number };
+export type KickWatchInput = { channel: string; /** Skip the lookup when the server can't resolve the chat room by itself. */ chatroomId?: number; /** Chat arrives through the linked Kick app (webhook), not by reading Kick's site. */ official?: boolean };
 export type KickStatus = { state: 'connecting' | 'live' | 'error'; detail?: string };
 export type KickMessage = { user: string; text: string };
 

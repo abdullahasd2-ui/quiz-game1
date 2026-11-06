@@ -18,6 +18,7 @@ import { errorHandler } from './lib/errors';
 import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
 import { KickChatHub } from './kick/chat';
+import { kickOAuthRoutes } from './kick/oauth';
 import { attachKickRelay } from './kick/socket';
 
 export async function buildApp(gameOptions: GameServerOptions = {}) {
@@ -40,6 +41,12 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   const kickHub = new KickChatHub({ onError: (err) => app.log.warn({ err }, 'kick chat lookup failed') });
   attachKickRelay(game.io, kickHub);
   app.addHook('onClose', async () => kickHub.closeAll());
+  await app.register(kickOAuthRoutes, {
+    hub: kickHub,
+    clientId: env.KICK_CLIENT_ID || undefined,
+    clientSecret: env.KICK_CLIENT_SECRET || undefined,
+    origin: env.PUBLIC_ORIGIN ?? 'https://jawabbadel.com',
+  });
 
   await app.register(adminAuthRoutes, { prefix: '/api/admin' });
   await app.register(

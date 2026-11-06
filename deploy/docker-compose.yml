@@ -14,6 +14,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
       TRUST_PROXY: "true"
       PUBLIC_ORIGIN: https://jawabbadel.com
+      KICK_CLIENT_ID: ${KICK_CLIENT_ID:-}
+      KICK_CLIENT_SECRET: ${KICK_CLIENT_SECRET:-}
     ports:
       # Loopback only: the host's Nginx is the public entry point.
       - "127.0.0.1:${APP_PORT:-3100}:3000"

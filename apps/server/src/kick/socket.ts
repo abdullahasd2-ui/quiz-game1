@@ -6,6 +6,7 @@ import type { KickChatHub } from './chat';
 const watchInput = z.object({
   channel: z.string().trim().regex(KICK_CHANNEL_RE, 'اسم القناة غير صالح'),
   chatroomId: z.number().int().positive().optional(),
+  official: z.boolean().optional(),
 });
 
 /** Socket.IO namespace `/kick`: a stream page watches one channel's chat. */
@@ -25,7 +26,7 @@ export function attachKickRelay(io: Server, hub: KickChatHub) {
         stop = hub.watch(parsed.data.channel, parsed.data.chatroomId, {
           onMessage: (m) => typed.emit('kick:message', m),
           onStatus: (s) => typed.emit('kick:status', s),
-        });
+        }, parsed.data.official);
         reply({ ok: true, data: null });
       } catch (err) {
         reply({ ok: false, error: err instanceof Error ? err.message : 'تعذّر الاتصال' });

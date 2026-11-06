@@ -66,6 +66,7 @@ type Listener = { onMessage(m: KickMessage): void; onStatus(s: KickStatus): void
 type Channel = {
   listeners: Set<Listener>;
   chatroomId?: number;
+  official?: boolean;
   status: KickStatus;
   upstream: Upstream | null;
   retries: number;
@@ -86,16 +87,16 @@ export class KickChatHub {
     return this.channels.size;
   }
 
-  watch(channel: string, chatroomId: number | undefined, listener: Listener): () => void {
+  watch(channel: string, chatroomId: number | undefined, listener: Listener, official = false): () => void {
     const key = channel.toLowerCase();
     let ch = this.channels.get(key);
     if (!ch) {
       if (this.channels.size >= MAX_CHANNELS) throw new Error('كثير قنوات شغّالة حالياً — جرّب بعد شوي');
-      ch = { listeners: new Set(), chatroomId, status: { state: 'connecting' }, upstream: null, retries: 0, timer: null, handshake: null };
+      ch = { listeners: new Set(), chatroomId, status: official ? { state: 'live' } : { state: 'connecting' }, official, upstream: null, retries: 0, timer: null, handshake: null };
       this.channels.set(key, ch);
       ch.listeners.add(listener);
       listener.onStatus(ch.status);
-      void this.start(key, ch);
+      if (!official) void this.start(key, ch);
     } else {
       ch.chatroomId ??= chatroomId;
       ch.listeners.add(listener);
@@ -107,6 +108,12 @@ export class KickChatHub {
       cur.listeners.delete(listener);
       if (cur.listeners.size === 0) this.stop(key, cur);
     };
+  }
+
+  /** A chat message delivered by Kick's webhook: goes to whoever watches that channel. */
+  ingest(channel: string, m: KickMessage) {
+    const ch = this.channels.get(channel.toLowerCase());
+    if (ch) for (const l of ch.listeners) l.onMessage(m);
   }
 
   private setStatus(ch: Channel, status: KickStatus) {

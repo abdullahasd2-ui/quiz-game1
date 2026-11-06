@@ -92,8 +92,11 @@ jobs:
           ssh prod "cat > '$DEPLOY_DIR/docker-compose.yml'" < deploy/docker-compose.yml
 
       - name: Restart on server
+        env:
+          KICK_CLIENT_ID: ${{ secrets.KICK_CLIENT_ID }}
+          KICK_CLIENT_SECRET: ${{ secrets.KICK_CLIENT_SECRET }}
         run: |
-          ssh prod "DEPLOY_DIR='$DEPLOY_DIR' bash -s" <<'EOF'
+          ssh prod "DEPLOY_DIR='$DEPLOY_DIR' KICK_CLIENT_ID='$KICK_CLIENT_ID' KICK_CLIENT_SECRET='$KICK_CLIENT_SECRET' bash -s" <<'EOF'
           set -e
           cd "$DEPLOY_DIR"
           gunzip -c quiz-game.tar.gz | docker load
