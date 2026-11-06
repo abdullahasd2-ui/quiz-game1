@@ -4,3 +4,4 @@ export * from './api';
 export * from './game';
 export * from './puzzle';
 export * from './kick';
+export * from './kick-client';

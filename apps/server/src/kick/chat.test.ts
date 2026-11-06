@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { KickChatHub, parseKickFrame, type Connect } from './chat';
+import { parseKickFrame } from '@quiz/shared';
+import { KickChatHub, type Connect } from './chat';
 
 const frame = (content: string, username = 'ali') =>
   JSON.stringify({ event: 'App\\Events\\ChatMessageEvent', channel: 'chatrooms.1.v2', data: JSON.stringify({ content, sender: { username } }) });
@@ -27,7 +28,7 @@ function fakeHub(opts: { fail?: boolean } = {}) {
     if (opts.fail) throw new Error('blocked');
     return 42;
   });
-  return { hub: new KickChatHub({ connect, resolve, retryMs: 1 }), handlers, closed, connect, resolve };
+  return { hub: new KickChatHub({ connect, resolve, retryMs: 1, handshakeMs: 30 }), handlers, closed, connect, resolve };
 }
 const listener = () => ({ onMessage: vi.fn(), onStatus: vi.fn() });
 const tick = () => new Promise((r) => setTimeout(r, 5));
@@ -83,5 +84,25 @@ describe('KickChatHub', () => {
     await tick();
     expect(connect).toHaveBeenCalledTimes(2);
     hub.closeAll();
+  });
+
+  it('gives up with a clear error when Kick never confirms the subscription', async () => {
+    const { hub, closed } = fakeHub();
+    const l = listener();
+    hub.watch('s', undefined, l);
+    await tick();
+    expect(l.onStatus).toHaveBeenLastCalledWith({ state: 'connecting', detail: 'جاري الاتصال بالشات...' });
+    await new Promise((r) => setTimeout(r, 60));
+    expect(l.onStatus).toHaveBeenLastCalledWith(expect.objectContaining({ state: 'error', detail: expect.stringContaining('ما رد شات Kick') }));
+    expect(closed).toHaveBeenCalled();
+  });
+
+  it('says which channel could not be found and why', async () => {
+    const { hub } = fakeHub({ fail: true });
+    const l = listener();
+    hub.watch('Nobody', undefined, l);
+    await tick();
+    expect(l.onStatus).toHaveBeenLastCalledWith(expect.objectContaining({ detail: expect.stringContaining('nobody') }));
+    expect(l.onStatus).toHaveBeenCalledWith({ state: 'connecting', detail: 'جاري البحث عن القناة...' });
   });
 });
