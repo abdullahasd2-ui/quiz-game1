@@ -75,6 +75,10 @@ export function Background3D() {
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+      {/* Soft colour light in the corners: purple (جاوب) and cyan (بادل) from the title, a little gold in between. */}
+      <div className="absolute -top-[20vh] -right-[15vw] size-[60vmax] rounded-full bg-q-purple/14 blur-[90px] [animation:glow-drift_22s_ease-in-out_infinite]" />
+      <div className="absolute -bottom-[25vh] -left-[15vw] size-[60vmax] rounded-full bg-q-cyan/12 blur-[90px] [animation:glow-drift_26s_ease-in-out_infinite_reverse]" />
+      <div className="absolute top-[35vh] left-[30vw] size-[35vmax] rounded-full bg-q-gold/6 blur-[100px] [animation:glow-drift_30s_ease-in-out_infinite]" />
       <div className="absolute inset-0 opacity-10">
         {words.map((w) => (
           <span key={w.id} className="absolute font-black whitespace-nowrap animate-float-word" style={w.style}>

@@ -153,9 +153,9 @@ export function Modal({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/88 p-4" onClick={onClose} role="dialog" aria-modal>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal>
       <div
-        className={cn('max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-2xl border border-q-line bg-q-panel px-5 py-6 text-center', animation, className)}
+        className={cn('q-card max-h-[90dvh] w-full max-w-md overflow-y-auto px-5 py-6 text-center', animation, className)}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
