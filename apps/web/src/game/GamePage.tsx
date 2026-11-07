@@ -11,7 +11,7 @@ import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
 import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
-import { FloatingWords } from './ui';
+import { Background3D } from '@/kick/Background3D';
 import { useRoom } from './useRoom';
 
 export function GamePage() {
@@ -51,7 +51,7 @@ export function GamePage() {
 
   return (
     <div
-      className="dark min-h-dvh bg-q-bg font-sans text-white"
+      className="dark relative isolate min-h-dvh bg-q-bg font-sans text-white"
       dir="rtl"
       onPointerDownCapture={(e) => {
         unlockAudio();
@@ -59,7 +59,7 @@ export function GamePage() {
         if (button && !button.disabled && !button.hasAttribute('data-silent')) play('tap');
       }}
     >
-      <FloatingWords />
+      <Background3D />
       <SoundToggle />
       {view && view.status !== 'done' && (
         <button
