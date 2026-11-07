@@ -28,6 +28,7 @@ import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { QuestionImage } from '@/game/ui';
+import { QuizHowTo } from './QuizHowTo';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
@@ -248,6 +249,7 @@ export function KickQuizPage() {
               تجربة بدون Kick (تكتب رسائل الشات بنفسك)
             </button>
           </div>
+          <QuizHowTo forStreamer className="mt-4" />
         </div>
       </div>
     );
