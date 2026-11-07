@@ -143,6 +143,7 @@
     --color-q-purple: #a855f7;
     --color-q-cyan: #38bdf8;
     --animate-float-word: float-word linear infinite;
+    --animate-spin-3d: spin-3d linear infinite;
     --animate-pop-in: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     --animate-fade-up: fade-up 0.3s ease;
     --animate-blink: blink 1s infinite;
@@ -158,6 +159,10 @@
     --animate-fx-win: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-glow 1.4s ease-in-out 0.35s infinite alternate;
     --animate-fx-lose: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-shake 0.45s ease-in-out 0.35s;
 
+    @keyframes spin-3d {
+        from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        to { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
+    }
     @keyframes float-word {
         from { transform: translateY(100vh); }
         to { transform: translateY(-120px); }
