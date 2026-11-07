@@ -173,11 +173,18 @@ export function KickQuizPage() {
   function start(testMode: boolean) {
     const name = channel.trim() || 'الستريمر';
     if (!testMode && !KICK_CHANNEL_RE.test(name)) return setError('اكتب اسم قناتك في Kick (حروف إنجليزية وأرقام)');
-    if (chosen.length < 2) return setError('اختر فئتين على الأقل');
     setTest(testMode);
     setStatus({ state: 'connecting' });
     setError('');
-    set(toBoard(newStream(name, chosen.length * POINTS.length, answerSec * 1000)));
+    // The lobby: chat connects and viewers join; categories and the answer time are picked there.
+    set(newStream(name, 0));
+  }
+
+  function beginGame() {
+    if (!ref.current) return;
+    if (chosen.length < 2) return setError('اختر فئتين على الأقل');
+    setError('');
+    set(toBoard({ ...ref.current, totalCells: chosen.length * POINTS.length, answerMs: answerSec * 1000 }));
   }
 
   async function pick(category: number, points: number) {
@@ -204,48 +211,23 @@ export function KickQuizPage() {
             <QuizHowToButton forStreamer />
           </div>
           <div className="q-card">
-            {canLink && (
-              <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-center">
-                {linked ? (
-                  <p className="text-sm font-black text-emerald-400">✅ تم ربط حسابك: {linked}</p>
-                ) : (
-                  <a href={`${SERVER_URL}/api/kick/login?next=quiz`} className="q-btn-gold inline-block rounded-xl px-4 py-2 text-sm font-black">
-                    🔗 اربط حسابك في Kick
-                  </a>
-                )}
-              </div>
+            {canLink && !linked && (
+              <a href={`${SERVER_URL}/api/kick/login?next=quiz`} className="q-btn-gold mb-3 block text-center">
+                🔗 اربط حسابك في Kick
+              </a>
             )}
-            <label className="mb-1 block text-xs text-white/60">اسم قناتك في Kick</label>
-            <input className="q-input mb-3" dir="ltr" value={channel} onChange={(e) => setChannel(e.target.value)} placeholder="streamer_name" />
-            <label className="mb-1 block text-xs text-white/60">وقت الإجابة على السؤال</label>
-            <div className="mb-3 grid grid-cols-5 gap-2">
-              {STREAM_ANSWER_CHOICES.map((sec) => (
-                <button
-                  key={sec}
-                  type="button"
-                  onClick={() => setAnswerSec(sec)}
-                  className={cn('rounded-xl border-2 py-2 text-sm font-black', answerSec === sec ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}
-                >
-                  {sec} ث
-                </button>
-              ))}
-            </div>
-            <label className="mb-1 block text-xs text-white/60">اختر الفئات ({chosen.length}/{MAX_CATEGORIES})</label>
-            <div className="mb-3 grid grid-cols-2 gap-2">
-              {cats.map((c) => {
-                const on = chosen.includes(c.id);
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setChosen((cur) => (on ? cur.filter((x) => x !== c.id) : cur.length < MAX_CATEGORIES ? [...cur, c.id] : cur))}
-                    className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black', on ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}
-                  >
-                    {c.icon} {c.name}
-                  </button>
-                );
-              })}
-            </div>
+            {linked ? (
+              <div className="mb-3 flex items-center justify-center gap-2 rounded-xl border border-q-green/40 bg-q-green/10 px-3 py-2.5" title="الحساب مربوط">
+                <span className="grid size-7 place-items-center rounded-full bg-q-green/20 text-sm">🔗</span>
+                <bdi dir="ltr" className="font-black text-white">{linked}</bdi>
+                <span className="text-q-green">✓</span>
+              </div>
+            ) : (
+              <>
+                <label className="mb-1 block text-xs text-white/60">اسم قناتك في Kick</label>
+                <input className="q-input mb-3" dir="ltr" value={channel} onChange={(e) => setChannel(e.target.value)} placeholder="streamer_name" />
+              </>
+            )}
             {error && <div className="mb-2 text-center text-sm text-q-red">{error}</div>}
             <button type="button" className="q-btn-gold" onClick={() => start(false)}>
               🔴 ابدأ البث
@@ -274,7 +256,7 @@ export function KickQuizPage() {
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">اللعب: {state.used.length} من {state.totalCells} سؤال <QuizHowToButton forStreamer className="px-2.5 py-0.5 text-[11px]" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} سؤال`} <QuizHowToButton forStreamer className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
@@ -295,8 +277,75 @@ export function KickQuizPage() {
         </span>
         <span className="block text-[11px] text-white/50">هذي الصفحة لك إنت بس (تشوف فيها السؤال وتجاوب) — لا تبثها.</span>
       </div>
-      <div className="mx-auto grid max-w-5xl gap-3 md:grid-cols-[1fr_17rem]">
+      <div className={cn('mx-auto grid max-w-5xl gap-3', state.phase === 'lobby' && !test ? 'max-w-2xl' : 'md:grid-cols-[1fr_17rem]')}>
         <div className="q-card">
+          {state.phase === 'lobby' && (
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-q-gold/30 bg-q-gold/8 p-4 text-center">
+                <div className="text-xl font-black">
+                  اكتبوا <b className="text-q-gold">دخول</b> في الشات للمشاركة في اللعبة
+                </div>
+                <div className="mt-3 flex items-center justify-center gap-2 text-sm text-white/70">
+                  👥 المشاركون
+                  <span className="rounded-full bg-q-cyan/20 px-2.5 py-0.5 font-black text-q-cyan">{state.joined.length}</span>
+                </div>
+                {state.joined.length > 0 ? (
+                  <div className="mt-3 flex max-h-36 flex-wrap justify-center gap-1.5 overflow-auto">
+                    {state.joined.map((k) => (
+                      <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                        {state.names[k] ?? k}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-2 text-xs text-white/50">بانتظار أول مشارك...</div>
+                )}
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-black">🗂️ اختر الفئات</span>
+                  <span className="text-xs text-white/50">{chosen.length}/{MAX_CATEGORIES}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {cats.map((c) => {
+                    const on = chosen.includes(c.id);
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => setChosen((cur) => (on ? cur.filter((x) => x !== c.id) : cur.length < MAX_CATEGORIES ? [...cur, c.id] : cur))}
+                        className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                      >
+                        {c.icon} {c.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-2 text-sm font-black">⏱️ وقت الإجابة على السؤال</div>
+                <div className="grid grid-cols-5 gap-2">
+                  {STREAM_ANSWER_CHOICES.map((sec) => (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => setAnswerSec(sec)}
+                      className={cn('rounded-xl border-2 py-2 text-sm font-black', answerSec === sec ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}
+                    >
+                      {sec} ث
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button type="button" className="q-btn-gold" onClick={beginGame}>
+                ▶️ ابدأ اللعبة
+              </button>
+            </div>
+          )}
+
           {state.phase === 'board' && (
             <div>
               <div className="mb-3 text-center text-lg font-black">اختر سؤال من اللوحة</div>
@@ -429,61 +478,63 @@ export function KickQuizPage() {
           {error && <div className="mt-2 text-center text-sm text-q-red">{error}</div>}
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="q-card">
-            <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
-            <ol className="space-y-1.5 text-sm">
-              {top.map((row, i) => {
-                const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
-                return (
-                  <li key={row.key}>
-                    <div className="flex justify-between gap-2">
-                      <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
-                      <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
-                    </div>
-                    {o && (
-                      <div className={cn('text-[11px]', o.cls)}>
-                        {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+        {(state.phase !== 'lobby' || test) && (
+          <div className="flex flex-col gap-3">
+            <div className="q-card">
+              <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
+              <ol className="space-y-1.5 text-sm">
+                {top.map((row, i) => {
+                  const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
+                  return (
+                    <li key={row.key}>
+                      <div className="flex justify-between gap-2">
+                        <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
+                        <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                       </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-            <p className="mt-3 text-[11px] leading-relaxed text-white/40">للمشاركة اكتب «دخول» في الشات.</p>
-            {test && (
-              <form
-                className="mt-3 flex gap-1"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const m = /^([^:]+):(.+)$/.exec(fake.trim());
-                  if (m) onChat(m[1]!.trim(), m[2]!.trim());
-                  setFake('');
-                }}
-              >
-                <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: دخول" />
-                <button className="rounded-lg bg-q-gold/20 px-2 text-xs font-black">إرسال</button>
-              </form>
-            )}
-          </div>
-          <div className="q-card">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-black text-q-cyan">👥 المشاركون</span>
-              <span className="rounded-full bg-q-cyan/15 px-2 py-0.5 text-xs font-black text-q-cyan">{state.joined.length}</span>
+                      {o && (
+                        <div className={cn('text-[11px]', o.cls)}>
+                          {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ol>
+              <p className="mt-3 text-[11px] leading-relaxed text-white/40">للمشاركة اكتب «دخول» في الشات.</p>
+              {test && (
+                <form
+                  className="mt-3 flex gap-1"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const m = /^([^:]+):(.+)$/.exec(fake.trim());
+                    if (m) onChat(m[1]!.trim(), m[2]!.trim());
+                    setFake('');
+                  }}
+                >
+                  <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: دخول" />
+                  <button className="rounded-lg bg-q-gold/20 px-2 text-xs font-black">إرسال</button>
+                </form>
+              )}
             </div>
-            {state.joined.length === 0 ? (
-              <p className="text-xs text-white/50">اكتبوا «دخول» في الشات عشان تشاركون</p>
-            ) : (
-              <div className="flex max-h-64 flex-wrap gap-1.5 overflow-auto">
-                {state.joined.map((k) => (
-                  <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
-                    {state.names[k] ?? k}
-                  </span>
-                ))}
+            <div className="q-card">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-sm font-black text-q-cyan">👥 المشاركون</span>
+                <span className="rounded-full bg-q-cyan/15 px-2 py-0.5 text-xs font-black text-q-cyan">{state.joined.length}</span>
               </div>
-            )}
+              {state.joined.length === 0 ? (
+                <p className="text-xs text-white/50">اكتبوا «دخول» في الشات عشان تشاركون</p>
+              ) : (
+                <div className="flex max-h-64 flex-wrap gap-1.5 overflow-auto">
+                  {state.joined.map((k) => (
+                    <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                      {state.names[k] ?? k}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
