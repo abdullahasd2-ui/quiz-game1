@@ -29,6 +29,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { QuestionImage } from '@/game/ui';
+import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
@@ -178,6 +179,13 @@ export function KickQuizPage() {
     setError('');
     // The lobby: chat connects and viewers join; categories and the answer time are picked there.
     set(newStream(name, 0));
+  }
+
+  /** Back to the start page; the broadcast screen goes back to waiting. */
+  function playAgain() {
+    ref.current = null;
+    setState(null);
+    setError('');
   }
 
   function beginGame() {
@@ -469,10 +477,11 @@ export function KickQuizPage() {
           )}
 
           {state.phase === 'over' && (
-            <div className="py-6 text-center">
-              <div className="mb-2 text-3xl">🏆</div>
-              <div className="text-2xl font-black text-q-gold">الفائز: {rows[0]?.name}</div>
-              <div className="mt-1 text-sm text-white/60">{rows[0]?.score} نقطة</div>
+            <div className="py-4">
+              <Podium rows={rows} />
+              <button type="button" className="q-btn-gold mt-6" onClick={playAgain}>
+                🔁 العب مرة ثانية
+              </button>
             </div>
           )}
           {error && <div className="mt-2 text-center text-sm text-q-red">{error}</div>}

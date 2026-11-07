@@ -6,6 +6,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { OUTCOME } from './KickQuizPage';
+import { Podium } from './Podium';
 import { VIEWER_STEPS } from './QuizHowTo';
 
 /** The page to broadcast: shows the game that the streamer runs from his private control page, never his secret choice. */
@@ -144,10 +145,8 @@ export function KickQuizScreen() {
           )}
 
           {state.phase === 'over' && (
-            <div className="py-10 text-center">
-              <div className="mb-2 text-5xl">🏆</div>
-              <div className="text-4xl font-black text-q-gold">الفائز: {rows[0]?.name}</div>
-              <div className="mt-1 text-white/60">{rows[0]?.score} نقطة</div>
+            <div className="py-6">
+              <Podium rows={rows} big />
             </div>
           )}
         </div>
