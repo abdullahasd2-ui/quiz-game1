@@ -6,6 +6,7 @@ import {
   newStream,
   publicView,
   POINTS,
+  STREAM_ANSWER_CHOICES,
   standings,
   streamerAct,
   tick,
@@ -55,6 +56,7 @@ export function KickQuizPage() {
   const [cats, setCats] = useState<PublicCategory[]>([]);
   const [chosen, setChosen] = useState<number[]>([]);
   const [test, setTest] = useState(false);
+  const [answerSec, setAnswerSec] = useState<number>(30);
   const [error, setError] = useState(params.get('kick_error') ?? '');
   const [state, setState] = useState<StreamState | null>(null);
   const [status, setStatus] = useState<KickStatus>({ state: 'connecting' });
@@ -173,7 +175,7 @@ export function KickQuizPage() {
     setTest(testMode);
     setStatus({ state: 'connecting' });
     setError('');
-    set(toBoard(newStream(name, chosen.length * POINTS.length)));
+    set(toBoard(newStream(name, chosen.length * POINTS.length, answerSec * 1000)));
   }
 
   async function pick(category: number, points: number) {
@@ -209,6 +211,19 @@ export function KickQuizPage() {
             )}
             <label className="mb-1 block text-xs text-white/60">اسم قناتك في Kick</label>
             <input className="q-input mb-3" dir="ltr" value={channel} onChange={(e) => setChannel(e.target.value)} placeholder="streamer_name" />
+            <label className="mb-1 block text-xs text-white/60">وقت الإجابة على السؤال</label>
+            <div className="mb-3 grid grid-cols-5 gap-2">
+              {STREAM_ANSWER_CHOICES.map((sec) => (
+                <button
+                  key={sec}
+                  type="button"
+                  onClick={() => setAnswerSec(sec)}
+                  className={cn('rounded-xl border-2 py-2 text-sm font-black', answerSec === sec ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}
+                >
+                  {sec} ث
+                </button>
+              ))}
+            </div>
             <label className="mb-1 block text-xs text-white/60">اختر الفئات ({chosen.length}/{MAX_CATEGORIES})</label>
             <div className="mb-3 grid grid-cols-2 gap-2">
               {cats.map((c) => {

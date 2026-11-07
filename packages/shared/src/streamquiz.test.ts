@@ -127,3 +127,14 @@ describe('broadcast view', () => {
     expect(publicView(s).result?.correctIndex).toBe(1);
   });
 });
+
+describe('answer time', () => {
+  it('uses the time the streamer picked', () => {
+    let s = deal(toBoard(chatMessage(newStream('S', 6, 15_000), 'Ali', 'دخول')), '1:100', q, 0);
+    s = streamerAct(s, { type: 'answer', index: 1 }, 0);
+    s = streamerAct(s, { type: 'show' }, 1000);
+    expect(s.deadline).toBe(16_000);
+    expect(tick(s, 15_999).phase).toBe('answer');
+    expect(tick(s, 16_000).phase).toBe('result');
+  });
+});

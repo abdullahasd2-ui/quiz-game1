@@ -12,6 +12,8 @@ import type { QuestionType } from './schemas';
 
 export const STREAM_CHOOSE_MS = 20_000;
 export const STREAM_ANSWER_MS = 30_000;
+/** Answer times the streamer can pick before the game, in seconds. */
+export const STREAM_ANSWER_CHOICES = [15, 20, 30, 45, 60] as const;
 const MAX_PLAYERS = 400;
 
 /** A dealt question; `correctIndex` stays on the streamer's page and never goes into chat. */
@@ -42,14 +44,16 @@ export type StreamState = {
   /** Board cells already played, as `${categoryId}:${points}`. */
   used: string[];
   totalCells: number;
+  /** How long the chat has to answer, picked by the streamer before the game. */
+  answerMs?: number;
   round: StreamRound | null;
   deadline: number | null;
   result: StreamResult | null;
 };
 
-export function newStream(streamer: string, totalCells: number): StreamState {
+export function newStream(streamer: string, totalCells: number, answerMs = STREAM_ANSWER_MS): StreamState {
   const key = streamer.toLowerCase();
-  return { streamer: key, names: { [key]: streamer }, scores: { [key]: 0 }, joined: [], phase: 'lobby', used: [], totalCells, round: null, deadline: null, result: null };
+  return { streamer: key, names: { [key]: streamer }, scores: { [key]: 0 }, joined: [], phase: 'lobby', used: [], totalCells, round: null, deadline: null, result: null, answerMs };
 }
 
 export const displayName = (s: StreamState, key: string) => s.names[key] ?? key;
@@ -166,7 +170,7 @@ export function streamerAct(state: StreamState, act: StreamerAct, now: number): 
 function startAnswer(state: StreamState, now: number): StreamState {
   const s = clone(state);
   s.phase = 'answer';
-  s.deadline = now + STREAM_ANSWER_MS;
+  s.deadline = now + (s.answerMs ?? STREAM_ANSWER_MS);
   return s;
 }
 
