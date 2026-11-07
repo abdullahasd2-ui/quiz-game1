@@ -247,7 +247,7 @@ export type SyncPublish = { code: string; hostKey: string; state: StreamState | 
 export type SyncView = { state: StreamState | null; hostNow: number };
 export interface SyncClientToServerEvents {
   'sync:publish': (m: SyncPublish, reply: (res: { ok: boolean; error?: string }) => void) => void;
-  'sync:watch': (code: string, reply: (res: { ok: boolean; error?: string }) => void) => void;
+  'sync:watch': (code: string, reply: (res: { ok: boolean; error?: string; /** A control page has used this code. */ hosted?: boolean }) => void) => void;
 }
 export interface SyncServerToClientEvents {
   'sync:view': (v: SyncView) => void;

@@ -20,7 +20,7 @@ export function attachKickSync(io: Server) {
       void socket.join(code);
       const last = rooms.get(code)?.last;
       if (last) (socket as unknown as { emit: (e: keyof SyncServerToClientEvents, v: SyncView) => void }).emit('sync:view', last);
-      reply({ ok: true });
+      reply({ ok: true, hosted: rooms.has(code) });
     });
     typed.on('sync:publish', (m, reply) => {
       if (!m || typeof m.code !== 'string' || !SYNC_CODE_RE.test(m.code) || typeof m.hostKey !== 'string' || m.hostKey.length < 16) return reply({ ok: false, error: 'طلب غير صالح' });

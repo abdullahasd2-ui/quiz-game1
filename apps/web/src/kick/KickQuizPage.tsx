@@ -63,14 +63,21 @@ export function KickQuizPage() {
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
   // Pairing with the broadcast page: it shows the game without the streamer's secrets.
-  const [syncCode] = useState(() => {
+  // The code and its owner key live together for this tab, so a reloaded tab (iPad Safari reloads background tabs)
+  // still owns its code instead of being refused by the server as a stranger.
+  const [sync, setSync] = useState<{ code: string; key: string }>(() => {
     try {
-      return sessionStorage.getItem('kick-sync-code') ?? randomId(8);
+      const saved = JSON.parse(sessionStorage.getItem('kick-sync') ?? 'null') as { code?: string; key?: string } | null;
+      if (saved?.code && saved.key) return { code: saved.code, key: saved.key };
     } catch {
-      return randomId(8);
+      /* private mode or bad value */
     }
+    return { code: randomId(8), key: randomId(24) };
   });
-  const hostKey = useRef(randomId(24));
+  const syncCode = sync.code;
+  const hostKey = useRef(sync.key);
+  hostKey.current = sync.key;
+  const [syncOk, setSyncOk] = useState<boolean | null>(null);
   const syncSocket = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
   const [copied, setCopied] = useState(false);
   const publishNow = useRef<() => void>(() => {});
@@ -114,7 +121,7 @@ export function KickQuizPage() {
   latest.current = state;
   useEffect(() => {
     try {
-      sessionStorage.setItem('kick-sync-code', syncCode);
+      sessionStorage.setItem('kick-sync', JSON.stringify(sync));
     } catch {
       /* private mode */
     }
@@ -123,7 +130,11 @@ export function KickQuizPage() {
     const publish = () => {
       if (!sock.connected) return;
       const st = latest.current;
-      sock.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: st ? publicView(st) : null, hostNow: Date.now() }, () => {});
+      sock.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: st ? publicView(st) : null, hostNow: Date.now() }, (res) => {
+        setSyncOk(res.ok);
+        // Someone else owns this code (an old session): take a fresh one; the link on screen changes with it.
+        if (!res.ok && res.error === 'هذا الكود مستخدم') setSync({ code: randomId(8), key: randomId(24) });
+      });
     };
     sock.on('connect', publish);
     const beat = setInterval(publish, 3000);
@@ -134,7 +145,7 @@ export function KickQuizPage() {
       syncSocket.current = null;
       publishNow.current = () => {};
     };
-  }, [syncCode]);
+  }, [syncCode]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     publishNow.current();
   }, [state]);
@@ -257,6 +268,9 @@ export function KickQuizPage() {
         >
           {copied ? 'تم النسخ' : 'نسخ الرابط'}
         </button>
+        <span className={cn('block text-[11px] font-black', syncOk ? 'text-q-green' : syncOk === false ? 'text-q-red' : 'text-white/50')}>
+          {syncOk ? '✅ شاشة البث تستقبل اللعبة' : syncOk === false ? '⚠️ تعذّر إرسال اللعبة لشاشة البث — انسخ الرابط من جديد' : 'جاري الاتصال بشاشة البث...'}
+        </span>
         <span className="block text-[11px] text-white/50">هذي الصفحة لك إنت بس (تشوف فيها السؤال وتجاوب) — لا تبثها.</span>
       </div>
       <div className="mx-auto grid max-w-5xl gap-3 md:grid-cols-[1fr_17rem]">
