@@ -11,7 +11,7 @@ import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
 import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
-import { Background3D } from '@/kick/Background3D';
+import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
 
 export function GamePage() {
