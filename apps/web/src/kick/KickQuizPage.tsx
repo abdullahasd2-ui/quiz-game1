@@ -28,7 +28,7 @@ import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { QuestionImage } from '@/game/ui';
-import { QuizHowTo } from './QuizHowTo';
+import { QuizHowToButton } from './QuizHowTo';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
@@ -197,7 +197,10 @@ export function KickQuizPage() {
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white" dir="rtl">
         <div className="mx-auto max-w-md">
           <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 جاوب أو بادل — بث Kick</h1>
-          <p className="mb-5 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
+          <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
+          <div className="mb-5 text-center">
+            <QuizHowToButton forStreamer />
+          </div>
           <div className="q-card">
             {canLink && (
               <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-center">
@@ -249,7 +252,6 @@ export function KickQuizPage() {
               تجربة بدون Kick (تكتب رسائل الشات بنفسك)
             </button>
           </div>
-          <QuizHowTo forStreamer className="mt-4" />
         </div>
       </div>
     );
@@ -269,7 +271,7 @@ export function KickQuizPage() {
   return (
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white" dir="rtl">
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="text-white/70">اللعب: {state.used.length} من {state.totalCells} سؤال</span>
+        <span className="flex items-center gap-2 text-white/70">اللعب: {state.used.length} من {state.totalCells} سؤال <QuizHowToButton forStreamer className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>

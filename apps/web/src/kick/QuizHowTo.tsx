@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Modal } from '@/game/ui';
 import { cn } from '@/lib/utils';
 
 /** The viewers' rules, as typed in the chat. Shared by the streamer's setup page and the broadcast screen. */
@@ -18,8 +20,7 @@ export const SCORING: string[] = [
 
 export function QuizHowTo({ forStreamer = false, className }: { forStreamer?: boolean; className?: string }) {
   return (
-    <div className={cn('q-card text-start', className)}>
-      <div className="mb-3 text-center text-lg font-black text-q-gold">📖 طريقة اللعب</div>
+    <div className={cn('text-start', className)}>
       {forStreamer && (
         <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-xs leading-relaxed text-white/80">
           <b className="text-q-cyan">لك أنت (الستريمر):</b> اربط حسابك، اختر وقت الإجابة والفئات، وابدأ. انسخ رابط <b>شاشة البث</b> وافتحه في
@@ -47,5 +48,32 @@ export function QuizHowTo({ forStreamer = false, className }: { forStreamer?: bo
         </ul>
       </div>
     </div>
+  );
+}
+
+/** Small «📖 طريقة اللعب» button that opens the rules in a modal, like the main game's home screen. */
+export function QuizHowToButton({ forStreamer = false, className }: { forStreamer?: boolean; className?: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={cn('rounded-full border-[1.5px] border-white/20 px-4 py-1 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple', className)}
+      >
+        📖 طريقة اللعب
+      </button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-[17px] font-black text-q-purple">📖 طريقة اللعب</h2>
+          <button type="button" onClick={() => setOpen(false)} className="text-xl text-white/50" aria-label="إغلاق">
+            ✕
+          </button>
+        </div>
+        <div className="max-h-[70dvh] overflow-auto">
+          <QuizHowTo forStreamer={forStreamer} />
+        </div>
+      </Modal>
+    </>
   );
 }
