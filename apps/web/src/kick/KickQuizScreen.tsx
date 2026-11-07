@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { OUTCOME } from './KickQuizPage';
 import { Podium } from './Podium';
+import { QuizHowToButton } from './QuizHowTo';
 import { VIEWER_STEPS } from './QuizHowTo';
 
 /** The page to broadcast: shows the game that the streamer runs from his private control page, never his secret choice. */
@@ -51,6 +52,7 @@ export function KickQuizScreen() {
         <div>
           <div className="mb-2 text-4xl">🎮</div>
           <div className="text-xl font-black text-q-gold">جاوب أو بادل</div>
+          <QuizHowToButton className="mt-3" />
           <div className="mt-2 text-sm text-white/60">{error || (hosted ? 'بانتظار الستريمر يبدأ اللعبة...' : 'ما فيه صفحة تحكم بهذا الكود — انسخ الرابط من جديد من صفحة التحكم')}</div>
           <div className="mt-4 text-[11px] text-white/30">{connected ? 'متصل بالسيرفر' : 'جاري الاتصال بالسيرفر...'} · الكود: <bdi dir="ltr">{code}</bdi></div>
         </div>
@@ -70,6 +72,12 @@ export function KickQuizScreen() {
   return (
     <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
+      <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between">
+        <div className="text-lg font-black">
+          <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">بادل</span>
+        </div>
+        <QuizHowToButton />
+      </div>
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">
           {(state.phase === 'lobby' || state.phase === 'board') && (
