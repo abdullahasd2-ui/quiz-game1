@@ -11,6 +11,7 @@ import { QuestionEditPage } from './admin/pages/QuestionEditPage';
 import { QuestionsPage } from './admin/pages/QuestionsPage';
 import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
+import { KickQuizScreen } from './kick/KickQuizScreen';
 import { KickQuizPage } from './kick/KickQuizPage';
 import { KickPuzzlePage } from './kick/KickPuzzlePage';
 import { PrivacyPage } from './legal/PrivacyPage';
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <GamePage /> },
   { path: '/kick', element: <KickPuzzlePage /> },
   { path: '/kick/quiz', element: <KickQuizPage /> },
+  { path: '/kick/quiz/screen', element: <KickQuizScreen /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/support', element: <SupportPage /> },
   // Sound and effects gallery for developers; `import.meta.env.DEV` is false in builds, so this route and its code never ship.

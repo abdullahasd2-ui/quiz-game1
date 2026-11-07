@@ -105,3 +105,25 @@ describe('stream quiz', () => {
     expect(parseOption('5', q.options)).toBeNull();
   });
 });
+
+describe('broadcast view', () => {
+  it('hides the streamer secret until the round ends', async () => {
+    const { publicView } = await import('./streamquiz');
+    let s = begin('Ali');
+    expect(publicView(s).round?.question.text).toBe('');
+    s = streamerAct(s, { type: 'answer', index: 1 }, 0);
+    let v = publicView(s);
+    expect(v.round?.streamer).toBeNull();
+    expect(v.round?.question.correctIndex).toBe(-1);
+    expect(v.round?.question.options).toEqual([]);
+    s = say(say(s, 'Ali', '1'), 'Ali', '1');
+    s = streamerAct(s, { type: 'show' }, 1);
+    s = say(s, 'Ali', '3');
+    v = publicView(s);
+    expect(v.round?.question.options).toHaveLength(4);
+    expect(v.round?.picks).toEqual({ ali: 0 });
+    expect(JSON.stringify(v)).not.toContain('"correctIndex":1');
+    s = streamerAct(s, { type: 'finish' }, 2);
+    expect(publicView(s).result?.correctIndex).toBe(1);
+  });
+});
