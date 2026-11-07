@@ -27,7 +27,7 @@ import { io, type Socket } from 'socket.io-client';
 import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
-import { Background3D } from './Background3D';
+import { Background3D } from '@/game/fx/Background3D';
 import { QuestionImage } from '@/game/ui';
 import { QuizHowToButton } from './QuizHowTo';
 
