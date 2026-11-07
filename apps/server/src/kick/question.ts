@@ -14,6 +14,6 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
     const [cat] = await listPublicCategories([category]);
     const q = cat && (await drawQuestion(category, points));
     if (!q) return reply.code(404).send({ error: 'لا يوجد سؤال لهذه الخانة' });
-    return { text: q.text, options: q.options, correctIndex: q.correctIndex, points, imageUrl: q.imageUrl, categoryName: cat.name };
+    return { type: q.type, revealUrl: q.revealUrl, text: q.text, options: q.options, correctIndex: q.correctIndex, points, imageUrl: q.imageUrl, categoryName: cat.name };
   });
 };

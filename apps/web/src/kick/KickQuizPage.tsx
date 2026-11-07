@@ -23,6 +23,7 @@ import { io, type Socket } from 'socket.io-client';
 import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
+import { QuestionImage } from '@/game/ui';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
@@ -135,7 +136,7 @@ export function KickQuizPage() {
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white" dir="rtl">
         <div className="mx-auto max-w-md">
           <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 جاوب أو بادل — بث Kick</h1>
-          <p className="mb-5 text-center text-xs text-white/50">أنت والشات كله تجاوبون نفس السؤال، وكل لاعب نقاطه لحاله</p>
+          <p className="mb-5 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="q-card">
             {canLink && (
               <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-center">
@@ -185,8 +186,7 @@ export function KickQuizPage() {
   const q = r?.question;
   const left = state.deadline ? Math.max(0, Math.ceil((state.deadline - now) / 1000)) : null;
   const dot = status.state === 'live' ? 'bg-q-green' : status.state === 'error' ? 'bg-q-red' : 'bg-q-gold';
-  const showQuestion = state.phase === 'answer' || state.phase === 'result';
-  const result = state.result;
+    const result = state.result;
   const swappers = r ? Object.values(r.choices).filter((c) => c === 'swap').length : 0;
   const answerers = r ? Object.values(r.choices).filter((c) => c === 'answer').length : 0;
   const answered = r ? Object.keys(r.picks).length : 0;
@@ -234,55 +234,80 @@ export function KickQuizPage() {
             </div>
           )}
 
-          {state.phase === 'choose' && q && (
-            <div className="py-4 text-center">
-              <div className="mb-1 text-sm text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</div>
-              <div className="mb-3 text-2xl font-black">اختاروا قبل ما يظهر السؤال!</div>
-              <div className="mx-auto mb-3 max-w-sm space-y-1 rounded-xl bg-q-panel p-3 text-lg">
-                <div>اكتبوا <b className="text-q-gold">2</b> = جاوب</div>
-                <div>اكتبوا <b className="text-q-cyan">1</b> = بادل مع الستريمر</div>
+          {state.phase === 'streamer' && q && (
+            <div>
+              <div className="mb-3 flex items-center justify-between text-sm">
+                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
+                <span className="text-xs text-white/60">دورك أول — اختيارك يبقى مخفي عن الشات</span>
               </div>
-              <div className="mb-3 text-sm text-white/70">✅ جاوب: {answerers} · 🔄 بادل: {swappers}</div>
-              {left !== null && <div className="mb-3 text-3xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
-              <button type="button" className="q-btn-gold" onClick={() => act({ type: 'show' })}>اعرض السؤال الآن</button>
+              <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
+              <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+              <div className="mb-1 text-center text-xs text-white/60">جاوب: اضغط الخيار اللي تبيه</div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {q.options.map((o, i) => (
+                  <button key={i} type="button" onClick={() => act({ type: 'answer', index: i })} className="flex items-center gap-2 rounded-xl border-2 border-q-line bg-q-panel p-3 text-start text-lg font-black hover:border-q-gold">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
+                    {o}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 rounded-xl border border-q-line bg-q-panel p-3">
+                <div className="mb-2 text-center text-sm font-black text-q-cyan">🔄 أو بادل مع واحد من المشاركين</div>
+                {state.joined.length === 0 ? (
+                  <p className="text-center text-xs text-white/50">ما أحد دخل للحين. اطلبوا من الشات يكتبون «دخول».</p>
+                ) : (
+                  <div className="flex max-h-32 flex-wrap justify-center gap-2 overflow-auto">
+                    {state.joined.map((k) => (
+                      <button key={k} type="button" className="rounded-lg border-2 border-q-line px-3 py-1.5 text-sm font-black hover:border-q-cyan" onClick={() => act({ type: 'swap', user: k })}>
+                        {state.names[k]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
-          {showQuestion && q && r && (
+          {state.phase === 'choose' && q && (
+            <div className="py-2 text-center">
+              <div className="mb-1 text-sm text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</div>
+              <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
+              <div className="mb-3 text-2xl font-black leading-snug">{q.text}</div>
+              <div className="mx-auto mb-2 max-w-sm space-y-1 rounded-xl bg-q-panel p-3 text-lg">
+                <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
+                <div>اكتبوا <b className="text-q-cyan">2</b> = بادل مع الستريمر</div>
+              </div>
+              <div className="mb-2 text-xs text-white/60">🔒 اختيار الستريمر مخفي — لازم تكتبون «دخول» عشان تلعبون</div>
+              <div className="mb-2 text-sm text-white/70">✅ جاوب: {answerers} · 🔄 بادل: {swappers}</div>
+              {left !== null && <div className="mb-3 text-3xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
+              <button type="button" className="q-btn-gold" onClick={() => act({ type: 'show' })}>اعرض الخيارات الآن</button>
+            </div>
+          )}
+
+          {(state.phase === 'answer' || state.phase === 'result') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
                 <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
                 {state.phase === 'answer' && left !== null && <span className="font-black tabular-nums text-q-cyan">⏱ {left}</span>}
               </div>
-              {q.imageUrl && <img src={q.imageUrl} alt="" className="mx-auto mb-3 max-h-60 rounded-xl object-contain" />}
+              <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
               <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
               <div className="grid gap-2 sm:grid-cols-2">
                 {q.options.map((o, i) => {
                   const right = result && i === result.correctIndex;
-                  const mine = r.picks[state.streamer] === i;
-                  const canClick = state.phase === 'answer' && r.picks[state.streamer] === undefined;
+                  const streamerPicked = result && result.streamerPick === i;
                   return (
-                    <button
-                      key={i}
-                      type="button"
-                      disabled={!canClick}
-                      onClick={() => act({ type: 'option', index: i })}
-                      className={cn(
-                        'flex items-center gap-2 rounded-xl border-2 p-3 text-start text-lg font-black',
-                        right ? 'border-q-green bg-q-green/15' : mine && result ? 'border-q-red bg-q-red/15' : mine ? 'border-q-gold bg-q-gold/10' : 'border-q-line bg-q-panel',
-                      )}
-                    >
+                    <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-3 text-start text-lg font-black', right ? 'border-q-green bg-q-green/15' : streamerPicked ? 'border-q-red bg-q-red/15' : 'border-q-line bg-q-panel')}>
                       <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
                       {o}
-                    </button>
+                    </div>
                   );
                 })}
               </div>
               {state.phase === 'answer' && (
                 <div className="mt-3 text-center text-sm text-white/70">
-                  {r.picks[state.streamer] === undefined ? 'اختر جوابك — ' : 'تم اختيارك — '}
-                  الشات يكتب رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · بادل {swappers}
-                  <button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر النتائج</button>
+                  اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · بادل {swappers} · 🔒 اختيار الستريمر مخفي
+                  <div><button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب</button></div>
                 </div>
               )}
             </div>
@@ -291,8 +316,8 @@ export function KickQuizPage() {
           {state.phase === 'result' && result && (
             <div className="mt-4 text-center">
               <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
-                {result.streamerPick === null ? '⏱ ما جاوبت' : result.streamerCorrect ? '✅ جوابك صح' : '❌ جوابك غلط'}
-                {swappers > 0 && <span className="text-sm text-white/70"> — المبادلون {result.streamerCorrect ? 'ضاعفوا نقاطهم' : 'خسروا النقاط'}</span>}
+                {result.streamerChoice === 'swap' ? `🔄 بادل مع ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}
+                {swappers > 0 && <span className="block text-sm text-white/70">المبادلون معك {result.streamerCorrect ? 'ضاعفوا نقاطهم' : 'خسروا النقاط'}</span>}
               </div>
               <button type="button" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>اللوحة ◀</button>
             </div>
@@ -328,7 +353,7 @@ export function KickQuizPage() {
               );
             })}
           </ol>
-          <p className="mt-3 text-[11px] leading-relaxed text-white/40">كل من يكتب في الشات يلعب، ما يحتاج «دخول».</p>
+          <p className="mt-3 text-[11px] leading-relaxed text-white/40">للمشاركة اكتب «دخول» في الشات. المشاركون: {state.joined.length}</p>
           {test && (
             <form
               className="mt-3 flex gap-1"
@@ -339,7 +364,7 @@ export function KickQuizPage() {
                 setFake('');
               }}
             >
-              <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: 2" />
+              <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: دخول" />
               <button className="rounded-lg bg-q-gold/20 px-2 text-xs font-black">إرسال</button>
             </form>
           )}
