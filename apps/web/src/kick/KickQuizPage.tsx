@@ -58,6 +58,8 @@ export function KickQuizPage() {
   const [busy, setBusy] = useState(false);
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
+  // The question is covered on screen from the moment it appears until the round ends; the streamer can lift it and cover it again.
+  const [cover, setCover] = useState(true);
 
   const set = useCallback((s: StreamState) => {
     ref.current = s;
@@ -80,6 +82,12 @@ export function KickQuizPage() {
   }, []);
 
   const playing = state !== null;
+  const roundKey = state?.used.length ?? 0;
+  const phase = state?.phase;
+  useEffect(() => {
+    setCover(phase === 'streamer' || phase === 'choose' || phase === 'answer');
+  }, [roundKey, phase === 'result' || phase === 'board' || phase === 'over']); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!playing) return;
     const t = setInterval(() => {
@@ -200,7 +208,27 @@ export function KickQuizPage() {
         </span>
       </div>
       <div className="mx-auto grid max-w-5xl gap-3 md:grid-cols-[1fr_17rem]">
-        <div className="q-card">
+        <div className="q-card relative">
+          {(state.phase === 'streamer' || state.phase === 'choose' || state.phase === 'answer') && (
+            <>
+              <button
+                type="button"
+                onClick={() => setCover((c) => !c)}
+                className="absolute start-3 top-3 z-20 rounded-lg border border-q-line bg-q-panel px-2.5 py-1 text-xs font-black"
+              >
+                {cover ? '👁 إظهار السؤال' : '🙈 تغطية الشاشة'}
+              </button>
+              {cover && (
+                <div className="absolute inset-0 z-10 grid place-items-center rounded-[inherit] bg-q-bg text-center">
+                  <div>
+                    <div className="mb-2 text-5xl">🔒</div>
+                    <div className="text-xl font-black text-q-gold">السؤال مغطى</div>
+                    <div className="mt-1 text-xs text-white/60">اضغط «إظهار السؤال» لما تبي تشوفه</div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           {state.phase === 'board' && (
             <div>
               <div className="mb-3 text-center text-lg font-black">اختر سؤال من اللوحة</div>
