@@ -1,4 +1,4 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
 
 const WORDS = ['جاوب', 'بادل', '🔄', '✅', 'نقاط', 'صح', 'غلط', 'دبل'];
 // Each cube shows the game on its faces; gold for «جاوب», cyan for «بادل», like the title.
@@ -43,16 +43,35 @@ export function Background3D() {
             animationDuration: `${16 + Math.random() * 18}s`,
             animationDelay: `${-Math.random() * 30}s`,
           } as CSSProperties,
-          inner: {
-            width: size,
-            height: size,
-            animationDuration: `${10 + Math.random() * 14}s`,
-            animationDirection: i % 2 ? 'reverse' : 'normal',
-          } as CSSProperties,
+          inner: { width: size, height: size } as CSSProperties,
+          // Degrees per second on each axis; odd cubes turn the other way.
+          spin: [20 + Math.random() * 25, 35 + Math.random() * 40, 8 + Math.random() * 12].map((v) => (i % 2 ? -v : v)),
+          phase: Math.random() * 360,
         };
       }),
     [],
   );
+
+  // The turning is driven from JS: Safari/WebKit (the iOS app) showed the cubes in 3D but never ran the CSS spin.
+  const inners = useRef<(HTMLDivElement | null)[]>([]);
+  useEffect(() => {
+    let frame = 0;
+    const start = performance.now();
+    const step = (t: number) => {
+      const sec = (t - start) / 1000;
+      cubes.forEach((c, i) => {
+        const el = inners.current[i];
+        if (!el) return;
+        const [x, y, z] = c.spin as [number, number, number];
+        const tr = `rotateX(${c.phase + x * sec}deg) rotateY(${c.phase + y * sec}deg) rotateZ(${z * sec}deg)`;
+        el.style.transform = tr;
+        el.style.webkitTransform = tr;
+      });
+      frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [cubes]);
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -68,7 +87,7 @@ export function Background3D() {
       <div className="absolute inset-0">
         {cubes.map((c) => (
           <div key={c.id} className="absolute animate-float-word" style={{ ...c.outer, perspective: 700, WebkitPerspective: 700 }}>
-            <div className="relative animate-spin-3d" style={{ ...c.inner, transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}>
+            <div ref={(el) => void (inners.current[c.id] = el)} className="relative" style={{ ...c.inner, transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}>
               {FACES.map((f, i) => (
                 <span
                   key={i}
