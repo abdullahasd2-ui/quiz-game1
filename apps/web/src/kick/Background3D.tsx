@@ -45,7 +45,7 @@ export function Background3D() {
           } as CSSProperties,
           inner: { width: size, height: size } as CSSProperties,
           // Degrees per second on each axis; odd cubes turn the other way.
-          spin: [20 + Math.random() * 25, 35 + Math.random() * 40, 8 + Math.random() * 12].map((v) => (i % 2 ? -v : v)),
+          spin: [8 + Math.random() * 10, 12 + Math.random() * 14, 3 + Math.random() * 5].map((v) => (i % 2 ? -v : v)),
           phase: Math.random() * 360,
         };
       }),
