@@ -4,6 +4,7 @@ import { io, type Socket } from 'socket.io-client';
 import { QuestionImage } from '@/game/ui';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
+import { Background3D } from './Background3D';
 import { OUTCOME } from './KickQuizPage';
 import { VIEWER_STEPS } from './QuizHowTo';
 
@@ -44,7 +45,8 @@ export function KickQuizScreen() {
   const state: StreamState | null = view?.state ?? null;
   if (!state) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-q-bg p-6 text-center font-sans text-white" dir="rtl">
+      <div className="grid min-h-dvh place-items-center bg-q-bg p-6 text-center font-sans text-white relative isolate" dir="rtl">
+        <Background3D />
         <div>
           <div className="mb-2 text-4xl">🎮</div>
           <div className="text-xl font-black text-q-gold">جاوب أو بادل</div>
@@ -65,7 +67,8 @@ export function KickQuizScreen() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white" dir="rtl">
+    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl">
+      <Background3D />
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">
           {(state.phase === 'lobby' || state.phase === 'board') && (

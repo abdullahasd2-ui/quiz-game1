@@ -27,6 +27,7 @@ import { io, type Socket } from 'socket.io-client';
 import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
+import { Background3D } from './Background3D';
 import { QuestionImage } from '@/game/ui';
 import { QuizHowToButton } from './QuizHowTo';
 
@@ -194,7 +195,8 @@ export function KickQuizPage() {
 
   if (!state) {
     return (
-      <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white" dir="rtl">
+      <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white relative isolate" dir="rtl">
+        <Background3D />
         <div className="mx-auto max-w-md">
           <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 جاوب أو بادل — بث Kick</h1>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
@@ -269,7 +271,8 @@ export function KickQuizPage() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-3 font-sans text-white" dir="rtl">
+    <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
+      <Background3D />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
         <span className="flex items-center gap-2 text-white/70">اللعب: {state.used.length} من {state.totalCells} سؤال <QuizHowToButton forStreamer className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
