@@ -73,6 +73,7 @@ export function KickQuizPage() {
   const hostKey = useRef(randomId(24));
   const syncSocket = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
   const [copied, setCopied] = useState(false);
+  const publishNow = useRef<() => void>(() => {});
 
   const set = useCallback((s: StreamState) => {
     ref.current = s;
@@ -107,6 +108,10 @@ export function KickQuizPage() {
     return () => clearInterval(t);
   }, [playing, set]);
 
+  // Always publish the latest game, also after the socket dropped and came back (e.g. a backgrounded tab), and every few seconds
+  // so a restarted server or a late-opened broadcast page catches up.
+  const latest = useRef<StreamState | null>(null);
+  latest.current = state;
   useEffect(() => {
     try {
       sessionStorage.setItem('kick-sync-code', syncCode);
@@ -115,18 +120,24 @@ export function KickQuizPage() {
     }
     const sock: Socket<SyncServerToClientEvents, SyncClientToServerEvents> = io(`${SERVER_URL}/kick-sync`);
     syncSocket.current = sock;
-    const publish = () => sock.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: state ? publicView(state) : null, hostNow: Date.now() }, () => {});
+    const publish = () => {
+      if (!sock.connected) return;
+      const st = latest.current;
+      sock.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: st ? publicView(st) : null, hostNow: Date.now() }, () => {});
+    };
     sock.on('connect', publish);
-    if (sock.connected) publish();
+    const beat = setInterval(publish, 3000);
+    publishNow.current = publish;
     return () => {
+      clearInterval(beat);
       sock.disconnect();
       syncSocket.current = null;
+      publishNow.current = () => {};
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [syncCode]);
   useEffect(() => {
-    syncSocket.current?.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: state ? publicView(state) : null, hostNow: Date.now() }, () => {});
-  }, [state, syncCode]);
+    publishNow.current();
+  }, [state]);
 
   useEffect(() => {
     if (!playing || test) return;
