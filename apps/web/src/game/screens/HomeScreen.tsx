@@ -13,8 +13,10 @@ function Choice({ selected, onClick, icon, title, desc }: { selected: boolean; o
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'rounded-2xl border-2 px-4 py-5 text-center transition-all hover:-translate-y-0.5',
-        selected ? 'border-q-gold bg-q-gold/7' : 'border-q-line bg-q-panel',
+        'rounded-2xl border-2 bg-q-panel bg-linear-to-b from-white/[0.04] to-transparent px-4 py-5 text-center transition-all hover:-translate-y-0.5 active:scale-[0.98]',
+        selected
+          ? 'border-q-gold shadow-[inset_0_0_0_999px_rgba(247,201,72,0.07),0_0_28px_-8px_rgba(247,201,72,0.55)]'
+          : 'border-q-line shadow-[0_10px_24px_-14px_rgba(0,0,0,0.8)] hover:border-white/20',
       )}
     >
       <div className="mb-2 text-4xl">{icon}</div>

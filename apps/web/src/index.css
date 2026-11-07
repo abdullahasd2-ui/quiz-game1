@@ -163,6 +163,10 @@
         from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
         to { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
     }
+    @keyframes glow-drift {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(4vw, -3vh) scale(1.12); }
+    }
     @keyframes float-word {
         from { transform: translateY(100vh); }
         to { transform: translateY(-120px); }
@@ -217,17 +221,32 @@
 }
 
 @layer components {
+  /* Cards: dark glass with a faint top light and a soft drop shadow, so they float over the moving background. */
   .q-card {
-    @apply rounded-2xl border border-q-line bg-q-panel p-5;
+    @apply relative rounded-2xl border border-white/8 p-5 backdrop-blur-md;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 38%),
+      color-mix(in oklab, var(--color-q-panel) 88%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 40px -18px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(42, 42, 74, 0.6);
   }
   .q-input {
-    @apply w-full rounded-xl border border-q-line bg-q-bg px-3 py-2.5 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:border-q-gold;
+    @apply w-full rounded-xl border border-q-line bg-q-bg/80 px-3 py-2.5 text-[15px] text-white outline-none transition-all placeholder:text-white/30 focus:border-q-gold focus:shadow-[0_0_0_3px_rgba(247,201,72,0.15)];
   }
+  /* Main action: warm gradient with a glossy top, lifts on hover and presses in on tap. */
   .q-btn-gold {
-    @apply w-full rounded-xl bg-linear-to-l from-q-orange to-q-gold p-3.5 text-[15px] font-bold text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(247,201,72,0.3)] disabled:translate-y-0 disabled:opacity-60 disabled:shadow-none;
+    @apply relative w-full overflow-hidden rounded-xl bg-linear-to-l from-q-orange to-q-gold p-3.5 text-[15px] font-bold text-black shadow-[0_6px_20px_-6px_rgba(255,107,53,0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-6px_rgba(247,201,72,0.55)] active:translate-y-0 active:scale-[0.98] disabled:translate-y-0 disabled:scale-100 disabled:opacity-60 disabled:shadow-none;
+  }
+  .q-btn-gold::after,
+  .q-btn-tv::after {
+    content: '';
+    @apply pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-xl;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
   }
   .q-btn-tv {
-    @apply w-full rounded-xl bg-linear-to-l from-q-cyan to-q-purple p-3.5 text-[15px] font-bold text-white transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60;
+    @apply relative w-full overflow-hidden rounded-xl bg-linear-to-l from-q-cyan to-q-purple p-3.5 text-[15px] font-bold text-white shadow-[0_6px_20px_-6px_rgba(168,85,247,0.55)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:translate-y-0 disabled:scale-100 disabled:opacity-60;
   }
   .q-wait-dots {
     @apply inline-flex gap-1 align-middle;
