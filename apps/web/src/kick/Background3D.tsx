@@ -75,10 +75,11 @@ export function Background3D() {
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      {/* Soft colour light in the corners: purple (جاوب) and cyan (بادل) from the title, a little gold in between. */}
-      <div className="absolute -top-[20vh] -right-[15vw] size-[60vmax] rounded-full bg-q-purple/14 blur-[90px] [animation:glow-drift_22s_ease-in-out_infinite]" />
-      <div className="absolute -bottom-[25vh] -left-[15vw] size-[60vmax] rounded-full bg-q-cyan/12 blur-[90px] [animation:glow-drift_26s_ease-in-out_infinite_reverse]" />
-      <div className="absolute top-[35vh] left-[30vw] size-[35vmax] rounded-full bg-q-gold/6 blur-[100px] [animation:glow-drift_30s_ease-in-out_infinite]" />
+      {/* Soft colour light in the corners: purple (جاوب) and cyan (بادل) from the title, a little gold in between.
+          Radial gradients, not a blur filter: the iOS app dropped the huge blurred layers, the website kept them. */}
+      <div className="absolute -top-[25vh] -right-[20vw] size-[75vmax] rounded-full [animation:glow-drift_22s_ease-in-out_infinite]" style={{ background: 'radial-gradient(closest-side, rgba(168,85,247,0.22), rgba(168,85,247,0.08) 55%, transparent)' }} />
+      <div className="absolute -bottom-[30vh] -left-[20vw] size-[75vmax] rounded-full [animation:glow-drift_26s_ease-in-out_infinite_reverse]" style={{ background: 'radial-gradient(closest-side, rgba(56,189,248,0.18), rgba(56,189,248,0.06) 55%, transparent)' }} />
+      <div className="absolute top-[30vh] left-[25vw] size-[45vmax] rounded-full [animation:glow-drift_30s_ease-in-out_infinite]" style={{ background: 'radial-gradient(closest-side, rgba(247,201,72,0.08), transparent)' }} />
       <div className="absolute inset-0 opacity-10">
         {words.map((w) => (
           <span key={w.id} className="absolute font-black whitespace-nowrap animate-float-word" style={w.style}>
