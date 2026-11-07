@@ -29,7 +29,7 @@ export type StreamRound = {
   /** Option picked per viewer. */
   picks: Record<string, number>;
 };
-export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null }> };
+export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Players who swapped with this one (took their answer). */ swappedWith?: string[]; /** Points the question was worth to them, which went to the swapper. */ taken?: number }> };
 
 export type StreamState = {
   /** The streamer's name (lowercase), also the key of their score. */
@@ -178,19 +178,22 @@ function resolve(state: StreamState): StreamState {
   const sp = st.choice === 'swap' ? (picks[st.partner!] ?? null) : st.pick;
   const streamerCorrect = sp === q.correctIndex;
   const rows: StreamResult['rows'] = {};
-  const apply = (k: string, outcome: StreamOutcome, delta: number, picked: number | null) => {
+  const apply = (k: string, outcome: StreamOutcome, delta: number, picked: number | null, extra: { swappedWith?: string[]; taken?: number } = {}) => {
     s.scores[k] = Math.max(MIN_SCORE, (s.scores[k] ?? 0) + delta);
-    rows[k] = { outcome, delta, picked };
+    rows[k] = { outcome, delta, picked, ...extra };
   };
+  const swappers = Object.keys(choices).filter((k) => choices[k] === 'swap');
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
-  else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp);
+  else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp, swappers.length ? { swappedWith: swappers } : {});
   for (const k of new Set([...Object.keys(choices), ...Object.keys(picks)])) {
     if (choices[k] === 'swap') apply(k, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, null);
-    else if (picks[k] === undefined) apply(k, 'idle', 0, null);
+    else if (picks[k] === undefined) apply(k, 'idle', 0, null, st.partner === k ? { swappedWith: [s.streamer] } : {});
     else {
       const ok = picks[k] === q.correctIndex;
-      // The partner's answer was taken by the streamer, so it scores nothing for them.
-      apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? q.points : 0, picks[k]!);
+      if (st.partner === k) {
+        // The streamer took this answer: they keep nothing, but the board shows what it was worth and who took it.
+        apply(k, ok ? 'answer-right' : 'answer-wrong', 0, picks[k]!, { swappedWith: [s.streamer], taken: ok ? q.points : 0 });
+      } else apply(k, ok ? 'answer-right' : 'answer-wrong', ok ? q.points : 0, picks[k]!);
     }
   }
   s.result = { correctIndex: q.correctIndex, streamerChoice: st.choice, streamerPartner: st.partner, streamerPick: sp, streamerCorrect, rows };
@@ -214,11 +217,11 @@ export function finish(state: StreamState): StreamState {
   return s;
 }
 
-export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number };
+export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number; swappedWith: string[]; taken: number };
 /** Standings, best first; after a question each row also says how that player took it. */
 export function standings(s: StreamState): StreamRow[] {
   return Object.keys(s.scores)
-    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0 }))
+    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0, swappedWith: s.result?.rows[k]?.swappedWith ?? [], taken: s.result?.rows[k]?.taken ?? 0 }))
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 }
 
@@ -241,14 +244,21 @@ export function publicView(s: StreamState): StreamState {
   return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks } };
 }
 
-/** Short code that pairs the control page with the broadcast page. */
+/** Short code that pairs the broadcast page with the streamer's private control page. */
 export const SYNC_CODE_RE = /^[A-Za-z0-9]{6,12}$/;
-export type SyncPublish = { code: string; hostKey: string; state: StreamState | null; hostNow: number };
+/** What the private control page may ask the host to do for the streamer. */
+export type ControlAct = { type: 'answer'; index: number } | { type: 'swap'; user: string };
+export type SyncPublish = { code: string; hostKey: string; controlKey: string; state: StreamState | null; hostNow: number };
 export type SyncView = { state: StreamState | null; hostNow: number };
+type Ack = (res: { ok: boolean; error?: string }) => void;
 export interface SyncClientToServerEvents {
-  'sync:publish': (m: SyncPublish, reply: (res: { ok: boolean; error?: string }) => void) => void;
-  'sync:watch': (code: string, reply: (res: { ok: boolean; error?: string }) => void) => void;
+  /** The host (the broadcast page) publishes the full game for the control page. */
+  'sync:publish': (m: SyncPublish, reply: Ack) => void;
+  /** The control page joins with the secret key from its link. */
+  'sync:control': (m: { code: string; key: string }, reply: Ack) => void;
+  'sync:act': (m: { code: string; key: string; act: ControlAct }, reply: Ack) => void;
 }
 export interface SyncServerToClientEvents {
   'sync:view': (v: SyncView) => void;
+  'sync:act': (act: ControlAct) => void;
 }

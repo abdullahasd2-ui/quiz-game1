@@ -127,3 +127,15 @@ describe('broadcast view', () => {
     expect(publicView(s).result?.correctIndex).toBe(1);
   });
 });
+
+describe('swap labels', () => {
+  it('the partner row says what the answer was worth and who took it', () => {
+    let s = begin('Ali');
+    s = streamerAct(s, { type: 'swap', user: 'ali' }, 0);
+    s = streamerAct(s, { type: 'show' }, 1);
+    s = say(s, 'Ali', '2');
+    s = streamerAct(s, { type: 'finish' }, 2);
+    const ali = standings(s).find((r) => r.key === 'ali')!;
+    expect(ali).toMatchObject({ outcome: 'answer-right', delta: 0, taken: 300, swappedWith: ['abdullah'] });
+  });
+});
