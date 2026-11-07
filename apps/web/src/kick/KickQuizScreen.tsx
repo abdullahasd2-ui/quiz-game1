@@ -13,11 +13,16 @@ export function KickQuizScreen() {
   const [offset, setOffset] = useState(0);
   const [now, setNow] = useState(() => Date.now());
   const [error, setError] = useState('');
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!SYNC_CODE_RE.test(code)) return setError('الرابط ناقص الكود — انسخه من صفحة التحكم');
     const sock: Socket<SyncServerToClientEvents, SyncClientToServerEvents> = io(`${SERVER_URL}/kick-sync`);
-    sock.on('connect', () => sock.emit('sync:watch', code, (res) => !res.ok && setError(res.error ?? 'تعذّر الاتصال')));
+    sock.on('disconnect', () => setConnected(false));
+    sock.on('connect', () => {
+      setConnected(true);
+      sock.emit('sync:watch', code, (res) => !res.ok && setError(res.error ?? 'تعذّر الاتصال'));
+    });
     sock.on('sync:view', (v) => {
       setView(v);
       setOffset(Date.now() - v.hostNow);
@@ -38,6 +43,7 @@ export function KickQuizScreen() {
           <div className="mb-2 text-4xl">🎮</div>
           <div className="text-xl font-black text-q-gold">جاوب أو بادل</div>
           <div className="mt-2 text-sm text-white/60">{error || 'بانتظار الستريمر يبدأ اللعبة...'}</div>
+          <div className="mt-4 text-[11px] text-white/30">{connected ? 'متصل بالسيرفر' : 'جاري الاتصال بالسيرفر...'} · الكود: <bdi dir="ltr">{code}</bdi></div>
         </div>
       </div>
     );
