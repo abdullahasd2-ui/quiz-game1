@@ -135,26 +135,45 @@ export function KickQuizScreen() {
           )}
         </div>
 
-        <div className="q-card">
-          <div className="mb-2 text-lg font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
-          <ol className="space-y-2 text-base">
-            {rows.map((row, i) => {
-              const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
-              return (
-                <li key={row.key}>
-                  <div className="flex justify-between gap-2">
-                    <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
-                    <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
-                  </div>
-                  {o && (
-                    <div className={cn('text-xs', o.cls)}>
-                      {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+        <div className="flex flex-col gap-3">
+          <div className="q-card">
+            <div className="mb-2 text-lg font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
+            <ol className="space-y-2 text-base">
+              {rows.map((row, i) => {
+                const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
+                return (
+                  <li key={row.key}>
+                    <div className="flex justify-between gap-2">
+                      <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
+                      <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                     </div>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
+                    {o && (
+                      <div className={cn('text-xs', o.cls)}>
+                        {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+          <div className="q-card">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-lg font-black text-q-cyan">👥 المشاركون</span>
+              <span className="rounded-full bg-q-cyan/15 px-2 py-0.5 text-xs font-black text-q-cyan">{state.joined.length}</span>
+            </div>
+            {state.joined.length === 0 ? (
+              <p className="text-xs text-white/50">اكتبوا «دخول» في الشات عشان تشاركون</p>
+            ) : (
+              <div className="flex max-h-64 flex-wrap gap-1.5 overflow-auto">
+                {state.joined.map((k) => (
+                  <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                    {state.names[k] ?? k}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

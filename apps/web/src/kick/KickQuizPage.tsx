@@ -407,41 +407,60 @@ export function KickQuizPage() {
           {error && <div className="mt-2 text-center text-sm text-q-red">{error}</div>}
         </div>
 
-        <div className="q-card">
-          <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
-          <ol className="space-y-1.5 text-sm">
-            {top.map((row, i) => {
-              const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
-              return (
-                <li key={row.key}>
-                  <div className="flex justify-between gap-2">
-                    <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
-                    <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
-                  </div>
-                  {o && (
-                    <div className={cn('text-[11px]', o.cls)}>
-                      {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+        <div className="flex flex-col gap-3">
+          <div className="q-card">
+            <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
+            <ol className="space-y-1.5 text-sm">
+              {top.map((row, i) => {
+                const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
+                return (
+                  <li key={row.key}>
+                    <div className="flex justify-between gap-2">
+                      <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
+                      <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                     </div>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-          <p className="mt-3 text-[11px] leading-relaxed text-white/40">للمشاركة اكتب «دخول» في الشات. المشاركون: {state.joined.length}</p>
-          {test && (
-            <form
-              className="mt-3 flex gap-1"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const m = /^([^:]+):(.+)$/.exec(fake.trim());
-                if (m) onChat(m[1]!.trim(), m[2]!.trim());
-                setFake('');
-              }}
-            >
-              <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: دخول" />
-              <button className="rounded-lg bg-q-gold/20 px-2 text-xs font-black">إرسال</button>
-            </form>
-          )}
+                    {o && (
+                      <div className={cn('text-[11px]', o.cls)}>
+                        {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="mt-3 text-[11px] leading-relaxed text-white/40">للمشاركة اكتب «دخول» في الشات.</p>
+            {test && (
+              <form
+                className="mt-3 flex gap-1"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const m = /^([^:]+):(.+)$/.exec(fake.trim());
+                  if (m) onChat(m[1]!.trim(), m[2]!.trim());
+                  setFake('');
+                }}
+              >
+                <input className="q-input flex-1 text-xs" dir="ltr" value={fake} onChange={(e) => setFake(e.target.value)} placeholder="ali: دخول" />
+                <button className="rounded-lg bg-q-gold/20 px-2 text-xs font-black">إرسال</button>
+              </form>
+            )}
+          </div>
+          <div className="q-card">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm font-black text-q-cyan">👥 المشاركون</span>
+              <span className="rounded-full bg-q-cyan/15 px-2 py-0.5 text-xs font-black text-q-cyan">{state.joined.length}</span>
+            </div>
+            {state.joined.length === 0 ? (
+              <p className="text-xs text-white/50">اكتبوا «دخول» في الشات عشان تشاركون</p>
+            ) : (
+              <div className="flex max-h-64 flex-wrap gap-1.5 overflow-auto">
+                {state.joined.map((k) => (
+                  <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                    {state.names[k] ?? k}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
