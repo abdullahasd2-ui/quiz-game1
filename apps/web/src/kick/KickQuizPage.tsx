@@ -4,6 +4,7 @@ import {
   finish,
   KICK_CHANNEL_RE,
   newStream,
+  publicView,
   POINTS,
   standings,
   streamerAct,
@@ -17,6 +18,8 @@ import {
   type StreamQuestion,
   type StreamState,
   type StreamerAct,
+  type SyncClientToServerEvents,
+  type SyncServerToClientEvents,
 } from '@quiz/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
@@ -27,6 +30,7 @@ import { QuestionImage } from '@/game/ui';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
+const randomId = (n: number) => Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
 
 async function fetchQuestion(category: number, points: number): Promise<StreamQuestion> {
   const res = await fetch(`${SERVER_URL}/api/kick/question?category=${category}&points=${points}`);
@@ -34,7 +38,7 @@ async function fetchQuestion(category: number, points: number): Promise<StreamQu
   return (await res.json()) as StreamQuestion;
 }
 
-const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
+export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'answer-right': { label: '✅ جاوب صح', cls: 'text-q-green' },
   'answer-wrong': { label: '❌ جاوب غلط', cls: 'text-q-red' },
   'swap-win': { label: '🔄 بادل وربح', cls: 'text-q-green' },
@@ -58,6 +62,17 @@ export function KickQuizPage() {
   const [busy, setBusy] = useState(false);
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
+  // Pairing with the broadcast page: it shows the game without the streamer's secrets.
+  const [syncCode] = useState(() => {
+    try {
+      return sessionStorage.getItem('kick-sync-code') ?? randomId(8);
+    } catch {
+      return randomId(8);
+    }
+  });
+  const hostKey = useRef(randomId(24));
+  const syncSocket = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const set = useCallback((s: StreamState) => {
     ref.current = s;
@@ -91,6 +106,27 @@ export function KickQuizPage() {
     }, 500);
     return () => clearInterval(t);
   }, [playing, set]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('kick-sync-code', syncCode);
+    } catch {
+      /* private mode */
+    }
+    const sock: Socket<SyncServerToClientEvents, SyncClientToServerEvents> = io(`${SERVER_URL}/kick-sync`);
+    syncSocket.current = sock;
+    const publish = () => sock.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: state ? publicView(state) : null, hostNow: Date.now() }, () => {});
+    sock.on('connect', publish);
+    if (sock.connected) publish();
+    return () => {
+      sock.disconnect();
+      syncSocket.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [syncCode]);
+  useEffect(() => {
+    syncSocket.current?.emit('sync:publish', { code: syncCode, hostKey: hostKey.current, state: state ? publicView(state) : null, hostNow: Date.now() }, () => {});
+  }, [state, syncCode]);
 
   useEffect(() => {
     if (!playing || test) return;
@@ -198,6 +234,19 @@ export function KickQuizPage() {
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
+      </div>
+      <div className="mx-auto mb-2 max-w-5xl rounded-xl border border-q-line bg-q-panel px-3 py-2 text-xs text-white/70">
+        🖥️ شاشة البث (هذي اللي تبثها، بدون جوابك): <bdi dir="ltr" className="select-all font-black text-q-cyan">{`${location.origin}/kick/quiz/screen?code=${syncCode}`}</bdi>
+        <button
+          type="button"
+          className="ms-2 rounded-lg bg-q-gold/20 px-2 py-0.5 font-black"
+          onClick={() => {
+            void navigator.clipboard?.writeText(`${location.origin}/kick/quiz/screen?code=${syncCode}`).then(() => setCopied(true));
+          }}
+        >
+          {copied ? 'تم النسخ' : 'نسخ الرابط'}
+        </button>
+        <span className="block text-[11px] text-white/50">هذي الصفحة لك إنت بس (تشوف فيها السؤال وتجاوب) — لا تبثها.</span>
       </div>
       <div className="mx-auto grid max-w-5xl gap-3 md:grid-cols-[1fr_17rem]">
         <div className="q-card">

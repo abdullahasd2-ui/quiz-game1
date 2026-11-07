@@ -221,3 +221,34 @@ export function standings(s: StreamState): StreamRow[] {
     .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0 }))
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 }
+
+/**
+ * What the broadcast page may show: the same state with the streamer's secret removed until the round ends —
+ * his choice, the right answer, and (while the streamer is still deciding) the question itself.
+ */
+export function publicView(s: StreamState): StreamState {
+  const r = s.round;
+  if (!r || s.phase === 'result' || s.phase === 'over' || s.phase === 'board' || s.phase === 'lobby') return s;
+  const q = r.question;
+  const hidden: StreamQuestion =
+    s.phase === 'streamer'
+      ? { ...q, text: '', options: [], imageUrl: null, revealUrl: null, correctIndex: -1 }
+      : s.phase === 'choose'
+        ? { ...q, options: [], revealUrl: null, correctIndex: -1 }
+        : { ...q, revealUrl: null, correctIndex: -1 };
+  // Picks are kept only as a count: nobody's option is shown, so nobody copies it.
+  const picks = Object.fromEntries(Object.keys(r.picks).map((k) => [k, 0]));
+  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks } };
+}
+
+/** Short code that pairs the control page with the broadcast page. */
+export const SYNC_CODE_RE = /^[A-Za-z0-9]{6,12}$/;
+export type SyncPublish = { code: string; hostKey: string; state: StreamState | null; hostNow: number };
+export type SyncView = { state: StreamState | null; hostNow: number };
+export interface SyncClientToServerEvents {
+  'sync:publish': (m: SyncPublish, reply: (res: { ok: boolean; error?: string }) => void) => void;
+  'sync:watch': (code: string, reply: (res: { ok: boolean; error?: string }) => void) => void;
+}
+export interface SyncServerToClientEvents {
+  'sync:view': (v: SyncView) => void;
+}

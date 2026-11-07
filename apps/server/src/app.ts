@@ -18,6 +18,7 @@ import { errorHandler } from './lib/errors';
 import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
 import { KickChatHub } from './kick/chat';
+import { attachKickSync } from './kick/sync';
 import { kickQuestionRoutes } from './kick/question';
 import { kickOAuthRoutes } from './kick/oauth';
 import { attachKickRelay } from './kick/socket';
@@ -41,6 +42,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   const game = attachGameServer(app, gameOptions);
   const kickHub = new KickChatHub({ onError: (err) => app.log.warn({ err }, 'kick chat lookup failed') });
   attachKickRelay(game.io, kickHub);
+  attachKickSync(game.io);
   app.addHook('onClose', async () => kickHub.closeAll());
   await app.register(kickQuestionRoutes);
   await app.register(kickOAuthRoutes, {
