@@ -63,18 +63,27 @@ export function Background3D() {
           </span>
         ))}
       </div>
-      <div className="absolute inset-0 opacity-35 [perspective:900px]">
+      {/* Safari/WebKit (the iOS app too) flattens 3D under any ancestor with opacity, and needs the perspective on the cube's
+          direct parent, so: no opacity wrapper (the faces are see-through themselves), perspective on each moving holder. */}
+      <div className="absolute inset-0">
         {cubes.map((c) => (
-          <div key={c.id} className="absolute animate-float-word" style={c.outer}>
-            <div className="relative animate-spin-3d [transform-style:preserve-3d]" style={c.inner}>
+          <div key={c.id} className="absolute animate-float-word" style={{ ...c.outer, perspective: 700, WebkitPerspective: 700 }}>
+            <div className="relative animate-spin-3d" style={{ ...c.inner, transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}>
               {FACES.map((f, i) => (
                 <span
                   key={i}
                   className={
-                    'absolute inset-0 grid place-items-center rounded-lg border font-black [backface-visibility:hidden] ' +
+                    'absolute inset-0 grid place-items-center rounded-lg border font-black ' +
                     (f.tone === 'gold' ? 'border-q-gold/60 bg-q-gold/15 text-q-gold' : 'border-q-cyan/60 bg-q-cyan/15 text-q-cyan')
                   }
-                  style={{ transform: `${FACE_TRANSFORMS[i]} translateZ(${c.size / 2}px)`, fontSize: c.size * 0.28 }}
+                  style={{
+                    transform: `${FACE_TRANSFORMS[i]} translateZ(${c.size / 2}px)`,
+                    WebkitTransform: `${FACE_TRANSFORMS[i]} translateZ(${c.size / 2}px)`,
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    opacity: 0.4,
+                    fontSize: c.size * 0.28,
+                  }}
                 >
                   {f.text}
                 </span>
