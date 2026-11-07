@@ -5,6 +5,7 @@ import { QuestionImage } from '@/game/ui';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { OUTCOME } from './KickQuizPage';
+import { VIEWER_STEPS } from './QuizHowTo';
 
 /** The page to broadcast: shows the game that the streamer runs from his private control page, never his secret choice. */
 export function KickQuizScreen() {
@@ -74,6 +75,19 @@ export function KickQuizScreen() {
               <div className="mt-3 text-xl">اكتبوا <b className="text-q-gold">دخول</b> في الشات عشان تلعبون</div>
               <div className="mt-2 text-white/60">المشاركون: {state.joined.length} · الأسئلة: {state.used.length}/{state.totalCells}</div>
               <div className="mt-4 text-sm text-white/50">الستريمر يختار السؤال التالي...</div>
+              {state.used.length === 0 && (
+                <ol className="mx-auto mt-6 grid max-w-2xl gap-2 text-start sm:grid-cols-2">
+                  {VIEWER_STEPS.map((st, i) => (
+                    <li key={i} className="flex gap-2 rounded-xl border border-q-line bg-q-panel p-3">
+                      <span className="text-xl">{st.icon}</span>
+                      <div>
+                        <div className="text-sm font-black">{st.title}</div>
+                        <div className="text-xs leading-relaxed text-white/70">{st.text}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              )}
             </div>
           )}
 
