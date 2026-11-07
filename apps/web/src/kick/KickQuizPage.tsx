@@ -258,7 +258,7 @@ export function KickQuizPage() {
         </span>
       </div>
       <div className="mx-auto mb-2 max-w-5xl rounded-xl border border-q-line bg-q-panel px-3 py-2 text-xs text-white/70">
-        🖥️ شاشة البث (هذي اللي تبثها، بدون جوابك): <bdi dir="ltr" className="select-all font-black text-q-cyan">{`${location.origin}/kick/quiz/screen?code=${syncCode}`}</bdi>
+        🖥️ شاشة البث (هذي اللي تبثها، بدون جوابك): <span className="font-black tracking-widest text-white/40">••••••••</span>
         <button
           type="button"
           className="ms-2 rounded-lg bg-q-gold/20 px-2 py-0.5 font-black"
