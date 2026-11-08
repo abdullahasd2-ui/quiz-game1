@@ -30,9 +30,14 @@ export function useStreamFx(state: StreamState | null, secondsLeft: number | nul
       case 'result': {
         const rows = Object.values(state.result?.rows ?? {});
         play(rows.some((r) => r.delta > 0) ? 'win' : 'wrong');
-        if (rows.some((r) => r.streak)) play('boom', 0.7), play('fanfare', 0.85);
+        if (rows.some((r) => r.streak || r.first)) play('boom', 0.7), play('fanfare', 0.85);
+        if (state.result?.stolen) play('boom'), play('swap', 0.2);
         break;
       }
+      case 'steal':
+        play('wrong');
+        play('swap', 0.4);
+        break;
       case 'over':
         play('fanfare');
         break;
