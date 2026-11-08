@@ -22,7 +22,12 @@ const STREAK_DOUBLE = 3;
 export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'answer' | 'result' | 'over';
 export type StreamChoice = 'answer' | 'swap';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong';
+/**
+ * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
+ * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
+ */
+export type StreamVariant = 'swap' | 'flip';
 
 export type StreamRound = {
   question: StreamQuestion;
@@ -55,6 +60,8 @@ export type StreamState = {
   board?: { id: number; name: string; icon: string }[];
   /** How long the chat has to answer, picked by the streamer before the game. */
   answerMs?: number;
+  /** Which game: «جاوب أو بادل» (default) or «جاوب أو اقلب». The special choice is stored as 'swap' in both. */
+  variant?: StreamVariant;
   round: StreamRound | null;
   deadline: number | null;
   result: StreamResult | null;
@@ -104,7 +111,7 @@ export function deal(state: StreamState, cell: string, question: StreamQuestion,
 
 const ANSWER_WORDS = ['1', 'جاوب'];
 const SCORE_WORDS = ['نقاطي', 'نقاطى'];
-const SWAP_WORDS = ['2', 'بادل'];
+const SWAP_WORDS = ['2', 'بادل', 'اقلب'];
 
 /** Option index from "3", "جاوب 3", "جاوب برج ايفل" or just the option's text. */
 export function parseOption(text: string, options: string[]): number | null {
@@ -219,9 +226,30 @@ function resolve(state: StreamState): StreamState {
     s.scores[k] = Math.max(MIN_SCORE, (s.scores[k] ?? 0) + delta);
     rows[k] = { outcome, delta, picked, ...(streak ? { streak } : {}) };
   };
+  const players = new Set([...Object.keys(choices), ...Object.keys(picks)]);
+  if (s.variant === 'flip') {
+    // «جاوب أو اقلب»: a flipped answer scores the other way round (right = minus, wrong = plus); flippers score nothing.
+    const flipped = (k: string, picked: number | null) => {
+      if (picked === null) apply(k, 'idle', 0, null);
+      else if (picked === q.correctIndex) apply(k, 'flipped-right', -q.points, picked);
+      else apply(k, 'flipped-wrong', q.points, picked);
+    };
+    const chatFlipped = [...players].some((k) => choices[k] === 'swap');
+    if (st.choice === 'swap') apply(s.streamer, 'flip', 0, null);
+    // The chat flipped the streamer: his own answer is turned over, once, however many flipped.
+    else if (chatFlipped && sp !== null) flipped(s.streamer, sp);
+    else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp);
+    for (const k of players) {
+      if (choices[k] === 'swap') apply(k, 'flip', 0, null);
+      else if (k === st.partner) flipped(k, picks[k] ?? null);
+      else if (picks[k] === undefined) apply(k, 'idle', 0, null);
+      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? q.points : 0, picks[k]!);
+    }
+    return finishResolve(s, rows, st, sp, streamerCorrect);
+  }
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
   else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp);
-  for (const k of new Set([...Object.keys(choices), ...Object.keys(picks)])) {
+  for (const k of players) {
     if (choices[k] === 'swap') apply(k, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, null);
     else if (picks[k] === undefined) apply(k, 'idle', 0, null);
     else {
@@ -230,6 +258,17 @@ function resolve(state: StreamState): StreamState {
       apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? q.points : 0, picks[k]!);
     }
   }
+  return finishResolve(s, rows, st, sp, streamerCorrect);
+}
+
+function finishResolve(
+  s: StreamState,
+  rows: StreamResult['rows'],
+  st: { choice: StreamChoice; partner: string | null },
+  sp: number | null,
+  streamerCorrect: boolean,
+): StreamState {
+  const { question: q, choices, picks } = s.round!;
   const at = s.round!.pickAt ?? {};
   const fastest =
     Object.keys(picks)
@@ -239,6 +278,13 @@ function resolve(state: StreamState): StreamState {
   s.phase = 'result';
   s.deadline = null;
   return s;
+}
+
+/** Words for each stream game, so the pages say «بادل» or «اقلب» as fits. */
+export function streamLabels(variant: StreamVariant | undefined) {
+  return variant === 'flip'
+    ? { title: 'جاوب أو اقلب', verb: 'اقلب', did: 'قلب', icon: '🔀', withStreamer: 'اقلب على الستريمر', withPlayer: 'أو اقلب على واحد من المشاركين' }
+    : { title: 'جاوب أو بادل', verb: 'بادل', did: 'بادل', icon: '🔄', withStreamer: 'بادل مع الستريمر', withPlayer: 'أو بادل مع واحد من المشاركين' };
 }
 
 /** Timeouts: the choose window ends by itself, and so does the answer window. */

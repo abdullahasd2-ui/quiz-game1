@@ -169,3 +169,44 @@ describe('streak, fastest and «نقاطي»', () => {
     expect(chatMessage(s, 'Nobody', 'نقاطي', 50).scoreAsk?.key).toBe('ali'); // only players
   });
 });
+
+describe('«جاوب أو اقلب» on the stream', () => {
+  const flipGame = () => {
+    let s = newStream('S', 20);
+    s = { ...s, variant: 'flip' as const };
+    for (const n of ['Ali', 'Sara', 'Omar']) s = chatMessage(s, n, 'دخول');
+    return deal(toBoard(s), '1:300', q, 0);
+  };
+  it('chat flips the streamer: his result is turned over once; flippers score nothing', () => {
+    const run = (streamerIndex: number) => {
+      let s = streamerAct(flipGame(), { type: 'answer', index: streamerIndex }, 0);
+      s = chatMessage(s, 'Ali', 'اقلب', 1);
+      s = chatMessage(s, 'Sara', '2', 1);
+      s = chatMessage(s, 'Omar', '1', 1);
+      s = streamerAct(s, { type: 'show' }, 2);
+      s = chatMessage(s, 'Omar', '2', 3);
+      return streamerAct(s, { type: 'finish' }, 4);
+    };
+    const right = run(1);
+    expect(right.scores).toMatchObject({ s: -300, ali: 0, sara: 0, omar: 300 });
+    expect(right.result?.rows.s?.outcome).toBe('flipped-right');
+    expect(right.result?.rows.ali?.outcome).toBe('flip');
+    expect(run(0).scores).toMatchObject({ s: 300, ali: 0, sara: 0 });
+  });
+  it('nobody flips: the streamer scores as usual', () => {
+    let s = streamerAct(flipGame(), { type: 'answer', index: 1 }, 0);
+    s = streamerAct(streamerAct(s, { type: 'show' }, 1), { type: 'finish' }, 2);
+    expect(s.scores.s).toBe(300);
+  });
+  it('the streamer flips a player: that player’s result is turned over, the streamer scores nothing', () => {
+    const run = (text: string) => {
+      let s = streamerAct(flipGame(), { type: 'swap', user: 'ali' }, 0);
+      s = streamerAct(s, { type: 'show' }, 1);
+      s = chatMessage(s, 'Ali', text, 2);
+      return streamerAct(s, { type: 'finish' }, 3);
+    };
+    expect(run('2').scores).toMatchObject({ s: 0, ali: -300 }); // right → minus
+    expect(run('3').scores).toMatchObject({ s: 0, ali: 300 }); // wrong → plus
+    expect(run('2').result?.rows.ali?.outcome).toBe('flipped-right');
+  });
+});
