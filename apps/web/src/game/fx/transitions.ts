@@ -70,5 +70,7 @@ function resultCues(view: RoomView): Planned[] {
   else if (mine > 0) out.push(['win', delay]);
   else if (mine < 0) out.push(['wrong', delay]);
   else if (!steal) out.push(['pop', 0]);
+  // A streak double gets its own bang once the team cards are in.
+  if (r.streakBonus?.some(Boolean)) out.push(['boom', delay + 0.8], ['fanfare', delay + 0.95]);
   return out;
 }

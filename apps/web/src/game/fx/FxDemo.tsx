@@ -1,4 +1,6 @@
+import type { RoomView } from '@quiz/shared';
 import { useState } from 'react';
+import { ResultOverlay } from '../screens/ResultOverlay';
 import { cn } from '@/lib/utils';
 import { Confetti } from './Confetti';
 import { CountUp } from './CountUp';
@@ -28,6 +30,7 @@ export function FxDemo() {
   const [round, setRound] = useState(0);
   const [card, setCard] = useState<'win' | 'lose' | null>(null);
   const [confetti, setConfetti] = useState(0);
+  const [showResult, setShowResult] = useState(0);
 
   const hear = (cue: Cue) => {
     unlockAudio();
@@ -47,7 +50,11 @@ export function FxDemo() {
         <h1 className="text-2xl font-black text-q-gold">معاينة الأصوات والتأثيرات</h1>
         <p className="text-sm text-white/60">لا موسيقى خلفية: فقط أصوات قصيرة للانتقالات والأحداث. اضغط أي زر لتسمعه.</p>
 
+        {showResult && <ResultOverlay key={showResult} view={SAMPLE_RESULT} />}
         <div className="flex flex-wrap items-center gap-2">
+          <button type="button" className="rounded-xl border border-q-orange px-4 py-2 text-sm font-bold" onClick={() => setShowResult((n) => n + 1)}>
+            🔥 نتيجة جولة فيها دبل
+          </button>
           <button type="button" className="rounded-xl bg-q-purple/80 px-4 py-2 text-sm font-bold" onClick={sequence}>
             ▶ شغّل الكل بالتتابع
           </button>
@@ -149,3 +156,24 @@ const SCHEDULE_PAUSE: Record<Cue, number> = {
   swap: 800,
   fanfare: 1900,
 };
+
+/** A finished round where team 0 hit its third right answer in a row (doubled), for the result screen preview. */
+const SAMPLE_RESULT = {
+  code: 'DEMO',
+  mode: 'mobile',
+  variant: 'swap',
+  status: 'playing',
+  you: 0,
+  role: 'captain',
+  phase: 'result',
+  turn: 0,
+  categories: [1, 2],
+  used: [1],
+  teams: [
+    { name: 'الصقور', score: 1400, connected: true, members: [] },
+    { name: 'النمور', score: 500, connected: true, members: [] },
+  ],
+  streaks: [0, 1],
+  question: { categoryId: 1, points: 400, type: 'text', text: 'وش عاصمة أستراليا؟', options: ['سيدني', 'كانبرا', 'ملبورن', 'بيرث'], imageUrl: null },
+  result: { correctIndex: 1, revealUrl: null, actions: ['answer', 'answer'], answers: [1, 0], deltas: [800, 0], streakBonus: [true, false] },
+} as unknown as RoomView;

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { play, resumeAudioIfNeeded, unlockAudio } from './fx/sound';
 import { SoundToggle } from './fx/SoundToggle';
+import { Intro } from './fx/Intro';
 import { StreamerLink } from './fx/StreamerLink';
 import { useGameFx } from './fx/useGameFx';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
@@ -50,6 +51,15 @@ export function GamePage() {
     screen = view.you === 'tv' ? <TvQuestionScreen view={view} deadline={deadline} /> : <QuestionScreen view={view} deadline={deadline} />;
   }
 
+  // Each new screen is dealt onto the table (see screen-in in index.css); within one question the screen stays put.
+  const screenKey = !view
+    ? 'home'
+    : view.status !== 'playing'
+      ? view.status
+      : view.variant === 'hide' && view.hide
+        ? `hide-${view.hide.round}`
+        : `${view.phase === 'board' ? 'board' : 'q'}-${view.used.length}`;
+
   return (
     <div
       className="dark relative isolate min-h-dvh bg-q-bg font-sans text-white"
@@ -60,6 +70,7 @@ export function GamePage() {
         if (button && !button.disabled && !button.hasAttribute('data-silent')) play('tap');
       }}
     >
+      <Intro />
       <Background3D />
       <SoundToggle />
       {!view && <StreamerLink />}
@@ -78,7 +89,11 @@ export function GamePage() {
           انقطع الاتصال — جاري إعادة الاتصال...
         </div>
       )}
-      <main className="relative z-10 mx-auto max-w-[960px] px-4 pt-12 pb-6">{screen}</main>
+      <main className="relative z-10 mx-auto max-w-[960px] px-4 pt-12 pb-6">
+        <div key={screenKey} className="motion-safe:animate-screen-in">
+          {screen}
+        </div>
+      </main>
       {view?.status === 'playing' && view.phase === 'result' && <ResultOverlay view={view} />}
     </div>
   );

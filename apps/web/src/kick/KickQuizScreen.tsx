@@ -1,5 +1,8 @@
 import { displayName, standings, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
 import { useEffect, useRef, useState } from 'react';
+import { SoundToggle } from '@/game/fx/SoundToggle';
+import { unlockAudio } from '@/game/fx/sound';
+import { useStreamFx } from './useStreamFx';
 import { io, type Socket } from 'socket.io-client';
 import { QuestionImage } from '@/game/ui';
 import { SERVER_URL } from '@/lib/server';
@@ -50,6 +53,9 @@ export function KickQuizScreen() {
   }, [code]);
 
   const state: StreamState | null = view?.state ?? null;
+  const secondsLeft = state?.deadline ? Math.max(0, Math.ceil((state.deadline - (now - offset)) / 1000)) : null;
+  useStreamFx(state, state?.phase === 'choose' || state?.phase === 'answer' ? secondsLeft : null);
+
   if (!state) {
     return (
       <div className="grid min-h-dvh place-items-center bg-q-bg p-6 text-center font-sans text-white relative isolate" dir="rtl">
@@ -75,9 +81,23 @@ export function KickQuizScreen() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl">
+    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl" onPointerDown={unlockAudio}>
       <Background3D />
-      <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between">
+      <SoundToggle />
+      {/* Fastest right answer of the round flies across the screen. */}
+      {state.phase === 'result' && state.result?.fastest && (
+        <div key={`fast-${state.used.length}`} className="pointer-events-none fixed inset-x-0 top-1/3 z-30 flex justify-center motion-safe:animate-fly-across" style={{ animationDelay: '0.6s' }}>
+          <div className="rounded-2xl border-2 border-q-gold bg-q-bg/90 px-6 py-3 text-center shadow-[0_0_40px_-6px_rgba(247,201,72,0.8)]">
+            <div className="text-sm font-black text-q-gold">⚡ أسرع جواب صح</div>
+            <div className="text-3xl font-black">{displayName(state, state.result.fastest)}</div>
+          </div>
+        </div>
+      )}
+      {/* «نقاطي» from the chat: that player's score and rank. */}
+      {state.scoreAsk && (
+        <ScoreCard key={state.scoreAsk.at} state={state} who={state.scoreAsk.key} />
+      )}
+      <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between ps-12">
         <div className="text-lg font-black">
           <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">بادل</span>
         </div>
@@ -198,12 +218,12 @@ export function KickQuizScreen() {
                 return (
                   <li key={row.key}>
                     <div className="flex justify-between gap-2">
-                      <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
+                      <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}{row.run > 0 && <span className="ms-1 text-[10px]" title="إجابات صح ورا بعض">{'🔥'.repeat(row.run)}</span>}</span>
                       <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                     </div>
                     {o && (
                       <div className={cn('text-xs', o.cls)}>
-                        {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                        {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
                       </div>
                     )}
                   </li>
@@ -234,3 +254,24 @@ export function KickQuizScreen() {
   );
 }
 
+
+function ScoreCard({ state, who }: { state: StreamState; who: string }) {
+  const all = standings(state);
+  const rank = all.findIndex((r) => r.key === who) + 1;
+  const me = all[rank - 1];
+  if (!me) return null;
+  return (
+    <div className="pointer-events-none fixed bottom-6 left-1/2 z-30 -translate-x-1/2 motion-safe:animate-toast-in">
+      <div className="flex items-center gap-3 rounded-2xl border border-q-cyan/50 bg-q-bg/90 px-5 py-3 shadow-[0_0_30px_-8px_rgba(56,189,248,0.8)]">
+        <span className="text-2xl">📊</span>
+        <div>
+          <div className="font-black">{me.name}</div>
+          <div className="text-sm text-white/70">
+            <bdi dir="ltr" className="font-black text-q-gold">{me.score}</bdi> نقطة · المركز <b className="text-q-cyan">{rank}</b> من {all.length}
+            {me.run > 0 && <span className="ms-1">{'🔥'.repeat(me.run)}</span>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -15,6 +15,8 @@ export const STREAM_ANSWER_MS = 30_000;
 /** Answer times the streamer can pick before the game, in seconds. */
 export const STREAM_ANSWER_CHOICES = [15, 20, 30, 45, 60] as const;
 const MAX_PLAYERS = 400;
+/** Right answers in a row for a double (same as the main game). */
+const STREAK_DOUBLE = 3;
 
 /** A dealt question; `correctIndex` stays on the streamer's page and never goes into chat. */
 export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
@@ -30,8 +32,13 @@ export type StreamRound = {
   choices: Record<string, StreamChoice>;
   /** Option picked per viewer. */
   picks: Record<string, number>;
+  /** When each viewer answered (for the fastest right answer). */
+  pickAt?: Record<string, number>;
 };
-export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null }> };
+export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean }>;
+  /** The chatter who answered right first. */
+  fastest?: string | null;
+};
 
 export type StreamState = {
   /** The streamer's name (lowercase), also the key of their score. */
@@ -51,6 +58,10 @@ export type StreamState = {
   round: StreamRound | null;
   deadline: number | null;
   result: StreamResult | null;
+  /** Right answers in a row per player (the streamer included); the third is doubled. */
+  streaks?: Record<string, number>;
+  /** Last «نقاطي» from the chat, for the broadcast page to show that player's score. */
+  scoreAsk?: { key: string; at: number } | null;
 };
 
 export function newStream(streamer: string, totalCells: number, answerMs = STREAM_ANSWER_MS): StreamState {
@@ -64,8 +75,9 @@ const clone = (s: StreamState): StreamState => ({
   names: { ...s.names },
   scores: { ...s.scores },
   joined: [...s.joined],
+  streaks: { ...(s.streaks ?? {}) },
   used: [...s.used],
-  round: s.round && { ...s.round, streamer: s.round.streamer && { ...s.round.streamer }, choices: { ...s.round.choices }, picks: { ...s.round.picks } },
+  round: s.round && { ...s.round, pickAt: { ...(s.round.pickAt ?? {}) }, streamer: s.round.streamer && { ...s.round.streamer }, choices: { ...s.round.choices }, picks: { ...s.round.picks } },
 });
 
 /** The streamer opens the board (after the lobby), or goes back to it between questions. */
@@ -91,6 +103,7 @@ export function deal(state: StreamState, cell: string, question: StreamQuestion,
 }
 
 const ANSWER_WORDS = ['1', 'جاوب'];
+const SCORE_WORDS = ['نقاطي', 'نقاطى'];
 const SWAP_WORDS = ['2', 'بادل'];
 
 /** Option index from "3", "جاوب 3", "جاوب برج ايفل" or just the option's text. */
@@ -105,7 +118,7 @@ export function parseOption(text: string, options: string[]): number | null {
   return i >= 0 ? i : null;
 }
 
-export function chatMessage(state: StreamState, user: string, text: string, _now = 0): StreamState {
+export function chatMessage(state: StreamState, user: string, text: string, now = 0): StreamState {
   const key = user.toLowerCase();
   if (key === state.streamer) return state;
   const t = normalize(text).toLowerCase();
@@ -116,6 +129,11 @@ export function chatMessage(state: StreamState, user: string, text: string, _now
     s.names[key] = user;
     s.joined.push(key);
     s.scores[key] ??= 0;
+    return s;
+  }
+  if (SCORE_WORDS.includes(t) && s.joined.includes(key)) {
+    s = clone(s);
+    s.scoreAsk = { key, at: now };
     return s;
   }
   const r = s.round;
@@ -134,6 +152,7 @@ export function chatMessage(state: StreamState, user: string, text: string, _now
     if (i === null) return s;
     s = clone(s);
     s.round!.picks[key] = i;
+    s.round!.pickAt![key] = now;
     return s;
   }
   return s;
@@ -184,9 +203,21 @@ function resolve(state: StreamState): StreamState {
   const sp = st.choice === 'swap' ? (picks[st.partner!] ?? null) : st.pick;
   const streamerCorrect = sp === q.correctIndex;
   const rows: StreamResult['rows'] = {};
-  const apply = (k: string, outcome: StreamOutcome, delta: number, picked: number | null) => {
+  const streaks = s.streaks!;
+  const apply = (k: string, outcome: StreamOutcome, base: number, picked: number | null) => {
+    // Streak: answering right three times in a row doubles the third; a wrong (or missed) answer breaks it.
+    let delta = base;
+    let streak = false;
+    if (outcome === 'answer-right' && base > 0) {
+      const run = (streaks[k] ?? 0) + 1;
+      streaks[k] = run >= STREAK_DOUBLE ? 0 : run;
+      if (run >= STREAK_DOUBLE && base > 0) {
+        delta = base * 2;
+        streak = true;
+      }
+    } else if (outcome === 'answer-wrong' || outcome === 'idle') streaks[k] = 0;
     s.scores[k] = Math.max(MIN_SCORE, (s.scores[k] ?? 0) + delta);
-    rows[k] = { outcome, delta, picked };
+    rows[k] = { outcome, delta, picked, ...(streak ? { streak } : {}) };
   };
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
   else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp);
@@ -199,7 +230,12 @@ function resolve(state: StreamState): StreamState {
       apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? q.points : 0, picks[k]!);
     }
   }
-  s.result = { correctIndex: q.correctIndex, streamerChoice: st.choice, streamerPartner: st.partner, streamerPick: sp, streamerCorrect, rows };
+  const at = s.round!.pickAt ?? {};
+  const fastest =
+    Object.keys(picks)
+      .filter((k) => picks[k] === q.correctIndex && k !== st.partner && choices[k] !== 'swap')
+      .sort((a, b) => (at[a] ?? 0) - (at[b] ?? 0))[0] ?? null;
+  s.result = { correctIndex: q.correctIndex, streamerChoice: st.choice, streamerPartner: st.partner, streamerPick: sp, streamerCorrect, rows, fastest };
   s.phase = 'result';
   s.deadline = null;
   return s;
@@ -220,11 +256,11 @@ export function finish(state: StreamState): StreamState {
   return s;
 }
 
-export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number };
+export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number; streak: boolean; run: number };
 /** Standings, best first; after a question each row also says how that player took it. */
 export function standings(s: StreamState): StreamRow[] {
   return Object.keys(s.scores)
-    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0 }))
+    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0, streak: Boolean(s.result?.rows[k]?.streak), run: s.streaks?.[k] ?? 0 }))
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 }
 

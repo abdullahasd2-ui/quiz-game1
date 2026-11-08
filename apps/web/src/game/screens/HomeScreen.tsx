@@ -259,6 +259,11 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>• زر 💡 تلميح (مرة بالجولة): يطلع سؤال متوسط — صح = ينشال نص الصناديق، غلط = النقاط للخصم على طول</div>
           <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات</div>
         </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• جاوب صح 3 مرات ورا بعض: نقاط السؤال الثالث تتضاعف!</div>
+          <div>• كل إجابة صح تضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 الجاية دبل</div>
+          <div>• جواب غلط يرجّع السلسلة من الصفر، و«بادل» أو «اعكس» ما يأثر عليها</div>
+        </HowSection>
       </div>
       <button type="button" onClick={onClose} className="q-btn-tv mt-3.5">
         فهمت! 🚀

@@ -68,7 +68,12 @@ export type RoundResult = {
   /** Chosen option index, or -1 when the team stole or ran out of time. */
   answers: [number, number];
   deltas: [number, number];
+  /** The team's third right answer in a row: its points for this question were doubled. */
+  streakBonus?: [boolean, boolean];
 };
+
+/** Right answers in a row that earn a double: the third one counts twice. */
+export const STREAK_FOR_DOUBLE = 3;
 
 /** How a hide round ended. */
 export type HideOutcome = 'hit' | 'miss' | 'timeout' | 'hint-failed';
@@ -119,6 +124,8 @@ export type RoomView = {
   myAnswer: number | null;
   votes: VoteView | null;
   result: RoundResult | null;
+  /** Right answers in a row per team (0..2); the next one at 2 is doubled. */
+  streaks?: [number, number];
   /** Only in the hide variant. */
   hide: HideView | null;
 };
