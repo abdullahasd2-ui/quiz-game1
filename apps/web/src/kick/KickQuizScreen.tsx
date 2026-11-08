@@ -102,7 +102,7 @@ export function KickQuizScreen() {
         <div className="text-lg font-black">
           <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">{L.verb}</span>
         </div>
-        <QuizHowToButton />
+        <QuizHowToButton variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} />
       </div>
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">
