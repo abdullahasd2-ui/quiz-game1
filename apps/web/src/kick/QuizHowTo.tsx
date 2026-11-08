@@ -1,3 +1,4 @@
+import type { StreamVariant } from '@quiz/shared';
 import { useState } from 'react';
 import { Modal } from '@/game/ui';
 import { cn } from '@/lib/utils';
@@ -5,34 +6,55 @@ import { cn } from '@/lib/utils';
 /** The viewers' rules, as typed in the chat. Shared by the streamer's setup page and the broadcast screen. */
 export const VIEWER_STEPS: { icon: string; title: string; text: string }[] = [
   { icon: '👋', title: 'ادخل اللعبة', text: 'اكتب «دخول» في الشات — بدونها ما تلعب.' },
-  { icon: '🎙️', title: 'الستريمر أول', text: 'يشوف السؤال ويجاوب أو يبادل مع واحد من المشاركين، واختياره مخفي.' },
-  { icon: '1️⃣', title: 'دورك: جاوب أو بادل', text: 'يظهر السؤال بدون خيارات: اكتب 1 = جاوب، أو 2 = بادل مع الستريمر (أو اقلب عليه في طور جاوب أو اقلب).' },
+  { icon: '🎙️', title: 'الستريمر أول', text: 'يشوف السؤال ويجاوب، أو يبادل/يقلب على واحد من المشاركين، واختياره مخفي.' },
+  { icon: '1️⃣', title: 'دورك: 1 أو 2', text: 'يظهر السؤال بدون خيارات: اكتب 1 = جاوب، أو 2 = بادل مع الستريمر (أو اقلب عليه — حسب الطور).' },
   { icon: '✍️', title: 'الجواب', text: 'إذا اخترت جاوب تظهر الخيارات: اكتب رقمها من 1 إلى 4 (أو «جاوب» + الجواب). أول جواب هو اللي يُحسب.' },
   { icon: '📊', title: 'نقاطي', text: 'اكتب «نقاطي» بأي وقت ويطلع على الشاشة رصيدك ومركزك.' },
   { icon: '🏆', title: 'النتيجة', text: 'يظهر الجواب الصحيح (والصورة بدون تغبيش) وأفضل 10 وكيف أخذ كل واحد السؤال.' },
 ];
 
-export const SCORING: string[] = [
-  'جاوب صح = نقاط السؤال، وجاوب غلط = ما تاخذ شي.',
-  'بادل مع الستريمر: إذا جوابه صح تاخذ ضعف النقاط، وإذا غلط تنقص منك نقاط السؤال.',
-  'إذا الستريمر بادل معك، جوابك يُحسب له هو (ضعف أو ناقص)، وأنت ما تاخذ عليه نقاط.',
-  '🔀 طور «جاوب أو اقلب»: إذا قلبتوا على الستريمر، نتيجته تنقلب مرة وحدة (صح = تنقص نقاطه، غلط = تزيد)، واللي قلب ما ياخذ شي.',
-  '🔀 وإذا الستريمر قلب عليك، نتيجتك أنت تنقلب: جوابك صح = تنقص، غلط = تزيد، وهو ما ياخذ شي.',
-  '🔀 طور جاوب أو اقلب: إذا قلبتوا على الستريمر، نتيجته تنقلب (صح = تنقص نقاطه، غلط = تزيد)، واللي قلب ما ياخذ شي.',
-  '🔀 وإذا الستريمر قلب عليك، نتيجتك أنت تنقلب: جوابك صح = تنقص، غلط = تزيد.',
+/** Each stream game has its own scoring, shown as its own section. */
+export const MODE_RULES: { variant: StreamVariant; title: string; tone: string; lines: string[] }[] = [
+  {
+    variant: 'swap',
+    title: '🔄 جاوب أو بادل',
+    tone: 'border-q-cyan/35 bg-q-cyan/10 text-q-cyan',
+    lines: [
+      'اكتب 1 = جاوب، أو 2 = بادل مع الستريمر.',
+      'جاوب صح = نقاط السؤال، وجاوب غلط = ما تاخذ شي.',
+      'بادل مع الستريمر: تاخذ جوابه — إذا صح تاخذ ضعف النقاط، وإذا غلط تنقص منك نقاط السؤال.',
+      'إذا الستريمر بادل معك: جوابك يُحسب له هو (ضعف أو ناقص)، وأنت ما تاخذ عليه نقاط.',
+    ],
+  },
+  {
+    variant: 'flip',
+    title: '🔀 جاوب أو اقلب',
+    tone: 'border-q-purple/35 bg-q-purple/10 text-q-purple',
+    lines: [
+      'اكتب 1 = جاوب، أو 2 = اقلب على الستريمر.',
+      'جاوب صح = نقاط السؤال، وجاوب غلط = ما تاخذ شي.',
+      'اقلب على الستريمر: نتيجته تنقلب مرة وحدة مهما كان عدد اللي قلبوا — جوابه صح = تنقص نقاطه، غلط = تزيد. واللي قلب ما ياخذ شي.',
+      'إذا الستريمر قلب عليك: نتيجتك تنقلب — جوابك صح = تنقص، غلط = تزيد، وهو ما ياخذ شي.',
+    ],
+  },
+];
+
+export const COMMON_RULES: string[] = [
   '🔥 جاوب صح 3 مرات ورا بعض: نقاط السؤال الثالث دبل! والغلط يرجّع السلسلة من الصفر.',
   '⚡ أسرع واحد يجاوب صح يطلع اسمه على الشاشة.',
   'كل لاعب نقاطه لحاله، وأقل رصيد ممكن سالب 1000.',
 ];
 
-export function QuizHowTo({ forStreamer = false, className }: { forStreamer?: boolean; className?: string }) {
+/** The rules; with `variant` (a game running) only that game's section, otherwise both. */
+export function QuizHowTo({ forStreamer = false, variant, className }: { forStreamer?: boolean; variant?: StreamVariant; className?: string }) {
+  const modes = variant ? MODE_RULES.filter((m) => m.variant === variant) : MODE_RULES;
   return (
     <div className={cn('text-start', className)}>
       {forStreamer && (
         <div className="mb-3 rounded-xl border border-q-line bg-q-panel p-3 text-xs leading-relaxed text-white/80">
-          <b className="text-q-cyan">لك أنت (الستريمر):</b> اربط حسابك، اختر وقت الإجابة والفئات، وابدأ. انسخ رابط <b>شاشة البث</b> وافتحه في
-          الجهاز أو النافذة اللي تبثها — هذي الصفحة (التحكم) لا تبثها لأنك تجاوب فيها. كل جولة: اختر خانة من اللوحة، جاوب أو بادل، وبعدها
-          الشات يلعب، ثم اضغط «اللوحة» للسؤال التالي.
+          <b className="text-q-cyan">لك أنت (الستريمر):</b> اربط حسابك واضغط «ابدأ البث»، وبعدها اختر الطور والفئات ووقت الإجابة. انسخ رابط{' '}
+          <b>شاشة البث</b> وافتحه في الجهاز أو النافذة اللي تبثها، ومنها تختار الأسئلة من اللوحة. هذي الصفحة (التحكم) لا تبثها لأنك تجاوب
+          فيها: جاوب بنفسك أو بادل/اقلب على واحد من المشاركين، وبعدها الشات يلعب.
         </div>
       )}
       <ol className="space-y-2">
@@ -46,20 +68,32 @@ export function QuizHowTo({ forStreamer = false, className }: { forStreamer?: bo
           </li>
         ))}
       </ol>
-      <div className="mt-3 border-t border-q-line pt-3">
-        <div className="mb-1 text-center text-sm font-black text-q-cyan">النقاط</div>
-        <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/70">
-          {SCORING.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
+      <div className="mt-3 space-y-2.5 border-t border-q-line pt-3">
+        {modes.map((m) => (
+          <div key={m.variant} className={cn('rounded-xl border p-3', m.tone)}>
+            <div className="mb-1.5 text-sm font-black">{m.title}</div>
+            <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/80">
+              {m.lines.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="rounded-xl border border-q-orange/35 bg-q-orange/10 p-3">
+          <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في الطورين</div>
+          <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/80">
+            {COMMON_RULES.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
 }
 
 /** Small «📖 طريقة اللعب» button that opens the rules in a modal, like the main game's home screen. */
-export function QuizHowToButton({ forStreamer = false, className }: { forStreamer?: boolean; className?: string }) {
+export function QuizHowToButton({ forStreamer = false, variant, className }: { forStreamer?: boolean; variant?: StreamVariant; className?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -78,7 +112,7 @@ export function QuizHowToButton({ forStreamer = false, className }: { forStreame
           </button>
         </div>
         <div className="max-h-[70dvh] overflow-auto">
-          <QuizHowTo forStreamer={forStreamer} />
+          <QuizHowTo forStreamer={forStreamer} variant={variant} />
         </div>
       </Modal>
     </>

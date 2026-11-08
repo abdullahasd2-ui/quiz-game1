@@ -282,7 +282,7 @@ export function KickQuizPage() {
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} سؤال`} <QuizHowToButton forStreamer className="px-2.5 py-0.5 text-[11px]" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} سؤال`} <QuizHowToButton forStreamer variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
