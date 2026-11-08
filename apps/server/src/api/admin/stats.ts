@@ -82,13 +82,14 @@ export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () =>
       rows<KickStats['totals']>(sql`
         select count(*)::int as "streams", count(*) filter (where not test)::int as "realStreams",
           count(game_started_at) filter (where not test)::int as "gamesStarted", count(finished_at) filter (where not test)::int as "finished",
-          coalesce(sum(players) filter (where not test), 0)::int as "joins", coalesce(max(players) filter (where not test), 0)::int as "maxPlayers",
+          coalesce(sum(players), 0)::int as "joins", coalesce(sum(players) filter (where test), 0)::int as "testJoins",
+          coalesce(max(players), 0)::int as "maxPlayers",
           coalesce(sum(rounds) filter (where not test), 0)::int as "rounds"
         from kick_streams where ${day('started_at')} >= ${since}`),
       rows<KickStats['byDay'][number]>(sql`
         select to_char(d, 'YYYY-MM-DD') as "day", coalesce(s.streams, 0) as "streams", coalesce(s.joins, 0) as "joins", coalesce(l.links, 0) as "links"
         from generate_series(${since}, ${statsToday}, interval '1 day') as d
-        left join (select ${day('started_at')} as day, count(*)::int as streams, sum(players)::int as joins from kick_streams where not test group by 1) s on s.day = d::date
+        left join (select ${day('started_at')} as day, count(*) filter (where not test)::int as streams, sum(players)::int as joins from kick_streams group by 1) s on s.day = d::date
         left join (select ${day('linked_at')} as day, count(*)::int as links from kick_links group by 1) l on l.day = d::date
         order by d`),
       rows<KickStats['variants'][number]>(sql`
@@ -113,6 +114,7 @@ export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () =>
         gamesStarted: t?.gamesStarted ?? 0,
         finished: t?.finished ?? 0,
         joins: t?.joins ?? 0,
+        testJoins: t?.testJoins ?? 0,
         maxPlayers: t?.maxPlayers ?? 0,
         rounds: t?.rounds ?? 0,
       },
