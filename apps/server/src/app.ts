@@ -19,6 +19,9 @@ import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
 import { KickChatHub } from './kick/chat';
 import { attachKickSync } from './kick/sync';
+import { createStreamRecorder } from './kick/streamStats';
+import { db } from './db/client';
+import { kickLinks } from './db/schema';
 import { kickQuestionRoutes } from './kick/question';
 import { kickOAuthRoutes } from './kick/oauth';
 import { attachKickRelay } from './kick/socket';
@@ -42,7 +45,8 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   const game = attachGameServer(app, gameOptions);
   const kickHub = new KickChatHub({ onError: (err) => app.log.warn({ err }, 'kick chat lookup failed') });
   attachKickRelay(game.io, kickHub);
-  attachKickSync(game.io);
+  const recordStream = createStreamRecorder((err) => app.log.warn({ err }, 'kick stream stats'));
+  const kickSync = attachKickSync(game.io, { onState: (st) => void recordStream(st) });
   app.addHook('onClose', async () => kickHub.closeAll());
   await app.register(kickQuestionRoutes);
   await app.register(kickOAuthRoutes, {
@@ -50,6 +54,9 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
     clientId: env.KICK_CLIENT_ID || undefined,
     clientSecret: env.KICK_CLIENT_SECRET || undefined,
     origin: env.PUBLIC_ORIGIN ?? 'https://jawabbadel.com',
+    onLinked: async (kickUserId, channel) => {
+      await db.insert(kickLinks).values({ kickUserId, channel: channel.slice(0, 64) });
+    },
   });
 
   await app.register(adminAuthRoutes, { prefix: '/api/admin' });
@@ -59,7 +66,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
       await admin.register(adminCategoryRoutes, { prefix: '/categories' });
       await admin.register(adminQuestionRoutes, { prefix: '/questions' });
       await admin.register(adminUploadRoutes, { prefix: '/upload' });
-      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live });
+      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live, kickLive: kickSync.live });
       await admin.register(adminAccountRoutes, { prefix: '/admins' });
     },
     { prefix: '/api/admin' },

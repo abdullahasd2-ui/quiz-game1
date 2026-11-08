@@ -13,7 +13,15 @@ const SCOPES = 'user:read channel:read events:subscribe';
 
 const b64url = (b: Buffer) => b.toString('base64url');
 
-type Opts = { hub: KickChatHub; clientId?: string; clientSecret?: string; origin: string; fetchImpl?: typeof fetch };
+type Opts = {
+  hub: KickChatHub;
+  clientId?: string;
+  clientSecret?: string;
+  origin: string;
+  fetchImpl?: typeof fetch;
+  /** A streamer linked their account (for the admin stats). */
+  onLinked?: (kickUserId: number, channel: string) => Promise<void>;
+};
 
 export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
   const f = opts.fetchImpl ?? fetch;
@@ -80,6 +88,7 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
         signal: AbortSignal.timeout(10_000),
       });
       if (!subRes.ok) throw new Error(`subscribe ${subRes.status} ${(await subRes.text()).slice(0, 200)}`);
+      await opts.onLinked?.(me.user_id, me.name).catch((err) => app.log.warn({ err }, 'kick link stats'));
       return reply.redirect(`${back}?linked=${encodeURIComponent(me.name)}`);
     } catch (err) {
       app.log.warn({ err }, 'kick link failed');

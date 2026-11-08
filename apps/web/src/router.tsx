@@ -9,6 +9,7 @@ import { LoginPage } from './admin/pages/LoginPage';
 import { OverviewPage } from './admin/pages/OverviewPage';
 import { QuestionEditPage } from './admin/pages/QuestionEditPage';
 import { QuestionsPage } from './admin/pages/QuestionsPage';
+import { KickStatsPage } from './admin/pages/KickStatsPage';
 import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
 import { KickQuizScreen } from './kick/KickQuizScreen';
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
           { path: 'categories', element: <CategoriesPage /> },
           { path: 'import', element: <ImportPage /> },
           { path: 'stats', element: <StatsPage /> },
+          { path: 'kick', element: <KickStatsPage /> },
           { path: 'admins', element: <AdminsPage /> },
         ],
       },

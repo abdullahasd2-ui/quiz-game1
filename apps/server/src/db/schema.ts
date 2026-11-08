@@ -89,3 +89,37 @@ export const games = pgTable(
   },
   (t) => [index('games_created_at_idx').on(t.createdAt)],
 );
+
+/** Each time a streamer linked their Kick account (the official Kick app login). */
+export const kickLinks = pgTable(
+  'kick_links',
+  {
+    id: serial('id').primaryKey(),
+    kickUserId: integer('kick_user_id').notNull(),
+    channel: varchar('channel', { length: 64 }).notNull(),
+    linkedAt: timestamp('linked_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('kick_links_linked_at_idx').on(t.linkedAt)],
+);
+
+/**
+ * One row per stream game session (from «ابدأ البث» to the end), written by the server as the streamer's control page
+ * syncs: how many joined with «دخول», how many rounds, which mode. Test-mode sessions are marked.
+ */
+export const kickStreams = pgTable(
+  'kick_streams',
+  {
+    id: serial('id').primaryKey(),
+    session: varchar('session', { length: 32 }).notNull().unique(),
+    channel: varchar('channel', { length: 64 }).notNull(),
+    variant: varchar('variant', { length: 10 }),
+    test: boolean('test').notNull().default(false),
+    players: integer('players').notNull().default(0),
+    rounds: smallint('rounds').notNull().default(0),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    gameStartedAt: timestamp('game_started_at', { withTimezone: true }),
+    finishedAt: timestamp('finished_at', { withTimezone: true }),
+    lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('kick_streams_started_at_idx').on(t.startedAt)],
+);

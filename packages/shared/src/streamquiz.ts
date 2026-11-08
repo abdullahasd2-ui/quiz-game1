@@ -129,6 +129,10 @@ export type StreamState = {
   board?: { id: number; name: string; icon: string }[];
   /** How long the chat has to answer, picked by the streamer before the game. */
   answerMs?: number;
+  /** One id per stream session (from «ابدأ البث» to the end), for the server's stats. */
+  session?: string;
+  /** Started with «تجربة بدون Kick»: kept apart in the stats. */
+  test?: boolean;
   /** Which game: «جاوب أو بادل» (default) or «جاوب أو اقلب». The special choice is stored as 'swap' in both. */
   variant?: StreamVariant;
   round: StreamRound | null;
@@ -142,7 +146,7 @@ export type StreamState = {
 
 export function newStream(streamer: string, totalCells: number, answerMs = STREAM_ANSWER_MS): StreamState {
   const key = streamer.toLowerCase();
-  return { streamer: key, names: { [key]: streamer }, scores: { [key]: 0 }, joined: [], phase: 'lobby', used: [], totalCells, round: null, deadline: null, result: null, answerMs };
+  return { streamer: key, names: { [key]: streamer }, scores: { [key]: 0 }, joined: [], phase: 'lobby', used: [], totalCells, round: null, deadline: null, result: null, answerMs, session: Math.random().toString(36).slice(2, 10) + Date.now().toString(36) };
 }
 
 export const displayName = (s: StreamState, key: string) => s.names[key] ?? key;

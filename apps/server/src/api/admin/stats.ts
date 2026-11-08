@@ -1,11 +1,11 @@
-import { usageQuery, type LiveStats, type UsageStats } from '@quiz/shared';
+import { usageQuery, type KickLiveStream, type KickStats, type LiveStats, type UsageStats } from '@quiz/shared';
 import { and, asc, count, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { db } from '../../db/client';
 import { categories, questions } from '../../db/schema';
 import { STATS_TIMEZONE, statsToday } from '../../game/usage';
 
-export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () => LiveStats }) {
+export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () => LiveStats; kickLive?: () => KickLiveStream[] }) {
   app.get('/live', async () => opts.live());
 
   app.get('/usage', async (req): Promise<UsageStats> => {
@@ -67,6 +67,60 @@ export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () =>
       platforms,
       modes,
       topCategories,
+    };
+  });
+
+  // Kick stream mode: account links, stream sessions, viewers who joined, and the streams running now.
+  app.get('/kick', async (req): Promise<KickStats> => {
+    const { days } = usageQuery.parse(req.query);
+    const since = sql`(${statsToday} - ${days - 1}::int)`;
+    const day = (col: string) => sql.raw(`(${col} at time zone '${STATS_TIMEZONE}')::date`);
+    const rows = <T>(q: ReturnType<typeof sql>) => db.execute(q) as unknown as Promise<T[]>;
+    const [links, streams, byDay, variants, topChannels, recent] = await Promise.all([
+      rows<{ links: number; channels: number }>(sql`
+        select count(*)::int as "links", count(distinct lower(channel))::int as "channels" from kick_links where ${day('linked_at')} >= ${since}`),
+      rows<KickStats['totals']>(sql`
+        select count(*)::int as "streams", count(*) filter (where not test)::int as "realStreams",
+          count(game_started_at) filter (where not test)::int as "gamesStarted", count(finished_at) filter (where not test)::int as "finished",
+          coalesce(sum(players) filter (where not test), 0)::int as "joins", coalesce(max(players) filter (where not test), 0)::int as "maxPlayers",
+          coalesce(sum(rounds) filter (where not test), 0)::int as "rounds"
+        from kick_streams where ${day('started_at')} >= ${since}`),
+      rows<KickStats['byDay'][number]>(sql`
+        select to_char(d, 'YYYY-MM-DD') as "day", coalesce(s.streams, 0) as "streams", coalesce(s.joins, 0) as "joins", coalesce(l.links, 0) as "links"
+        from generate_series(${since}, ${statsToday}, interval '1 day') as d
+        left join (select ${day('started_at')} as day, count(*)::int as streams, sum(players)::int as joins from kick_streams where not test group by 1) s on s.day = d::date
+        left join (select ${day('linked_at')} as day, count(*)::int as links from kick_links group by 1) l on l.day = d::date
+        order by d`),
+      rows<KickStats['variants'][number]>(sql`
+        select variant, count(*)::int as "streams" from kick_streams where variant is not null and not test and ${day('started_at')} >= ${since}
+        group by variant order by 2 desc`),
+      rows<KickStats['topChannels'][number]>(sql`
+        select channel, count(*)::int as "streams", coalesce(sum(players), 0)::int as "joins", max(started_at)::text as "lastAt"
+        from kick_streams where not test and ${day('started_at')} >= ${since}
+        group by channel order by 3 desc, 2 desc limit 10`),
+      rows<KickStats['recent'][number]>(sql`
+        select channel, variant, test, players, rounds, started_at::text as "startedAt", finished_at::text as "finishedAt"
+        from kick_streams order by started_at desc limit 15`),
+    ]);
+    const t = streams[0];
+    return {
+      days,
+      totals: {
+        links: links[0]?.links ?? 0,
+        channels: links[0]?.channels ?? 0,
+        streams: t?.streams ?? 0,
+        realStreams: t?.realStreams ?? 0,
+        gamesStarted: t?.gamesStarted ?? 0,
+        finished: t?.finished ?? 0,
+        joins: t?.joins ?? 0,
+        maxPlayers: t?.maxPlayers ?? 0,
+        rounds: t?.rounds ?? 0,
+      },
+      byDay,
+      variants,
+      topChannels,
+      recent,
+      live: opts.kickLive?.() ?? [],
     };
   });
 

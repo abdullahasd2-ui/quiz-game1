@@ -203,7 +203,7 @@ export function KickQuizPage() {
     setStatus({ state: 'connecting' });
     setError('');
     // The lobby: chat connects and viewers join; categories and the answer time are picked there.
-    set(newStream(name, 0));
+    set({ ...newStream(name, 0), test: testMode });
   }
 
   pickRef.current = pick;
