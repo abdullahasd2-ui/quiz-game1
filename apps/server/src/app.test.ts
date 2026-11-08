@@ -313,19 +313,19 @@ describe('kick stats', () => {
     st = toBoard({ ...st, totalCells: 10, variant: 'flip' as const });
     await record({ ...st, used: ['1:100', '1:200'] });
     await record({ ...st, used: ['1:100', '1:200', '1:300'], phase: 'over' });
-    await record(chatMessage({ ...newStream('Tester', 0), session: 'sess-2', test: true }, 'Bot', 'دخول')); // test mode: not in the totals
+    await record(chatMessage({ ...newStream('Tester', 0), session: 'sess-2', test: true }, 'Bot', 'دخول')); // test mode: counted as a participant, not as a stream
     await sqlClient`insert into kick_links (kick_user_id, channel) values (7, 'Abdullah'), (7, 'abdullah'), (9, 'Other')`;
     expect(errors).toEqual([]);
 
     const res = await app.inject({ method: 'GET', url: '/api/admin/stats/kick?days=7', headers: { cookie } });
     expect(res.statusCode).toBe(200);
     const k = res.json();
-    expect(k.totals).toEqual({ links: 3, channels: 2, streams: 2, realStreams: 1, gamesStarted: 1, finished: 1, joins: 2, maxPlayers: 2, rounds: 3 });
+    expect(k.totals).toEqual({ links: 3, channels: 2, streams: 2, realStreams: 1, gamesStarted: 1, finished: 1, joins: 3, testJoins: 1, maxPlayers: 2, rounds: 3 });
     expect(k.variants).toEqual([{ variant: 'flip', streams: 1 }]);
     expect(k.topChannels[0]).toMatchObject({ channel: 'Abdullah', streams: 1, joins: 2 });
     expect(k.recent).toHaveLength(2);
     expect(k.live).toEqual([]);
-    expect(k.byDay.at(-1)).toMatchObject({ streams: 1, joins: 2, links: 3 });
+    expect(k.byDay.at(-1)).toMatchObject({ streams: 1, joins: 3, links: 3 });
 
     const anon = await app.inject({ method: 'GET', url: '/api/admin/stats/kick' });
     expect(anon.statusCode).toBe(401);

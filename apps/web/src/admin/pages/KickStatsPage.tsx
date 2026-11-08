@@ -51,7 +51,7 @@ export function KickStatsPage() {
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold">خلال الفترة</h2>
-            <p className="text-xs text-muted-foreground">الأرقام بدون جلسات «تجربة بدون Kick»</p>
+            <p className="text-xs text-muted-foreground">البثوث والألعاب بدون «تجربة بدون Kick» — المشاركين يشملون التجربة</p>
           </div>
           <Select value={String(days)} onValueChange={(v) => setDays(Number(v))}>
             <SelectTrigger className="w-36" aria-label="الفترة"><SelectValue /></SelectTrigger>
@@ -64,7 +64,12 @@ export function KickStatsPage() {
         <div className="mb-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <Stat label="ربط حساب Kick" value={t?.links} hint={t && `${num.format(t.channels)} قناة مختلفة`} loading={loading} />
           <Stat label="بثوث بدأت" value={t?.realStreams} hint={t && `+${num.format(t.streams - t.realStreams)} بوضع التجربة`} loading={loading} />
-          <Stat label="كتبوا «دخول»" value={t?.joins} hint={t && `أكثر بث: ${num.format(t.maxPlayers)} مشارك`} loading={loading} />
+          <Stat
+            label="المشاركين"
+            value={t?.joins}
+            hint={t && `اللي كتبوا «دخول» · أكثر بث: ${num.format(t.maxPlayers)}${t.testJoins ? ` · منهم ${num.format(t.testJoins)} بالتجربة` : ''}`}
+            loading={loading}
+          />
           <Stat label="ألعاب اكتملت" value={t?.finished} hint={t && `${num.format(t.gamesStarted)} بدأت · ${num.format(t.rounds)} جولة`} loading={loading} />
         </div>
 
@@ -72,7 +77,7 @@ export function KickStatsPage() {
           <ChartCard title="البثوث باليوم" description="بدون وضع التجربة" loading={loading}>
             <DailyBars days={k?.byDay ?? []} value={(d) => d.streams} unit="بث" />
           </ChartCard>
-          <ChartCard title="المشاركين باليوم" description="مجموع اللي كتبوا «دخول»" loading={loading}>
+          <ChartCard title="المشاركين باليوم" description="اللي كتبوا «دخول» في كل البثوث" loading={loading}>
             <DailyBars days={k?.byDay ?? []} value={(d) => d.joins} unit="مشارك" />
           </ChartCard>
         </div>

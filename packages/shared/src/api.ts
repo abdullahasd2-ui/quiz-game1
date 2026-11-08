@@ -99,8 +99,9 @@ export type KickStats = {
     realStreams: number;
     gamesStarted: number;
     finished: number;
-    /** Viewers who joined with «دخول», summed over sessions; and the most in one session. */
+    /** Participants (viewers who joined with «دخول»), summed over all sessions, test mode included; how many of them in test mode; and the most in one session. */
     joins: number;
+    testJoins: number;
     maxPlayers: number;
     rounds: number;
   };
