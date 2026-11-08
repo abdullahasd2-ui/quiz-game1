@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { play, resumeAudioIfNeeded, unlockAudio } from './fx/sound';
 import { SoundToggle } from './fx/SoundToggle';
+import { StreamerLink } from './fx/StreamerLink';
 import { useGameFx } from './fx/useGameFx';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
 import { FinalScreen } from './screens/FinalScreen';
@@ -61,6 +62,7 @@ export function GamePage() {
     >
       <Background3D />
       <SoundToggle />
+      {!view && <StreamerLink />}
       {view && view.status !== 'done' && (
         <button
           type="button"
