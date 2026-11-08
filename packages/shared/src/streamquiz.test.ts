@@ -210,3 +210,38 @@ describe('«جاوب أو اقلب» on the stream', () => {
     expect(run('2').result?.rows.ali?.outcome).toBe('flipped-right');
   });
 });
+
+describe('«خبّي أو اكشف» on the stream', () => {
+  const hideGame = async () => {
+    const { hideQuestion } = await import('./streamquiz');
+    let s = { ...newStream('S', 5), variant: 'hide' as const };
+    for (const n of ['Ali', 'Sara', 'Omar']) s = chatMessage(s, n, 'دخول');
+    return deal(toBoard(s), 'h:1', hideQuestion(), 0);
+  };
+  it('the streamer hides, the chat guesses 1-10 at once; finders score, the streamer scores only if nobody finds it', async () => {
+    let s = await hideGame();
+    s = streamerAct(s, { type: 'answer', index: 6 }, 0); // box 7
+    expect(s.phase).toBe('answer');
+    expect(s.round?.question.correctIndex).toBe(6);
+    s = chatMessage(s, 'Ali', '7', 1);
+    s = chatMessage(s, 'Sara', '10', 2);
+    s = chatMessage(s, 'Omar', '٧', 3); // Arabic digit
+    s = streamerAct(s, { type: 'finish' }, 4);
+    expect(s.scores).toMatchObject({ s: 0, ali: 300, sara: 0, omar: 300 });
+    expect(s.result?.rows.s?.outcome).toBe('hid-found');
+    expect(s.result?.fastest).toBe('ali');
+  });
+  it('nobody finds it: the streamer scores', async () => {
+    let s = streamerAct(await hideGame(), { type: 'answer', index: 0 }, 0);
+    s = chatMessage(chatMessage(s, 'Ali', '2', 1), 'Sara', '3', 1);
+    s = streamerAct(s, { type: 'finish' }, 2);
+    expect(s.scores).toMatchObject({ s: 300, ali: 0, sara: 0 });
+    expect(s.result?.rows.s?.outcome).toBe('hid-safe');
+  });
+  it('no swapping in hide, and 11 is not a box', async () => {
+    const s = await hideGame();
+    expect(streamerAct(s, { type: 'swap', user: 'ali' }, 0).phase).toBe('streamer');
+    const g = chatMessage(streamerAct(s, { type: 'answer', index: 0 }, 0), 'Ali', '11', 1);
+    expect(g.round?.picks.ali).toBeUndefined();
+  });
+});

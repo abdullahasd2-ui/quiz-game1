@@ -37,6 +37,17 @@ export const MODE_RULES: { variant: StreamVariant; title: string; tone: string; 
       'إذا الستريمر قلب عليك: نتيجتك تنقلب — جوابك صح = تنقص، غلط = تزيد، وهو ما ياخذ شي.',
     ],
   },
+  {
+    variant: 'hide',
+    title: '📦 خبّي أو اكشف',
+    tone: 'border-q-green/35 bg-q-green/10 text-q-green',
+    lines: [
+      'الستريمر يخبّي المفتاح 🔑 سراً في صندوق من 10 صناديق مرقّمة.',
+      'بعدها على طول: اكتب رقم الصندوق من 1 إلى 10 — أول رقم تكتبه هو اللي ينحسب.',
+      'لقيت المفتاح = 300 نقطة، وإذا ما لقاه أحد من الشات النقاط للستريمر.',
+      'ما فيه تلميح ولا مبادلة في هذا الطور.',
+    ],
+  },
 ];
 
 export const COMMON_RULES: string[] = [
@@ -80,7 +91,7 @@ export function QuizHowTo({ forStreamer = false, variant, className }: { forStre
           </div>
         ))}
         <div className="rounded-xl border border-q-orange/35 bg-q-orange/10 p-3">
-          <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في الطورين</div>
+          <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في كل الأطوار</div>
           <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/80">
             {COMMON_RULES.map((t) => (
               <li key={t}>{t}</li>
