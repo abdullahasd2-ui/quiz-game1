@@ -37,3 +37,27 @@ describe('kick sync', () => {
     io.close();
   });
 });
+
+describe('kick sync picks', () => {
+  it('a page watching the code can pick a cell; it reaches only the control page', async () => {
+    const http = createServer();
+    const io = new Server(http);
+    attachKickSync(io);
+    await new Promise<void>((r) => http.listen(0, r));
+    const url = `http://localhost:${(http.address() as AddressInfo).port}/kick-sync`;
+    const host = client(url);
+    const screen = client(url);
+    const stranger = client(url);
+    const ack = (s: ReturnType<typeof client>, ev: string, arg: unknown) => new Promise<{ ok: boolean }>((res) => s.emit(ev, arg, res));
+    const got: unknown[] = [];
+    host.on('sync:pick', (m: unknown) => got.push(m));
+    await ack(host, 'sync:publish', { code: 'PICK1234', hostKey: 'k'.repeat(20), state: null, hostNow: 1 });
+    expect((await ack(stranger, 'sync:pick', { code: 'PICK1234', category: 1, points: 100 })).ok).toBe(false); // not watching
+    await ack(screen, 'sync:watch', 'PICK1234');
+    expect((await ack(screen, 'sync:pick', { code: 'PICK1234', category: 3, points: 300 })).ok).toBe(true);
+    await new Promise((r) => setTimeout(r, 100));
+    expect(got).toEqual([{ code: 'PICK1234', category: 3, points: 300 }]);
+    host.close(); screen.close(); stranger.close();
+    io.close();
+  });
+});
