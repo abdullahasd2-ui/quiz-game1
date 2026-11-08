@@ -26,19 +26,26 @@ function slotsAfter(sh: HideShuffle, k: number): number[] {
  */
 export function ShuffleBoxes({ shuffle, startAt, hostNow, reveal = false, big = false }: { shuffle: HideShuffle; startAt: number; hostNow: () => number; reveal?: boolean; big?: boolean }) {
   const total = shuffle.swaps.length;
-  const [step, setStep] = useState(0);
-  const [showing, setShowing] = useState(true);
+  // Where the shuffle stands at a moment: how many swaps are done, and whether the key is still in sight.
+  const at = (now: number) => {
+    const t = now - startAt;
+    return { showing: t < STREAM_HIDE_SHOW_MS, step: t < STREAM_HIDE_SHOW_MS ? 0 : Math.min(total, Math.floor((t - STREAM_HIDE_SHOW_MS) / shuffle.ms) + 1) };
+  };
+  // Start from the right moment (not from the beginning): when the answer screen replaces the shuffle screen, the boxes
+  // must already stand in their last places — no replay of the shuffle and no flash of the key.
+  const [{ step, showing }, setPos] = useState(() => at(hostNow()));
+  // Boxes only glide while the shuffle is running; a component mounted after it ends draws them in place.
+  const [animate] = useState(() => at(hostNow()).step < total);
   useEffect(() => {
     let raf = 0;
     const loop = () => {
-      const t = hostNow() - startAt;
-      setShowing(t < STREAM_HIDE_SHOW_MS);
-      const k = t < STREAM_HIDE_SHOW_MS ? 0 : Math.min(total, Math.floor((t - STREAM_HIDE_SHOW_MS) / shuffle.ms) + 1);
-      setStep(k);
-      if (k < total || t < STREAM_HIDE_SHOW_MS) raf = requestAnimationFrame(loop);
+      const p = at(hostNow());
+      setPos((cur) => (cur.step === p.step && cur.showing === p.showing ? cur : p));
+      if (p.step < total || p.showing) raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shuffle, startAt, hostNow, total]);
 
   const slotOf = useMemo(() => slotsAfter(shuffle, step), [shuffle, step]);
@@ -70,7 +77,7 @@ export function ShuffleBoxes({ shuffle, startAt, hostNow, reveal = false, big = 
                 width: '20%',
                 height: '50%',
                 transform: `translate(${(slot % COLS) * 100}%, ${Math.floor(slot / COLS) * 100}%)`,
-                transition: `transform ${Math.round(shuffle.ms * 0.85)}ms cubic-bezier(0.45, 0, 0.25, 1)`,
+                transition: animate ? `transform ${Math.round(shuffle.ms * 0.85)}ms cubic-bezier(0.45, 0, 0.25, 1)` : 'none',
                 zIndex: moving ? 2 : 1,
               }}
             >
