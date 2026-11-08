@@ -104,7 +104,7 @@ export function normalizeQuestionText(text: string): string {
     .replace(/[أإآٱ]/g, 'ا')
     .replace(/ى/g, 'ي')
     .replace(/ة/g, 'ه')
-    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .replace(/[^\p{L}\p{N}\p{Extended_Pictographic}\p{Regional_Indicator}]+/gu, ' ') // keep emoji and flags: in emoji questions they are the question
     .trim()
     .toLowerCase();
 }
