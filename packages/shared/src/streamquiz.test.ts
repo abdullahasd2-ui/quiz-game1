@@ -211,6 +211,9 @@ describe('«جاوب أو اقلب» on the stream', () => {
   });
 });
 
+/** Hide the key in `slot` with no shuffle, and let the shuffle phase end. */
+const hideAt = (s: StreamState, slot: number) => tick(streamerAct(s, { type: 'answer', index: slot, shuffle: { from: slot, swaps: [], ms: 100 } }, 0), 1e6);
+
 describe('«خبّي أو اكشف» on the stream', () => {
   const hideGame = async () => {
     const { hideQuestion } = await import('./streamquiz');
@@ -220,9 +223,9 @@ describe('«خبّي أو اكشف» on the stream', () => {
   };
   it('the streamer hides, the chat guesses 1-10 at once; finders score, the streamer scores only if nobody finds it', async () => {
     let s = await hideGame();
-    s = streamerAct(s, { type: 'answer', index: 6 }, 0); // box 7
+    s = hideAt(s, 6); // box 7
     expect(s.phase).toBe('answer');
-    expect(s.round?.question.correctIndex).toBe(6);
+    expect(s.round?.question.correctIndex).toBe(6); // no swaps in this test
     s = chatMessage(s, 'Ali', '7', 1);
     s = chatMessage(s, 'Sara', '10', 2);
     s = chatMessage(s, 'Omar', '٧', 3); // Arabic digit
@@ -233,7 +236,7 @@ describe('«خبّي أو اكشف» on the stream', () => {
     expect(s.result?.fastest).toBe('ali');
   });
   it('nobody finds it: the streamer scores', async () => {
-    let s = streamerAct(await hideGame(), { type: 'answer', index: 0 }, 0);
+    let s = hideAt(await hideGame(), 0);
     s = chatMessage(chatMessage(s, 'Ali', '2', 1), 'Sara', '3', 1);
     s = streamerAct(s, { type: 'finish' }, 2);
     expect(s.scores).toMatchObject({ s: 300, ali: 0, sara: 0 });
@@ -242,7 +245,7 @@ describe('«خبّي أو اكشف» on the stream', () => {
   it('no swapping in hide, and 11 is not a box', async () => {
     const s = await hideGame();
     expect(streamerAct(s, { type: 'swap', user: 'ali' }, 0).phase).toBe('streamer');
-    const g = chatMessage(streamerAct(s, { type: 'answer', index: 0 }, 0), 'Ali', '11', 1);
+    const g = chatMessage(hideAt(s, 0), 'Ali', '11', 1);
     expect(g.round?.picks.ali).toBeUndefined();
   });
 });
@@ -253,7 +256,7 @@ describe('«خبّي أو اكشف»: the streamer takes a player\'s points when
     let s: StreamState = { ...newStream('S', 5), variant: 'hide' };
     for (const n of ['Ali', 'Sara']) s = chatMessage(s, n, 'دخول');
     s = { ...s, scores: { ...s.scores, ali: 900, sara: 200 } };
-    s = streamerAct(deal(toBoard(s), 'h:1', hideQuestion(), 0), { type: 'answer', index: 4 }, 0);
+    s = hideAt(deal(toBoard(s), 'h:1', hideQuestion(), 0), 4);
     s = chatMessage(chatMessage(s, 'Ali', '1', 1), 'Sara', '2', 1);
     return streamerAct(s, { type: 'finish' }, 2);
   };
@@ -267,5 +270,32 @@ describe('«خبّي أو اكشف»: the streamer takes a player\'s points when
     expect(s.scores).toMatchObject({ s: 1200, ali: 0, sara: 200 });
     expect(s.result?.stolen).toEqual({ from: 'ali', points: 900 });
     expect(s.result?.rows.ali).toMatchObject({ outcome: 'stolen', delta: -900 });
+  });
+});
+
+describe('the box shuffle', () => {
+  it('follows the key through the swaps, and the level sets how many and how fast', async () => {
+    const { makeShuffle, shuffleEnd, STREAM_HIDE_LEVELS } = await import('./streamquiz');
+    expect(shuffleEnd({ from: 2, swaps: [[2, 5], [5, 9], [0, 1]], ms: 100 })).toBe(9);
+    for (const p of [100, 200, 300] as const) {
+      const sh = makeShuffle(3, p);
+      expect(sh.swaps).toHaveLength(STREAM_HIDE_LEVELS[p].swaps);
+      expect(sh.ms).toBe(STREAM_HIDE_LEVELS[p].ms);
+      for (const [a, b] of sh.swaps) expect(a).not.toBe(b);
+    }
+    expect(STREAM_HIDE_LEVELS[300].ms).toBeLessThan(STREAM_HIDE_LEVELS[100].ms);
+  });
+  it('the answer is where the key ends; the shuffle phase ends by itself', async () => {
+    const { hideQuestion } = await import('./streamquiz');
+    let s: StreamState = { ...newStream('S', 5), variant: 'hide' };
+    s = chatMessage(s, 'Ali', 'دخول');
+    s = deal(toBoard(s), 'h:1', hideQuestion(200), 0);
+    s = streamerAct(s, { type: 'answer', index: 1, shuffle: { from: 1, swaps: [[1, 7]], ms: 400 } }, 0);
+    expect(s.phase).toBe('shuffle');
+    expect(chatMessage(s, 'Ali', '8', 1).round?.picks.ali).toBeUndefined(); // no guessing during the shuffle
+    s = tick(s, s.deadline!);
+    expect(s.phase).toBe('answer');
+    s = streamerAct(chatMessage(s, 'Ali', '8', 1), { type: 'finish' }, 2);
+    expect(s.scores.ali).toBe(400); // 200 points, first finder doubles
   });
 });

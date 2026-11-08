@@ -22,6 +22,8 @@ import {
   type StreamVariant,
   streamLabels,
   hideQuestion,
+  randomHidePoints,
+  STREAM_HIDE_LEVELS,
   type SyncClientToServerEvents,
   type SyncServerToClientEvents,
 } from '@quiz/shared';
@@ -34,6 +36,7 @@ import { Background3D } from '@/game/fx/Background3D';
 import { QuestionImage } from '@/game/ui';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
+import { ShuffleBoxes } from './ShuffleBoxes';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 
@@ -441,7 +444,7 @@ export function KickQuizPage() {
               <button
                 type="button"
                 className="q-btn-gold"
-                onClick={() => ref.current && set(deal(ref.current, `h:${ref.current.used.length + 1}`, hideQuestion(), Date.now()))}
+                onClick={() => ref.current && set(deal(ref.current, `h:${ref.current.used.length + 1}`, hideQuestion(randomHidePoints()), Date.now()))}
               >
                 🔑 ابدأ الجولة وخبّي المفتاح
               </button>
@@ -460,9 +463,19 @@ export function KickQuizPage() {
 
           {state.phase === 'streamer' && q && state.variant === 'hide' && (
             <div className="text-center">
-              <div className="mb-1 text-xl font-black">🤫 اختر الصندوق اللي تخبّي فيه المفتاح</div>
-              <div className="mb-4 text-xs text-white/60">الشات ما يشوف اختيارك — بعدها يبدأ التخمين على طول</div>
+              <div className="mb-2 inline-block rounded-full bg-q-gold/15 px-3 py-1 text-sm font-black text-q-gold">
+                {q.points} نقطة · خلط {STREAM_HIDE_LEVELS[q.points as 100 | 200 | 300]?.label}
+              </div>
+              <div className="mb-1 text-xl font-black">🔑 اختر الصندوق اللي تحط فيه المفتاح</div>
+              <div className="mb-4 text-xs text-white/60">الكل يشوف وين حطيته، وبعدها الصناديق تنخلط قدامهم</div>
               <HideBoxes onPick={(i) => act({ type: 'answer', index: i })} />
+            </div>
+          )}
+
+          {state.phase === 'shuffle' && q && r?.shuffle && (
+            <div className="text-center">
+              <div className="mb-3 text-xl font-black">🔀 الصناديق تنخلط…</div>
+              <ShuffleBoxes shuffle={r.shuffle} startAt={r.shuffleAt ?? 0} hostNow={Date.now} />
             </div>
           )}
 
@@ -547,8 +560,12 @@ export function KickQuizPage() {
               </div>
               {state.variant === 'hide' ? (
                 <div>
-                  <div className="mb-3 text-center text-xl font-black">{result ? '🔑 هنا كان المفتاح' : '🔎 الشات يخمّن… المفتاح عندك هنا'}</div>
-                  <HideBoxes keyAt={q.correctIndex} revealed={Boolean(result)} />
+                  <div className="mb-3 text-center text-xl font-black">{result ? '🔑 هنا كان المفتاح' : `🔎 الشات يخمّن… (المفتاح في ${q.correctIndex + 1})`}</div>
+                  {r.shuffle ? (
+                    <ShuffleBoxes shuffle={r.shuffle} startAt={r.shuffleAt ?? 0} hostNow={Date.now} reveal={Boolean(result)} />
+                  ) : (
+                    <HideBoxes keyAt={q.correctIndex} revealed={Boolean(result)} />
+                  )}
                 </div>
               ) : (
                 <>

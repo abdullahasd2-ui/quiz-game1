@@ -1,5 +1,5 @@
 import { displayName, standings, streamLabels, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SoundToggle } from '@/game/fx/SoundToggle';
 import { unlockAudio } from '@/game/fx/sound';
 import { useStreamFx } from './useStreamFx';
@@ -11,6 +11,7 @@ import { Background3D } from '@/game/fx/Background3D';
 import { outcomeLabel } from './KickQuizPage';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
+import { ShuffleBoxes } from './ShuffleBoxes';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 import { VIEWER_STEPS } from './QuizHowTo';
@@ -54,6 +55,7 @@ export function KickQuizScreen() {
   }, [code]);
 
   const state: StreamState | null = view?.state ?? null;
+  const hostNow = useCallback(() => Date.now() - offset, [offset]);
   const secondsLeft = state?.deadline ? Math.max(0, Math.ceil((state.deadline - (now - offset)) / 1000)) : null;
   useStreamFx(state, state?.phase === 'choose' || state?.phase === 'answer' ? secondsLeft : null);
 
@@ -170,9 +172,17 @@ export function KickQuizScreen() {
 
           {state.phase === 'streamer' && q && state.variant === 'hide' && (
             <div className="py-6 text-center">
-              <div className="mb-2 text-5xl motion-safe:animate-streak">🤫</div>
-              <div className="mb-5 text-3xl font-black">الستريمر يخبّي المفتاح 🔑…</div>
+              <div className="mb-2 inline-block rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة · {q.categoryName}</div>
+              <div className="mb-5 text-3xl font-black">🔑 الستريمر يحط المفتاح… ركّزوا!</div>
               <HideBoxes big />
+            </div>
+          )}
+
+          {state.phase === 'shuffle' && q && r?.shuffle && (
+            <div className="py-2 text-center">
+              <div className="mb-2 inline-block rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة · {q.categoryName}</div>
+              <div className="mb-4 text-3xl font-black">👀 تابعوا المفتاح!</div>
+              <ShuffleBoxes shuffle={r.shuffle} startAt={r.shuffleAt ?? 0} hostNow={hostNow} big />
             </div>
           )}
 
@@ -208,7 +218,11 @@ export function KickQuizScreen() {
               {state.variant === 'hide' ? (
                 <div>
                   <div className="mb-4 text-center text-3xl font-black">{result ? '🔑 هنا كان المفتاح!' : '🔎 وين المفتاح؟ اكتبوا رقم الصندوق (1-10)'}</div>
-                  <HideBoxes keyAt={result ? result.correctIndex : null} revealed={Boolean(result)} big />
+                  {r.shuffle ? (
+                    <ShuffleBoxes shuffle={r.shuffle} startAt={r.shuffleAt ?? 0} hostNow={hostNow} reveal={Boolean(result)} big />
+                  ) : (
+                    <HideBoxes keyAt={result ? result.correctIndex : null} revealed={Boolean(result)} big />
+                  )}
                   {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">خمّن {answered} · أول رقم تكتبه هو اللي ينحسب</div>}
                 </div>
               ) : (
