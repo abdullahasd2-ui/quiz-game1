@@ -23,6 +23,10 @@ export function useStreamFx(state: StreamState | null, secondsLeft: number | nul
       case 'choose':
         play('lock');
         break;
+      case 'shuffle':
+        play('lock');
+        play('swap', 1.6);
+        break;
       case 'answer':
         play('whoosh');
         play('ding', 0.1);

@@ -21,7 +21,8 @@ const STREAK_DOUBLE = 3;
 /** A dealt question; `correctIndex` stays on the streamer's page and never goes into chat. */
 export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 /** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
-export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'answer' | 'steal' | 'result' | 'over';
+/** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
+export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
 export type StreamChoice = 'answer' | 'swap';
 export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen';
 /**
@@ -33,19 +34,61 @@ export type StreamVariant = 'swap' | 'flip' | 'hide';
 /** «خبّي أو اكشف» on the stream: 10 boxes, the key hidden by the streamer, the chat guesses by number. */
 export const STREAM_HIDE_BOXES = 10;
 export const STREAM_HIDE_POINTS = 300;
+/** Each round's points are drawn at random and set how hard the shuffle is: 100 normal, 200 medium, 300 very fast. */
+export const STREAM_HIDE_LEVELS = {
+  100: { swaps: 8, ms: 700, label: 'عادي' },
+  200: { swaps: 12, ms: 420, label: 'متوسط' },
+  300: { swaps: 18, ms: 210, label: 'صعب جداً' },
+} as const;
+export type HidePoints = keyof typeof STREAM_HIDE_LEVELS;
+/** How long the key stays in sight in its box before the shuffle starts. */
+export const STREAM_HIDE_SHOW_MS = 1600;
+/**
+ * The shuffle: boxes start one per slot, then each pair of slots trades boxes in turn. Public (the broadcast page
+ * plays it); the slot the key ends in is the answer.
+ */
+export type HideShuffle = { from: number; swaps: [number, number][]; ms: number };
+
+/** Where the key ends after the swaps (slot index). */
+export function shuffleEnd(sh: HideShuffle): number {
+  let at = sh.from;
+  for (const [a, b] of sh.swaps) at = at === a ? b : at === b ? a : at;
+  return at;
+}
+
+/** Random swaps; about half of them move the key's box, so following it is the game. */
+export function makeShuffle(from: number, points: HidePoints, rnd: () => number = Math.random): HideShuffle {
+  const { swaps: n, ms } = STREAM_HIDE_LEVELS[points];
+  const swaps: [number, number][] = [];
+  let at = from;
+  let last = '';
+  while (swaps.length < n) {
+    const a = rnd() < 0.5 ? at : Math.floor(rnd() * STREAM_HIDE_BOXES);
+    let b = Math.floor(rnd() * STREAM_HIDE_BOXES);
+    if (b === a) b = (b + 1 + Math.floor(rnd() * (STREAM_HIDE_BOXES - 1))) % STREAM_HIDE_BOXES;
+    const key = [a, b].sort().join('-');
+    if (key === last) continue;
+    last = key;
+    swaps.push([a, b]);
+    at = at === a ? b : at === b ? a : at;
+  }
+  return { from, swaps, ms };
+}
+
+export const randomHidePoints = (rnd: () => number = Math.random): HidePoints => ([100, 200, 300] as const)[Math.floor(rnd() * 3)]!;
 /**
  * A hide round, dressed as a question so the rest of the game (deal, hidden answer, picks, timer, result) works unchanged:
  * the options are the box numbers and the streamer's «answer» is the box he hides the key in.
  */
-export function hideQuestion(): StreamQuestion {
+export function hideQuestion(points: HidePoints = STREAM_HIDE_POINTS): StreamQuestion {
   return {
     type: 'text',
     text: 'وين المفتاح؟ 🔑',
     options: Array.from({ length: STREAM_HIDE_BOXES }, (_, i) => String(i + 1)),
     correctIndex: -1,
-    points: STREAM_HIDE_POINTS,
+    points,
     imageUrl: null,
-    categoryName: 'خبّي أو اكشف',
+    categoryName: `خبّي أو اكشف · ${STREAM_HIDE_LEVELS[points].label}`,
   };
 }
 
@@ -59,6 +102,10 @@ export type StreamRound = {
   picks: Record<string, number>;
   /** When each viewer answered (for the fastest right answer). */
   pickAt?: Record<string, number>;
+  /** «خبّي أو اكشف»: the shuffle the boxes go through. */
+  shuffle?: HideShuffle;
+  /** When the shuffle (with the key in sight first) began, by the control page's clock. */
+  shuffleAt?: number;
 };
 export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean; /** First to find the key: doubled. */ first?: boolean }>;
   /** «خبّي أو اكشف»: whose points the streamer took, and how many. */
@@ -188,7 +235,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
 }
 
 export type StreamerAct =
-  | { type: 'answer'; index: number }
+  | { type: 'answer'; index: number; /** Tests only: a fixed shuffle. */ shuffle?: HideShuffle }
   | { type: 'swap'; user: string }
   | { type: 'show' }
   | { type: 'finish' }
@@ -205,9 +252,15 @@ export function streamerAct(state: StreamState, act: StreamerAct, now: number): 
       if (act.index < 0 || act.index >= r.question.options.length) return state;
       s.round!.streamer = { choice: 'answer', pick: act.index, partner: null };
       if (s.variant === 'hide') {
-        // The streamer's pick is where the key is; no «1 or 2» step — the chat guesses right away.
-        s.round!.question = { ...s.round!.question, correctIndex: act.index };
-        return startAnswer(s, now);
+        // The key goes into the box in front of everyone, then the boxes are shuffled; the answer is where it ends.
+        const pts = (s.round!.question.points in STREAM_HIDE_LEVELS ? s.round!.question.points : 300) as HidePoints;
+        const sh = act.shuffle ?? makeShuffle(act.index, pts);
+        s.round!.shuffle = sh;
+        s.round!.shuffleAt = now;
+        s.round!.question = { ...s.round!.question, correctIndex: shuffleEnd(sh) };
+        s.phase = 'shuffle';
+        s.deadline = now + STREAM_HIDE_SHOW_MS + sh.swaps.length * sh.ms + 400;
+        return s;
       }
     } else {
       if (s.variant === 'hide') return state;
@@ -354,7 +407,7 @@ export function streamLabels(variant: StreamVariant | undefined) {
 /** Timeouts: the choose window ends by itself, and so does the answer window. */
 export function tick(state: StreamState, now: number): StreamState {
   if (state.deadline === null || now < state.deadline) return state;
-  if (state.phase === 'choose') return startAnswer(state, now);
+  if (state.phase === 'choose' || state.phase === 'shuffle') return startAnswer(state, now);
   if (state.phase === 'answer') return resolve(state);
   return state;
 }
@@ -390,7 +443,8 @@ export function publicView(s: StreamState): StreamState {
         : { ...q, revealUrl: null, correctIndex: -1 };
   // Picks are kept only as a count: nobody's option is shown, so nobody copies it.
   const picks = Object.fromEntries(Object.keys(r.picks).map((k) => [k, 0]));
-  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks } };
+  // The shuffle itself is public: the broadcast page plays it (that is the game).
+  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks, shuffle: r.shuffle, shuffleAt: r.shuffleAt } };
 }
 
 /** Short code that pairs the control page with the broadcast page. */
