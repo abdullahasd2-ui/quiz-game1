@@ -44,6 +44,8 @@ export type StreamState = {
   /** Board cells already played, as `${categoryId}:${points}`. */
   used: string[];
   totalCells: number;
+  /** The categories on the board, in order (so the broadcast page can draw it). */
+  board?: { id: number; name: string; icon: string }[];
   /** How long the chat has to answer, picked by the streamer before the game. */
   answerMs?: number;
   round: StreamRound | null;
@@ -248,11 +250,15 @@ export function publicView(s: StreamState): StreamState {
 /** Short code that pairs the control page with the broadcast page. */
 export const SYNC_CODE_RE = /^[A-Za-z0-9]{6,12}$/;
 export type SyncPublish = { code: string; hostKey: string; state: StreamState | null; hostNow: number };
+export type SyncPick = { code: string; category: number; points: number };
 export type SyncView = { state: StreamState | null; hostNow: number };
 export interface SyncClientToServerEvents {
   'sync:publish': (m: SyncPublish, reply: (res: { ok: boolean; error?: string }) => void) => void;
   'sync:watch': (code: string, reply: (res: { ok: boolean; error?: string; /** A control page has used this code. */ hosted?: boolean }) => void) => void;
+  /** The broadcast page picked a board cell; the server passes it to the control page that owns the code. */
+  'sync:pick': (m: SyncPick, reply: (res: { ok: boolean; error?: string }) => void) => void;
 }
 export interface SyncServerToClientEvents {
   'sync:view': (v: SyncView) => void;
+  'sync:pick': (m: SyncPick) => void;
 }

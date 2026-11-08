@@ -10,7 +10,7 @@ const MAX_BYTES = 100_000;
  */
 export function attachKickSync(io: Server) {
   const ns = io.of('/kick-sync');
-  const rooms = new Map<string, { hostKey: string; last: SyncView | null; idle: ReturnType<typeof setTimeout> | null }>();
+  const rooms = new Map<string, { hostKey: string; hostSocket: string; last: SyncView | null; idle: ReturnType<typeof setTimeout> | null }>();
   ns.on('connection', (socket) => {
     const typed = socket as unknown as {
       on: <E extends keyof SyncClientToServerEvents>(e: E, fn: SyncClientToServerEvents[E]) => void;
@@ -28,15 +28,23 @@ export function attachKickSync(io: Server) {
       let room = rooms.get(m.code);
       if (!room) {
         if (rooms.size >= MAX_ROOMS) return reply({ ok: false, error: 'كثير جلسات شغّالة' });
-        room = { hostKey: m.hostKey, last: null, idle: null };
+        room = { hostKey: m.hostKey, hostSocket: socket.id, last: null, idle: null };
         rooms.set(m.code, room);
       } else if (room.hostKey !== m.hostKey) return reply({ ok: false, error: 'هذا الكود مستخدم' });
       // Scrubbed here too, so a page bug can never put the streamer's secret on the broadcast.
+      room.hostSocket = socket.id;
       room.last = { state: m.state && publicView(m.state), hostNow: m.hostNow };
       if (room.idle) clearTimeout(room.idle);
       const code = m.code;
       room.idle = setTimeout(() => rooms.delete(code), 6 * 3600_000);
       ns.to(code).emit('sync:view', room.last);
+      reply({ ok: true });
+    });
+    typed.on('sync:pick', (m, reply) => {
+      const room = m && typeof m.code === 'string' ? rooms.get(m.code) : undefined;
+      // Only a page watching this code (the broadcast screen) may pick, and only numbers go through.
+      if (!room || !socket.rooms.has(m.code) || !Number.isInteger(m.category) || !Number.isInteger(m.points)) return reply({ ok: false, error: 'غير مسموح' });
+      ns.to(room.hostSocket).emit('sync:pick', { code: m.code, category: m.category, points: m.points });
       reply({ ok: true });
     });
   });

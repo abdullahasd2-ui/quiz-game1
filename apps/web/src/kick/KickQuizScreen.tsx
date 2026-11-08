@@ -1,11 +1,12 @@
 import { displayName, standings, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import { QuestionImage } from '@/game/ui';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { OUTCOME } from './KickQuizPage';
+import { BoardGrid } from './BoardGrid';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 import { VIEWER_STEPS } from './QuizHowTo';
@@ -19,10 +20,13 @@ export function KickQuizScreen() {
   const [error, setError] = useState('');
   const [connected, setConnected] = useState(false);
   const [hosted, setHosted] = useState(true);
+  const sockRef = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
+  const [picking, setPicking] = useState(false);
 
   useEffect(() => {
     if (!SYNC_CODE_RE.test(code)) return setError('الرابط ناقص الكود — انسخه من صفحة التحكم');
     const sock: Socket<SyncServerToClientEvents, SyncClientToServerEvents> = io(`${SERVER_URL}/kick-sync`);
+    sockRef.current = sock;
     sock.on('disconnect', () => setConnected(false));
     sock.on('connect', () => {
       setConnected(true);
@@ -33,6 +37,7 @@ export function KickQuizScreen() {
     });
     sock.on('sync:view', (v) => {
       setHosted(true);
+      setPicking(false);
       setView(v);
       setOffset(Date.now() - v.hostNow);
     });
@@ -80,13 +85,38 @@ export function KickQuizScreen() {
       </div>
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">
-          {(state.phase === 'lobby' || state.phase === 'board') && (
+          {state.phase === 'board' && (
+            <div>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+                <span className="font-black">{picking ? 'جاري فتح السؤال...' : '🎯 اختر سؤال من اللوحة'}</span>
+                <span className="text-white/60">
+                  اكتبوا <b className="text-q-gold">دخول</b> للمشاركة · المشاركون {state.joined.length} · الأسئلة {state.used.length}/{state.totalCells}
+                </span>
+              </div>
+              <BoardGrid
+                board={state.board ?? []}
+                used={state.used}
+                big
+                disabled={picking}
+                onPick={(category, points) => {
+                  setPicking(true);
+                  sockRef.current?.emit('sync:pick', { code, category, points }, (res) => {
+                    if (!res.ok) setPicking(false);
+                  });
+                  // If the control page never answers (closed or offline), let the streamer try again.
+                  setTimeout(() => setPicking(false), 8000);
+                }}
+              />
+            </div>
+          )}
+
+          {state.phase === 'lobby' && (
             <div className="py-10 text-center">
               <div className="mb-2 text-5xl">🎮</div>
               <div className="text-3xl font-black text-q-gold">جاوب أو بادل</div>
               <div className="mt-3 text-xl">اكتبوا <b className="text-q-gold">دخول</b> في الشات عشان تلعبون</div>
               <div className="mt-2 text-white/60">المشاركون: {state.joined.length} · الأسئلة: {state.used.length}/{state.totalCells}</div>
-              <div className="mt-4 text-sm text-white/50">الستريمر يختار السؤال التالي...</div>
+              <div className="mt-4 text-sm text-white/50">الستريمر يجهّز اللعبة...</div>
               {state.used.length === 0 && (
                 <ol className="mx-auto mt-6 grid max-w-2xl gap-2 text-start sm:grid-cols-2">
                   {VIEWER_STEPS.map((st, i) => (

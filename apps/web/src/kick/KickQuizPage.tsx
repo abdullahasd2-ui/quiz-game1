@@ -29,6 +29,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { QuestionImage } from '@/game/ui';
+import { BoardGrid } from './BoardGrid';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 
@@ -86,6 +87,7 @@ export function KickQuizPage() {
   const syncSocket = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
   const [copied, setCopied] = useState(false);
   const publishNow = useRef<() => void>(() => {});
+  const pickRef = useRef<(category: number, points: number) => Promise<void>>(async () => {});
 
   const set = useCallback((s: StreamState) => {
     ref.current = s;
@@ -142,6 +144,7 @@ export function KickQuizPage() {
       });
     };
     sock.on('connect', publish);
+    sock.on('sync:pick', (m) => void pickRef.current(m.category, m.points));
     const beat = setInterval(publish, 3000);
     publishNow.current = publish;
     return () => {
@@ -181,6 +184,8 @@ export function KickQuizPage() {
     set(newStream(name, 0));
   }
 
+  pickRef.current = pick;
+
   /** Back to the start page; the broadcast screen goes back to waiting. */
   function playAgain() {
     ref.current = null;
@@ -192,14 +197,20 @@ export function KickQuizPage() {
     if (!ref.current) return;
     if (chosen.length < 2) return setError('اختر فئتين على الأقل');
     setError('');
-    set(toBoard({ ...ref.current, totalCells: chosen.length * POINTS.length, answerMs: answerSec * 1000 }));
+    const board = chosen.map((id) => {
+      const c = cats.find((x) => x.id === id);
+      return { id, name: c?.name ?? '', icon: c?.icon ?? '' };
+    });
+    set(toBoard({ ...ref.current, totalCells: chosen.length * POINTS.length, answerMs: answerSec * 1000, board }));
   }
 
   async function pick(category: number, points: number) {
-    if (!ref.current || busy) return;
+    const cur = ref.current;
+    if (!cur || busy || cur.phase !== 'board' || !cur.board?.some((c) => c.id === category) || cur.used.includes(`${category}:${points}`)) return;
     setBusy(true);
     try {
-      set(deal(ref.current, `${category}:${points}`, await fetchQuestion(category, points), Date.now()));
+      const question = await fetchQuestion(category, points);
+      if (ref.current) set(deal(ref.current, `${category}:${points}`, question, Date.now()));
       setError('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطأ');
@@ -356,33 +367,9 @@ export function KickQuizPage() {
 
           {state.phase === 'board' && (
             <div>
-              <div className="mb-3 text-center text-lg font-black">اختر سؤال من اللوحة</div>
-              <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${chosen.length}, minmax(0, 1fr))` }}>
-                {chosen.map((id) => {
-                  const c = cats.find((x) => x.id === id);
-                  return (
-                    <div key={id} className="truncate rounded-lg bg-q-panel py-2 text-center text-xs font-black">
-                      {c?.icon} {c?.name}
-                    </div>
-                  );
-                })}
-                {POINTS.flatMap((p) =>
-                  chosen.map((id) => {
-                    const used = state.used.includes(`${id}:${p}`);
-                    return (
-                      <button
-                        key={`${id}:${p}`}
-                        type="button"
-                        disabled={used || busy}
-                        onClick={() => void pick(id, p)}
-                        className={cn('rounded-lg border-2 py-3 text-lg font-black', used ? 'border-transparent bg-white/5 text-white/15' : 'border-q-line bg-q-panel text-q-gold hover:border-q-gold')}
-                      >
-                        {p}
-                      </button>
-                    );
-                  }),
-                )}
-              </div>
+              <div className="mb-1 text-center text-lg font-black">{busy ? 'جاري جلب السؤال...' : 'اختر السؤال من شاشة البث'}</div>
+              <div className="mb-3 text-center text-xs text-white/50">اللوحة هنا للعرض فقط — الضغط على الخانات من شاشة البث</div>
+              <BoardGrid board={state.board ?? []} used={state.used} />
               <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
             </div>
           )}
