@@ -13,6 +13,7 @@ import {
   cellKey,
   MAX_TEAM_SIZE,
   computeScores,
+  STREAK_FOR_DOUBLE,
   isSpecial,
   POINTS,
   type Action,
@@ -49,6 +50,7 @@ type Player = { deviceId: string; pid: string; name: string; nick: string; score
 type Member = { deviceId: string; pid: string; name: string; connected: boolean };
 
 type Round = {
+  streakBonus?: [boolean, boolean];
   categoryId: number;
   points: number;
   question: DealtQuestion;
@@ -95,6 +97,8 @@ export class GameRoom {
   /** Each team's live votes (deviceId → key) for the step in progress; insertion order breaks ties. */
   private readonly votes: [Map<string, string>, Map<string, string>] = [new Map(), new Map()];
   tv: { deviceId: string; connected: boolean } | null = null;
+  /** Right answers in a row per team, for the streak double. */
+  private streaks: [number, number] = [0, 0];
   categories: BoardCategory[] = [];
   readonly used = new Set<string>();
   turn: TeamIndex = 0;
@@ -699,6 +703,24 @@ export class GameRoom {
     const answers = round.answers as [number, number];
     const correct = answers.map((a) => a === round.question.correctIndex) as [boolean, boolean];
     round.deltas = computeScores(round.points, actions, correct, this.variant);
+    // Streak: a team that answers right three times in a row gets the third one doubled, then starts again.
+    // A wrong answer breaks it; a round where the team swapped/reversed instead of answering leaves it as it was.
+    const bonus: [boolean, boolean] = [false, false];
+    actions.forEach((a, t) => {
+      if (a !== 'answer') return;
+      if (!correct[t]) return void (this.streaks[t] = 0);
+      const run = (this.streaks[t] ?? 0) + 1;
+      this.streaks[t] = run;
+      if (run >= STREAK_FOR_DOUBLE) {
+        this.streaks[t] = 0;
+        const d = round.deltas!;
+        if ((d[t] ?? 0) > 0) {
+          d[t] = (d[t] ?? 0) * 2;
+          bonus[t] = true;
+        }
+      }
+    });
+    round.streakBonus = bonus;
     round.deltas.forEach((d, t) => {
       const team = this.teams[t]!;
       team.score = Math.max(MIN_SCORE, team.score + d);
@@ -806,8 +828,10 @@ export class GameRoom {
             actions: round.actions as [Action, Action],
             answers: round.answers as [number, number],
             deltas: round.deltas!,
+            streakBonus: round.streakBonus,
           }
         : null,
+      streaks: [...this.streaks] as [number, number],
     };
   }
 

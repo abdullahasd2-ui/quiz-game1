@@ -180,6 +180,31 @@ describe('round flow', () => {
   });
 });
 
+describe('streak', () => {
+  it('the third right answer in a row is doubled, a wrong answer breaks the run', () => {
+    const { room } = mobileRoom();
+    const play = (cat: number, points: number, a0: number, a1: number) => {
+      room.beginRound(cat, points, question(2));
+      room.act(0, 'answer');
+      room.act(1, 'answer');
+      room.answer(0, a0);
+      room.answer(1, a1);
+      const v = room.view(0);
+      room.next(room.turn);
+      return v;
+    };
+    play(1, 100, 2, 0); // team 0 right (1), team 1 wrong
+    play(1, 200, 2, 2); // team 0 right (2), team 1 right (1)
+    const third = play(1, 300, 2, 0); // team 0 right (3) → doubled
+    expect(third.result?.deltas[0]).toBe(600);
+    expect(third.result?.streakBonus).toEqual([true, false]);
+    expect(third.streaks).toEqual([0, 0]);
+    const after = play(1, 400, 2, 2);
+    expect(after.result?.deltas[0]).toBe(400);
+    expect(after.streaks).toEqual([1, 1]);
+  });
+});
+
 describe('shuffleQuestion', () => {
   it('keeps the correct option attached to its text', () => {
     for (let i = 0; i < 20; i++) {

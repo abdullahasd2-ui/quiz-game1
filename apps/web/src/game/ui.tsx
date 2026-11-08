@@ -78,6 +78,13 @@ export function Scorebar({ view, highlightTurn = false }: { view: RoomView; high
           <div key={view.teams[t]?.score ?? 0} className={cn('text-2xl font-black tabular-nums motion-safe:animate-fx-bump', TEAM_TEXT[t])}>
             {view.teams[t]?.score ?? 0}
           </div>
+          {/* Streak: one 🔥 per right answer in a row; at two the next right answer is doubled. */}
+          {(view.streaks?.[t] ?? 0) > 0 && (
+            <div className={cn('mt-0.5 text-[11px] font-black', view.streaks![t] >= 2 ? 'text-q-orange motion-safe:animate-streak' : 'text-white/60')} title="إجابات صحيحة ورا بعض">
+              {'🔥'.repeat(view.streaks![t])}
+              {view.streaks![t] >= 2 && ' الجاية دبل!'}
+            </div>
+          )}
         </div>
       ))}
       <div className="order-2 text-center text-sm font-black text-white/25">VS</div>

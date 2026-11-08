@@ -138,3 +138,34 @@ describe('answer time', () => {
     expect(tick(s, 16_000).phase).toBe('result');
   });
 });
+
+describe('streak, fastest and «نقاطي»', () => {
+  const round = (s: ReturnType<typeof newStream>, cell: string, aliAt: number, saraAt: number) => {
+    let r = deal(toBoard(s), cell, q, 0);
+    r = streamerAct(r, { type: 'answer', index: 1 }, 0);
+    r = chatMessage(chatMessage(r, 'Ali', '1', 1), 'Sara', '1', 1);
+    r = streamerAct(r, { type: 'show' }, 2);
+    r = chatMessage(r, 'Sara', '2', saraAt);
+    r = chatMessage(r, 'Ali', '2', aliAt);
+    return streamerAct(r, { type: 'finish' }, 99);
+  };
+  it('the third right answer in a row is doubled', () => {
+    let s = chatMessage(chatMessage(newStream('S', 20), 'Ali', 'دخول'), 'Sara', 'دخول');
+    s = round(s, '1:100', 5, 6);
+    s = round(s, '1:200', 5, 6);
+    s = round(s, '1:300', 5, 6);
+    expect(s.result?.rows.ali).toMatchObject({ delta: 600, streak: true });
+    expect(s.result?.rows.s).toMatchObject({ delta: 600, streak: true }); // the streamer answered right too
+    expect(s.scores.ali).toBe(300 + 300 + 600); // the test question is worth 300 in every cell
+  });
+  it('names the fastest right answer', () => {
+    const s = round(chatMessage(chatMessage(newStream('S', 20), 'Ali', 'دخول'), 'Sara', 'دخول'), '1:100', 9, 4);
+    expect(s.result?.fastest).toBe('sara');
+  });
+  it('«نقاطي» marks who asked', () => {
+    let s = chatMessage(newStream('S', 20), 'Ali', 'دخول');
+    s = chatMessage(s, 'Ali', 'نقاطي', 42);
+    expect(s.scoreAsk).toEqual({ key: 'ali', at: 42 });
+    expect(chatMessage(s, 'Nobody', 'نقاطي', 50).scoreAsk?.key).toBe('ali'); // only players
+  });
+});

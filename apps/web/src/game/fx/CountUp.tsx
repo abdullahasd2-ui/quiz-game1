@@ -1,25 +1,33 @@
 import { useEffect, useState } from 'react';
 import { prefersReducedMotion } from './Confetti';
 
-/** Rolls a number up from 0 (or down to a negative), with a sign: "+100". Ends on exactly `to`. */
-export function CountUp({ to, ms = 650 }: { to: number; ms?: number }) {
-  const [value, setValue] = useState(prefersReducedMotion() ? to : 0);
+/**
+ * Rolls a number from `from` (default 0) to `to`, after `delay` ms. Signed ("+100") unless `signed` is false,
+ * for totals. Ends on exactly `to`.
+ */
+export function CountUp({ to, from = 0, ms = 650, delay = 0, signed = true }: { to: number; from?: number; ms?: number; delay?: number; signed?: boolean }) {
+  const [value, setValue] = useState(prefersReducedMotion() ? to : from);
 
   useEffect(() => {
-    if (to === 0 || prefersReducedMotion()) {
+    if (to === from || prefersReducedMotion()) {
       setValue(to);
       return;
     }
-    const t0 = performance.now();
+    setValue(from);
     let raf = 0;
+    let t0 = 0;
     const step = (now: number) => {
+      if (!t0) t0 = now;
       const p = Math.min(1, (now - t0) / ms);
-      setValue(Math.round(to * (1 - Math.pow(1 - p, 3))));
+      setValue(Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))));
       if (p < 1) raf = requestAnimationFrame(step);
     };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [to, ms]);
+    const timer = setTimeout(() => (raf = requestAnimationFrame(step)), delay);
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+    };
+  }, [to, from, ms, delay]);
 
-  return <>{value > 0 ? `+${value}` : value}</>;
+  return <>{signed && value > 0 ? `+${value}` : value}</>;
 }

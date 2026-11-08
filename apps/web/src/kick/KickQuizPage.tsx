@@ -484,12 +484,12 @@ export function KickQuizPage() {
                   return (
                     <li key={row.key}>
                       <div className="flex justify-between gap-2">
-                        <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}</span>
+                        <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}{row.run > 0 && <span className="ms-1 text-[10px]" title="إجابات صح ورا بعض">{'🔥'.repeat(row.run)}</span>}</span>
                         <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                       </div>
                       {o && (
                         <div className={cn('text-[11px]', o.cls)}>
-                          {o.label} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                          {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
                         </div>
                       )}
                     </li>
