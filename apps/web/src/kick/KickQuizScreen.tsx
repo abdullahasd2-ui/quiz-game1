@@ -1,4 +1,4 @@
-import { displayName, standings, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
+import { displayName, standings, streamLabels, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
 import { useEffect, useRef, useState } from 'react';
 import { SoundToggle } from '@/game/fx/SoundToggle';
 import { unlockAudio } from '@/game/fx/sound';
@@ -71,6 +71,7 @@ export function KickQuizScreen() {
     );
   }
 
+  const L = streamLabels(state.variant);
   const rows = standings(state).slice(0, 10);
   const r = state.round;
   const q = r?.question;
@@ -99,7 +100,7 @@ export function KickQuizScreen() {
       )}
       <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between ps-12">
         <div className="text-lg font-black">
-          <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">بادل</span>
+          <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">{L.verb}</span>
         </div>
         <QuizHowToButton />
       </div>
@@ -133,7 +134,7 @@ export function KickQuizScreen() {
           {state.phase === 'lobby' && (
             <div className="py-10 text-center">
               <div className="mb-2 text-5xl">🎮</div>
-              <div className="text-3xl font-black text-q-gold">جاوب أو بادل</div>
+              <div className="text-3xl font-black text-q-gold">{L.title}</div>
               <div className="mt-3 text-xl">اكتبوا <b className="text-q-gold">دخول</b> في الشات عشان تلعبون</div>
               <div className="mt-2 text-white/60">المشاركون: {state.joined.length} · الأسئلة: {state.used.length}/{state.totalCells}</div>
               <div className="mt-4 text-sm text-white/50">الستريمر يجهّز اللعبة...</div>
@@ -169,9 +170,9 @@ export function KickQuizScreen() {
               <div className="mb-4 text-3xl font-black leading-snug">{q.text}</div>
               <div className="mx-auto mb-3 max-w-md space-y-1 rounded-xl bg-q-panel p-4 text-2xl">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
-                <div>اكتبوا <b className="text-q-cyan">2</b> = بادل مع الستريمر</div>
+                <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
               </div>
-              <div className="text-sm text-white/70">✅ جاوب: {answerers} · 🔄 بادل: {swappers}</div>
+              <div className="text-sm text-white/70">✅ جاوب: {answerers} · {L.icon} {L.verb}: {swappers}</div>
               {left !== null && <div className="mt-2 text-4xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
             </div>
           )}
@@ -192,10 +193,10 @@ export function KickQuizScreen() {
                   </div>
                 ))}
               </div>
-              {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · بادل {swappers}</div>}
+              {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · {L.verb} {swappers}</div>}
               {result && (
                 <div className="mt-4 text-center text-xl font-black">
-                  {result.streamerChoice === 'swap' ? `الستريمر بادل مع ${displayName(state, result.streamerPartner ?? '')}` : 'الستريمر جاوب'} —{' '}
+                  {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>
                 </div>
               )}

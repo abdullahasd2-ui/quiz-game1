@@ -19,6 +19,8 @@ import {
   type StreamQuestion,
   type StreamState,
   type StreamerAct,
+  type StreamVariant,
+  streamLabels,
   type SyncClientToServerEvents,
   type SyncServerToClientEvents,
 } from '@quiz/shared';
@@ -48,6 +50,9 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'answer-wrong': { label: '❌ جاوب غلط', cls: 'text-q-red' },
   'swap-win': { label: '🔄 بادل وربح', cls: 'text-q-green' },
   'swap-lose': { label: '🔄 بادل وخسر', cls: 'text-q-red' },
+  flip: { label: '🔀 قلب', cls: 'text-q-cyan' },
+  'flipped-right': { label: '🔀 انقلب عليه (جوابه صح)', cls: 'text-q-red' },
+  'flipped-wrong': { label: '🔀 انقلب عليه (جوابه غلط)', cls: 'text-q-green' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
 
@@ -61,6 +66,7 @@ export function KickQuizPage() {
   const [chosen, setChosen] = useState<number[]>([]);
   const [test, setTest] = useState(false);
   const [answerSec, setAnswerSec] = useState<number>(30);
+  const [variant, setVariant] = useState<StreamVariant>('swap');
   const [error, setError] = useState(params.get('kick_error') ?? '');
   const [state, setState] = useState<StreamState | null>(null);
   const [status, setStatus] = useState<KickStatus>({ state: 'connecting' });
@@ -201,7 +207,7 @@ export function KickQuizPage() {
       const c = cats.find((x) => x.id === id);
       return { id, name: c?.name ?? '', icon: c?.icon ?? '' };
     });
-    set(toBoard({ ...ref.current, totalCells: chosen.length * POINTS.length, answerMs: answerSec * 1000, board }));
+    set(toBoard({ ...ref.current, totalCells: chosen.length * POINTS.length, answerMs: answerSec * 1000, board, variant }));
   }
 
   async function pick(category: number, points: number) {
@@ -224,7 +230,7 @@ export function KickQuizPage() {
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white relative isolate" dir="rtl">
         <Background3D />
         <div className="mx-auto max-w-md">
-          <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 جاوب أو بادل — بث Kick</h1>
+          <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 بث Kick — جاوب أو بادل / اقلب</h1>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="mb-5 text-center">
             <QuizHowToButton forStreamer />
@@ -260,6 +266,7 @@ export function KickQuizPage() {
     );
   }
 
+  const L = streamLabels(state.variant);
   const rows = standings(state);
   const top = rows.slice(0, 10);
   const r = state.round;
@@ -319,6 +326,29 @@ export function KickQuizPage() {
                 ) : (
                   <div className="mt-2 text-xs text-white/50">بانتظار أول مشارك...</div>
                 )}
+              </div>
+
+              <div>
+                <div className="mb-2 text-sm font-black">🎮 اختر الطور</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {(['swap', 'flip'] as const).map((v) => {
+                    const l = streamLabels(v);
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setVariant(v)}
+                        className={cn('rounded-xl border-2 p-3 text-center transition-all', variant === v ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                      >
+                        <div className="text-2xl">{l.icon}</div>
+                        <div className="font-black text-q-gold">{l.title}</div>
+                        <div className="mt-0.5 text-[11px] text-white/60">
+                          {v === 'swap' ? 'بادل مع الستريمر: صح = دبل، غلط = ناقص' : 'اقلب على الستريمر: صح = ينقص، غلط = يزيد'}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div>
@@ -392,7 +422,7 @@ export function KickQuizPage() {
                 ))}
               </div>
               <div className="mt-4 rounded-xl border border-q-line bg-q-panel p-3">
-                <div className="mb-2 text-center text-sm font-black text-q-cyan">🔄 أو بادل مع واحد من المشاركين</div>
+                <div className="mb-2 text-center text-sm font-black text-q-cyan">{L.icon} {L.withPlayer}</div>
                 {state.joined.length === 0 ? (
                   <p className="text-center text-xs text-white/50">ما أحد دخل للحين. اطلبوا من الشات يكتبون «دخول».</p>
                 ) : (
@@ -415,10 +445,10 @@ export function KickQuizPage() {
               <div className="mb-3 text-2xl font-black leading-snug">{q.text}</div>
               <div className="mx-auto mb-2 max-w-sm space-y-1 rounded-xl bg-q-panel p-3 text-lg">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
-                <div>اكتبوا <b className="text-q-cyan">2</b> = بادل مع الستريمر</div>
+                <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
               </div>
               <div className="mb-2 text-xs text-white/60">🔒 اختيار الستريمر مخفي — لازم تكتبون «دخول» عشان تلعبون</div>
-              <div className="mb-2 text-sm text-white/70">✅ جاوب: {answerers} · 🔄 بادل: {swappers}</div>
+              <div className="mb-2 text-sm text-white/70">✅ جاوب: {answerers} · {L.icon} {L.verb}: {swappers}</div>
               {left !== null && <div className="mb-3 text-3xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
               <button type="button" className="q-btn-gold" onClick={() => act({ type: 'show' })}>اعرض الخيارات الآن</button>
             </div>
@@ -446,7 +476,7 @@ export function KickQuizPage() {
               </div>
               {state.phase === 'answer' && (
                 <div className="mt-3 text-center text-sm text-white/70">
-                  اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · بادل {swappers} · 🔒 اختيار الستريمر مخفي
+                  اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي
                   <div><button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب</button></div>
                 </div>
               )}
@@ -456,8 +486,12 @@ export function KickQuizPage() {
           {state.phase === 'result' && result && (
             <div className="mt-4 text-center">
               <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
-                {result.streamerChoice === 'swap' ? `🔄 بادل مع ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}
-                {swappers > 0 && <span className="block text-sm text-white/70">المبادلون معك {result.streamerCorrect ? 'ضاعفوا نقاطهم' : 'خسروا النقاط'}</span>}
+                {result.streamerChoice === 'swap' ? `${L.icon} ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}
+                {swappers > 0 && result.streamerChoice === 'answer' && (
+                  <span className="block text-sm text-white/70">
+                    {state.variant === 'flip' ? `${swappers} قلبوا عليك — ${result.streamerCorrect ? 'نقصت نقاطك' : 'زادت نقاطك'}` : `المبادلون معك ${result.streamerCorrect ? 'ضاعفوا نقاطهم' : 'خسروا النقاط'}`}
+                  </span>
+                )}
               </div>
               <button type="button" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>اللوحة ◀</button>
             </div>
