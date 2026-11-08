@@ -21,6 +21,7 @@ import {
   type StreamerAct,
   type StreamVariant,
   streamLabels,
+  hideQuestion,
   type SyncClientToServerEvents,
   type SyncServerToClientEvents,
 } from '@quiz/shared';
@@ -32,6 +33,7 @@ import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { QuestionImage } from '@/game/ui';
 import { BoardGrid } from './BoardGrid';
+import { HideBoxes } from './HideBoxes';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 
@@ -53,8 +55,17 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   flip: { label: '🔀 قلب', cls: 'text-q-cyan' },
   'flipped-right': { label: '🔀 انقلب عليه (جوابه صح)', cls: 'text-q-red' },
   'flipped-wrong': { label: '🔀 انقلب عليه (جوابه غلط)', cls: 'text-q-green' },
+  'hid-safe': { label: '🔒 ما أحد لقى المفتاح', cls: 'text-q-green' },
+  'hid-found': { label: '🔓 لقوا المفتاح', cls: 'text-white/50' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
+
+/** The result label for a player; «خبّي أو اكشف» speaks of finding the key instead of answering. */
+export function outcomeLabel(variant: StreamVariant | undefined, outcome: StreamOutcome) {
+  if (variant === 'hide' && outcome === 'answer-right') return { label: '🔑 لقى المفتاح', cls: 'text-q-green' };
+  if (variant === 'hide' && outcome === 'answer-wrong') return { label: '📭 ما لقاه', cls: 'text-q-red' };
+  return OUTCOME[outcome];
+}
 
 /** «جاوب أو بادل» on a Kick stream: the streamer picks the cell, then the streamer and the whole chat play it. */
 export function KickQuizPage() {
@@ -66,6 +77,7 @@ export function KickQuizPage() {
   const [chosen, setChosen] = useState<number[]>([]);
   const [test, setTest] = useState(false);
   const [answerSec, setAnswerSec] = useState<number>(30);
+  const [hideRounds, setHideRounds] = useState(10);
   const [variant, setVariant] = useState<StreamVariant>('swap');
   const [error, setError] = useState(params.get('kick_error') ?? '');
   const [state, setState] = useState<StreamState | null>(null);
@@ -201,6 +213,11 @@ export function KickQuizPage() {
 
   function beginGame() {
     if (!ref.current) return;
+    if (variant === 'hide') {
+      setError('');
+      set(toBoard({ ...ref.current, totalCells: hideRounds, answerMs: answerSec * 1000, board: undefined, variant }));
+      return;
+    }
     if (chosen.length < 2) return setError('اختر فئتين على الأقل');
     setError('');
     const board = chosen.map((id) => {
@@ -282,7 +299,7 @@ export function KickQuizPage() {
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} سؤال`} <QuizHowToButton forStreamer variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}`} <QuizHowToButton forStreamer variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
@@ -330,8 +347,8 @@ export function KickQuizPage() {
 
               <div>
                 <div className="mb-2 text-sm font-black">🎮 اختر الطور</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {(['swap', 'flip'] as const).map((v) => {
+                <div className="grid grid-cols-3 gap-2">
+                  {(['swap', 'flip', 'hide'] as const).map((v) => {
                     const l = streamLabels(v);
                     return (
                       <button
@@ -343,7 +360,7 @@ export function KickQuizPage() {
                         <div className="text-2xl">{l.icon}</div>
                         <div className="font-black text-q-gold">{l.title}</div>
                         <div className="mt-0.5 text-[11px] text-white/60">
-                          {v === 'swap' ? 'بادل مع الستريمر: صح = دبل، غلط = ناقص' : 'اقلب على الستريمر: صح = ينقص، غلط = يزيد'}
+                          {v === 'swap' ? 'بادل مع الستريمر: صح = دبل، غلط = ناقص' : v === 'flip' ? 'اقلب على الستريمر: صح = ينقص، غلط = يزيد' : 'تخبّي المفتاح في صندوق والشات يخمّن من 1 إلى 10'}
                         </div>
                       </button>
                     );
@@ -351,30 +368,48 @@ export function KickQuizPage() {
                 </div>
               </div>
 
-              <div>
-                <div className="mb-2 flex items-center justify-between text-sm">
-                  <span className="font-black">🗂️ اختر الفئات</span>
-                  <span className="text-xs text-white/50">{chosen.length}/{MAX_CATEGORIES}</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {cats.map((c) => {
-                    const on = chosen.includes(c.id);
-                    return (
+              {variant === 'hide' ? (
+                <div>
+                  <div className="mb-2 text-sm font-black">🔁 عدد الجولات</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[5, 10, 15].map((n) => (
                       <button
-                        key={c.id}
+                        key={n}
                         type="button"
-                        onClick={() => setChosen((cur) => (on ? cur.filter((x) => x !== c.id) : cur.length < MAX_CATEGORIES ? [...cur, c.id] : cur))}
-                        className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                        onClick={() => setHideRounds(n)}
+                        className={cn('rounded-xl border-2 py-2 text-sm font-black', hideRounds === n ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}
                       >
-                        {c.icon} {c.name}
+                        {n} جولات
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <div className="mb-2 flex items-center justify-between text-sm">
+                    <span className="font-black">🗂️ اختر الفئات</span>
+                    <span className="text-xs text-white/50">{chosen.length}/{MAX_CATEGORIES}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {cats.map((c) => {
+                      const on = chosen.includes(c.id);
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => setChosen((cur) => (on ? cur.filter((x) => x !== c.id) : cur.length < MAX_CATEGORIES ? [...cur, c.id] : cur))}
+                          className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                        >
+                          {c.icon} {c.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div>
-                <div className="mb-2 text-sm font-black">⏱️ وقت الإجابة على السؤال</div>
+                <div className="mb-2 text-sm font-black">⏱️ {variant === 'hide' ? 'وقت التخمين' : 'وقت الإجابة على السؤال'}</div>
                 <div className="grid grid-cols-5 gap-2">
                   {STREAM_ANSWER_CHOICES.map((sec) => (
                     <button
@@ -395,7 +430,25 @@ export function KickQuizPage() {
             </div>
           )}
 
-          {state.phase === 'board' && (
+          {state.phase === 'board' && state.variant === 'hide' && (
+            <div className="py-4 text-center">
+              <div className="mb-1 text-5xl">📦</div>
+              <div className="mb-1 text-xl font-black">
+                الجولة {state.used.length + 1} من {state.totalCells}
+              </div>
+              <div className="mb-4 text-sm text-white/60">لما تكون جاهز، ابدأ الجولة وخبّي المفتاح</div>
+              <button
+                type="button"
+                className="q-btn-gold"
+                onClick={() => ref.current && set(deal(ref.current, `h:${ref.current.used.length + 1}`, hideQuestion(), Date.now()))}
+              >
+                🔑 ابدأ الجولة وخبّي المفتاح
+              </button>
+              <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
+            </div>
+          )}
+
+          {state.phase === 'board' && state.variant !== 'hide' && (
             <div>
               <div className="mb-1 text-center text-lg font-black">{busy ? 'جاري جلب السؤال...' : 'اختر السؤال من شاشة البث'}</div>
               <div className="mb-3 text-center text-xs text-white/50">اللوحة هنا للعرض فقط — الضغط على الخانات من شاشة البث</div>
@@ -404,7 +457,15 @@ export function KickQuizPage() {
             </div>
           )}
 
-          {state.phase === 'streamer' && q && (
+          {state.phase === 'streamer' && q && state.variant === 'hide' && (
+            <div className="text-center">
+              <div className="mb-1 text-xl font-black">🤫 اختر الصندوق اللي تخبّي فيه المفتاح</div>
+              <div className="mb-4 text-xs text-white/60">الشات ما يشوف اختيارك — بعدها يبدأ التخمين على طول</div>
+              <HideBoxes onPick={(i) => act({ type: 'answer', index: i })} />
+            </div>
+          )}
+
+          {state.phase === 'streamer' && q && state.variant !== 'hide' && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
                 <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
@@ -460,23 +521,36 @@ export function KickQuizPage() {
                 <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
                 {state.phase === 'answer' && left !== null && <span className="font-black tabular-nums text-q-cyan">⏱ {left}</span>}
               </div>
-              <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
-              <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {q.options.map((o, i) => {
-                  const right = result && i === result.correctIndex;
-                  const streamerPicked = result && result.streamerPick === i;
-                  return (
-                    <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-3 text-start text-lg font-black', right ? 'border-q-green bg-q-green/15' : streamerPicked ? 'border-q-red bg-q-red/15' : 'border-q-line bg-q-panel')}>
-                      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
-                      {o}
-                    </div>
-                  );
-                })}
-              </div>
+              {state.variant === 'hide' ? (
+                <div>
+                  <div className="mb-3 text-center text-xl font-black">{result ? '🔑 هنا كان المفتاح' : '🔎 الشات يخمّن… المفتاح عندك هنا'}</div>
+                  <HideBoxes keyAt={q.correctIndex} revealed={Boolean(result)} />
+                </div>
+              ) : (
+                <>
+                <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
+                <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {q.options.map((o, i) => {
+                    const right = result && i === result.correctIndex;
+                    const streamerPicked = result && result.streamerPick === i;
+                    return (
+                      <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-3 text-start text-lg font-black', right ? 'border-q-green bg-q-green/15' : streamerPicked ? 'border-q-red bg-q-red/15' : 'border-q-line bg-q-panel')}>
+                        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
+                        {o}
+                      </div>
+                    );
+                  })}
+                </div>
+                </>
+              )}
               {state.phase === 'answer' && (
                 <div className="mt-3 text-center text-sm text-white/70">
-                  اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي
+                  {state.variant === 'hide' ? (
+                    <>اكتبوا رقم الصندوق (1-10) · خمّن {answered}</>
+                  ) : (
+                    <>اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي</>
+                  )}
                   <div><button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب</button></div>
                 </div>
               )}
@@ -485,6 +559,13 @@ export function KickQuizPage() {
 
           {state.phase === 'result' && result && (
             <div className="mt-4 text-center">
+              {state.variant === 'hide' ? (
+                <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
+                  {result.streamerCorrect
+                    ? `🔒 ما أحد لقى المفتاح — لك ${q?.points ?? 0} نقطة`
+                    : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات`}
+                </div>
+              ) : (
               <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
                 {result.streamerChoice === 'swap' ? `${L.icon} ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}
                 {swappers > 0 && result.streamerChoice === 'answer' && (
@@ -493,7 +574,8 @@ export function KickQuizPage() {
                   </span>
                 )}
               </div>
-              <button type="button" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>اللوحة ◀</button>
+              )}
+              <button type="button" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>{state.variant === 'hide' ? 'الجولة التالية ◀' : 'اللوحة ◀'}</button>
             </div>
           )}
 
@@ -514,7 +596,7 @@ export function KickQuizPage() {
               <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
               <ol className="space-y-1.5 text-sm">
                 {top.map((row, i) => {
-                  const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
+                  const o = state.phase === 'result' && row.outcome ? outcomeLabel(state.variant, row.outcome) : null;
                   return (
                     <li key={row.key}>
                       <div className="flex justify-between gap-2">

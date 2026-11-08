@@ -22,12 +22,31 @@ const STREAK_DOUBLE = 3;
 export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'answer' | 'result' | 'over';
 export type StreamChoice = 'answer' | 'swap';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
  */
-export type StreamVariant = 'swap' | 'flip';
+export type StreamVariant = 'swap' | 'flip' | 'hide';
+
+/** «خبّي أو اكشف» on the stream: 10 boxes, the key hidden by the streamer, the chat guesses by number. */
+export const STREAM_HIDE_BOXES = 10;
+export const STREAM_HIDE_POINTS = 300;
+/**
+ * A hide round, dressed as a question so the rest of the game (deal, hidden answer, picks, timer, result) works unchanged:
+ * the options are the box numbers and the streamer's «answer» is the box he hides the key in.
+ */
+export function hideQuestion(): StreamQuestion {
+  return {
+    type: 'text',
+    text: 'وين المفتاح؟ 🔑',
+    options: Array.from({ length: STREAM_HIDE_BOXES }, (_, i) => String(i + 1)),
+    correctIndex: -1,
+    points: STREAM_HIDE_POINTS,
+    imageUrl: null,
+    categoryName: 'خبّي أو اكشف',
+  };
+}
 
 export type StreamRound = {
   question: StreamQuestion;
@@ -117,9 +136,9 @@ const SWAP_WORDS = ['2', 'بادل', 'اقلب'];
 export function parseOption(text: string, options: string[]): number | null {
   let t = normalize(text).toLowerCase();
   t = t.replace(/^جاوب\s*/, '').trim();
-  if (/^[1-4]$/.test(t)) {
+  if (/^\d{1,2}$/.test(t)) {
     const i = Number(t) - 1;
-    return i < options.length ? i : null;
+    return i >= 0 && i < options.length ? i : null;
   }
   const i = options.findIndex((o) => normalize(o).toLowerCase() === t);
   return i >= 0 ? i : null;
@@ -154,7 +173,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     s.round!.choices[key] = c;
     return s;
   }
-  if (s.phase === 'answer' && (r.choices[key] === 'answer' || partner) && r.picks[key] === undefined) {
+  if (s.phase === 'answer' && (r.choices[key] === 'answer' || partner || s.variant === 'hide') && r.picks[key] === undefined) {
     const i = parseOption(text, r.question.options);
     if (i === null) return s;
     s = clone(s);
@@ -181,7 +200,13 @@ export function streamerAct(state: StreamState, act: StreamerAct, now: number): 
     if (act.type === 'answer') {
       if (act.index < 0 || act.index >= r.question.options.length) return state;
       s.round!.streamer = { choice: 'answer', pick: act.index, partner: null };
+      if (s.variant === 'hide') {
+        // The streamer's pick is where the key is; no «1 or 2» step — the chat guesses right away.
+        s.round!.question = { ...s.round!.question, correctIndex: act.index };
+        return startAnswer(s, now);
+      }
     } else {
+      if (s.variant === 'hide') return state;
       const k = act.user.toLowerCase();
       if (!s.joined.includes(k)) return state;
       s.round!.streamer = { choice: 'swap', pick: null, partner: k };
@@ -227,6 +252,16 @@ function resolve(state: StreamState): StreamState {
     rows[k] = { outcome, delta, picked, ...(streak ? { streak } : {}) };
   };
   const players = new Set([...Object.keys(choices), ...Object.keys(picks)]);
+  if (s.variant === 'hide') {
+    // Whoever finds the key scores; if nobody does, the streamer who hid it scores.
+    const found = [...players].filter((k) => picks[k] === q.correctIndex);
+    for (const k of players) {
+      if (picks[k] === undefined) apply(k, 'idle', 0, null);
+      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? q.points : 0, picks[k]!);
+    }
+    apply(s.streamer, found.length ? 'hid-found' : 'hid-safe', found.length ? 0 : q.points, sp);
+    return finishResolve(s, rows, st, sp, found.length === 0);
+  }
   if (s.variant === 'flip') {
     // «جاوب أو اقلب»: a flipped answer scores the other way round (right = minus, wrong = plus); flippers score nothing.
     const flipped = (k: string, picked: number | null) => {
@@ -282,6 +317,8 @@ function finishResolve(
 
 /** Words for each stream game, so the pages say «بادل» or «اقلب» as fits. */
 export function streamLabels(variant: StreamVariant | undefined) {
+  if (variant === 'hide')
+    return { title: 'خبّي أو اكشف', verb: 'اكشف', did: 'خبّى', icon: '📦', withStreamer: '', withPlayer: '' };
   return variant === 'flip'
     ? { title: 'جاوب أو اقلب', verb: 'اقلب', did: 'قلب', icon: '🔀', withStreamer: 'اقلب على الستريمر', withPlayer: 'أو اقلب على واحد من المشاركين' }
     : { title: 'جاوب أو بادل', verb: 'بادل', did: 'بادل', icon: '🔄', withStreamer: 'بادل مع الستريمر', withPlayer: 'أو بادل مع واحد من المشاركين' };

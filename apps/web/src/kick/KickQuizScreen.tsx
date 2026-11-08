@@ -8,8 +8,9 @@ import { QuestionImage } from '@/game/ui';
 import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
-import { OUTCOME } from './KickQuizPage';
+import { outcomeLabel } from './KickQuizPage';
 import { BoardGrid } from './BoardGrid';
+import { HideBoxes } from './HideBoxes';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 import { VIEWER_STEPS } from './QuizHowTo';
@@ -106,7 +107,20 @@ export function KickQuizScreen() {
       </div>
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">
-          {state.phase === 'board' && (
+          {state.phase === 'board' && state.variant === 'hide' && (
+            <div className="py-8 text-center">
+              <div className="mb-2 text-6xl">📦</div>
+              <div className="text-3xl font-black text-q-gold">خبّي أو اكشف</div>
+              <div className="mt-2 text-xl">
+                الجولة {state.used.length + 1} من {state.totalCells} — جهّزوا أنفسكم!
+              </div>
+              <div className="mt-2 text-white/60">
+                اكتبوا <b className="text-q-gold">دخول</b> للمشاركة · المشاركون {state.joined.length}
+              </div>
+            </div>
+          )}
+
+          {state.phase === 'board' && state.variant !== 'hide' && (
             <div>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="font-black">{picking ? 'جاري فتح السؤال...' : '🎯 اختر سؤال من اللوحة'}</span>
@@ -154,7 +168,15 @@ export function KickQuizScreen() {
             </div>
           )}
 
-          {state.phase === 'streamer' && q && (
+          {state.phase === 'streamer' && q && state.variant === 'hide' && (
+            <div className="py-6 text-center">
+              <div className="mb-2 text-5xl motion-safe:animate-streak">🤫</div>
+              <div className="mb-5 text-3xl font-black">الستريمر يخبّي المفتاح 🔑…</div>
+              <HideBoxes big />
+            </div>
+          )}
+
+          {state.phase === 'streamer' && q && state.variant !== 'hide' && (
             <div className="py-10 text-center">
               <div className="mb-2 text-sm text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</div>
               <div className="mb-2 text-5xl">🎙️</div>
@@ -183,18 +205,35 @@ export function KickQuizScreen() {
                 <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
                 {state.phase === 'answer' && left !== null && <span className="text-2xl font-black tabular-nums text-q-cyan">⏱ {left}</span>}
               </div>
-              <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
-              <div className="mb-4 text-center text-3xl font-black leading-snug">{q.text}</div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {q.options.map((o, i) => (
-                  <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-4 text-start text-xl font-black', result && i === result.correctIndex ? 'border-q-green bg-q-green/15' : 'border-q-line bg-q-panel')}>
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
-                    {o}
-                  </div>
-                ))}
-              </div>
-              {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · {L.verb} {swappers}</div>}
-              {result && (
+              {state.variant === 'hide' ? (
+                <div>
+                  <div className="mb-4 text-center text-3xl font-black">{result ? '🔑 هنا كان المفتاح!' : '🔎 وين المفتاح؟ اكتبوا رقم الصندوق (1-10)'}</div>
+                  <HideBoxes keyAt={result ? result.correctIndex : null} revealed={Boolean(result)} big />
+                  {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">خمّن {answered} · أول رقم تكتبه هو اللي ينحسب</div>}
+                </div>
+              ) : (
+                <>
+                <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
+                <div className="mb-4 text-center text-3xl font-black leading-snug">{q.text}</div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {q.options.map((o, i) => (
+                    <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-4 text-start text-xl font-black', result && i === result.correctIndex ? 'border-q-green bg-q-green/15' : 'border-q-line bg-q-panel')}>
+                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
+                      {o}
+                    </div>
+                  ))}
+                </div>
+                {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · {L.verb} {swappers}</div>}
+                </>
+              )}
+              {result && state.variant === 'hide' && (
+                <div className={cn('mt-4 text-center text-2xl font-black', result.streamerCorrect ? 'text-q-red' : 'text-q-green')}>
+                  {result.streamerCorrect
+                    ? '🔒 ما أحد لقاه — النقاط للستريمر'
+                    : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات!`}
+                </div>
+              )}
+              {result && state.variant !== 'hide' && (
                 <div className="mt-4 text-center text-xl font-black">
                   {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>
@@ -215,7 +254,7 @@ export function KickQuizScreen() {
             <div className="mb-2 text-lg font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
             <ol className="space-y-2 text-base">
               {rows.map((row, i) => {
-                const o = state.phase === 'result' && row.outcome ? OUTCOME[row.outcome] : null;
+                const o = state.phase === 'result' && row.outcome ? outcomeLabel(state.variant, row.outcome) : null;
                 return (
                   <li key={row.key}>
                     <div className="flex justify-between gap-2">
