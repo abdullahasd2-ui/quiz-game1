@@ -297,3 +297,37 @@ describe('usage stats', () => {
     expect(live.json()).toMatchObject({ connections: 0, devicesOnline: 0, playersInRooms: 0, rooms: [] });
   });
 });
+
+describe('kick stats', () => {
+  it('records stream sessions as they progress and sums them for the admin page', async () => {
+    await sqlClient`truncate kick_streams, kick_links restart identity`;
+    const { createStreamRecorder } = await import('./kick/streamStats');
+    const { newStream, chatMessage, toBoard } = await import('@quiz/shared');
+    const errors: unknown[] = [];
+    const record = createStreamRecorder((e) => errors.push(e));
+
+    let st: import('@quiz/shared').StreamState = { ...newStream('Abdullah', 0), session: 'sess-1' };
+    await record(st);
+    st = chatMessage(chatMessage(st, 'Ali', 'دخول'), 'Sara', 'دخول');
+    await record(st);
+    st = toBoard({ ...st, totalCells: 10, variant: 'flip' as const });
+    await record({ ...st, used: ['1:100', '1:200'] });
+    await record({ ...st, used: ['1:100', '1:200', '1:300'], phase: 'over' });
+    await record(chatMessage({ ...newStream('Tester', 0), session: 'sess-2', test: true }, 'Bot', 'دخول')); // test mode: not in the totals
+    await sqlClient`insert into kick_links (kick_user_id, channel) values (7, 'Abdullah'), (7, 'abdullah'), (9, 'Other')`;
+    expect(errors).toEqual([]);
+
+    const res = await app.inject({ method: 'GET', url: '/api/admin/stats/kick?days=7', headers: { cookie } });
+    expect(res.statusCode).toBe(200);
+    const k = res.json();
+    expect(k.totals).toEqual({ links: 3, channels: 2, streams: 2, realStreams: 1, gamesStarted: 1, finished: 1, joins: 2, maxPlayers: 2, rounds: 3 });
+    expect(k.variants).toEqual([{ variant: 'flip', streams: 1 }]);
+    expect(k.topChannels[0]).toMatchObject({ channel: 'Abdullah', streams: 1, joins: 2 });
+    expect(k.recent).toHaveLength(2);
+    expect(k.live).toEqual([]);
+    expect(k.byDay.at(-1)).toMatchObject({ streams: 1, joins: 2, links: 3 });
+
+    const anon = await app.inject({ method: 'GET', url: '/api/admin/stats/kick' });
+    expect(anon.statusCode).toBe(401);
+  });
+});

@@ -85,3 +85,28 @@ export type UsageStats = {
 };
 
 export type ApiErrorBody = { error: string; issues?: { path: string; message: string }[] };
+
+/** Kick stream mode in the admin dashboard. */
+export type KickLiveStream = { channel: string; variant: string | null; phase: string; players: number; rounds: number; totalRounds: number; test: boolean; since: number };
+export type KickStats = {
+  days: number;
+  totals: {
+    /** Times a streamer linked their Kick account, and how many different channels. */
+    links: number;
+    channels: number;
+    /** Stream sessions started («ابدأ البث»), real ones (not test mode), and how many reached the game. */
+    streams: number;
+    realStreams: number;
+    gamesStarted: number;
+    finished: number;
+    /** Viewers who joined with «دخول», summed over sessions; and the most in one session. */
+    joins: number;
+    maxPlayers: number;
+    rounds: number;
+  };
+  byDay: { day: string; streams: number; joins: number; links: number }[];
+  variants: { variant: string; streams: number }[];
+  topChannels: { channel: string; streams: number; joins: number; lastAt: string }[];
+  recent: { channel: string; variant: string | null; test: boolean; players: number; rounds: number; startedAt: string; finishedAt: string | null }[];
+  live: KickLiveStream[];
+};

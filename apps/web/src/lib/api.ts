@@ -1,4 +1,4 @@
-import { fieldLabel, type Admin, type AdminAccount, type LiveStats, type UsageStats, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput, type QuestionStatus } from '@quiz/shared';
+import { fieldLabel, type Admin, type AdminAccount, type LiveStats, type UsageStats, type KickStats, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput, type QuestionStatus } from '@quiz/shared';
 import { serverUrl } from './server';
 
 export class ApiError extends Error {
@@ -60,6 +60,7 @@ export const api = {
   coverage: () => request<CoverageRow[]>('GET', '/api/admin/stats/coverage'),
   live: () => request<LiveStats>('GET', '/api/admin/stats/live'),
   usage: (days: number) => request<UsageStats>('GET', `/api/admin/stats/usage?days=${days}`),
+  kickStats: (days: number) => request<KickStats>('GET', `/api/admin/stats/kick?days=${days}`),
 
   admins: () => request<AdminAccount[]>('GET', '/api/admin/admins'),
   createAdmin: (email: string, password: string) => request<AdminAccount>('POST', '/api/admin/admins', { email, password }),

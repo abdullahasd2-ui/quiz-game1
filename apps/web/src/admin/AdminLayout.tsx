@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { ActivityIcon, FolderTreeIcon, InboxIcon, LayoutGridIcon, ListChecksIcon, LogOutIcon, UploadIcon, UsersIcon } from 'lucide-react';
+import { RadioIcon, ActivityIcon, FolderTreeIcon, InboxIcon, LayoutGridIcon, ListChecksIcon, LogOutIcon, UploadIcon, UsersIcon } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
@@ -10,6 +10,7 @@ import { usePendingCount } from './pages/BankPage';
 const NAV = [
   { to: '/admin', label: 'نظرة عامة', icon: LayoutGridIcon, end: true },
   { to: '/admin/stats', label: 'الإحصائيات', icon: ActivityIcon },
+  { to: '/admin/kick', label: 'بث Kick', icon: RadioIcon },
   { to: '/admin/questions', label: 'الأسئلة', icon: ListChecksIcon },
   { to: '/admin/bank', label: 'بنك الأسئلة', icon: InboxIcon, badge: true },
   { to: '/admin/categories', label: 'الفئات', icon: FolderTreeIcon },

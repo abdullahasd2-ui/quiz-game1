@@ -11,9 +11,9 @@ import { cn } from '@/lib/utils';
 import { PageHeader } from '../AdminLayout';
 
 const LIVE_REFRESH_MS = 5000;
-const PERIODS = [7, 30, 90] as const;
+export const PERIODS = [7, 30, 90] as const;
 
-const num = new Intl.NumberFormat('en');
+export const num = new Intl.NumberFormat('en');
 const dayLabel = new Intl.DateTimeFormat('ar-u-nu-latn', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const fmtDay = (day: string) => dayLabel.format(new Date(`${day}T00:00:00Z`));
 
@@ -210,7 +210,7 @@ function UsageSection() {
 
 // ── Building blocks ──────────────────────────────────────────────────────────
 
-function Stat({ label, value, hint, loading }: { label: string; value: React.ReactNode; hint?: string; loading: boolean }) {
+export function Stat({ label, value, hint, loading }: { label: string; value: React.ReactNode; hint?: string; loading: boolean }) {
   return (
     <Card>
       <CardHeader>
@@ -224,7 +224,7 @@ function Stat({ label, value, hint, loading }: { label: string; value: React.Rea
   );
 }
 
-function ChartCard({ title, description, loading, children }: { title: string; description: string; loading: boolean; children: React.ReactNode }) {
+export function ChartCard({ title, description, loading, children }: { title: string; description: string; loading: boolean; children: React.ReactNode }) {
   return (
     <Card>
       <CardHeader>
@@ -237,9 +237,9 @@ function ChartCard({ title, description, loading, children }: { title: string; d
 }
 
 /** One series per day; time runs left → right like the dates under it. Hover a day for its value. */
-function DailyBars({ days, value, unit }: { days: UsageDay[]; value: (d: UsageDay) => number; unit: string }) {
+export function DailyBars<D extends { day: string }>({ days, value, unit }: { days: D[]; value: (d: D) => number; unit: string }) {
   const max = Math.max(1, ...days.map(value));
-  const ticks = [days[0], days[Math.floor(days.length / 2)], days.at(-1)].filter((d, i, a): d is UsageDay => Boolean(d) && a.indexOf(d) === i);
+  const ticks = [days[0], days[Math.floor(days.length / 2)], days.at(-1)].filter((d, i, a): d is D => Boolean(d) && a.indexOf(d) === i);
 
   return (
     <div dir="ltr">
@@ -278,7 +278,7 @@ function DailyBars({ days, value, unit }: { days: UsageDay[]; value: (d: UsageDa
 }
 
 /** `share` shows each row's part of the total; off when rows overlap (a game picks several categories). */
-function BarList({ rows, empty, share = true }: { rows: { key: string; label: string; value: number }[]; empty: string; share?: boolean }) {
+export function BarList({ rows, empty, share = true }: { rows: { key: string; label: string; value: number }[]; empty: string; share?: boolean }) {
   if (!rows.length) return <p className="py-6 text-center text-sm text-muted-foreground">{empty}</p>;
   const max = Math.max(...rows.map((r) => r.value));
   const total = rows.reduce((a, r) => a + r.value, 0);

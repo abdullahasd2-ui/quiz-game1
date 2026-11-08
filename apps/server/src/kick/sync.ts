@@ -1,4 +1,4 @@
-import { publicView, SYNC_CODE_RE, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
+import { publicView, SYNC_CODE_RE, type KickLiveStream, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
 import type { Server } from 'socket.io';
 
 const MAX_ROOMS = 200;
@@ -8,9 +8,18 @@ const MAX_BYTES = 100_000;
  * Socket.IO namespace `/kick-sync`: the streamer's private control page publishes a scrubbed view of the game,
  * and the broadcast page that watches the same code displays it. The first publisher of a code owns it.
  */
-export function attachKickSync(io: Server) {
+export function attachKickSync(io: Server, opts: { onState?: (s: StreamState) => void } = {}) {
   const ns = io.of('/kick-sync');
-  const rooms = new Map<string, { hostKey: string; hostSocket: string; last: SyncView | null; idle: ReturnType<typeof setTimeout> | null }>();
+  const rooms = new Map<string, { hostKey: string; hostSocket: string; last: SyncView | null; idle: ReturnType<typeof setTimeout> | null; seenAt: number; since: number }>();
+  /** Streams running now: a control page synced in the last two minutes and the game not over. */
+  const live = (): KickLiveStream[] =>
+    [...rooms.values()]
+      .filter((r) => r.last?.state && r.last.state.phase !== 'over' && Date.now() - r.seenAt < 120_000)
+      .map((r) => {
+        const st = r.last!.state!;
+        return { channel: st.names[st.streamer] ?? st.streamer, variant: st.phase === 'lobby' ? null : st.variant ?? 'swap', phase: st.phase, players: st.joined.length, rounds: st.used.length, totalRounds: st.totalCells, test: Boolean(st.test), since: r.since };
+      })
+      .sort((a, b) => b.players - a.players);
   ns.on('connection', (socket) => {
     const typed = socket as unknown as {
       on: <E extends keyof SyncClientToServerEvents>(e: E, fn: SyncClientToServerEvents[E]) => void;
@@ -28,11 +37,14 @@ export function attachKickSync(io: Server) {
       let room = rooms.get(m.code);
       if (!room) {
         if (rooms.size >= MAX_ROOMS) return reply({ ok: false, error: 'كثير جلسات شغّالة' });
-        room = { hostKey: m.hostKey, hostSocket: socket.id, last: null, idle: null };
+        room = { hostKey: m.hostKey, hostSocket: socket.id, last: null, idle: null, seenAt: Date.now(), since: Date.now() };
         rooms.set(m.code, room);
       } else if (room.hostKey !== m.hostKey) return reply({ ok: false, error: 'هذا الكود مستخدم' });
       // Scrubbed here too, so a page bug can never put the streamer's secret on the broadcast.
       room.hostSocket = socket.id;
+      room.seenAt = Date.now();
+      if (m.state && room.last?.state?.session !== m.state.session) room.since = Date.now();
+      if (m.state) opts.onState?.(m.state);
       room.last = { state: m.state && publicView(m.state), hostNow: m.hostNow };
       if (room.idle) clearTimeout(room.idle);
       const code = m.code;
@@ -48,4 +60,5 @@ export function attachKickSync(io: Server) {
       reply({ ok: true });
     });
   });
+  return { live };
 }
