@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chatMessage, deal, finish, newStream, parseOption, standings, streamerAct, tick, toBoard, STREAM_ANSWER_MS, STREAM_CHOOSE_MS, type StreamQuestion } from './streamquiz';
+import { type StreamState, chatMessage, deal, finish, newStream, parseOption, standings, streamerAct, tick, toBoard, STREAM_ANSWER_MS, STREAM_CHOOSE_MS, type StreamQuestion } from './streamquiz';
 
 const q: StreamQuestion = { text: 'وين برج ايفل؟', options: ['لندن', 'باريس', 'روما', 'مدريد'], correctIndex: 1, points: 300, imageUrl: null };
 const join = (s: ReturnType<typeof newStream>, ...names: string[]) => names.reduce((acc, n) => chatMessage(acc, n, 'دخول'), s);
@@ -214,7 +214,7 @@ describe('«جاوب أو اقلب» on the stream', () => {
 describe('«خبّي أو اكشف» on the stream', () => {
   const hideGame = async () => {
     const { hideQuestion } = await import('./streamquiz');
-    let s = { ...newStream('S', 5), variant: 'hide' as const };
+    let s: StreamState = { ...newStream('S', 5), variant: 'hide' };
     for (const n of ['Ali', 'Sara', 'Omar']) s = chatMessage(s, n, 'دخول');
     return deal(toBoard(s), 'h:1', hideQuestion(), 0);
   };
@@ -227,7 +227,8 @@ describe('«خبّي أو اكشف» on the stream', () => {
     s = chatMessage(s, 'Sara', '10', 2);
     s = chatMessage(s, 'Omar', '٧', 3); // Arabic digit
     s = streamerAct(s, { type: 'finish' }, 4);
-    expect(s.scores).toMatchObject({ s: 0, ali: 300, sara: 0, omar: 300 });
+    expect(s.scores).toMatchObject({ s: 0, ali: 600, sara: 0, omar: 300 }); // Ali found it first: double
+    expect(s.result?.rows.ali?.first).toBe(true);
     expect(s.result?.rows.s?.outcome).toBe('hid-found');
     expect(s.result?.fastest).toBe('ali');
   });
@@ -243,5 +244,28 @@ describe('«خبّي أو اكشف» on the stream', () => {
     expect(streamerAct(s, { type: 'swap', user: 'ali' }, 0).phase).toBe('streamer');
     const g = chatMessage(streamerAct(s, { type: 'answer', index: 0 }, 0), 'Ali', '11', 1);
     expect(g.round?.picks.ali).toBeUndefined();
+  });
+});
+
+describe('«خبّي أو اكشف»: the streamer takes a player\'s points when nobody finds the key', () => {
+  const setup = async () => {
+    const { hideQuestion } = await import('./streamquiz');
+    let s: StreamState = { ...newStream('S', 5), variant: 'hide' };
+    for (const n of ['Ali', 'Sara']) s = chatMessage(s, n, 'دخول');
+    s = { ...s, scores: { ...s.scores, ali: 900, sara: 200 } };
+    s = streamerAct(deal(toBoard(s), 'h:1', hideQuestion(), 0), { type: 'answer', index: 4 }, 0);
+    s = chatMessage(chatMessage(s, 'Ali', '1', 1), 'Sara', '2', 1);
+    return streamerAct(s, { type: 'finish' }, 2);
+  };
+  it('goes to the steal step, and the chosen player\'s points move to the streamer', async () => {
+    let s = await setup();
+    expect(s.phase).toBe('steal');
+    expect(s.scores.s).toBe(300);
+    expect(streamerAct(s, { type: 'steal', user: 'nobody' }, 3).phase).toBe('steal');
+    s = streamerAct(s, { type: 'steal', user: 'Ali' }, 3);
+    expect(s.phase).toBe('result');
+    expect(s.scores).toMatchObject({ s: 1200, ali: 0, sara: 200 });
+    expect(s.result?.stolen).toEqual({ from: 'ali', points: 900 });
+    expect(s.result?.rows.ali).toMatchObject({ outcome: 'stolen', delta: -900 });
   });
 });

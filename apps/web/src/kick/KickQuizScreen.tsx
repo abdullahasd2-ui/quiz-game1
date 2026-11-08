@@ -199,7 +199,7 @@ export function KickQuizScreen() {
             </div>
           )}
 
-          {(state.phase === 'answer' || state.phase === 'result' || state.phase === 'over') && q && r && state.phase !== 'over' && (
+          {(state.phase === 'answer' || state.phase === 'result' || state.phase === 'steal') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
                 <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
@@ -226,9 +226,14 @@ export function KickQuizScreen() {
                 {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · {L.verb} {swappers}</div>}
                 </>
               )}
-              {result && state.variant === 'hide' && (
+              {state.phase === 'steal' && (
+                <div className="mt-4 text-center text-2xl font-black text-q-red motion-safe:animate-streak">💸 ما أحد لقاه… الستريمر بيختار واحد ياخذ كل نقاطه!</div>
+              )}
+              {result && state.phase === 'result' && state.variant === 'hide' && (
                 <div className={cn('mt-4 text-center text-2xl font-black', result.streamerCorrect ? 'text-q-red' : 'text-q-green')}>
-                  {result.streamerCorrect
+                  {result.stolen
+                    ? `💸 الستريمر أخذ ${result.stolen.points} نقطة من ${displayName(state, result.stolen.from)}!`
+                    : result.streamerCorrect
                     ? '🔒 ما أحد لقاه — النقاط للستريمر'
                     : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات!`}
                 </div>
@@ -263,7 +268,7 @@ export function KickQuizScreen() {
                     </div>
                     {o && (
                       <div className={cn('text-xs', o.cls)}>
-                        {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                        {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>}{row.first && <b className="text-q-gold"> ⚡ أول واحد — دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
                       </div>
                     )}
                   </li>

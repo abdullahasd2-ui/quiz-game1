@@ -20,9 +20,10 @@ const STREAK_DOUBLE = 3;
 
 /** A dealt question; `correctIndex` stays on the streamer's page and never goes into chat. */
 export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
-export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'answer' | 'result' | 'over';
+/** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
+export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'answer' | 'steal' | 'result' | 'over';
 export type StreamChoice = 'answer' | 'swap';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
@@ -59,7 +60,9 @@ export type StreamRound = {
   /** When each viewer answered (for the fastest right answer). */
   pickAt?: Record<string, number>;
 };
-export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean }>;
+export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean; /** First to find the key: doubled. */ first?: boolean }>;
+  /** «خبّي أو اكشف»: whose points the streamer took, and how many. */
+  stolen?: { from: string; points: number } | null;
   /** The chatter who answered right first. */
   fastest?: string | null;
 };
@@ -188,7 +191,8 @@ export type StreamerAct =
   | { type: 'answer'; index: number }
   | { type: 'swap'; user: string }
   | { type: 'show' }
-  | { type: 'finish' };
+  | { type: 'finish' }
+  | { type: 'steal'; user: string };
 
 /** The streamer's buttons: answer or swap (hidden from the stream), show the options early, end the question early. */
 export function streamerAct(state: StreamState, act: StreamerAct, now: number): StreamState {
@@ -214,6 +218,22 @@ export function streamerAct(state: StreamState, act: StreamerAct, now: number): 
     }
     s.phase = 'choose';
     s.deadline = now + STREAM_CHOOSE_MS;
+    return s;
+  }
+  if (act.type === 'steal') {
+    const k = act.user.toLowerCase();
+    const take = Math.max(0, state.scores[k] ?? 0);
+    if (state.phase !== 'steal' || !state.result || !state.joined.includes(k) || take <= 0) return state;
+    const s = clone(state);
+    s.scores[k] = 0;
+    s.scores[s.streamer] = (s.scores[s.streamer] ?? 0) + take;
+    const rows = { ...s.result!.rows };
+    const was = rows[k];
+    rows[k] = { outcome: 'stolen', delta: (was?.delta ?? 0) - take, picked: was?.picked ?? null };
+    const me = rows[s.streamer]!;
+    rows[s.streamer] = { ...me, delta: me.delta + take };
+    s.result = { ...s.result!, rows, stolen: { from: k, points: take } };
+    s.phase = 'result';
     return s;
   }
   if (act.type === 'show') return state.phase === 'choose' ? startAnswer(state, now) : state;
@@ -254,13 +274,20 @@ function resolve(state: StreamState): StreamState {
   const players = new Set([...Object.keys(choices), ...Object.keys(picks)]);
   if (s.variant === 'hide') {
     // Whoever finds the key scores; if nobody does, the streamer who hid it scores.
-    const found = [...players].filter((k) => picks[k] === q.correctIndex);
+    // The first to find it gets double; if nobody does, the streamer scores and then takes one player's points (steal phase).
+    const at = s.round!.pickAt ?? {};
+    const found = [...players].filter((k) => picks[k] === q.correctIndex).sort((a, b) => (at[a] ?? 0) - (at[b] ?? 0));
     for (const k of players) {
       if (picks[k] === undefined) apply(k, 'idle', 0, null);
-      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? q.points : 0, picks[k]!);
+      else if (picks[k] !== q.correctIndex) apply(k, 'answer-wrong', 0, picks[k]!);
+      else apply(k, 'answer-right', k === found[0] ? q.points * 2 : q.points, picks[k]!);
     }
+    if (found[0] && rows[found[0]]) rows[found[0]] = { ...rows[found[0]]!, first: true };
     apply(s.streamer, found.length ? 'hid-found' : 'hid-safe', found.length ? 0 : q.points, sp);
-    return finishResolve(s, rows, st, sp, found.length === 0);
+    const done = finishResolve(s, rows, st, sp, found.length === 0);
+    // Nobody found it and someone has points to lose: the streamer now picks whose points to take.
+    if (!found.length && s.joined.some((k) => (s.scores[k] ?? 0) > 0)) done.phase = 'steal';
+    return done;
   }
   if (s.variant === 'flip') {
     // «جاوب أو اقلب»: a flipped answer scores the other way round (right = minus, wrong = plus); flippers score nothing.
@@ -339,11 +366,11 @@ export function finish(state: StreamState): StreamState {
   return s;
 }
 
-export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number; streak: boolean; run: number };
+export type StreamRow = { key: string; name: string; score: number; streamer: boolean; outcome: StreamOutcome | null; delta: number; streak: boolean; run: number; first: boolean };
 /** Standings, best first; after a question each row also says how that player took it. */
 export function standings(s: StreamState): StreamRow[] {
   return Object.keys(s.scores)
-    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0, streak: Boolean(s.result?.rows[k]?.streak), run: s.streaks?.[k] ?? 0 }))
+    .map((k) => ({ key: k, name: displayName(s, k), score: s.scores[k]!, streamer: k === s.streamer, outcome: s.result?.rows[k]?.outcome ?? null, delta: s.result?.rows[k]?.delta ?? 0, streak: Boolean(s.result?.rows[k]?.streak), run: s.streaks?.[k] ?? 0, first: Boolean(s.result?.rows[k]?.first) }))
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 }
 
@@ -353,7 +380,7 @@ export function standings(s: StreamState): StreamRow[] {
  */
 export function publicView(s: StreamState): StreamState {
   const r = s.round;
-  if (!r || s.phase === 'result' || s.phase === 'over' || s.phase === 'board' || s.phase === 'lobby') return s;
+  if (!r || s.phase === 'result' || s.phase === 'steal' || s.phase === 'over' || s.phase === 'board' || s.phase === 'lobby') return s;
   const q = r.question;
   const hidden: StreamQuestion =
     s.phase === 'streamer'

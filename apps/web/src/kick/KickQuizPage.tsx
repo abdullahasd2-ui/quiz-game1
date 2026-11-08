@@ -57,6 +57,7 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'flipped-wrong': { label: '🔀 انقلب عليه (جوابه غلط)', cls: 'text-q-green' },
   'hid-safe': { label: '🔒 ما أحد لقى المفتاح', cls: 'text-q-green' },
   'hid-found': { label: '🔓 لقوا المفتاح', cls: 'text-white/50' },
+  stolen: { label: '💸 الستريمر أخذ نقاطه', cls: 'text-q-red' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
 
@@ -515,6 +516,29 @@ export function KickQuizPage() {
             </div>
           )}
 
+          {state.phase === 'steal' && (
+            <div className="text-center">
+              <div className="mb-1 text-5xl">💸</div>
+              <div className="mb-1 text-xl font-black text-q-green">🔒 ما أحد لقى المفتاح!</div>
+              <div className="mb-4 text-sm text-white/70">اختر واحد من المشاركين وخذ كل نقاطه</div>
+              <div className="flex max-h-72 flex-wrap justify-center gap-2 overflow-auto">
+                {state.joined
+                  .filter((k) => (state.scores[k] ?? 0) > 0)
+                  .sort((a, b) => (state.scores[b] ?? 0) - (state.scores[a] ?? 0))
+                  .map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => act({ type: 'steal', user: k })}
+                      className="rounded-xl border-2 border-q-line bg-q-panel px-3 py-2 text-sm font-black transition-all hover:-translate-y-0.5 hover:border-q-red hover:shadow-[0_0_18px_-6px_rgba(231,76,60,0.7)]"
+                    >
+                      {state.names[k] ?? k} · <bdi dir="ltr" className="text-q-gold">{state.scores[k]}</bdi>
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+
           {(state.phase === 'answer' || state.phase === 'result') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
@@ -561,7 +585,9 @@ export function KickQuizPage() {
             <div className="mt-4 text-center">
               {state.variant === 'hide' ? (
                 <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
-                  {result.streamerCorrect
+                  {result.stolen
+                    ? `💸 أخذت ${result.stolen.points} نقطة من ${state.names[result.stolen.from] ?? result.stolen.from} (+${q?.points ?? 0} لأن ما أحد لقاه)`
+                    : result.streamerCorrect
                     ? `🔒 ما أحد لقى المفتاح — لك ${q?.points ?? 0} نقطة`
                     : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات`}
                 </div>
@@ -605,7 +631,7 @@ export function KickQuizPage() {
                       </div>
                       {o && (
                         <div className={cn('text-[11px]', o.cls)}>
-                          {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
+                          {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>}{row.first && <b className="text-q-gold"> ⚡ أول واحد — دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
                         </div>
                       )}
                     </li>
