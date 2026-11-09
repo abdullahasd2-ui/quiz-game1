@@ -252,7 +252,7 @@ export function KickQuizPage() {
     if (pack && variant !== 'hide') {
       deck.current = packDeck(pack);
       setError('');
-      set(toBoard({ ...ref.current, totalCells: deck.current.length, answerMs: answerSec * 1000, board: undefined, variant, pack: { name: pack.name, total: deck.current.length } }));
+      set(toBoard({ ...ref.current, totalCells: deck.current.length, answerMs: answerSec * 1000, board: undefined, variant, pack: { name: pack.name, total: deck.current.length, logo: pack.logo } }));
       return;
     }
     if (variant === 'hide') {
@@ -396,7 +396,8 @@ export function KickQuizPage() {
                         <img key={m.id} src={m.image} alt={m.name} title={m.name} className="size-9 rounded-full border-2 border-q-bg object-cover" />
                       ))}
                     </div>
-                    <div className="text-sm">
+                    <div className="flex items-center gap-2 text-sm">
+                      {pack.logo && <img src={pack.logo} alt="" className="size-9 rounded-lg object-cover" />}
                       <b className="text-q-gold">{pack.name}</b> · {pack.questions.length} سؤال
                     </div>
                     <button type="button" className="ms-auto text-xs text-white/50 underline" onClick={() => setPack(null)}>
@@ -500,7 +501,7 @@ export function KickQuizPage() {
 
           {state.phase === 'board' && state.pack && (
             <div className="py-4 text-center">
-              <div className="mb-1 text-5xl">🎭</div>
+              {state.pack.logo ? <img src={state.pack.logo} alt={state.pack.name} className="mx-auto mb-2 size-20 rounded-2xl object-cover shadow-lg" /> : <div className="mb-1 text-5xl">🎭</div>}
               <div className="mb-1 text-xl font-black">
                 {state.pack.name} — السؤال {state.used.length + 1} من {state.pack.total}
               </div>

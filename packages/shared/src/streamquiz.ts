@@ -143,7 +143,7 @@ export type StreamState = {
   /** Started with «تجربة بدون Kick»: kept apart in the stats. */
   test?: boolean;
   /** A team's private pack (the questions stay on the control page; only the name and size here). */
-  pack?: { name: string; total: number };
+  pack?: { name: string; total: number; logo?: string };
   /** Which game: «جاوب أو بادل» (default) or «جاوب أو اقلب». The special choice is stored as 'swap' in both. */
   variant?: StreamVariant;
   round: StreamRound | null;

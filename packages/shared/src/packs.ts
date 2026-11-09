@@ -7,7 +7,7 @@ export type PackMember = { id: string; name: string; image: string };
 export type PackQuestion =
   | { kind: 'who'; text: string; answer: string }
   | { kind: 'fact'; about: string; text: string; /** The right one first; the order is shuffled when dealt. */ options: string[] };
-export type QuestionPack = { code: string; name: string; members: PackMember[]; questions: PackQuestion[] };
+export type QuestionPack = { code: string; name: string; logo?: string; members: PackMember[]; questions: PackQuestion[] };
 
 /** «مين فينا؟» scoring: starts at `points`, loses `step` each time a wrong face drops out (every `every` ms), never below `min`. */
 export const WHO_POINTS = 500;
