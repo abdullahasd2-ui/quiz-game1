@@ -14,13 +14,17 @@ import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
 import { KickQuizScreen } from './kick/KickQuizScreen';
 import { KickQuizPage } from './kick/KickQuizPage';
-import { KickPuzzlePage } from './kick/KickPuzzlePage';
 import { PrivacyPage } from './legal/PrivacyPage';
 import { SupportPage } from './legal/SupportPage';
 
+function KickRedirect() {
+  return <Navigate to={`/kick/quiz${window.location.search}`} replace />;
+}
+
 export const router = createBrowserRouter([
   { path: '/', element: <GamePage /> },
-  { path: '/kick', element: <KickPuzzlePage /> },
+  // The old picture-puzzle page is gone; its link (and Kick's redirect to it) goes to the stream quiz.
+  { path: '/kick', element: <KickRedirect /> },
   { path: '/kick/quiz', element: <KickQuizPage /> },
   { path: '/kick/quiz/screen', element: <KickQuizScreen /> },
   { path: '/privacy', element: <PrivacyPage /> },
