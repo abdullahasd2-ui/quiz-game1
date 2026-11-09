@@ -11,7 +11,7 @@ export type QuestionPack = { code: string; name: string; members: PackMember[]; 
 
 /** «مين فينا؟» scoring: starts at `points`, loses `step` each time a wrong face drops out (every `every` ms), never below `min`. */
 export const WHO_POINTS = 500;
-export const WHO_DECAY = { every: 8000, step: 50, min: 250 };
+export const WHO_DECAY = { every: 5000, step: 50, min: 250 };
 /** Wrong faces that drop out; the last three stay so the answer is never given away. */
 export const WHO_KEEP = 3;
 export const FACT_POINTS = 300;
