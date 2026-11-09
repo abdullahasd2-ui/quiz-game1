@@ -19,7 +19,14 @@ const MAX_PLAYERS = 400;
 const STREAK_DOUBLE = 3;
 
 /** A dealt question; `correctIndex` stays on the streamer's page and never goes into chat. */
-export type StreamQuestion = { type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
+export type StreamQuestion = {
+  /** Team packs: a face per option («مين فينا؟»), the member a question is about, and the dropping-faces timer. */
+  faces?: string[];
+  about?: { name: string; image: string };
+  /** Wrong options that drop out during the answer time, in order (never the right one). */
+  eliminate?: number[];
+  decay?: { every: number; step: number; min: number };
+  type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 /** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
 /** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
@@ -102,6 +109,8 @@ export type StreamRound = {
   picks: Record<string, number>;
   /** When each viewer answered (for the fastest right answer). */
   pickAt?: Record<string, number>;
+  /** When the answer time began (control page clock), for the dropping faces and their points. */
+  answerAt?: number;
   /** «خبّي أو اكشف»: the shuffle the boxes go through. */
   shuffle?: HideShuffle;
   /** When the shuffle (with the key in sight first) began, by the control page's clock. */
@@ -133,6 +142,8 @@ export type StreamState = {
   session?: string;
   /** Started with «تجربة بدون Kick»: kept apart in the stats. */
   test?: boolean;
+  /** A team's private pack (the questions stay on the control page; only the name and size here). */
+  pack?: { name: string; total: number };
   /** Which game: «جاوب أو بادل» (default) or «جاوب أو اقلب». The special choice is stored as 'swap' in both. */
   variant?: StreamVariant;
   round: StreamRound | null;
@@ -301,7 +312,20 @@ function startAnswer(state: StreamState, now: number): StreamState {
   const s = clone(state);
   s.phase = 'answer';
   s.deadline = now + (s.answerMs ?? STREAM_ANSWER_MS);
+  s.round!.answerAt = now;
   return s;
+}
+
+/** How many wrong options have dropped out by `t` (team «مين فينا؟» questions). */
+export function droppedBy(q: StreamQuestion, answerAt: number | undefined, t: number): number {
+  if (!q.eliminate?.length || !q.decay || answerAt === undefined) return 0;
+  return Math.max(0, Math.min(q.eliminate.length, Math.floor((t - answerAt) / q.decay.every)));
+}
+
+/** Points for a right answer given at `t`: fewer the more faces have dropped out. */
+export function pointsAt(q: StreamQuestion, answerAt: number | undefined, t: number | undefined): number {
+  if (!q.decay || t === undefined) return q.points;
+  return Math.max(q.decay.min, q.points - droppedBy(q, answerAt, t) * q.decay.step);
 }
 
 function resolve(state: StreamState): StreamState {
@@ -362,7 +386,7 @@ function resolve(state: StreamState): StreamState {
       if (choices[k] === 'swap') apply(k, 'flip', 0, null);
       else if (k === st.partner) flipped(k, picks[k] ?? null);
       else if (picks[k] === undefined) apply(k, 'idle', 0, null);
-      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? q.points : 0, picks[k]!);
+      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
     }
     return finishResolve(s, rows, st, sp, streamerCorrect);
   }
@@ -374,7 +398,7 @@ function resolve(state: StreamState): StreamState {
     else {
       const ok = picks[k] === q.correctIndex;
       // The partner's answer was taken by the streamer, so it scores nothing for them.
-      apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? q.points : 0, picks[k]!);
+      apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
     }
   }
   return finishResolve(s, rows, st, sp, streamerCorrect);
@@ -448,7 +472,7 @@ export function publicView(s: StreamState): StreamState {
   // Picks are kept only as a count: nobody's option is shown, so nobody copies it.
   const picks = Object.fromEntries(Object.keys(r.picks).map((k) => [k, 0]));
   // The shuffle itself is public: the broadcast page plays it (that is the game).
-  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks, shuffle: r.shuffle, shuffleAt: r.shuffleAt } };
+  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks, shuffle: r.shuffle, shuffleAt: r.shuffleAt, answerAt: r.answerAt } };
 }
 
 /** Short code that pairs the control page with the broadcast page. */
