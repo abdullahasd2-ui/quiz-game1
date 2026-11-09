@@ -248,6 +248,9 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     if (!c || partner || r.choices[key] === c) return s;
     s = clone(s);
     s.round!.choices[key] = c;
+    // Everyone has chosen: no need to wait out the clock.
+    const rr = s.round!;
+    if (s.joined.every((k) => k === rr.streamer?.partner || rr.choices[k] !== undefined)) return startAnswer(s, now);
     return s;
   }
   if (s.phase === 'answer' && (r.choices[key] === 'answer' || partner || s.variant === 'hide') && r.picks[key] === undefined) {
@@ -256,6 +259,10 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     s = clone(s);
     s.round!.picks[key] = i;
     s.round!.pickAt![key] = now;
+    // Everyone who can answer has answered: end the question now.
+    const rr = s.round!;
+    const canAnswer = s.joined.filter((k) => s.variant === 'hide' || rr.choices[k] === 'answer' || k === rr.streamer?.partner);
+    if (canAnswer.every((k) => rr.picks[k] !== undefined)) return resolve(s);
     return s;
   }
   return s;
