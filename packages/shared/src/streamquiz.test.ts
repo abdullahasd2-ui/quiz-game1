@@ -114,14 +114,14 @@ describe('stream quiz', () => {
 describe('broadcast view', () => {
   it('hides the streamer secret until the round ends', async () => {
     const { publicView } = await import('./streamquiz');
-    let s = begin('Ali');
+    let s = begin('Ali', 'Sara');
     expect(publicView(s).round?.question.text).toBe('');
     s = streamerAct(s, { type: 'answer', index: 1 }, 0);
     let v = publicView(s);
     expect(v.round?.streamer).toBeNull();
     expect(v.round?.question.correctIndex).toBe(-1);
     expect(v.round?.question.options).toEqual([]);
-    s = say(say(s, 'Ali', '1'), 'Ali', '1');
+    s = say(say(say(s, 'Ali', '1'), 'Ali', '1'), 'Sara', '1');
     s = streamerAct(s, { type: 'show' }, 1);
     s = say(s, 'Ali', '3');
     v = publicView(s);
@@ -130,6 +130,18 @@ describe('broadcast view', () => {
     expect(JSON.stringify(v)).not.toContain('"correctIndex":1');
     s = streamerAct(s, { type: 'finish' }, 2);
     expect(publicView(s).result?.correctIndex).toBe(1);
+  });
+});
+
+describe('ending early', () => {
+  it('moves on once every player chose, and ends once every answerer answered', () => {
+    let s = streamerAct(begin('Ali', 'Sara'), { type: 'answer', index: 1 }, 0);
+    s = say(s, 'Ali', '1');
+    expect(s.phase).toBe('choose');
+    s = say(s, 'Sara', '2');
+    expect(s.phase).toBe('answer');
+    s = say(s, 'Ali', 'باريس');
+    expect(s.phase).toBe('result');
   });
 });
 
