@@ -66,6 +66,7 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'hid-safe': { label: '🔒 ما أحد لقى المفتاح', cls: 'text-q-green' },
   'hid-found': { label: '🔓 لقوا المفتاح', cls: 'text-white/50' },
   stolen: { label: '💸 الستريمر أخذ نقاطه', cls: 'text-q-red' },
+  robbed: { label: '😵 انزرف! جوابه صح بس النقاط راحت للي بادل', cls: 'text-q-gold' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
 
@@ -702,7 +703,12 @@ export function KickQuizPage() {
                 {result.streamerChoice === 'swap' ? `${L.icon} ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}
                 {swappers > 0 && result.streamerChoice === 'answer' && (
                   <span className="block text-sm text-white/70">
-                    {state.variant === 'flip' ? `${swappers} قلبوا عليك — ${result.streamerCorrect ? 'نقصت نقاطك' : 'زادت نقاطك'}` : `المبادلون معك ${result.streamerCorrect ? 'ضاعفوا نقاطهم' : 'خسروا النقاط'}`}
+                    {state.variant === 'flip' ? `${swappers} قلبوا عليك — ${result.streamerCorrect ? 'نقصت نقاطك' : 'زادت نقاطك'}` : result.streamerCorrect ? `😵 انزرفت! ${swappers} بادلوا معك وأخذوا جوابك الصح (دبل) — ما لك شي` : `المبادلون معك (${swappers}) خسروا النقاط`}
+                  </span>
+                )}
+                {result.streamerChoice === 'swap' && state.variant !== 'flip' && (
+                  <span className="block text-sm text-white/70">
+                    {result.streamerCorrect ? `جاوب صح — لك دبل النقاط، و${state.names[result.streamerPartner ?? ''] ?? ''} انزرف 😵 ما ياخذ شي` : 'جاوب غلط — تنقص نقاطك'}
                   </span>
                 )}
               </div>

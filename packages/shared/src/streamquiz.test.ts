@@ -41,7 +41,7 @@ describe('stream quiz', () => {
       s = say(s, 'Omar', '3'); // wrong (option 3)
       return streamerAct(s, { type: 'finish' }, 2);
     };
-    expect(run(1).scores).toMatchObject({ abdullah: 300, ali: 600, sara: 600, omar: 0 });
+    expect(run(1).scores).toMatchObject({ abdullah: 0, ali: 600, sara: 600, omar: 0 });
     expect(run(0).scores).toMatchObject({ abdullah: 0, ali: -300, sara: -300, omar: 0 });
   });
 
@@ -68,6 +68,7 @@ describe('stream quiz', () => {
       return streamerAct(s, { type: 'finish' }, 2);
     };
     expect(run('2').scores).toMatchObject({ abdullah: 600, ali: 0, sara: 600 });
+    expect(run('2').result?.rows.ali?.outcome).toBe('robbed');
     expect(run('1').scores).toMatchObject({ abdullah: -300, ali: 0, sara: -300 });
     expect(streamerAct(begin('Ali'), { type: 'swap', user: 'nobody' }, 0).phase).toBe('streamer');
   });
@@ -88,7 +89,7 @@ describe('stream quiz', () => {
     s = end(say(s, 'Ali', '2'));
     const top = standings(s);
     expect(top[0]).toMatchObject({ name: 'Ali', outcome: 'swap-win', delta: 600 });
-    expect(top[1]).toMatchObject({ name: 'Abdullah', outcome: 'answer-right' });
+    expect(top[1]).toMatchObject({ name: 'Abdullah', outcome: 'robbed', delta: 0 });
   });
 
   it('each board cell plays once and the game can end', () => {

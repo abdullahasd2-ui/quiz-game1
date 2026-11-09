@@ -277,6 +277,11 @@ export function KickQuizScreen() {
                 <div className="mt-4 text-center text-xl font-black">
                   {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>
+                  {state.variant !== 'flip' && result.streamerCorrect && (result.streamerChoice === 'swap' || swappers > 0) && (
+                    <div className="mt-1 text-lg text-q-gold motion-safe:animate-streak">
+                      😵 {result.streamerChoice === 'swap' ? `${displayName(state, result.streamerPartner ?? '')} انزرف! الستريمر أخذ جوابه ودبل النقاط` : `الستريمر انزرف! ${swappers} بادلوا معه وأخذوا دبل النقاط`}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
