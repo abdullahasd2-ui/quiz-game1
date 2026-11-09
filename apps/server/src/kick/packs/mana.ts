@@ -9,6 +9,7 @@ const img = (id: string) => `/team/mana/${id}.webp`;
 export const MANA: QuestionPack = {
   code: 'MANA-T3P2',
   name: 'Team Mana',
+  logo: img('logo'),
   members: [
     { id: 'max', name: 'ماكس', image: img('max') },
     { id: 'fahad', name: 'فهد', image: img('fahad') },

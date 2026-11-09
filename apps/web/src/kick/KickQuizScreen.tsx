@@ -125,7 +125,7 @@ export function KickQuizScreen() {
 
           {state.phase === 'board' && state.pack && (
             <div className="py-8 text-center">
-              <div className="mb-2 text-6xl">🎭</div>
+              {state.pack.logo ? <img src={state.pack.logo} alt={state.pack.name} className="mx-auto mb-3 size-36 rounded-3xl object-cover shadow-[0_0_40px_rgba(255,20,50,0.45)]" /> : <div className="mb-2 text-6xl">🎭</div>}
               <div className="text-3xl font-black text-q-gold">{state.pack.name}</div>
               <div className="mt-2 text-xl">
                 السؤال {state.used.length + 1} من {state.pack.total} — جهّزوا أنفسكم!
