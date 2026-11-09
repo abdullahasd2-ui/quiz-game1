@@ -37,7 +37,7 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
     for (const [k, v] of pending) if (v.exp < Date.now()) pending.delete(k);
     const verifier = b64url(randomBytes(32));
     const state = b64url(randomBytes(16));
-    pending.set(state, { verifier, exp: Date.now() + 10 * 60_000, next: req.query.next === 'quiz' ? '/kick/quiz' : '/kick' });
+    pending.set(state, { verifier, exp: Date.now() + 10 * 60_000, next: '/kick/quiz' });
     const url = new URL(AUTHORIZE);
     url.search = new URLSearchParams({
       response_type: 'code',
@@ -54,7 +54,7 @@ export const kickOAuthRoutes: FastifyPluginAsync<Opts> = async (app, opts) => {
   app.get<{ Querystring: { code?: string; state?: string; error?: string } }>('/api/kick/callback', async (req, reply) => {
     const { code, state } = req.query;
     const entry = state ? pending.get(state) : undefined;
-    const back = entry?.next ?? '/kick';
+    const back = entry?.next ?? '/kick/quiz';
     const fail = (why: string) => reply.redirect(`${back}?kick_error=${encodeURIComponent(why)}`);
     if (!enabled || req.query.error || !code || !entry || entry.exp < Date.now()) return fail('تعذّر الربط، جرّب مرة ثانية');
     pending.delete(state!);
