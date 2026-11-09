@@ -22,6 +22,10 @@ import {
   type StreamVariant,
   streamLabels,
   hideQuestion,
+  packDeck,
+  packQuestion,
+  type PackQuestion,
+  type QuestionPack,
   randomHidePoints,
   STREAM_HIDE_LEVELS,
   type SyncClientToServerEvents,
@@ -37,6 +41,7 @@ import { QuestionImage } from '@/game/ui';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
+import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 
@@ -82,6 +87,10 @@ export function KickQuizPage() {
   const [test, setTest] = useState(false);
   const [answerSec, setAnswerSec] = useState<number>(30);
   const [hideRounds, setHideRounds] = useState(10);
+  // A team's private pack (by code): its questions stay here on the control page, in the order of play.
+  const [packCode, setPackCode] = useState('');
+  const [pack, setPack] = useState<QuestionPack | null>(null);
+  const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
   const [error, setError] = useState(params.get('kick_error') ?? '');
   const [state, setState] = useState<StreamState | null>(null);
@@ -215,8 +224,37 @@ export function KickQuizPage() {
     setError('');
   }
 
+  async function loadPack() {
+    if (!packCode.trim()) return;
+    try {
+      const res = await fetch(`${SERVER_URL}/api/kick/pack/${encodeURIComponent(packCode.trim())}`);
+      if (!res.ok) throw new Error();
+      const p = (await res.json()) as QuestionPack;
+      setPack(p);
+      if (variant === 'hide') setVariant('swap');
+      setError('');
+    } catch {
+      setPack(null);
+      setError('كود الحزمة غير صحيح');
+    }
+  }
+
+  function dealPack() {
+    const cur = ref.current;
+    if (!cur || !pack || cur.phase !== 'board') return;
+    const next = deck.current[cur.used.length];
+    if (!next) return set(finish(cur));
+    set(deal(cur, `p:${cur.used.length + 1}`, packQuestion(pack, next), Date.now()));
+  }
+
   function beginGame() {
     if (!ref.current) return;
+    if (pack && variant !== 'hide') {
+      deck.current = packDeck(pack);
+      setError('');
+      set(toBoard({ ...ref.current, totalCells: deck.current.length, answerMs: answerSec * 1000, board: undefined, variant, pack: { name: pack.name, total: deck.current.length } }));
+      return;
+    }
     if (variant === 'hide') {
       setError('');
       set(toBoard({ ...ref.current, totalCells: hideRounds, answerMs: answerSec * 1000, board: undefined, variant }));
@@ -303,7 +341,7 @@ export function KickQuizPage() {
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}`} <QuizHowToButton forStreamer variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
@@ -349,10 +387,36 @@ export function KickQuizPage() {
                 )}
               </div>
 
+              <div className="rounded-xl border border-q-line bg-q-panel p-3">
+                <div className="mb-2 text-sm font-black">🎭 حزمة فريق خاصة (اختياري)</div>
+                {pack ? (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex -space-x-2 rtl:space-x-reverse">
+                      {pack.members.map((m) => (
+                        <img key={m.id} src={m.image} alt={m.name} title={m.name} className="size-9 rounded-full border-2 border-q-bg object-cover" />
+                      ))}
+                    </div>
+                    <div className="text-sm">
+                      <b className="text-q-gold">{pack.name}</b> · {pack.questions.length} سؤال
+                    </div>
+                    <button type="button" className="ms-auto text-xs text-white/50 underline" onClick={() => setPack(null)}>
+                      إلغاء
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input className="q-input flex-1" dir="ltr" value={packCode} onChange={(e) => setPackCode(e.target.value)} placeholder="CODE-XXXX" />
+                    <button type="button" className="rounded-xl border-2 border-q-line px-3 text-sm font-black" onClick={() => void loadPack()}>
+                      تحميل
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <div className="mb-2 text-sm font-black">🎮 اختر الطور</div>
                 <div className="grid grid-cols-3 gap-2">
-                  {(['swap', 'flip', 'hide'] as const).map((v) => {
+                  {(pack ? (['swap', 'flip'] as const) : (['swap', 'flip', 'hide'] as const)).map((v) => {
                     const l = streamLabels(v);
                     return (
                       <button
@@ -372,7 +436,7 @@ export function KickQuizPage() {
                 </div>
               </div>
 
-              {variant === 'hide' ? (
+              {pack ? null : variant === 'hide' ? (
                 <div>
                   <div className="mb-2 text-sm font-black">🔁 عدد الجولات</div>
                   <div className="grid grid-cols-3 gap-2">
@@ -434,6 +498,20 @@ export function KickQuizPage() {
             </div>
           )}
 
+          {state.phase === 'board' && state.pack && (
+            <div className="py-4 text-center">
+              <div className="mb-1 text-5xl">🎭</div>
+              <div className="mb-1 text-xl font-black">
+                {state.pack.name} — السؤال {state.used.length + 1} من {state.pack.total}
+              </div>
+              <div className="mb-4 text-sm text-white/60">الأسئلة بالترتيب، وكل الفريق ياخذ دوره</div>
+              <button type="button" className="q-btn-gold" onClick={dealPack}>
+                ▶️ السؤال التالي
+              </button>
+              <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
+            </div>
+          )}
+
           {state.phase === 'board' && state.variant === 'hide' && (
             <div className="py-4 text-center">
               <div className="mb-1 text-5xl">📦</div>
@@ -452,7 +530,7 @@ export function KickQuizPage() {
             </div>
           )}
 
-          {state.phase === 'board' && state.variant !== 'hide' && (
+          {state.phase === 'board' && state.variant !== 'hide' && !state.pack && (
             <div>
               <div className="mb-1 text-center text-lg font-black">{busy ? 'جاري جلب السؤال...' : 'اختر السؤال من شاشة البث'}</div>
               <div className="mb-3 text-center text-xs text-white/50">اللوحة هنا للعرض فقط — الضغط على الخانات من شاشة البث</div>
@@ -486,8 +564,12 @@ export function KickQuizPage() {
                 <span className="text-xs text-white/60">دورك أول — اختيارك يبقى مخفي عن الشات</span>
               </div>
               <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
+              <AboutBadge q={q} />
               <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
-              <div className="mb-1 text-center text-xs text-white/60">جاوب: اضغط الخيار اللي تبيه</div>
+              <div className="mb-1 text-center text-xs text-white/60">جاوب: اضغط {q.faces ? 'الشخص' : 'الخيار'} اللي تبيه</div>
+              {q.faces ? (
+                <FaceGrid q={q} now={now} onPick={(i) => act({ type: 'answer', index: i })} />
+              ) : (
               <div className="grid gap-2 sm:grid-cols-2">
                 {q.options.map((o, i) => (
                   <button key={i} type="button" onClick={() => act({ type: 'answer', index: i })} className="flex items-center gap-2 rounded-xl border-2 border-q-line bg-q-panel p-3 text-start text-lg font-black hover:border-q-gold">
@@ -496,6 +578,7 @@ export function KickQuizPage() {
                   </button>
                 ))}
               </div>
+              )}
               <div className="mt-4 rounded-xl border border-q-line bg-q-panel p-3">
                 <div className="mb-2 text-center text-sm font-black text-q-cyan">{L.icon} {L.withPlayer}</div>
                 {state.joined.length === 0 ? (
@@ -570,7 +653,11 @@ export function KickQuizPage() {
               ) : (
                 <>
                 <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
+                <AboutBadge q={q} />
                 <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+                {q.faces ? (
+                  <FaceGrid q={q} answerAt={r.answerAt} now={now} correct={result ? result.correctIndex : null} mine={r.streamer?.pick ?? null} />
+                ) : (
                 <div className="grid gap-2 sm:grid-cols-2">
                   {q.options.map((o, i) => {
                     const right = result && i === result.correctIndex;
@@ -583,6 +670,7 @@ export function KickQuizPage() {
                     );
                   })}
                 </div>
+                )}
                 </>
               )}
               {state.phase === 'answer' && (
@@ -590,7 +678,7 @@ export function KickQuizPage() {
                   {state.variant === 'hide' ? (
                     <>اكتبوا رقم الصندوق (1-10) · خمّن {answered}</>
                   ) : (
-                    <>اكتبوا رقم الخيار (1-4) أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي</>
+                    <>اكتبوا رقم {q.faces ? 'الشخص (1-8)' : 'الخيار (1-4)'} أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي</>
                   )}
                   <div><button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب</button></div>
                 </div>

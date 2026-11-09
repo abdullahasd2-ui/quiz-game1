@@ -12,6 +12,7 @@ import { outcomeLabel } from './KickQuizPage';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
+import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
 import { VIEWER_STEPS } from './QuizHowTo';
@@ -122,7 +123,20 @@ export function KickQuizScreen() {
             </div>
           )}
 
-          {state.phase === 'board' && state.variant !== 'hide' && (
+          {state.phase === 'board' && state.pack && (
+            <div className="py-8 text-center">
+              <div className="mb-2 text-6xl">🎭</div>
+              <div className="text-3xl font-black text-q-gold">{state.pack.name}</div>
+              <div className="mt-2 text-xl">
+                السؤال {state.used.length + 1} من {state.pack.total} — جهّزوا أنفسكم!
+              </div>
+              <div className="mt-2 text-white/60">
+                اكتبوا <b className="text-q-gold">دخول</b> للمشاركة · المشاركون {state.joined.length}
+              </div>
+            </div>
+          )}
+
+          {state.phase === 'board' && state.variant !== 'hide' && !state.pack && (
             <div>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="font-black">{picking ? 'جاري فتح السؤال...' : '🎯 اختر سؤال من اللوحة'}</span>
@@ -199,7 +213,9 @@ export function KickQuizScreen() {
             <div className="py-2 text-center">
               <div className="mb-1 text-sm text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</div>
               <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
+              <AboutBadge q={q} big />
               <div className="mb-4 text-3xl font-black leading-snug">{q.text}</div>
+              {q.faces && <div className="mb-3 text-lg font-black text-q-cyan">🎭 الجواب واحد من الفريق — الصور تطلع بعد الاختيار</div>}
               <div className="mx-auto mb-3 max-w-md space-y-1 rounded-xl bg-q-panel p-4 text-2xl">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
                 <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
@@ -228,7 +244,11 @@ export function KickQuizScreen() {
               ) : (
                 <>
                 <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
+                <AboutBadge q={q} big />
                 <div className="mb-4 text-center text-3xl font-black leading-snug">{q.text}</div>
+                {q.faces ? (
+                  <FaceGrid q={q} answerAt={r.answerAt} now={now - offset} correct={result ? result.correctIndex : null} big />
+                ) : (
                 <div className="grid gap-2 sm:grid-cols-2">
                   {q.options.map((o, i) => (
                     <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-4 text-start text-xl font-black', result && i === result.correctIndex ? 'border-q-green bg-q-green/15' : 'border-q-line bg-q-panel')}>
@@ -237,7 +257,8 @@ export function KickQuizScreen() {
                     </div>
                   ))}
                 </div>
-                {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم الخيار (1-4) · أجاب {answered} · {L.verb} {swappers}</div>}
+                )}
+                {state.phase === 'answer' && <div className="mt-3 text-center text-sm text-white/70">اكتبوا رقم {q.faces ? 'الشخص (1-8)' : 'الخيار (1-4)'} · أجاب {answered} · {L.verb} {swappers}</div>}
                 </>
               )}
               {state.phase === 'steal' && (

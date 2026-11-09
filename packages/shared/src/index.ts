@@ -6,3 +6,4 @@ export * from './puzzle';
 export * from './kick';
 export * from './kick-client';
 export * from './streamquiz';
+export * from './packs';

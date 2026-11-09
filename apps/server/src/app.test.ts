@@ -331,3 +331,23 @@ describe('kick stats', () => {
     expect(anon.statusCode).toBe(401);
   });
 });
+
+describe('team packs', () => {
+  it('opens a pack only with its code', async () => {
+    const { MANA } = await import('./kick/packs/mana');
+    const ok = await app.inject({ method: 'GET', url: `/api/kick/pack/${MANA.code.toLowerCase()}` });
+    expect(ok.statusCode).toBe(200);
+    expect(ok.json().questions).toHaveLength(40);
+    expect(ok.json().members).toHaveLength(8);
+    expect((await app.inject({ method: 'GET', url: '/api/kick/pack/MANA' })).statusCode).toBe(404);
+    // every «who» answer is a member, every fact question is about a member and has four different options
+    const ids = new Set(MANA.members.map((m) => m.id));
+    for (const q of MANA.questions) {
+      if (q.kind === 'who') expect(ids.has(q.answer)).toBe(true);
+      else {
+        expect(ids.has(q.about)).toBe(true);
+        expect(new Set(q.options).size).toBe(4);
+      }
+    }
+  });
+});

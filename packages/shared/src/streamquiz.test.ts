@@ -299,3 +299,66 @@ describe('the box shuffle', () => {
     expect(s.scores.ali).toBe(400); // 200 points, first finder doubles
   });
 });
+
+describe('team packs', () => {
+  const pack = {
+    code: 'T',
+    name: 'Team',
+    members: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((id) => ({ id, name: id.toUpperCase(), image: `/${id}.webp` })),
+    questions: [
+      { kind: 'who' as const, text: 'who?', answer: 'c' },
+      { kind: 'fact' as const, about: 'a', text: 'when?', options: ['right', 'x', 'y', 'z'] },
+      { kind: 'fact' as const, about: 'a', text: 'when 2?', options: ['right', 'x', 'y', 'z'] },
+      { kind: 'fact' as const, about: 'b', text: 'b?', options: ['right', 'x', 'y', 'z'] },
+    ],
+  };
+  it('who questions: faces of all members, never drops the right one, keeps three', async () => {
+    const { packQuestion, WHO_KEEP } = await import('./packs');
+    const q = packQuestion(pack, pack.questions[0]!);
+    expect(q.options).toHaveLength(8);
+    expect(q.faces?.[q.correctIndex]).toBe('/c.webp');
+    expect(q.eliminate).toHaveLength(8 - WHO_KEEP);
+    expect(q.eliminate).not.toContain(q.correctIndex);
+  });
+  it('fact questions: shuffled options, right one tracked, member on top', async () => {
+    const { packQuestion } = await import('./packs');
+    for (let i = 0; i < 10; i++) {
+      const q = packQuestion(pack, pack.questions[1]!);
+      expect(q.options[q.correctIndex]).toBe('right');
+      expect(q.about?.name).toBe('A');
+    }
+  });
+  it('deck: every question once, the same member never twice in a row when it can be helped', async () => {
+    const { packDeck, questionMember } = await import('./packs');
+    const d = packDeck(pack);
+    expect(d).toHaveLength(4);
+    expect(new Set(d).size).toBe(4);
+    for (let i = 1; i < 3; i++) expect(questionMember(d[i]!) === questionMember(d[i - 1]!) && questionMember(d[i]!) !== 'a').toBe(false);
+  });
+  it('«مين فينا؟» points drop as faces drop out', async () => {
+    const { packQuestion, WHO_POINTS, WHO_DECAY } = await import('./packs');
+    const q = packQuestion(pack, pack.questions[0]!);
+    const play = (at: number) => {
+      let s: StreamState = chatMessage(newStream('S', 5), 'Ali', 'دخول');
+      s = streamerAct(deal(toBoard(s), 'p:1', q, 0), { type: 'answer', index: q.correctIndex }, 0);
+      s = streamerAct(chatMessage(s, 'Ali', '1', 1), { type: 'show' }, 1000);
+      s = chatMessage(s, 'Ali', String(q.correctIndex + 1), 1000 + at);
+      return streamerAct(s, { type: 'finish' }, 99_000).scores.ali;
+    };
+    expect(play(500)).toBe(WHO_POINTS);
+    expect(play(WHO_DECAY.every + 10)).toBe(WHO_POINTS - WHO_DECAY.step);
+    expect(play(WHO_DECAY.every * 30)).toBe(WHO_DECAY.min);
+  });
+  it('the broadcast copy keeps what it needs to drop the faces (start time, order), not the answer', async () => {
+    const { packQuestion } = await import('./packs');
+    const { publicView } = await import('./streamquiz');
+    const q = packQuestion(pack, pack.questions[0]!);
+    let s: StreamState = chatMessage(newStream('S', 5), 'Ali', 'دخول');
+    s = streamerAct(deal(toBoard(s), 'p:1', q, 0), { type: 'answer', index: q.correctIndex }, 0);
+    s = streamerAct(s, { type: 'show' }, 1000);
+    const v = publicView(s);
+    expect(v.round?.answerAt).toBe(1000);
+    expect(v.round?.question.eliminate).toEqual(q.eliminate);
+    expect(v.round?.question.correctIndex).toBe(-1);
+  });
+});
