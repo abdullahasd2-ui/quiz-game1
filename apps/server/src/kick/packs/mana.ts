@@ -60,7 +60,7 @@ export const MANA: QuestionPack = {
     { kind: 'fact', about: 'nfr', text: 'متى أول بث فيس كام لـ NFR (الشهر والسنة)؟', options: ['2026/9', '2026/8', '2026/10', '2025/9'] },
     { kind: 'fact', about: 'nfr', text: 'وش كان اختيار العائلة لاسم NFR قبل «علي»؟', options: ['رامي', 'سامي', 'هاني', 'فادي'] },
     { kind: 'fact', about: 'nfr', text: 'أول بث لـ NFR كان على أي جهاز؟', options: ['سوني 4', 'سوني 3', 'سوني 5', 'إكس بوكس ون'] },
-    { kind: 'fact', about: 'nfr', text: 'وش كانت يوزرات NFR قبل التوثيق في تويتش؟', options: ['NFRMGNON - 4NFR', 'NFRSAHI - NFR4', 'MGNONNFR - 4NFRR', 'NFRMAJNON - NFR44'] },
+    { kind: 'fact', about: 'nfr', text: 'وش كانت يوزرات NFR قبل التوثيق في تويتش؟', options: ['NFRMGNON', 'NFRSAHI', 'MGNONNFR', 'NFRMAJNON'] },
     // دحمني
     { kind: 'fact', about: 'dahmani', text: 'وش أفضل أنمي عند دحمني؟', options: ['قاتل الشياطين', 'هجوم العمالقة', 'جوجوتسو كايسن', 'ون بيس'] },
     { kind: 'fact', about: 'dahmani', text: 'مين الشخصية المفضلة لدحمني في الأنمي؟', options: ['تانجيرو', 'زينيتسو', 'إينوسكي', 'رينغوكو'] },
