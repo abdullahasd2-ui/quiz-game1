@@ -31,7 +31,7 @@ export type StreamQuestion = {
 /** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
 export type StreamChoice = 'answer' | 'swap';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
@@ -410,6 +410,8 @@ function resolve(state: StreamState): StreamState {
     return finishResolve(s, rows, st, sp, streamerCorrect);
   }
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
+  // Someone in the chat swapped onto the streamer's right answer: they take it (×2) and the streamer gets nothing («انزرف»).
+  else if (streamerCorrect && [...players].some((k) => choices[k] === 'swap')) apply(s.streamer, 'robbed', 0, sp);
   else apply(s.streamer, streamerCorrect ? 'answer-right' : 'answer-wrong', streamerCorrect ? q.points : 0, sp);
   for (const k of players) {
     if (choices[k] === 'swap') apply(k, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, null);
@@ -417,7 +419,8 @@ function resolve(state: StreamState): StreamState {
     else {
       const ok = picks[k] === q.correctIndex;
       // The partner's answer was taken by the streamer, so it scores nothing for them.
-      apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
+      if (ok && st.partner === k) apply(k, 'robbed', 0, picks[k]!);
+      else apply(k, ok ? 'answer-right' : 'answer-wrong', ok && st.partner !== k ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
     }
   }
   return finishResolve(s, rows, st, sp, streamerCorrect);
