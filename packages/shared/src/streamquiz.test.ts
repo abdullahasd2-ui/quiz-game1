@@ -101,6 +101,11 @@ describe('stream quiz', () => {
   it('parses options', () => {
     expect(parseOption('جاوب 3', q.options)).toBe(2);
     expect(parseOption('٤', q.options)).toBe(3);
+    expect(parseOption('ريجكس', ['ماكس', 'ريجكس', 'فهد'])).toBe(1);
+    expect(parseOption('  nfrsahi ', ['NFRMGNON', 'NFRSAHI'])).toBe(1);
+    expect(parseOption('برج ايفل!', ['برج إيفل', 'ساعة بق'])).toBe(0);
+    expect(parseOption('تويتش 2023/4/30', ['كيك 2023/4/30', 'تويتش 2023/4/30'])).toBe(1);
+    expect(parseOption('5', ['a', 'b', 'c', 'd'])).toBe(null);
     expect(parseOption('جاوب باريس', q.options)).toBe(1);
     expect(parseOption('5', q.options)).toBeNull();
   });
