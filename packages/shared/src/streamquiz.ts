@@ -205,8 +205,20 @@ export function parseOption(text: string, options: string[]): number | null {
     const i = Number(t) - 1;
     return i >= 0 && i < options.length ? i : null;
   }
-  const i = options.findIndex((o) => normalize(o).toLowerCase() === t);
+  const f = fold(t);
+  if (!f) return null;
+  const i = options.findIndex((o) => fold(o) === f);
   return i >= 0 ? i : null;
+}
+
+/** Loose form of an answer for matching the chat's typing: no spaces/punctuation, أ/إ/آ=ا, ة=ه, ى=ي, case-free. */
+function fold(text: string): string {
+  return normalize(text)
+    .toLowerCase()
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[\s\p{P}\p{S}]/gu, '');
 }
 
 export function chatMessage(state: StreamState, user: string, text: string, now = 0): StreamState {
