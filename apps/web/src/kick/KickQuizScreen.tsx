@@ -346,13 +346,13 @@ function ScoreCard({ state, who }: { state: StreamState; who: string }) {
   const me = all[rank - 1];
   if (!me) return null;
   return (
-    <div className="pointer-events-none fixed bottom-8 left-1/2 z-30 -translate-x-1/2 motion-safe:animate-toast-in">
-      <div className="flex items-center gap-5 rounded-3xl border-2 border-q-cyan/70 bg-q-bg/95 px-8 py-5 shadow-[0_0_50px_-6px_rgba(56,189,248,0.9)]">
-        <span className="text-5xl">📊</span>
+    <div className="pointer-events-none fixed bottom-6 left-1/2 z-30 -translate-x-1/2 motion-safe:animate-toast-in">
+      <div className="flex items-center gap-4 rounded-2xl border-2 border-q-cyan/60 bg-q-bg/90 px-7 py-4 shadow-[0_0_40px_-8px_rgba(56,189,248,0.85)]">
+        <span className="text-4xl">📊</span>
         <div>
-          <div className="text-3xl font-black">{me.name}</div>
-          <div className="mt-1 text-2xl font-bold text-white/85">
-            <bdi dir="ltr" className="text-4xl font-black text-q-gold">{me.score}</bdi> نقطة · المركز <b className="text-3xl text-q-cyan">{rank}</b> من {all.length}
+          <div className="text-2xl font-black">{me.name}</div>
+          <div className="text-xl text-white/75">
+            <bdi dir="ltr" className="text-2xl font-black text-q-gold">{me.score}</bdi> نقطة · المركز <b className="text-2xl text-q-cyan">{rank}</b> من {all.length}
             {me.run > 0 && <span className="ms-2">{'🔥'.repeat(me.run)}</span>}
           </div>
         </div>
