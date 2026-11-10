@@ -1,5 +1,6 @@
 import {
   chatMessage,
+  kickPlayer,
   deal,
   finish,
   KICK_CHANNEL_RE,
@@ -378,8 +379,9 @@ export function KickQuizPage() {
                 {state.joined.length > 0 ? (
                   <div className="mt-3 flex max-h-36 flex-wrap justify-center gap-1.5 overflow-auto">
                     {state.joined.map((k) => (
-                      <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                      <span key={k} className="flex items-center gap-1 rounded-lg border border-q-line bg-q-panel py-1 ps-2 pe-1 text-xs font-black">
                         {state.names[k] ?? k}
+                        <KickButton onKick={() => set(kickPlayer(ref.current ?? state, k))} name={state.names[k] ?? k} />
                       </span>
                     ))}
                   </div>
@@ -776,8 +778,9 @@ export function KickQuizPage() {
               ) : (
                 <div className="flex max-h-64 flex-wrap gap-1.5 overflow-auto">
                   {state.joined.map((k) => (
-                    <span key={k} className="rounded-lg border border-q-line bg-q-panel px-2 py-1 text-xs font-black">
+                    <span key={k} className="flex items-center gap-1 rounded-lg border border-q-line bg-q-panel py-1 ps-2 pe-1 text-xs font-black">
                       {state.names[k] ?? k}
+                      <KickButton onKick={() => set(kickPlayer(ref.current ?? state, k))} name={state.names[k] ?? k} />
                     </span>
                   ))}
                 </div>
@@ -787,5 +790,25 @@ export function KickQuizPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/** ✕ beside a player's name; a second tap within 3 seconds kicks them (so a slip of the finger doesn't). */
+function KickButton({ onKick, name }: { onKick: () => void; name: string }) {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 3000);
+    return () => clearTimeout(t);
+  }, [armed]);
+  return (
+    <button
+      type="button"
+      title={`طرد ${name}`}
+      className={cn('rounded-md px-1.5 leading-5 transition', armed ? 'bg-q-red text-white' : 'text-white/40 hover:bg-q-red/20 hover:text-q-red')}
+      onClick={() => (armed ? onKick() : setArmed(true))}
+    >
+      {armed ? 'طرد؟' : '✕'}
+    </button>
   );
 }
