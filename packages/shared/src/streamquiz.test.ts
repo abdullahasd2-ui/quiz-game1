@@ -134,6 +134,17 @@ describe('broadcast view', () => {
   });
 });
 
+describe('leave', () => {
+  it('«خروج» takes the player out, and «دخول» brings them back from zero', () => {
+    let s = say(begin('Ali', 'Sara'), 'Ali', 'خروج');
+    expect(s.joined).toEqual(['sara']);
+    expect(s.scores.ali).toBeUndefined();
+    s = say(s, 'Ali', 'دخول');
+    expect(s.joined).toEqual(['sara', 'ali']);
+    expect(s.scores.ali).toBe(0);
+  });
+});
+
 describe('kick', () => {
   it('removes the player and keeps them out', () => {
     let s = kickPlayer(begin('Ali', 'Sara'), 'ali');

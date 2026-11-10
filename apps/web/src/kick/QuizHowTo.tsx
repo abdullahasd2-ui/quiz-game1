@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 /** The viewers' rules, as typed in the chat. Shared by the streamer's setup page and the broadcast screen. */
 export const VIEWER_STEPS: { icon: string; title: string; text: string }[] = [
-  { icon: '👋', title: 'ادخل اللعبة', text: 'اكتب «دخول» في الشات — بدونها ما تلعب.' },
+  { icon: '👋', title: 'ادخل اللعبة', text: 'اكتب «دخول» في الشات — بدونها ما تلعب. وتبي تطلع؟ اكتب «خروج» (تنمسح نقاطك).' },
   { icon: '🎙️', title: 'الستريمر أول', text: 'يشوف السؤال ويجاوب، أو يبادل/يقلب على واحد من المشاركين، واختياره مخفي.' },
   { icon: '1️⃣', title: 'دورك: 1 أو 2', text: 'يظهر السؤال بدون خيارات: اكتب 1 = جاوب، أو 2 = بادل مع الستريمر (أو اقلب عليه — حسب الطور).' },
   { icon: '✍️', title: 'الجواب', text: 'إذا اخترت جاوب تظهر الخيارات: اكتب رقمها من 1 إلى 4 (أو «جاوب» + الجواب). أول جواب هو اللي يُحسب.' },
