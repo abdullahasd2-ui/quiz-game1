@@ -130,6 +130,8 @@ export type StreamState = {
   scores: Record<string, number>;
   /** Everyone who typed «دخول»: the players. */
   joined: string[];
+  /** Players the streamer kicked out: «دخول» no longer lets them back in. */
+  kicked?: string[];
   phase: StreamPhase;
   /** Board cells already played, as `${categoryId}:${points}`. */
   used: string[];
@@ -227,7 +229,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
   const t = normalize(text).toLowerCase();
   let s = state;
   if ((JOIN_WORDS as readonly string[]).includes(t)) {
-    if (s.joined.includes(key) || s.joined.length >= MAX_PLAYERS) return s;
+    if (s.joined.includes(key) || s.kicked?.includes(key) || s.joined.length >= MAX_PLAYERS) return s;
     s = clone(s);
     s.names[key] = user;
     s.joined.push(key);
@@ -265,6 +267,24 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     if (canAnswer.every((k) => rr.picks[k] !== undefined)) return resolve(s);
     return s;
   }
+  return s;
+}
+
+/** The streamer kicks a player out of the game: gone from the players and the scores, and can't rejoin. */
+export function kickPlayer(state: StreamState, user: string): StreamState {
+  const k = user.toLowerCase();
+  if (!state.joined.includes(k)) return state;
+  const s = clone(state);
+  s.joined = s.joined.filter((x) => x !== k);
+  s.kicked = [...(s.kicked ?? []), k];
+  delete s.scores[k];
+  if (s.streaks) delete s.streaks[k];
+  if (s.round) {
+    delete s.round.choices[k];
+    delete s.round.picks[k];
+    if (s.round.pickAt) delete s.round.pickAt[k];
+  }
+  if (s.scoreAsk?.key === k) s.scoreAsk = undefined;
   return s;
 }
 

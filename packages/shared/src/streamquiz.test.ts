@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type StreamState, chatMessage, deal, finish, newStream, parseOption, standings, streamerAct, tick, toBoard, STREAM_ANSWER_MS, STREAM_CHOOSE_MS, type StreamQuestion } from './streamquiz';
+import { type StreamState, chatMessage, kickPlayer, deal, finish, newStream, parseOption, standings, streamerAct, tick, toBoard, STREAM_ANSWER_MS, STREAM_CHOOSE_MS, type StreamQuestion } from './streamquiz';
 
 const q: StreamQuestion = { text: 'وين برج ايفل؟', options: ['لندن', 'باريس', 'روما', 'مدريد'], correctIndex: 1, points: 300, imageUrl: null };
 const join = (s: ReturnType<typeof newStream>, ...names: string[]) => names.reduce((acc, n) => chatMessage(acc, n, 'دخول'), s);
@@ -131,6 +131,16 @@ describe('broadcast view', () => {
     expect(JSON.stringify(v)).not.toContain('"correctIndex":1');
     s = streamerAct(s, { type: 'finish' }, 2);
     expect(publicView(s).result?.correctIndex).toBe(1);
+  });
+});
+
+describe('kick', () => {
+  it('removes the player and keeps them out', () => {
+    let s = kickPlayer(begin('Ali', 'Sara'), 'ali');
+    expect(s.joined).toEqual(['sara']);
+    expect(s.scores.ali).toBeUndefined();
+    s = say(s, 'Ali', 'دخول');
+    expect(s.joined).toEqual(['sara']);
   });
 });
 
