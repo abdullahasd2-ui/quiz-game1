@@ -196,6 +196,7 @@ export function deal(state: StreamState, cell: string, question: StreamQuestion,
 }
 
 const ANSWER_WORDS = ['1', 'جاوب'];
+const LEAVE_WORDS = ['خروج', 'خروج!', 'leave'];
 const SCORE_WORDS = ['نقاطي', 'نقاطى'];
 const SWAP_WORDS = ['2', 'بادل', 'اقلب'];
 
@@ -236,6 +237,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     s.scores[key] ??= 0;
     return s;
   }
+  if (LEAVE_WORDS.includes(t)) return removePlayer(s, key, false);
   if (SCORE_WORDS.includes(t) && s.joined.includes(key)) {
     s = clone(s);
     s.scoreAsk = { key, at: now };
@@ -272,11 +274,15 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
 
 /** The streamer kicks a player out of the game: gone from the players and the scores, and can't rejoin. */
 export function kickPlayer(state: StreamState, user: string): StreamState {
-  const k = user.toLowerCase();
+  return removePlayer(state, user.toLowerCase(), true);
+}
+
+/** A player leaves (or is kicked): out of the players and the scores; only a kick keeps them from rejoining. */
+function removePlayer(state: StreamState, k: string, ban: boolean): StreamState {
   if (!state.joined.includes(k)) return state;
   const s = clone(state);
   s.joined = s.joined.filter((x) => x !== k);
-  s.kicked = [...(s.kicked ?? []), k];
+  if (ban) s.kicked = [...(s.kicked ?? []), k];
   delete s.scores[k];
   if (s.streaks) delete s.streaks[k];
   if (s.round) {
