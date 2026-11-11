@@ -34,6 +34,7 @@ import {
 } from '@quiz/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { tripleLines, toneClass } from './tripleText';
+import { Logo } from '@/game/screens/HomeScreen';
 import { io, type Socket } from 'socket.io-client';
 import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
@@ -296,7 +297,18 @@ export function KickQuizPage() {
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white relative isolate" dir="rtl">
         <Background3D />
         <div className="mx-auto max-w-md">
-          <h1 className="mb-1 text-center text-2xl font-black text-q-gold">🎮 بث Kick — جاوب أو بادل / اقلب</h1>
+          <h1 className="flex items-center justify-center gap-2.5 text-[40px] font-black">
+            <Logo />
+            <span className="text-q-purple">جاوب</span>
+            <span className="text-[28px]">أو</span>
+            <span className="text-q-cyan">بادل</span>
+          </h1>
+          <div className="mb-2 flex justify-center">
+            <span dir="ltr" className="inline-flex items-center gap-1.5 rounded-lg bg-[#53FC18] px-3 py-0.5 text-sm font-black tracking-[0.2em] text-black shadow-[0_0_22px_-4px_#53FC18]">
+              <span className="size-2 rounded-full bg-black motion-safe:animate-pulse" />
+              KICK
+            </span>
+          </div>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="mb-5 text-center">
             <QuizHowToButton forStreamer />
