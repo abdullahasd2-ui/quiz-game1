@@ -10,7 +10,7 @@ import { api } from '@/lib/api';
 import { PageHeader } from '../AdminLayout';
 import { BarList, ChartCard, DailyBars, num, PERIODS, Stat } from './StatsPage';
 
-const VARIANT: Record<string, string> = { swap: 'جاوب أو بادل', flip: 'جاوب أو اقلب', hide: 'خبّي أو اكشف' };
+const VARIANT: Record<string, string> = { swap: 'جاوب أو بادل', flip: 'جاوب أو اقلب', triple: 'جاوب أو بادل أو اعكس', hide: 'خبّي أو اكشف' };
 const PHASE: Record<string, string> = {
   lobby: 'ينتظر المشاركين',
   board: 'يختار سؤال',

@@ -33,6 +33,7 @@ import {
   type SyncServerToClientEvents,
 } from '@quiz/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { tripleLines, toneClass } from './tripleText';
 import { io, type Socket } from 'socket.io-client';
 import { api } from '@/lib/api';
 import { SERVER_URL } from '@/lib/server';
@@ -67,6 +68,10 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'hid-safe': { label: '🔒 ما أحد لقى المفتاح', cls: 'text-q-green' },
   'hid-found': { label: '🔓 لقوا المفتاح', cls: 'text-white/50' },
   stolen: { label: '💸 الستريمر أخذ نقاطه', cls: 'text-q-red' },
+  'reverse-win': { label: '↩️ عكس وربح (جواب اللي عكس عليه غلط)', cls: 'text-q-green' },
+  'reverse-lose': { label: '↩️ عكس وخسر (جواب اللي عكس عليه صح)', cls: 'text-q-red' },
+  mutual: { label: '🤝 اختار هو والستريمر بعض — صفر', cls: 'text-q-gold' },
+  void: { label: '🚫 الستريمر ما جاوب بنفسه — ما فيه شي ينعكس أو يتبادل', cls: 'text-white/50' },
   robbed: { label: '😵 انزرف! جوابه صح بس النقاط راحت للي بادل', cls: 'text-q-gold' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
@@ -335,7 +340,7 @@ export function KickQuizPage() {
   const left = state.deadline ? Math.max(0, Math.ceil((state.deadline - now) / 1000)) : null;
   const dot = status.state === 'live' ? 'bg-q-green' : status.state === 'error' ? 'bg-q-red' : 'bg-q-gold';
     const result = state.result;
-  const swappers = r ? Object.values(r.choices).filter((c) => c === 'swap').length : 0;
+  const swappers = r ? Object.values(r.choices).filter((c) => c === 'swap' || c === 'reverse').length : 0;
   const answerers = r ? Object.values(r.choices).filter((c) => c === 'answer').length : 0;
   const answered = r ? Object.keys(r.picks).length : 0;
 
@@ -419,8 +424,8 @@ export function KickQuizPage() {
 
               <div>
                 <div className="mb-2 text-sm font-black">🎮 اختر الطور</div>
-                <div className="grid grid-cols-3 gap-2">
-                  {(pack ? (['swap', 'flip'] as const) : (['swap', 'flip', 'hide'] as const)).map((v) => {
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {(pack ? (['swap', 'flip', 'triple'] as const) : (['swap', 'flip', 'triple', 'hide'] as const)).map((v) => {
                     const l = streamLabels(v);
                     return (
                       <button
@@ -432,7 +437,7 @@ export function KickQuizPage() {
                         <div className="text-2xl">{l.icon}</div>
                         <div className="font-black text-q-gold">{l.title}</div>
                         <div className="mt-0.5 text-[11px] text-white/60">
-                          {v === 'swap' ? 'بادل مع الستريمر: صح = دبل، غلط = ناقص' : v === 'flip' ? 'اقلب على الستريمر: صح = ينقص، غلط = يزيد' : 'تخبّي المفتاح في صندوق والشات يخمّن من 1 إلى 10'}
+                          {v === 'swap' ? 'بادل مع الستريمر: صح = دبل، غلط = ناقص' : v === 'flip' ? 'اقلب على الستريمر: صح = ينقص، غلط = يزيد' : v === 'triple' ? 'بادل = دبل أو ناقص، اعكس = صح ينقص وغلط يزيد' : 'تخبّي المفتاح في صندوق والشات يخمّن من 1 إلى 10'}
                         </div>
                       </button>
                     );
@@ -589,11 +594,19 @@ export function KickQuizPage() {
                   <p className="text-center text-xs text-white/50">ما أحد دخل للحين. اطلبوا من الشات يكتبون «دخول».</p>
                 ) : (
                   <div className="flex max-h-32 flex-wrap justify-center gap-2 overflow-auto">
-                    {state.joined.map((k) => (
-                      <button key={k} type="button" className="rounded-lg border-2 border-q-line px-3 py-1.5 text-sm font-black hover:border-q-cyan" onClick={() => act({ type: 'swap', user: k })}>
-                        {state.names[k]}
-                      </button>
-                    ))}
+                    {state.joined.map((k) =>
+                      state.variant === 'triple' ? (
+                        <span key={k} className="flex items-center gap-1 rounded-lg border-2 border-q-line py-1 ps-3 pe-1 text-sm font-black">
+                          {state.names[k]}
+                          <button type="button" className="rounded-md bg-q-cyan/15 px-2 py-0.5 text-xs text-q-cyan hover:bg-q-cyan/30" onClick={() => act({ type: 'swap', user: k })}>🔄 بادل</button>
+                          <button type="button" className="rounded-md bg-q-purple/20 px-2 py-0.5 text-xs text-q-purple hover:bg-q-purple/35" onClick={() => act({ type: 'reverse', user: k })}>↩️ اعكس</button>
+                        </span>
+                      ) : (
+                        <button key={k} type="button" className="rounded-lg border-2 border-q-line px-3 py-1.5 text-sm font-black hover:border-q-cyan" onClick={() => act({ type: 'swap', user: k })}>
+                          {state.names[k]}
+                        </button>
+                      ),
+                    )}
                   </div>
                 )}
               </div>
@@ -608,6 +621,7 @@ export function KickQuizPage() {
               <div className="mx-auto mb-2 max-w-sm space-y-1 rounded-xl bg-q-panel p-3 text-lg">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
                 <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
+                {state.variant === 'triple' && <div>اكتبوا <b className="text-q-purple">3</b> = اعكس على الستريمر</div>}
               </div>
               <div className="mb-2 text-xs text-white/60">🔒 اختيار الستريمر مخفي — لازم تكتبون «دخول» عشان تلعبون</div>
               <div className="mb-2 text-sm text-white/70">✅ جاوب: {answerers} · {L.icon} {L.verb}: {swappers}</div>
@@ -699,6 +713,12 @@ export function KickQuizPage() {
                     : result.streamerCorrect
                     ? `🔒 ما أحد لقى المفتاح — لك ${q?.points ?? 0} نقطة`
                     : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات`}
+                </div>
+              ) : state.variant === 'triple' ? (
+                <div className="mb-1 space-y-1">
+                  {tripleLines(state, true).map((l, i) => (
+                    <div key={i} className={cn(i === 0 ? 'text-xl font-black' : 'text-sm font-bold', toneClass[l.tone])}>{l.text}</div>
+                  ))}
                 </div>
               ) : (
               <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
