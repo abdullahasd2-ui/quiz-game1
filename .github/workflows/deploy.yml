@@ -86,6 +86,12 @@ jobs:
           EOF
           ssh -fN prod
 
+      - name: Free disk space on server
+        run: |
+          # Old image versions (one per deploy) and leftovers from a broken copy fill the disk; the images the
+          # running containers use are kept.
+          ssh prod "rm -f '$DEPLOY_DIR/quiz-game.tar.gz.part' '$DEPLOY_DIR/quiz-game.tar.gz'; docker image prune -af > /dev/null; docker builder prune -af > /dev/null 2>&1 || true; df -h / | tail -1"
+
       - name: Copy image to server
         run: |
           ssh prod "cat > '$DEPLOY_DIR/quiz-game.tar.gz.part' && mv '$DEPLOY_DIR/quiz-game.tar.gz.part' '$DEPLOY_DIR/quiz-game.tar.gz'" < quiz-game.tar.gz
@@ -111,7 +117,7 @@ jobs:
           # New files in bank/ arrive as pending proposals; already-loaded questions are skipped.
           # </dev/null: the script itself arrives on stdin, and exec would swallow the lines after it.
           docker compose exec -T app node --import tsx src/scripts/load-bank.ts < /dev/null
-          docker image prune -f > /dev/null
+          docker image prune -af > /dev/null
           EOF
 
       - name: Close SSH connection
