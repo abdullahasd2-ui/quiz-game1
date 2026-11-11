@@ -1,3 +1,4 @@
+import { tripleLines, toneClass } from './tripleText';
 import { displayName, standings, streamLabels, SYNC_CODE_RE, type StreamState, type SyncClientToServerEvents, type SyncServerToClientEvents, type SyncView } from '@quiz/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SoundToggle } from '@/game/fx/SoundToggle';
@@ -81,7 +82,7 @@ export function KickQuizScreen() {
   const q = r?.question;
   const result = state.result;
   const left = state.deadline ? Math.max(0, Math.ceil((state.deadline - (now - offset)) / 1000)) : null;
-  const swappers = r ? Object.values(r.choices).filter((c) => c === 'swap').length : 0;
+  const swappers = r ? Object.values(r.choices).filter((c) => c === 'swap' || c === 'reverse').length : 0;
   const answerers = r ? Object.values(r.choices).filter((c) => c === 'answer').length : 0;
   const answered = r ? Object.keys(r.picks).length : 0;
 
@@ -219,6 +220,7 @@ export function KickQuizScreen() {
               <div className="mx-auto mb-3 max-w-md space-y-1 rounded-xl bg-q-panel p-4 text-2xl">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
                 <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
+                {state.variant === 'triple' && <div>اكتبوا <b className="text-q-purple">3</b> = اعكس على الستريمر</div>}
               </div>
               <div className="text-sm text-white/70">✅ جاوب: {answerers} · {L.icon} {L.verb}: {swappers}</div>
               {left !== null && <div className="mt-2 text-4xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
@@ -273,7 +275,14 @@ export function KickQuizScreen() {
                     : `🔓 لقاه ${Object.values(result.rows).filter((x) => x.outcome === 'answer-right').length} من الشات!`}
                 </div>
               )}
-              {result && state.variant !== 'hide' && (
+              {result && state.variant === 'triple' && (
+                <div className="mt-4 space-y-1 text-center">
+                  {tripleLines(state, false).map((l, i) => (
+                    <div key={i} className={cn(i === 0 ? 'text-xl font-black' : 'text-lg font-bold', toneClass[l.tone])}>{l.text}</div>
+                  ))}
+                </div>
+              )}
+              {result && state.variant !== 'hide' && state.variant !== 'triple' && (
                 <div className="mt-4 text-center text-xl font-black">
                   {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>

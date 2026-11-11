@@ -30,13 +30,15 @@ export type StreamQuestion = {
 /** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
 /** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
-export type StreamChoice = 'answer' | 'swap';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed';
+/** reverse: only in «جاوب أو بادل أو اعكس». */
+export type StreamChoice = 'answer' | 'swap' | 'reverse';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed' | 'reverse-win' | 'reverse-lose' | 'mutual' | 'void';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
  */
-export type StreamVariant = 'swap' | 'flip' | 'hide';
+/** triple = «جاوب أو بادل أو اعكس»: swap rules plus «اعكس» (the reverser scores the other way round from the one he reversed). */
+export type StreamVariant = 'swap' | 'flip' | 'hide' | 'triple';
 
 /** «خبّي أو اكشف» on the stream: 10 boxes, the key hidden by the streamer, the chat guesses by number. */
 export const STREAM_HIDE_BOXES = 10;
@@ -199,6 +201,7 @@ const ANSWER_WORDS = ['1', 'جاوب'];
 const LEAVE_WORDS = ['خروج', 'خروج!', 'leave'];
 const SCORE_WORDS = ['نقاطي', 'نقاطى'];
 const SWAP_WORDS = ['2', 'بادل', 'اقلب'];
+const REVERSE_WORDS = ['3', 'اعكس'];
 
 /** Option index from "3", "جاوب 3", "جاوب برج ايفل" or just the option's text. */
 export function parseOption(text: string, options: string[]): number | null {
@@ -247,9 +250,11 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
   if (!r || !s.joined.includes(key)) return s;
   const partner = r.streamer?.partner === key;
   if (s.phase === 'choose') {
-    const c: StreamChoice | null = SWAP_WORDS.includes(t) ? 'swap' : ANSWER_WORDS.includes(t) ? 'answer' : null;
-    // The streamer's swap partner is answering for him: no swapping out of it.
-    if (!c || partner || r.choices[key] === c) return s;
+    const c: StreamChoice | null =
+      SWAP_WORDS.includes(t) ? 'swap' : s.variant === 'triple' && REVERSE_WORDS.includes(t) ? 'reverse' : ANSWER_WORDS.includes(t) ? 'answer' : null;
+    // The streamer's swap partner is answering for him: no swapping out of it — except in «جاوب أو بادل أو اعكس»,
+    // where swapping or reversing back on the streamer leaves them both with nothing.
+    if (!c || (partner && s.variant !== 'triple') || r.choices[key] === c) return s;
     s = clone(s);
     s.round!.choices[key] = c;
     // Everyone has chosen: no need to wait out the clock.
@@ -257,7 +262,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     if (s.joined.every((k) => k === rr.streamer?.partner || rr.choices[k] !== undefined)) return startAnswer(s, now);
     return s;
   }
-  if (s.phase === 'answer' && (r.choices[key] === 'answer' || partner || s.variant === 'hide') && r.picks[key] === undefined) {
+  if (s.phase === 'answer' && (r.choices[key] === 'answer' || (partner && s.variant !== 'triple') || s.variant === 'hide') && r.picks[key] === undefined) {
     const i = parseOption(text, r.question.options);
     if (i === null) return s;
     s = clone(s);
@@ -265,7 +270,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     s.round!.pickAt![key] = now;
     // Everyone who can answer has answered: end the question now.
     const rr = s.round!;
-    const canAnswer = s.joined.filter((k) => s.variant === 'hide' || rr.choices[k] === 'answer' || k === rr.streamer?.partner);
+    const canAnswer = s.joined.filter((k) => s.variant === 'hide' || rr.choices[k] === 'answer' || (k === rr.streamer?.partner && s.variant !== 'triple'));
     if (canAnswer.every((k) => rr.picks[k] !== undefined)) return resolve(s);
     return s;
   }
@@ -297,6 +302,7 @@ function removePlayer(state: StreamState, k: string, ban: boolean): StreamState 
 export type StreamerAct =
   | { type: 'answer'; index: number; /** Tests only: a fixed shuffle. */ shuffle?: HideShuffle }
   | { type: 'swap'; user: string }
+  | { type: 'reverse'; user: string }
   | { type: 'show' }
   | { type: 'finish' }
   | { type: 'steal'; user: string };
@@ -305,7 +311,7 @@ export type StreamerAct =
 export function streamerAct(state: StreamState, act: StreamerAct, now: number): StreamState {
   const r = state.round;
   if (!r) return state;
-  if (act.type === 'answer' || act.type === 'swap') {
+  if (act.type === 'answer' || act.type === 'swap' || act.type === 'reverse') {
     if (state.phase !== 'streamer') return state;
     const s = clone(state);
     if (act.type === 'answer') {
@@ -323,10 +329,10 @@ export function streamerAct(state: StreamState, act: StreamerAct, now: number): 
         return s;
       }
     } else {
-      if (s.variant === 'hide') return state;
+      if (s.variant === 'hide' || (act.type === 'reverse' && s.variant !== 'triple')) return state;
       const k = act.user.toLowerCase();
       if (!s.joined.includes(k)) return state;
-      s.round!.streamer = { choice: 'swap', pick: null, partner: k };
+      s.round!.streamer = { choice: act.type, pick: null, partner: k };
       s.round!.choices[k] = 'answer';
     }
     s.phase = 'choose';
@@ -435,6 +441,40 @@ function resolve(state: StreamState): StreamState {
     }
     return finishResolve(s, rows, st, sp, streamerCorrect);
   }
+  if (s.variant === 'triple') {
+    // «جاوب أو بادل أو اعكس»: swap as in «جاوب أو بادل»; a reverser scores the other way round from whoever he reversed
+    // (right = minus, wrong = plus). The streamer and his partner picking each other (swap/reverse both ways) = zero for both.
+    const P = q.points;
+    const partner = st.partner;
+    const mutual = partner !== null && choices[partner] !== undefined && choices[partner] !== 'answer';
+    const pp = partner ? (picks[partner] ?? null) : null;
+    // What the chat's swappers/reversers play against: the streamer's answer (his own, or his swap partner's).
+    const target = mutual || st.choice === 'reverse' ? null : sp;
+    const targetRight = target !== null && target === q.correctIndex;
+    if (mutual) apply(s.streamer, 'mutual', 0, null);
+    else if (st.choice === 'reverse') {
+      if (pp === null) apply(s.streamer, 'idle', 0, null);
+      else apply(s.streamer, pp === q.correctIndex ? 'reverse-lose' : 'reverse-win', pp === q.correctIndex ? -P : P, null);
+    } else if (st.choice === 'swap') apply(s.streamer, targetRight ? 'swap-win' : 'swap-lose', targetRight ? P * 2 : -P, sp);
+    else if (targetRight && [...players].some((k) => choices[k] === 'swap')) apply(s.streamer, 'robbed', 0, sp);
+    else apply(s.streamer, targetRight ? 'answer-right' : 'answer-wrong', targetRight ? P : 0, sp);
+    for (const k of players) {
+      if (k === partner && mutual) apply(k, 'mutual', 0, null);
+      else if (choices[k] === 'swap' || choices[k] === 'reverse') {
+        // Nothing to swap with or reverse: the streamer didn't answer himself this round.
+        if (target === null) apply(k, 'void', 0, null);
+        else if (choices[k] === 'swap') apply(k, targetRight ? 'swap-win' : 'swap-lose', targetRight ? P * 2 : -P, null);
+        else apply(k, targetRight ? 'reverse-lose' : 'reverse-win', targetRight ? -P : P, null);
+      } else if (picks[k] === undefined) apply(k, 'idle', 0, null);
+      else {
+        const ok = picks[k] === q.correctIndex;
+        // The streamer took this player's answer (swap): it scores for him, not for them.
+        if (ok && k === partner && st.choice === 'swap') apply(k, 'robbed', 0, picks[k]!);
+        else apply(k, ok ? 'answer-right' : 'answer-wrong', ok && !(k === partner && st.choice === 'swap') ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
+      }
+    }
+    return finishResolve(s, rows, st, sp, st.choice === 'reverse' ? pp === q.correctIndex : targetRight);
+  }
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
   // Someone in the chat swapped onto the streamer's right answer: they take it (×2) and the streamer gets nothing («انزرف»).
   else if (streamerCorrect && [...players].some((k) => choices[k] === 'swap')) apply(s.streamer, 'robbed', 0, sp);
@@ -463,7 +503,7 @@ function finishResolve(
   const at = s.round!.pickAt ?? {};
   const fastest =
     Object.keys(picks)
-      .filter((k) => picks[k] === q.correctIndex && k !== st.partner && choices[k] !== 'swap')
+      .filter((k) => picks[k] === q.correctIndex && k !== st.partner && choices[k] !== 'swap' && choices[k] !== 'reverse')
       .sort((a, b) => (at[a] ?? 0) - (at[b] ?? 0))[0] ?? null;
   s.result = { correctIndex: q.correctIndex, streamerChoice: st.choice, streamerPartner: st.partner, streamerPick: sp, streamerCorrect, rows, fastest };
   s.phase = 'result';
@@ -475,6 +515,8 @@ function finishResolve(
 export function streamLabels(variant: StreamVariant | undefined) {
   if (variant === 'hide')
     return { title: 'خبّي أو اكشف', verb: 'اكشف', did: 'خبّى', icon: '📦', withStreamer: '', withPlayer: '' };
+  if (variant === 'triple')
+    return { title: 'جاوب أو بادل أو اعكس', verb: 'بادل/اعكس', did: 'بادل', icon: '↩️', withStreamer: 'بادل مع الستريمر', withPlayer: 'أو بادل أو اعكس على واحد من المشاركين' };
   return variant === 'flip'
     ? { title: 'جاوب أو اقلب', verb: 'اقلب', did: 'قلب', icon: '🔀', withStreamer: 'اقلب على الستريمر', withPlayer: 'أو اقلب على واحد من المشاركين' }
     : { title: 'جاوب أو بادل', verb: 'بادل', did: 'بادل', icon: '🔄', withStreamer: 'بادل مع الستريمر', withPlayer: 'أو بادل مع واحد من المشاركين' };

@@ -134,6 +134,36 @@ describe('broadcast view', () => {
   });
 });
 
+describe('جاوب أو بادل أو اعكس', () => {
+  const tri = (...p: string[]) => ({ ...begin(...p), variant: 'triple' as const });
+  const play = (s: StreamState, chat: [string, string][], answers: [string, string][]) => {
+    for (const [u, t] of chat) s = say(s, u, t);
+    s = streamerAct(s, { type: 'show' }, 1);
+    for (const [u, t] of answers) s = say(s, u, t);
+    return streamerAct(s, { type: 'finish' }, 2);
+  };
+  it('chat: 3 reverses the streamer (right = minus, wrong = plus); the streamer keeps his own points', () => {
+    const right = play(streamerAct(tri('Ali', 'Sara'), { type: 'answer', index: 1 }, 0), [['Ali', '3'], ['Sara', '2']], []);
+    expect(right.scores).toMatchObject({ abdullah: 0, ali: -300, sara: 600 });
+    expect(right.result?.rows.ali?.outcome).toBe('reverse-lose');
+    const wrong = play(streamerAct(tri('Ali'), { type: 'answer', index: 0 }, 0), [['Ali', '3']], []);
+    expect(wrong.scores).toMatchObject({ abdullah: 0, ali: 300 });
+  });
+  it('streamer reverses a player: the player answers for himself, the streamer scores the other way round', () => {
+    const s = streamerAct(tri('Ali'), { type: 'reverse', user: 'ali' }, 0);
+    expect(play(s, [], [['Ali', '2']]).scores).toMatchObject({ abdullah: -300, ali: 300 });
+    expect(play(s, [], [['Ali', '1']]).scores).toMatchObject({ abdullah: 300, ali: 0 });
+  });
+  it('streamer and his partner picking each other: zero for both', () => {
+    const s = streamerAct(tri('Ali', 'Sara'), { type: 'swap', user: 'ali' }, 0);
+    const done = play(s, [['Ali', '3'], ['Sara', '2']], [['Ali', '2']]);
+    expect(done.scores).toMatchObject({ abdullah: 0, ali: 0, sara: 0 });
+    expect(done.result?.rows.abdullah?.outcome).toBe('mutual');
+    expect(done.result?.rows.ali?.outcome).toBe('mutual');
+    expect(done.result?.rows.sara?.outcome).toBe('void');
+  });
+});
+
 describe('leave', () => {
   it('«خروج» takes the player out, and «دخول» brings them back from zero', () => {
     let s = say(begin('Ali', 'Sara'), 'Ali', 'خروج');
