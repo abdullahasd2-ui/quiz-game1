@@ -186,7 +186,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   );
 }
 
-function Logo() {
+export function Logo() {
   return (
     <svg width="46" height="46" viewBox="0 0 60 60" aria-hidden>
       <circle cx="26" cy="34" r="20" fill="#111" stroke="#333" strokeWidth="2" />
