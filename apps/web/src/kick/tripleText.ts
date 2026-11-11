@@ -40,18 +40,24 @@ export function tripleLines(state: StreamState, you: boolean): { text: string; t
     if (res.streamerCorrect && swappers) out.push({ text: `😵 ${you ? 'انزرفت' : 'الستريمر انزرف'}! ${swappers} بادلوا ${you ? 'معك' : 'معه'} وأخذوا دبل النقاط — ${you ? 'ما لك' : 'ما له'} شي`, tone: 'gold' });
   }
 
-  const target = !mutual && st?.choice !== 'reverse';
-  if (!target && (swappers || reversers)) {
-    out.push({ text: `🚫 ${swappers + reversers} بادلوا أو عكسوا على الستريمر — بس هو ما جاوب بنفسه، فما لهم شي`, tone: 'dim' });
-  } else if (target) {
-    if (swappers && !res.streamerCorrect) out.push({ text: `🔄 ${swappers} بادلوا ${you ? 'معك' : 'مع الستريمر'} — جوابه غلط، نقص منهم ${P}`, tone: 'dim' });
-    if (reversers)
-      out.push(
-        res.streamerCorrect
-          ? { text: `↩️ ${reversers} عكسوا على الستريمر — جوابه صح، فنقص منهم ${P}`, tone: 'dim' }
-          : { text: `↩️ ${reversers} عكسوا على الستريمر — جوابه غلط، فزاد لهم ${P}`, tone: 'dim' },
-      );
-  }
+  // Swappers play the streamer's answer (his own or his swap partner's); reversing works only on his own answer.
+  const swapTarget = !mutual && st?.choice !== 'reverse';
+  const revTarget = !mutual && st?.choice !== 'reverse' && st?.choice !== 'swap';
+  if (swappers && !swapTarget) out.push({ text: `🚫 ${swappers} بادلوا ${you ? 'معك' : 'مع الستريمر'} — بس ${you ? 'أنت ما جاوبت' : 'هو ما جاوب'} بنفسه، فما لهم شي`, tone: 'dim' });
+  else if (swappers && st?.choice === 'swap')
+    out.push(
+      res.streamerCorrect
+        ? { text: `🔄 ${swappers} بادلوا ${you ? 'معك' : 'مع الستريمر'} — جواب ${name(partner)} صح، أخذوا دبل (${P * 2})`, tone: 'dim' }
+        : { text: `🔄 ${swappers} بادلوا ${you ? 'معك' : 'مع الستريمر'} — جواب ${name(partner)} غلط، نقص منهم ${P}`, tone: 'dim' },
+    );
+  else if (swappers && !res.streamerCorrect) out.push({ text: `🔄 ${swappers} بادلوا ${you ? 'معك' : 'مع الستريمر'} — جوابه غلط، نقص منهم ${P}`, tone: 'dim' });
+  if (reversers && !revTarget) out.push({ text: `🚫 ${reversers} عكسوا على الستريمر — العكس ما يصير إلا إذا جاوب بنفسه، فما لهم شي`, tone: 'dim' });
+  else if (reversers)
+    out.push(
+      res.streamerCorrect
+        ? { text: `↩️ ${reversers} عكسوا على الستريمر — جوابه صح، فنقص منهم ${P}`, tone: 'dim' }
+        : { text: `↩️ ${reversers} عكسوا على الستريمر — جوابه غلط، فزاد لهم ${P}`, tone: 'dim' },
+    );
   return out;
 }
 

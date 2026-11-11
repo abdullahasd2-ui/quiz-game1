@@ -461,8 +461,8 @@ function resolve(state: StreamState): StreamState {
     for (const k of players) {
       if (k === partner && mutual) apply(k, 'mutual', 0, null);
       else if (choices[k] === 'swap' || choices[k] === 'reverse') {
-        // Nothing to swap with or reverse: the streamer didn't answer himself this round.
-        if (target === null) apply(k, 'void', 0, null);
+        // Swappers take the streamer's answer (his own or his swap partner's); reversing works only on his own answer.
+        if (target === null || (choices[k] === 'reverse' && st.choice !== 'answer')) apply(k, 'void', 0, null);
         else if (choices[k] === 'swap') apply(k, targetRight ? 'swap-win' : 'swap-lose', targetRight ? P * 2 : -P, null);
         else apply(k, targetRight ? 'reverse-lose' : 'reverse-win', targetRight ? -P : P, null);
       } else if (picks[k] === undefined) apply(k, 'idle', 0, null);

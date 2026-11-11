@@ -71,7 +71,7 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   'reverse-win': { label: '↩️ عكس وربح (جواب اللي عكس عليه غلط)', cls: 'text-q-green' },
   'reverse-lose': { label: '↩️ عكس وخسر (جواب اللي عكس عليه صح)', cls: 'text-q-red' },
   mutual: { label: '🤝 اختار هو والستريمر بعض — صفر', cls: 'text-q-gold' },
-  void: { label: '🚫 الستريمر ما جاوب بنفسه — ما فيه شي يتبادل أو ينعكس', cls: 'text-white/50' },
+  void: { label: '🚫 الستريمر ما جاوب بنفسه — ما فيه شي ينعكس أو يتبادل', cls: 'text-white/50' },
   robbed: { label: '😵 انزرف! جوابه صح بس النقاط راحت للي بادل', cls: 'text-q-gold' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };

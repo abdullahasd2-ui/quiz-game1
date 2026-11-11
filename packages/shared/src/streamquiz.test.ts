@@ -154,6 +154,13 @@ describe('جاوب أو بادل أو اعكس', () => {
     expect(play(s, [], [['Ali', '2']]).scores).toMatchObject({ abdullah: -300, ali: 300 });
     expect(play(s, [], [['Ali', '1']]).scores).toMatchObject({ abdullah: 300, ali: 0 });
   });
+  it('streamer swapped: chat swappers take the partner\'s answer, chat reversers get nothing', () => {
+    const s = streamerAct(tri('Ali', 'Sara', 'Omar'), { type: 'swap', user: 'ali' }, 0);
+    const done = play(s, [['Sara', '2'], ['Omar', '3']], [['Ali', '2']]);
+    expect(done.scores).toMatchObject({ abdullah: 600, ali: 0, sara: 600, omar: 0 });
+    expect(done.result?.rows.omar?.outcome).toBe('void');
+    expect(play(s, [['Sara', '2']], [['Ali', '1']]).scores).toMatchObject({ abdullah: -300, sara: -300 });
+  });
   it('streamer and his partner picking each other: zero for both', () => {
     const s = streamerAct(tri('Ali', 'Sara'), { type: 'swap', user: 'ali' }, 0);
     const done = play(s, [['Ali', '3'], ['Sara', '2']], [['Ali', '2']]);
