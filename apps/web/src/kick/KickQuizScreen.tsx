@@ -374,10 +374,10 @@ function ScoreCard({ state, who }: { state: StreamState; who: string }) {
 /** The App Store QR in the corner once the game is on: viewers can grab the app from the stream. */
 function AppQr() {
   return (
-    <div className="pointer-events-none fixed bottom-4 left-4 z-20 flex flex-col items-center gap-1 rounded-2xl border border-white/15 bg-q-bg/85 p-2.5 shadow-lg backdrop-blur">
-      <img src="/app-qr.svg" alt="" className="size-28 rounded-lg bg-white p-1.5" />
-      <div className="text-xs font-black text-white/85">📱 حمّل اللعبة</div>
-      <div className="text-[10px] font-bold text-white/50">App Store</div>
+    <div className="pointer-events-none fixed bottom-4 left-4 z-20 flex flex-col items-center gap-1.5 rounded-2xl border border-white/15 bg-q-bg/85 p-3.5 shadow-lg backdrop-blur">
+      <img src="/app-qr.svg" alt="" className="size-42 rounded-lg bg-white p-2" />
+      <div className="text-base font-black text-white/85">📱 حمّل اللعبة</div>
+      <div className="text-sm font-bold text-white/50">App Store</div>
     </div>
   );
 }
