@@ -524,8 +524,8 @@ export function KickQuizPage() {
                   </div>
                   <div>
                     <div className="mb-2 text-sm font-black">🔁 عدد الأسئلة</div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[5, 10, 15].map((n) => (
+                    <div className="grid grid-cols-4 gap-2">
+                      {[5, 10, 15, 30].map((n) => (
                         <button key={n} type="button" onClick={() => setHideRounds(n)} className={cn('rounded-xl border-2 py-2 text-sm font-black', hideRounds === n ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}>
                           {n} أسئلة
                         </button>
