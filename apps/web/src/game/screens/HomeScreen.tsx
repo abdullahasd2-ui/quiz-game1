@@ -200,11 +200,11 @@ export function Logo() {
   );
 }
 
-type Tone = 'good' | 'bad' | 'gold' | 'dim';
+export type Tone = 'good' | 'bad' | 'gold' | 'dim';
 const TONE: Record<Tone, string> = { good: 'bg-q-green/20 text-q-green', bad: 'bg-q-red/20 text-q-red', gold: 'bg-q-gold/20 text-q-gold', dim: 'bg-white/10 text-white/60' };
 
 /** Worked examples: what you chose → what happened → who gets what. */
-function Scenarios({ rows }: { rows: [choice: string, what: string, result: [who: string, pts: string, tone: Tone][]][] }) {
+export function Scenarios({ rows }: { rows: [choice: string, what: string, result: [who: string, pts: string, tone: Tone][]][] }) {
   return (
     <div className="mt-2 space-y-1.5">
       {rows.map(([choice, what, result], i) => (
