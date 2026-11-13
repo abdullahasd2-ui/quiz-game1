@@ -39,6 +39,10 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
     const exclude = new Set(Array.isArray(req.body?.exclude) ? req.body.exclude.map(String).slice(0, 2000) : []);
     const pool = listBank().filter((q) => (cats.length === 0 || cats.includes(q.cat)) && !exclude.has(q.id));
     if (!pool.length) return reply.code(404).send({ error: 'خلصت الأسئلة' });
-    return pool[Math.floor(Math.random() * pool.length)];
+    // Each chosen category gets an equal chance, however many questions it has (football alone has the most).
+    const left = [...new Set(pool.map((q) => q.cat))];
+    const cat = left[Math.floor(Math.random() * left.length)];
+    const inCat = pool.filter((q) => q.cat === cat);
+    return inCat[Math.floor(Math.random() * inCat.length)];
   });
 };

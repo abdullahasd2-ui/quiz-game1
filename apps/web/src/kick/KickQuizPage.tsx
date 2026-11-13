@@ -102,7 +102,7 @@ export function KickQuizPage() {
   const [pack, setPack] = useState<QuestionPack | null>(null);
   /** «عدّها»: its categories (from the server) and the ones picked. */
   const [listCats, setListCats] = useState<{ id: string; name: string; icon: string; count: number }[]>([]);
-  const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games']);
+  const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games', 'islamic', 'proverbs']);
   const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
   const [error, setError] = useState(params.get('kick_error') ?? '');
@@ -504,7 +504,7 @@ export function KickQuizPage() {
                 <div className="space-y-4">
                   <div>
                     <div className="mb-2 text-sm font-black">🗂️ الفئات</div>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {listCats.map((c) => {
                         const on = listChosen.includes(c.id);
                         return (
@@ -515,7 +515,6 @@ export function KickQuizPage() {
                             className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
                           >
                             {c.icon} {c.name}
-                            <span className="block text-[10px] font-bold text-white/50">{c.count} سؤال</span>
                           </button>
                         );
                       })}

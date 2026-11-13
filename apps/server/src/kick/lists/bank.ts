@@ -7,8 +7,10 @@ import { PLAYERS, NATIONS } from './data/players';
 import { GAMES, GAME_CHARACTERS } from './data/games';
 import { ANIMALS, LISTS } from './data/general';
 import { EXTRA } from './data/extra';
+import { ISLAMIC } from './data/islamic';
+import { PROVERBS } from './data/proverbs';
 
-export type ListCategory = 'football' | 'geo' | 'general' | 'games';
+export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs';
 export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[] };
 
 export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[] = [
@@ -16,6 +18,8 @@ export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[]
   { id: 'geo', name: 'جغرافيا', icon: '🌍' },
   { id: 'general', name: 'عامة', icon: '💡' },
   { id: 'games', name: 'ألعاب فيديو', icon: '🎮' },
+  { id: 'islamic', name: 'إسلاميات', icon: '🕌' },
+  { id: 'proverbs', name: 'أمثال', icon: '📜' },
 ];
 
 const LETTERS = 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'.split(' ');
@@ -174,13 +178,40 @@ export function buildBank(): ListQuestion[] {
   for (const [k, n] of Object.entries(AT)) add(`gn-animals-${k}`, 'general', `اذكر ${n}`, A.filter((a) => a.tags.includes(k)).map((a) => a.name));
   byLetter('gn-animals', 'general', 'حيوانات', A.map((a) => a.name), 4);
   for (const [k, v] of Object.entries(LISTS)) {
-    add(`gn-${k}`, v.cat === 'games' ? 'games' : 'general', v.text, v.items);
-    if (['boys', 'girls', 'jobs', 'foods', 'surahs'].includes(k)) byLetter(`gn-${k}`, 'general', v.text.replace(/^اذكر /, ''), v.items, k === 'surahs' ? 3 : 4);
+    const cat = v.cat as ListCategory;
+    add(`gn-${k}`, cat, v.text, v.items);
+    // Every list also by first letter («اذكر رياضات تبدأ بحرف …»), where there are enough answers.
+    byLetter(`gn-${k}`, cat, v.text.replace(/^اذكر /, ''), v.items, ['boys', 'girls', 'surahs'].includes(k) ? 3 : 5);
   }
   add('gn-fruitveg', 'general', 'اذكر فواكه أو خضروات', [...LISTS.fruits!.items, ...LISTS.vegetables!.items]);
   byLetter('gn-fruitveg', 'general', 'فواكه أو خضروات', [...LISTS.fruits!.items, ...LISTS.vegetables!.items], 4);
   add('gn-cars-all', 'general', 'اذكر أسماء سيارات (ماركات أو موديلات)', ['toyota', 'hyundai', 'nissan', 'kia', 'benz', 'ford', 'chevy', 'carBrands'].flatMap((k) => LISTS[k]!.items));
-  for (const [k, v] of Object.entries(EXTRA)) add(`ex-${k}`, v.cat, v.text, v.items);
+  for (const [k, v] of Object.entries(EXTRA)) {
+    add(`ex-${k}`, v.cat, v.text, v.items);
+    byLetter(`ex-${k}`, v.cat, v.text.replace(/^اذكر /, ''), v.items, 5);
+  }
+  for (const [k, v] of Object.entries(CITIES)) byLetter(`geo-cities-${k}`, 'geo', `مدن في ${v.label}`, v.items, 4);
+  byLetter('geo-landmarks', 'geo', 'معالم سياحية', LANDMARKS, 4);
+  byLetter('geo-us-states', 'geo', 'ولايات أمريكية', US_STATES, 3);
+  for (const [k, v] of Object.entries(GAME_CHARACTERS)) byLetter(`gm-chars-${k}`, 'games', `شخصيات من ${v.label}`, v.items, 4);
+  byLetter('gm-chars', 'games', 'شخصيات ألعاب فيديو', Object.values(GAME_CHARACTERS).flatMap((v) => v.items), 8);
+
+  // ---------- إسلاميات ----------
+  for (const [k, v] of Object.entries(ISLAMIC)) {
+    add(`is-${k}`, 'islamic', v.text, v.items, 4);
+    byLetter(`is-${k}`, 'islamic', v.text.replace(/^اذكر /, '').replace(/^من /, ''), v.items, 4);
+  }
+  add('is-quran-misc', 'islamic', 'اذكر سور قصيرة من جزء عمّ', LISTS.surahs!.items.slice(77), 6);
+  byLetter('is-all', 'islamic', 'أي شيء إسلامي (سورة، نبي، صحابي، غزوة، اسم من أسماء الله…)', [...Object.values(ISLAMIC).flatMap((v) => v.items), ...LISTS.surahs!.items, ...LISTS.prophets!.items], 8);
+
+  // ---------- أمثال ----------
+  const PV = PROVERBS.map(([p, tags]) => ({ p, tags: tags.split(' ').filter(Boolean) }));
+  const PT: Record<string, string> = { animal: 'فيها حيوان أو طير', food: 'فيها أكل أو شرب', body: 'فيها عضو من الجسم (عين، يد، راس…)', patience: 'عن الصبر', friend: 'عن الصديق والرفقة', money: 'عن الفلوس', talk: 'عن الكلام والسكوت', work: 'عن العمل والاجتهاد', time: 'عن الوقت والأيام', family: 'عن الأهل والقرابة', gulf: 'خليجية شعبية' };
+  add('pv-all', 'proverbs', 'اذكر أمثال عربية أو شعبية', PV.map((x) => x.p));
+  for (const [k, n] of Object.entries(PT)) add(`pv-${k}`, 'proverbs', `اذكر أمثال ${n}`, PV.filter((x) => x.tags.includes(k)).map((x) => x.p), 4);
+  byLetter('pv-all', 'proverbs', 'أمثال', PV.map((x) => x.p), 4);
+  add('pv-short', 'proverbs', 'اذكر أمثال قصيرة (ثلاث كلمات أو أقل)', PV.filter((x) => x.p.split('|')[0]!.trim().split(/\s+/).length <= 3).map((x) => x.p));
+  add('pv-long', 'proverbs', 'اذكر أمثال طويلة (خمس كلمات أو أكثر)', PV.filter((x) => x.p.split('|')[0]!.trim().split(/\s+/).length >= 5).map((x) => x.p));
   byLetter('fb-letter', 'football', 'لاعبين كورة', P.map((p) => p.name), 6);
   byLetter('gn-names', 'general', 'أسماء (ولد أو بنت)', [...LISTS.boys!.items, ...LISTS.girls!.items], 8);
   byLetter('gn-food', 'general', 'أكلات أو حلويات أو مشروبات', [...LISTS.foods!.items, ...LISTS.desserts!.items, ...LISTS.drinks!.items], 6);
