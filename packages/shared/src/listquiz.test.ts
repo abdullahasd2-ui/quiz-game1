@@ -20,6 +20,13 @@ describe('matching', () => {
     expect(matchList(ix, 'ميسي، رونالدو, Modric').sort()).toEqual([0, 1, 2]);
     expect(matchList(ix, 'نيمار')).toEqual([]);
   });
+  it('takes a whole saying with a slip or two', () => {
+    const p = buildListIndex(['الصبر مفتاح الفرج', 'من جد وجد ومن زرع حصد|من جد وجد']);
+    expect(matchList(p, 'الصبر مفتاح الفرج')).toEqual([0]);
+    expect(matchList(p, 'الصبر مفتاح الفرح')).toEqual([0]);
+    expect(matchList(p, 'من جد وجد')).toEqual([1]);
+    expect(matchList(p, 'الصبر')).toEqual([]);
+  });
   it('folds hamza, ta marbuta and ya', () => {
     expect(listFold('أنطوان')).toBe(listFold('انطوان'));
     expect(listFold('مكة')).toBe(listFold('مكه'));

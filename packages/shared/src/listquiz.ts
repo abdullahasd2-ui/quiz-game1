@@ -95,8 +95,8 @@ export function matchList(index: ListIndex, text: string): number[] {
       out.add(hit);
       continue;
     }
-    // One slipped letter is fine in a longer word (two in a long one).
-    const max = f.length >= 9 ? 2 : f.length >= 5 ? 1 : 0;
+    // One slipped letter is fine in a longer word, two in a long one, and a few in a whole saying (أمثال).
+    const max = f.length >= 14 ? Math.floor(f.length * 0.15) : f.length >= 9 ? 2 : f.length >= 5 ? 1 : 0;
     if (!max) continue;
     for (const [k, i] of index.keys) if (k.length >= 4 && within(f, k, max)) { out.add(i); break; }
   }
