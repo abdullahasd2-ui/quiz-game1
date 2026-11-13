@@ -283,9 +283,9 @@ export function KickQuizPage() {
         body: JSON.stringify({ cats: listChosen, exclude: cur.used.map((u) => u.replace(/^list:/, '')) }),
       });
       if (!res.ok) throw new Error('خلصت الأسئلة في هذي الفئات');
-      const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[] };
+      const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[]; letter?: string };
       const cat = listCats.find((c) => c.id === q.cat);
-      if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
+      if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, listLetter: q.letter, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
       setError('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطأ');

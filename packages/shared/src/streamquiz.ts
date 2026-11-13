@@ -29,6 +29,8 @@ export type StreamQuestion = {
   decay?: { every: number; step: number; min: number };
   /** «عدّها»: every accepted answer («اسم|صيغة|English»); stays on the control page until the round ends. */
   listAnswers?: string[];
+  /** «عدّها» letter question: answers must start with this letter. */
+  listLetter?: string;
   type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 /** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
 /** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
@@ -261,7 +263,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
   if (!r || !s.joined.includes(key)) return s;
   if (s.variant === 'list') {
     if (s.phase !== 'answer' || !r.list || !r.question.listAnswers) return s;
-    const next = listAnswer(r.list, indexOf(r.question.listAnswers), r.question.listAnswers, key, text, now);
+    const next = listAnswer(r.list, indexOf(r.question.listAnswers, r.question.listLetter), r.question.listAnswers, key, text, now);
     if (!next) return s;
     s = clone(s);
     s.round!.list = next;
@@ -401,9 +403,9 @@ export function pointsAt(q: StreamQuestion, answerAt: number | undefined, t: num
 
 /** One lookup per question, built on first use (questions are shared, unchanged, across state copies). */
 const listIndexes = new WeakMap<string[], ListIndex>();
-function indexOf(answers: string[]): ListIndex {
+function indexOf(answers: string[], letter?: string): ListIndex {
   let ix = listIndexes.get(answers);
-  if (!ix) listIndexes.set(answers, (ix = buildListIndex(answers)));
+  if (!ix) listIndexes.set(answers, (ix = buildListIndex(answers, letter)));
   return ix;
 }
 

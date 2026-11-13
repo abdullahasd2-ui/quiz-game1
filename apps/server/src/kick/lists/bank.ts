@@ -16,7 +16,7 @@ import { ISLAMIC } from './data/islamic';
 import { PROVERBS } from './data/proverbs';
 
 export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs';
-export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[] };
+export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[]; letter?: string };
 
 export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[] = [
   { id: 'football', name: 'كورة', icon: '⚽' },
@@ -39,6 +39,11 @@ function letters(a: string): Set<string> {
     out.add(/[أإآٱ]/.test(c) ? 'ا' : c === 'ى' ? 'ي' : c);
   }
   return out;
+}
+/** The forms of an answer whose first letter is `l` (joined), or null when none is. */
+function formsStarting(a: string, l: string): string | null {
+  const keep = a.split('|').filter((f) => letters(f).has(l));
+  return keep.length ? keep.join('|') : null;
 }
 /** Merge forms of the same answer that came from different lists, keep order, drop exact repeats. */
 function uniq(items: string[]): string[] {
@@ -73,13 +78,29 @@ function wd(name: string): { a: string; g?: string }[] {
 const PREFIXES = ['نهر ', 'جبل ', 'جبال ', 'بحيرة ', 'جزيرة ', 'جزر ', 'بركان ', 'مسجد ', 'جامع ', 'مدينة '];
 /** Adds the short form people actually type: «نهر النيل» → «النيل», «Lake Victoria» → «Victoria». */
 function withShort(a: string): string {
-  const forms = a.split('|');
+  const forms = trustworthy(a.split('|'));
   for (const f of [...forms]) {
     for (const p of PREFIXES) if (f.startsWith(p) && f.length - p.length >= 3) forms.push(f.slice(p.length));
     const en = f.replace(/^(Lake|Mount|Mt\.?) /, '').replace(/ (River|Island|Lake|Mountain|Volcano)$/, '');
     if (en !== f && en.length >= 3) forms.push(en);
   }
   return [...new Set(forms)].join('|');
+}
+/**
+ * Wikidata's other names are typed by anyone and some are wrong (a Chinese city «الخنساء»): an Arabic other name is kept
+ * only when it looks like the main name (shares its first two letters or most of its letters). English stays as is.
+ */
+function trustworthy(forms: string[]): string[] {
+  const [main, ...rest] = forms;
+  if (!main) return forms;
+  const m = listFold(main);
+  return [main, ...rest.filter((f) => {
+    if (!/[\u0600-\u06FF]/.test(f)) return true;
+    const k = listFold(f);
+    if (k.slice(0, 2) === m.slice(0, 2) || k.includes(m) || m.includes(k)) return true;
+    const shared = [...new Set(k)].filter((c) => m.includes(c)).length;
+    return shared / Math.max(new Set(k).size, 1) >= 0.7;
+  })];
 }
 const wdItems = (name: string) => wd(name).map((r) => r.a);
 
@@ -111,7 +132,6 @@ function augment() {
   LISTS.sports!.items.push(...wdItems('sports'));
   LISTS.instruments!.items.push(...wdItems('instruments'));
   LISTS.superheroes!.items.push(...wdItems('marvel'));
-  LISTS.anime!.items.push(...wdItems('anime'));
   EXTRA.airlines!.items.push(...wdItems('airlines'));
   EXTRA.languages!.items.push(...wdItems('languages'));
   EXTRA.islands!.items.push(...wdItems('islands'));
@@ -127,12 +147,14 @@ function augment() {
 export function buildBank(): ListQuestion[] {
   const qs: ListQuestion[] = [];
   augment();
-  const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5) => {
+  const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5, letter?: string) => {
     const a = uniq(answers.filter(Boolean));
-    if (a.length >= min) qs.push({ id, cat, text, answers: a });
+    if (a.length >= min) qs.push({ id, cat, text, answers: a, ...(letter ? { letter } : {}) });
   };
   const byLetter = (id: string, cat: ListCategory, what: string, items: string[], min = 6) => {
-    for (const l of LETTERS) add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, items.filter((a) => letters(a).has(l)), min);
+    // Only the Arabic forms that really start with the letter are accepted («ميسي» for م, not «ليونيل ميسي» or «Messi»).
+    for (const l of LETTERS)
+      add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, items.map((a) => formsStarting(a, l)).filter((a): a is string => a !== null), min, l);
   };
 
   // ---------- Geography ----------
@@ -261,6 +283,7 @@ export function buildBank(): ListQuestion[] {
   for (const [k, n] of Object.entries(AT)) add(`gn-animals-${k}`, 'general', `اذكر ${n}`, A.filter((a) => a.tags.includes(k)).map((a) => a.name));
   byLetter('gn-animals', 'general', 'حيوانات', A.map((a) => a.name), 4);
   for (const [k, v] of Object.entries(LISTS)) {
+    if (k === 'anime') continue; // no anime questions
     const cat = v.cat as ListCategory;
     add(`gn-${k}`, cat, v.text, v.items);
     // Every list also by first letter («اذكر رياضات تبدأ بحرف …»), where there are enough answers.
