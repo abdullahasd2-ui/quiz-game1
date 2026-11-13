@@ -111,7 +111,6 @@ function augment() {
   LISTS.sports!.items.push(...wdItems('sports'));
   LISTS.instruments!.items.push(...wdItems('instruments'));
   LISTS.superheroes!.items.push(...wdItems('marvel'));
-  LISTS.anime!.items.push(...wdItems('anime'));
   EXTRA.airlines!.items.push(...wdItems('airlines'));
   EXTRA.languages!.items.push(...wdItems('languages'));
   EXTRA.islands!.items.push(...wdItems('islands'));
@@ -261,6 +260,7 @@ export function buildBank(): ListQuestion[] {
   for (const [k, n] of Object.entries(AT)) add(`gn-animals-${k}`, 'general', `اذكر ${n}`, A.filter((a) => a.tags.includes(k)).map((a) => a.name));
   byLetter('gn-animals', 'general', 'حيوانات', A.map((a) => a.name), 4);
   for (const [k, v] of Object.entries(LISTS)) {
+    if (k === 'anime') continue; // no anime questions
     const cat = v.cat as ListCategory;
     add(`gn-${k}`, cat, v.text, v.items);
     // Every list also by first letter («اذكر رياضات تبدأ بحرف …»), where there are enough answers.
