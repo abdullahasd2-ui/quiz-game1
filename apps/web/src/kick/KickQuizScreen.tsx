@@ -115,7 +115,7 @@ export function KickQuizScreen() {
             </>
           )}
         </div>
-        <QuizHowToButton variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} />
+        <QuizHowToButton pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} />
       </div>
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-[1fr_18rem]">
         <div className="q-card">

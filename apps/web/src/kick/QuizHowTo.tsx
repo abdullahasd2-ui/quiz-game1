@@ -69,11 +69,13 @@ export const MODE_RULES: { variant: StreamVariant; title: string; tone: string; 
 
 export const COMMON_RULES: string[] = [
   '🔥 3 أجوبة صح ورا بعض = الثالث دبل.',
-  '🎭 «مين فينا؟»: اكتب رقم الشخص — كل ما أسرع نقاطك أكثر.',
 ];
 
 /** The rules; with `variant` (a game running) only that game's section, otherwise both. */
-export function QuizHowTo({ forStreamer = false, variant, className }: { forStreamer?: boolean; variant?: StreamVariant; className?: string }) {
+/** Only for a team pack («🎭 حزمة فريق»), never in the general rules. */
+const PACK_RULE = '🎭 «مين فينا؟»: اكتب رقم الشخص — كل ما أسرع نقاطك أكثر.';
+
+export function QuizHowTo({ forStreamer = false, variant, pack = false, className }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string }) {
   const modes = variant ? MODE_RULES.filter((m) => m.variant === variant) : MODE_RULES;
   return (
     <div className={cn('text-start', className)}>
@@ -108,7 +110,7 @@ export function QuizHowTo({ forStreamer = false, variant, className }: { forStre
         <div className="rounded-xl border border-q-orange/35 bg-q-orange/10 p-3">
           <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في كل الأطوار</div>
           <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/80">
-            {COMMON_RULES.map((t) => (
+            {(pack ? [...COMMON_RULES, PACK_RULE] : COMMON_RULES).map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>
@@ -119,7 +121,7 @@ export function QuizHowTo({ forStreamer = false, variant, className }: { forStre
 }
 
 /** Small «📖 طريقة اللعب» button that opens the rules in a modal, like the main game's home screen. */
-export function QuizHowToButton({ forStreamer = false, variant, className }: { forStreamer?: boolean; variant?: StreamVariant; className?: string }) {
+export function QuizHowToButton({ forStreamer = false, variant, pack = false, className }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -138,7 +140,7 @@ export function QuizHowToButton({ forStreamer = false, variant, className }: { f
           </button>
         </div>
         <div className="max-h-[70dvh] overflow-auto">
-          <QuizHowTo forStreamer={forStreamer} variant={variant} />
+          <QuizHowTo forStreamer={forStreamer} variant={variant} pack={pack} />
         </div>
       </Modal>
     </>
