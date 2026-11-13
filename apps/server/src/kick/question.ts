@@ -3,6 +3,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { drawQuestion, listPublicCategories } from '../game/catalog';
 import { MANA } from './packs/mana';
+import { LIST_CATEGORIES, listBank } from './lists/bank';
 
 /** Team packs by their code (given to the team; anyone with it can open the pack, answers included). */
 const PACKS = [MANA];
@@ -26,5 +27,18 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
     const pack = PACKS.find((p) => p.code === code);
     if (!pack) return reply.code(404).send({ error: 'الكود غير صحيح' });
     return pack;
+  });
+
+  // «عدّها»: the categories, then one random question at a time (skipping the ones already played this stream).
+  app.get('/api/kick/lists/categories', async () => {
+    const bank = listBank();
+    return LIST_CATEGORIES.map((c) => ({ ...c, count: bank.filter((q) => q.cat === c.id).length }));
+  });
+  app.post<{ Body: { cats?: unknown; exclude?: unknown } }>('/api/kick/lists/next', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
+    const cats = Array.isArray(req.body?.cats) ? req.body.cats.map(String) : [];
+    const exclude = new Set(Array.isArray(req.body?.exclude) ? req.body.exclude.map(String).slice(0, 2000) : []);
+    const pool = listBank().filter((q) => (cats.length === 0 || cats.includes(q.cat)) && !exclude.has(q.id));
+    if (!pool.length) return reply.code(404).send({ error: 'خلصت الأسئلة' });
+    return pool[Math.floor(Math.random() * pool.length)];
   });
 };

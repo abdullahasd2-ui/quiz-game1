@@ -9,6 +9,7 @@
 import { MIN_SCORE } from './game';
 import { JOIN_WORDS, normalize } from './puzzle';
 import type { QuestionType } from './schemas';
+import { buildListIndex, listAnswer, listRanking, newListRound, LIST_BONUS, type ListIndex, type ListRound } from './listquiz';
 
 export const STREAM_CHOOSE_MS = 20_000;
 export const STREAM_ANSWER_MS = 30_000;
@@ -26,19 +27,22 @@ export type StreamQuestion = {
   /** Wrong options that drop out during the answer time, in order (never the right one). */
   eliminate?: number[];
   decay?: { every: number; step: number; min: number };
+  /** «عدّها»: every accepted answer («اسم|صيغة|English»); stays on the control page until the round ends. */
+  listAnswers?: string[];
   type?: QuestionType; revealUrl?: string | null; text: string; options: string[]; correctIndex: number; points: number; imageUrl: string | null; categoryName?: string };
 /** steal: «خبّي أو اكشف» when nobody found the key — the streamer picks a player and takes all their points. */
 /** shuffle: «خبّي أو اكشف» — the boxes are being shuffled in front of everyone. */
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
 /** reverse: only in «جاوب أو بادل أو اعكس». */
 export type StreamChoice = 'answer' | 'swap' | 'reverse';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed' | 'reverse-win' | 'reverse-lose' | 'mutual' | 'void';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed' | 'reverse-win' | 'reverse-lose' | 'mutual' | 'void' | 'list';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
  */
 /** triple = «جاوب أو بادل أو اعكس»: swap rules plus «اعكس» (the reverser scores the other way round from the one he reversed). */
-export type StreamVariant = 'swap' | 'flip' | 'hide' | 'triple';
+/** list = «عدّها»: name as many as you can in the answer time; a point each, bonus for the top three. */
+export type StreamVariant = 'swap' | 'flip' | 'hide' | 'triple' | 'list';
 
 /** «خبّي أو اكشف» on the stream: 10 boxes, the key hidden by the streamer, the chat guesses by number. */
 export const STREAM_HIDE_BOXES = 10;
@@ -117,8 +121,10 @@ export type StreamRound = {
   shuffle?: HideShuffle;
   /** When the shuffle (with the key in sight first) began, by the control page's clock. */
   shuffleAt?: number;
+  /** «عدّها»: who found what so far. */
+  list?: ListRound;
 };
-export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean; /** First to find the key: doubled. */ first?: boolean }>;
+export type StreamResult = { correctIndex: number; streamerChoice: StreamChoice; streamerPartner: string | null; streamerPick: number | null; streamerCorrect: boolean; rows: Record<string, { outcome: StreamOutcome; delta: number; picked: number | null; /** Third right answer in a row: doubled. */ streak?: boolean; /** First to find the key: doubled. */ first?: boolean; /** «عدّها»: right answers and the top-three bonus. */ found?: number; bonus?: number }>;
   /** «خبّي أو اكشف»: whose points the streamer took, and how many. */
   stolen?: { from: string; points: number } | null;
   /** The chatter who answered right first. */
@@ -194,6 +200,11 @@ export function deal(state: StreamState, cell: string, question: StreamQuestion,
   s.phase = 'streamer';
   s.deadline = null;
   s.result = null;
+  // «عدّها»: no streamer turn and no choosing — the clock starts and the chat names away.
+  if (s.variant === 'list') {
+    s.round.list = newListRound();
+    return startAnswer(s, now);
+  }
   return s;
 }
 
@@ -248,6 +259,14 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
   }
   const r = s.round;
   if (!r || !s.joined.includes(key)) return s;
+  if (s.variant === 'list') {
+    if (s.phase !== 'answer' || !r.list || !r.question.listAnswers) return s;
+    const next = listAnswer(r.list, indexOf(r.question.listAnswers), r.question.listAnswers, key, text, now);
+    if (!next) return s;
+    s = clone(s);
+    s.round!.list = next;
+    return s;
+  }
   const partner = r.streamer?.partner === key;
   if (s.phase === 'choose') {
     const c: StreamChoice | null =
@@ -379,7 +398,36 @@ export function pointsAt(q: StreamQuestion, answerAt: number | undefined, t: num
   return Math.max(q.decay.min, q.points - droppedBy(q, answerAt, t) * q.decay.step);
 }
 
+/** One lookup per question, built on first use (questions are shared, unchanged, across state copies). */
+const listIndexes = new WeakMap<string[], ListIndex>();
+function indexOf(answers: string[]): ListIndex {
+  let ix = listIndexes.get(answers);
+  if (!ix) listIndexes.set(answers, (ix = buildListIndex(answers)));
+  return ix;
+}
+
+/** «عدّها» ends: a point per right answer, and 5/3/2 more for the top three. */
+function resolveList(state: StreamState): StreamState {
+  const s = clone(state);
+  const list = s.round!.list ?? newListRound();
+  const rank = listRanking(list);
+  const rows: StreamResult['rows'] = {};
+  for (const k of new Set([...s.joined, ...Object.keys(list.found)])) {
+    const found = list.found[k]?.length ?? 0;
+    const place = rank.indexOf(k);
+    const bonus = place >= 0 && place < LIST_BONUS.length ? LIST_BONUS[place]! : 0;
+    const delta = found + bonus;
+    if (k in s.scores || s.joined.includes(k)) s.scores[k] = (s.scores[k] ?? 0) + delta;
+    rows[k] = { outcome: found ? 'list' : 'idle', delta, picked: null, found, bonus };
+  }
+  s.result = { correctIndex: -1, streamerChoice: 'answer', streamerPartner: null, streamerPick: null, streamerCorrect: false, rows, fastest: rank[0] ?? null };
+  s.phase = 'result';
+  s.deadline = null;
+  return s;
+}
+
 function resolve(state: StreamState): StreamState {
+  if (state.variant === 'list') return resolveList(state);
   const s = clone(state);
   const { question: q, choices, picks, streamer } = s.round!;
   const st = streamer ?? { choice: 'answer' as const, pick: null, partner: null };
@@ -515,6 +563,7 @@ function finishResolve(
 export function streamLabels(variant: StreamVariant | undefined) {
   if (variant === 'hide')
     return { title: 'خبّي أو اكشف', verb: 'اكشف', did: 'خبّى', icon: '📦', withStreamer: '', withPlayer: '' };
+  if (variant === 'list') return { title: 'عدّها', verb: 'عدّ', did: 'عدّ', icon: '⏱️', withStreamer: '', withPlayer: '' };
   if (variant === 'triple')
     return { title: 'جاوب أو بادل أو اعكس', verb: 'بادل/اعكس', did: 'بادل', icon: '↩️', withStreamer: 'بادل مع الستريمر', withPlayer: 'أو بادل أو اعكس على واحد من المشاركين' };
   return variant === 'flip'
@@ -558,11 +607,11 @@ export function publicView(s: StreamState): StreamState {
       ? { ...q, text: '', options: [], imageUrl: null, revealUrl: null, correctIndex: -1 }
       : s.phase === 'choose'
         ? { ...q, options: [], revealUrl: null, correctIndex: -1 }
-        : { ...q, revealUrl: null, correctIndex: -1 };
+        : { ...q, revealUrl: null, correctIndex: -1, listAnswers: undefined };
   // Picks are kept only as a count: nobody's option is shown, so nobody copies it.
   const picks = Object.fromEntries(Object.keys(r.picks).map((k) => [k, 0]));
   // The shuffle itself is public: the broadcast page plays it (that is the game).
-  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks, shuffle: r.shuffle, shuffleAt: r.shuffleAt, answerAt: r.answerAt } };
+  return { ...s, result: null, round: { question: hidden, streamer: null, choices: r.choices, picks, shuffle: r.shuffle, shuffleAt: r.shuffleAt, answerAt: r.answerAt, list: r.list } };
 }
 
 /** Short code that pairs the control page with the broadcast page. */
