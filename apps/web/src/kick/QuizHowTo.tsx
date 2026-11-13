@@ -46,6 +46,16 @@ export const MODE_RULES: { variant: StreamVariant; title: string; tone: string; 
     ],
   },
   {
+    variant: 'list',
+    title: '⏱️ عدّها',
+    tone: 'border-q-orange/35 bg-q-orange/10 text-q-orange',
+    lines: [
+      'يطلع سؤال مثل «اذكر لاعبين من الدوري الإسباني» — اكتب أكبر عدد من الأجوبة قبل ما يخلص الوقت.',
+      'كل جواب صح = نقطة (الجواب نفسه ما ينحسب لك مرتين). تقدر تكتب أكثر من جواب بينها «،».',
+      'آخر الوقت: الأول +5، الثاني +3، الثالث +2.',
+    ],
+  },
+  {
     variant: 'hide',
     title: '📦 خبّي أو اكشف',
     tone: 'border-q-green/35 bg-q-green/10 text-q-green',

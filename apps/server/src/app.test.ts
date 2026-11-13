@@ -351,3 +351,19 @@ describe('team packs', () => {
     }
   });
 });
+
+describe('«عدّها» lists', () => {
+  it('has 1000+ questions and deals one from the chosen categories, skipping played ones', async () => {
+    const cats = (await app.inject({ method: 'GET', url: '/api/kick/lists/categories' })).json() as { id: string; count: number }[];
+    expect(cats.reduce((n, c) => n + c.count, 0)).toBeGreaterThanOrEqual(1000);
+    const first = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['football'], exclude: [] } });
+    expect(first.statusCode).toBe(200);
+    const q = first.json() as { id: string; cat: string; answers: string[] };
+    expect(q.cat).toBe('football');
+    expect(q.answers.length).toBeGreaterThanOrEqual(3);
+    const { listBank } = await import('./kick/lists/bank');
+    const all = listBank().filter((x) => x.cat === 'football').map((x) => x.id);
+    const none = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['football'], exclude: all } });
+    expect(none.statusCode).toBe(404);
+  });
+});

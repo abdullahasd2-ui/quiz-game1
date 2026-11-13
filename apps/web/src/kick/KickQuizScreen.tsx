@@ -10,6 +10,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { outcomeLabel } from './KickQuizPage';
+import { ListLive, ListResult } from './ListParts';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
@@ -94,7 +95,7 @@ export function KickQuizScreen() {
       {state.phase === 'result' && state.result?.fastest && (
         <div key={`fast-${state.used.length}`} className="pointer-events-none fixed inset-x-0 top-1/3 z-30 flex justify-center motion-safe:animate-fly-across" style={{ animationDelay: '0.6s' }}>
           <div className="rounded-2xl border-2 border-q-gold bg-q-bg/90 px-6 py-3 text-center shadow-[0_0_40px_-6px_rgba(247,201,72,0.8)]">
-            <div className="text-sm font-black text-q-gold">⚡ أسرع جواب صح</div>
+            <div className="text-sm font-black text-q-gold">{state.variant === 'list' ? '🏆 أكثر واحد عدّ' : '⚡ أسرع جواب صح'}</div>
             <div className="text-3xl font-black">{displayName(state, state.result.fastest)}</div>
           </div>
         </div>
@@ -106,7 +107,13 @@ export function KickQuizScreen() {
       )}
       <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between ps-12">
         <div className="text-lg font-black">
-          <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">{L.verb}</span>
+          {state.variant === 'list' ? (
+            <span className="text-q-gold">⏱️ عدّها</span>
+          ) : (
+            <>
+              <span className="text-q-purple">جاوب</span> <span className="text-white/70">أو</span> <span className="text-q-cyan">{L.verb}</span>
+            </>
+          )}
         </div>
         <QuizHowToButton variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} />
       </div>
@@ -125,6 +132,23 @@ export function KickQuizScreen() {
             </div>
           )}
 
+          {state.phase === 'board' && state.variant === 'list' && (
+            <div className="py-8 text-center">
+              <div className="mb-2 text-6xl">⏱️</div>
+              <div className="text-4xl font-black text-q-gold">عدّها!</div>
+              <div className="mt-2 text-xl">
+                السؤال {state.used.length + 1} من {state.totalCells} — جهّزوا أصابعكم!
+              </div>
+              <div className="mx-auto mt-4 max-w-xl rounded-xl bg-q-panel p-4 text-lg">
+                يطلع سؤال، واكتبوا أكبر عدد من الأجوبة في {Math.round((state.answerMs ?? 30000) / 1000)} ثانية
+                <div className="mt-1 text-base text-white/70">كل جواب صح = نقطة · الأول +5 · الثاني +3 · الثالث +2</div>
+              </div>
+              <div className="mt-3 text-white/60">
+                اكتبوا <b className="text-q-gold">دخول</b> للمشاركة · المشاركون {state.joined.length}
+              </div>
+            </div>
+          )}
+
           {state.phase === 'board' && state.pack && (
             <div className="py-8 text-center">
               {state.pack.logo ? <img src={state.pack.logo} alt={state.pack.name} className="mx-auto mb-3 size-36 rounded-3xl object-cover shadow-[0_0_40px_rgba(255,20,50,0.45)]" /> : <div className="mb-2 text-6xl">🎭</div>}
@@ -138,7 +162,7 @@ export function KickQuizScreen() {
             </div>
           )}
 
-          {state.phase === 'board' && state.variant !== 'hide' && !state.pack && (
+          {state.phase === 'board' && state.variant !== 'hide' && state.variant !== 'list' && !state.pack && (
             <div>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="font-black">{picking ? 'جاري فتح السؤال...' : '🎯 اختر سؤال من اللوحة'}</span>
@@ -231,10 +255,16 @@ export function KickQuizScreen() {
           {(state.phase === 'answer' || state.phase === 'result' || state.phase === 'steal') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
-                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
-                {state.phase === 'answer' && left !== null && <span className="text-2xl font-black tabular-nums text-q-cyan">⏱ {left}</span>}
+                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{state.variant === 'list' ? 'كل جواب صح نقطة' : `${q.points} نقطة`}{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
+                {state.phase === 'answer' && left !== null && <span className={cn('font-black tabular-nums text-q-cyan', state.variant === 'list' ? 'text-5xl' : 'text-2xl', left <= 5 && 'text-q-red')}>⏱ {left}</span>}
               </div>
-              {state.variant === 'hide' ? (
+              {state.variant === 'list' ? (
+                <div>
+                  <div className="mb-4 text-center text-4xl font-black leading-snug">{q.text}</div>
+                  {state.phase === 'answer' ? <ListLive state={state} big /> : <ListResult state={state} big />}
+                  {state.phase === 'answer' && <div className="mt-3 text-center text-base text-white/70">اكتبوا الأجوبة في الشات — تقدر تكتب أكثر من جواب بينها فاصلة «،»</div>}
+                </div>
+              ) : state.variant === 'hide' ? (
                 <div>
                   <div className="mb-4 text-center text-3xl font-black">{result ? '🔑 هنا كان المفتاح!' : '🔎 وين المفتاح؟ اكتبوا رقم الصندوق (1-10)'}</div>
                   {r.shuffle ? (
@@ -283,7 +313,7 @@ export function KickQuizScreen() {
                   ))}
                 </div>
               )}
-              {result && state.variant !== 'hide' && state.variant !== 'triple' && (
+              {result && state.variant !== 'hide' && state.variant !== 'triple' && state.variant !== 'list' && (
                 <div className="mt-4 text-center text-xl font-black">
                   {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>
@@ -316,7 +346,12 @@ export function KickQuizScreen() {
                       <span className="truncate">{i + 1}. {row.name}{row.streamer ? ' 🎙️' : ''}{row.run > 0 && <span className="ms-1 text-[10px]" title="إجابات صح ورا بعض">{'🔥'.repeat(row.run)}</span>}</span>
                       <bdi dir="ltr" className="font-black tabular-nums">{row.score}</bdi>
                     </div>
-                    {o && (
+                    {o && state.variant === 'list' && (
+                      <div className="text-xs text-q-green">
+                        ✍️ {state.result?.rows[row.key]?.found ?? 0} جواب{state.result?.rows[row.key]?.bonus ? <b className="text-q-gold"> + بونص {state.result.rows[row.key]!.bonus}</b> : null} <bdi dir="ltr">+{row.delta}</bdi>
+                      </div>
+                    )}
+                    {o && state.variant !== 'list' && (
                       <div className={cn('text-xs', o.cls)}>
                         {o.label}{row.streak && <b className="text-q-orange"> 🔥 دبل</b>}{row.first && <b className="text-q-gold"> ⚡ أول واحد — دبل</b>} <bdi dir="ltr">{row.delta > 0 ? `+${row.delta}` : row.delta}</bdi>
                       </div>
