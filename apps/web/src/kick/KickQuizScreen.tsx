@@ -17,7 +17,7 @@ import { ShuffleBoxes } from './ShuffleBoxes';
 import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { QuizHowToButton } from './QuizHowTo';
-import { VIEWER_STEPS } from './QuizHowTo';
+import { viewerSteps } from './QuizHowTo';
 
 /** The page to broadcast: shows the game that the streamer runs from his private control page, never his secret choice. */
 export function KickQuizScreen() {
@@ -196,7 +196,7 @@ export function KickQuizScreen() {
               <div className="mt-4 text-sm text-white/50">الستريمر يجهّز اللعبة...</div>
               {state.used.length === 0 && (
                 <ol className="mx-auto mt-6 grid max-w-2xl gap-2 text-start sm:grid-cols-2">
-                  {VIEWER_STEPS.map((st, i) => (
+                  {viewerSteps(state.variant).map((st, i) => (
                     <li key={i} className="flex gap-2 rounded-xl border border-q-line bg-q-panel p-3">
                       <span className="text-xl">{st.icon}</span>
                       <div>
