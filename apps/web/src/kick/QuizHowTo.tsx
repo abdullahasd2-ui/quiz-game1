@@ -4,13 +4,42 @@ import { Modal } from '@/game/ui';
 import { cn } from '@/lib/utils';
 
 /** The viewers' rules, as typed in the chat. Shared by the streamer's setup page and the broadcast screen. */
-export const VIEWER_STEPS: { icon: string; title: string; text: string }[] = [
-  { icon: '👋', title: 'ادخل', text: 'اكتب «دخول» في الشات عشان تشارك. وإذا تبي تطلع اكتب «خروج» (تنمسح نقاطك).' },
-  { icon: '🎙️', title: 'الستريمر أول', text: 'الستريمر يجاوب على السؤال أو يختار واحد منكم، واختياره مخفي عنكم.' },
-  { icon: '1️⃣', title: 'اختر', text: 'اكتب رقم اختيارك: 1 أو 2 (أو 3 في «جاوب أو بادل أو اعكس»).' },
-  { icon: '✍️', title: 'جاوب', text: 'إذا اخترت «جاوب»، اكتب رقم الجواب من 1 إلى 4، أو اكتب الجواب نفسه.' },
-  { icon: '📊', title: 'نقاطي', text: 'اكتب «نقاطي» في الشات وتطلع نقاطك ومركزك على الشاشة.' },
-];
+type Step = { icon: string; title: string; text: string };
+const JOIN: Step = { icon: '👋', title: 'ادخل', text: 'اكتب «دخول» في الشات عشان تشارك. وإذا تبي تطلع اكتب «خروج» (تنمسح نقاطك).' };
+const SCORE: Step = { icon: '📊', title: 'نقاطي', text: 'اكتب «نقاطي» في الشات وتطلع نقاطك ومركزك على الشاشة.' };
+
+/** The viewers' steps, as typed in the chat — they differ by game. Without a game, the «جاوب أو …» steps. */
+export function viewerSteps(variant?: StreamVariant): Step[] {
+  if (variant === 'list')
+    return [
+      JOIN,
+      { icon: '⏱️', title: 'السؤال', text: 'يطلع سؤال مثل «اذكر لاعبين من الدوري الإسباني» ويبدأ الوقت على طول.' },
+      { icon: '✍️', title: 'اكتب الأجوبة', text: 'اكتب في الشات أكبر عدد من الأجوبة الصح، وكل جواب صح نقطة. تقدر تكتب أكثر من جواب بينها «،».' },
+      SCORE,
+    ];
+  if (variant === 'hide')
+    return [
+      JOIN,
+      { icon: '🔑', title: 'تابع المفتاح', text: 'الستريمر يخبّي المفتاح في صندوق، والصناديق تنخلط قدامكم. تابعه بعيونك.' },
+      { icon: '📦', title: 'خمّن', text: 'اكتب رقم الصندوق اللي فيه المفتاح من 1 إلى 10. أول رقم تكتبه هو اللي ينحسب.' },
+      SCORE,
+    ];
+  const choose =
+    variant === 'flip'
+      ? 'اكتب 1 عشان تجاوب بنفسك، أو 2 عشان تقلب على الستريمر.'
+      : variant === 'triple'
+      ? 'اكتب 1 عشان تجاوب بنفسك، أو 2 عشان تبادل مع الستريمر، أو 3 عشان تعكس على الستريمر.'
+      : variant === 'swap'
+      ? 'اكتب 1 عشان تجاوب بنفسك، أو 2 عشان تبادل مع الستريمر.'
+      : 'اكتب 1 عشان تجاوب بنفسك، أو 2 عشان تبادل أو تقلب على الستريمر (حسب الطور).';
+  return [
+    JOIN,
+    { icon: '🎙️', title: 'الستريمر أول', text: 'الستريمر يجاوب على السؤال أو يختار واحد منكم، واختياره مخفي عنكم.' },
+    { icon: '1️⃣', title: 'اختر', text: choose },
+    { icon: '✍️', title: 'جاوب', text: 'إذا اخترت تجاوب بنفسك، اكتب رقم الجواب من 1 إلى 4، أو اكتب الجواب نفسه.' },
+    SCORE,
+  ];
+}
 
 /** Each stream game has its own scoring, shown as its own section. */
 export const MODE_RULES: { variant: StreamVariant; title: string; tone: string; lines: string[] }[] = [
@@ -90,7 +119,7 @@ export function QuizHowTo({ forStreamer = false, variant, pack = false, classNam
         </div>
       )}
       <ol className="space-y-2">
-        {VIEWER_STEPS.map((s, i) => (
+        {viewerSteps(variant).map((s, i) => (
           <li key={i} className="flex gap-2">
             <span className="text-lg leading-6">{s.icon}</span>
             <div>
