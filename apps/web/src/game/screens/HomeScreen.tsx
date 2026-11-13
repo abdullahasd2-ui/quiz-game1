@@ -132,15 +132,15 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
 
       <p className="mb-2 text-center text-[13px] text-white/50">اختار نوع اللعبة</p>
       <div className="mb-5 grid grid-cols-2 gap-3.5">
-        <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم واسرق نقاطه" />
-        <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="الخصم يجاوب: صح = ينقص، غلط = يزيد" />
+        <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك" />
+        <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه" />
         <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
         <Choice
           selected={variant === 'triple'}
           onClick={() => setVariant('triple')}
           icon="↩️"
           title="جاوب أو بادل أو اعكس"
-          desc="ثلاثة خيارات — وبادل أو اعكس يستخدمها فريق واحد فقط في الجولة"
+          desc="جاوب أو بادل أو اعكس — وبادل أو اعكس يختارها فريق واحد بس في الجولة"
         />
       </div>
 
@@ -200,6 +200,30 @@ export function Logo() {
   );
 }
 
+type Tone = 'good' | 'bad' | 'gold' | 'dim';
+const TONE: Record<Tone, string> = { good: 'bg-q-green/20 text-q-green', bad: 'bg-q-red/20 text-q-red', gold: 'bg-q-gold/20 text-q-gold', dim: 'bg-white/10 text-white/60' };
+
+/** Worked examples: what you chose → what happened → who gets what. */
+function Scenarios({ rows }: { rows: [choice: string, what: string, result: [who: string, pts: string, tone: Tone][]][] }) {
+  return (
+    <div className="mt-2 space-y-1.5">
+      {rows.map(([choice, what, result], i) => (
+        <div key={i} className="flex flex-wrap items-center gap-1.5 rounded-lg bg-black/25 px-2 py-1.5 text-xs leading-normal">
+          <span className="rounded-md bg-white/10 px-2 py-0.5 font-black">{choice}</span>
+          <span className="text-white/40">+</span>
+          <span className="rounded-md border border-white/15 px-2 py-0.5">{what}</span>
+          <span className="text-white/40">←</span>
+          {result.map(([who, pts, tone]) => (
+            <span key={who} className={cn('rounded-md px-2 py-0.5 font-black', TONE[tone])}>
+              {who} <bdi dir="ltr">{pts}</bdi>
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HowSection({ tone, title, children }: { tone: string; title: string; children: ReactNode }) {
   return (
     <div className={cn('rounded-xl border p-3', tone)}>
@@ -230,39 +254,56 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>• التلفاز: ينشئ الغرفة ويختار الأسئلة ويعرض النتائج</div>
           <div>• الفريق 1 و2: ينضمون بالكود ويجاوبون على جوالاتهم</div>
         </HowSection>
-        <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="🏆 نظام النقاط — جاوب أو بادل">
-          <div>✅ جاوب صح = نقاط السؤال</div>
-          <div>
-            🔄 بادل + خصمك صح = <span className="text-q-gold">ضعف النقاط!</span>
-          </div>
-          <div>
-            🔄 بادل + خصمك غلط = <span className="text-q-red">عقوبة</span>
-          </div>
-          <div>🔄🔄 كلاهم بادل = لا نقاط</div>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
+        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🔄 جاوب أو بادل">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
+          <div>🔄🔄 إذا الفريقين اختاروا بادل، ما أحد ياخذ نقاط.</div>
+          <Scenarios
+            rows={[
+              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
+              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
+              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
+              ['🔄 بادل', 'الخصم بادل بعد', [['الاثنين', '0', 'dim']]],
+            ]}
+          />
         </HowSection>
-        <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="🔀 نظام النقاط — جاوب أو اقلب">
-          <div>✅ جاوب صح = نقاط السؤال</div>
-          <div>🔀 اقلب: الخصم يجاوب — إذا جاوب صح تنقص نقاطه، وإذا جاوب غلط تزيد نقاطه بقيمة السؤال!</div>
-          <div>🔀🔀 كلاهم اقلب = لا نقاط لأحد</div>
+        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="🔀 جاوب أو اقلب">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔀 <b>اقلب على الخصم:</b> أنت ما تجاوب، ونتيجة الخصم تنقلب عليه. إذا جواب الخصم صح تنقص نقاطه، وإذا جواب الخصم غلط تزيد نقاطه.</div>
+          <div>🔀🔀 إذا الفريقين اختاروا اقلب، ما أحد ياخذ نقاط.</div>
+          <Scenarios
+            rows={[
+              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
+              ['🔀 اقلب', 'جواب الخصم صح', [['الخصم', '−200', 'bad'], ['أنت', '0', 'dim']]],
+              ['🔀 اقلب', 'جواب الخصم غلط', [['الخصم', '+200', 'good'], ['أنت', '0', 'dim']]],
+            ]}
+          />
         </HowSection>
-        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="↩️ جاوب أو بادل أو اعكس">
-          <div>✅ جاوب صح = نقاط السؤال</div>
-          <div>🔄 بادل: تاخذ جواب الخصم — صح = ضعف النقاط، غلط = عقوبة</div>
-          <div>
-            ↩️ اعكس: الخصم يجاوب — إذا جاوب صح <span className="text-q-red">ينقص منك</span> نقاط السؤال، وإذا جاوب غلط <span className="text-q-gold">تزيد لك</span>
-          </div>
-          <div>🚫 ما يمديكم الاثنين تختارون بادل أو اعكس — إذا فريق اختارها، الثاني ما يقدر إلا جاوب</div>
+        <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="↩️ جاوب أو بادل أو اعكس">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
+          <div>↩️ <b>اعكس على الخصم:</b> أنت ما تجاوب، ونتيجتك عكس نتيجة الخصم. إذا جواب الخصم صح تنقص من نقاطك، وإذا جواب الخصم غلط تزيد نقاطك. والخصم ما ياخذ نقاط السؤال.</div>
+          <div>🚫 في الجولة الوحدة فريق واحد بس يقدر يختار بادل أو اعكس. إذا اختارها فريق، الفريق الثاني لازم يجاوب.</div>
+          <Scenarios
+            rows={[
+              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
+              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
+              ['↩️ اعكس', 'جواب الخصم صح', [['أنت', '−200', 'bad'], ['الخصم', '0', 'dim']]],
+              ['↩️ اعكس', 'جواب الخصم غلط', [['أنت', '+200', 'good'], ['الخصم', '0', 'dim']]],
+            ]}
+          />
         </HowSection>
         <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
-          <div>• 10 صناديق: الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق سراً</div>
-          <div>• الفريق الثاني يخمّن: لقاه = النقاط له، ما لقاه = النقاط للي خبّى</div>
-          <div>• زر 💡 تلميح (مرة بالجولة): يطلع سؤال متوسط — صح = ينشال نص الصناديق، غلط = النقاط للخصم على طول</div>
-          <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات</div>
+          <div>• فيه 10 صناديق. الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق، والفريق الثاني ما يشوف وين خبّاه.</div>
+          <div>• الفريق الثاني يخمّن رقم الصندوق. إذا لقى المفتاح ياخذ النقاط، وإذا ما لقاه تروح النقاط للفريق اللي خبّى.</div>
+          <div>• زر 💡 التلميح (مرة وحدة بالجولة): يطلع سؤال متوسط. إذا جاوبته صح ينشال نص الصناديق، وإذا جاوبته غلط تروح النقاط للخصم على طول.</div>
+          <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات.</div>
         </HowSection>
         <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
-          <div>• جاوب صح 3 مرات ورا بعض: نقاط السؤال الثالث تتضاعف!</div>
-          <div>• كل إجابة صح تضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 الجاية دبل</div>
-          <div>• جواب غلط يرجّع السلسلة من الصفر، و«بادل» أو «اعكس» ما يأثر عليها</div>
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
         </HowSection>
       </div>
       <button type="button" onClick={onClose} className="q-btn-tv mt-3.5">
