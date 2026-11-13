@@ -33,6 +33,14 @@ export function listFold(text: string): string {
     .replace(/ç/g, 'c');
 }
 
+/** The letter a name starts with as people see it: «الرياض» → ر, «ألمانيا» → ا, «إيطاليا» → ا. */
+export function firstLetter(name: string): string {
+  let w = name.trim();
+  if (w.startsWith('ال') && w.length > 3) w = w.slice(2);
+  const c = w[0] ?? '';
+  return /[أإآٱ]/.test(c) ? 'ا' : c === 'ى' ? 'ي' : c;
+}
+
 /** An answer as stored: «اسم|صيغة ثانية|English». The first form is the one shown. */
 export const answerName = (a: string) => a.split('|')[0]!.trim();
 
@@ -42,17 +50,19 @@ export type ListIndex = { exact: Map<string, number>; keys: [string, number][] }
  * Lookup for one question's answers: every written form, plus the last word of a multi-word name («ليونيل ميسي» → «ميسي»)
  * when no other answer shares it.
  */
-export function buildListIndex(answers: string[]): ListIndex {
+/** `letter`: a «تبدأ بحرف …» question — only names that start with it count (no «ميسي» from «ليونيل ميسي» for ل). */
+export function buildListIndex(answers: string[], letter?: string): ListIndex {
   const exact = new Map<string, number>();
   const clash = new Set<string>();
   answers.forEach((a, i) => {
     for (const form of a.split('|')) {
+      if (letter && firstLetter(form) !== firstLetter(letter)) continue;
       const f = listFold(form);
       if (f.length >= 2) exact.set(f, exact.has(f) && exact.get(f) !== i ? exact.get(f)! : i);
     }
   });
   const last = new Map<string, number>();
-  answers.forEach((a, i) => {
+  if (!letter) answers.forEach((a, i) => {
     for (const form of a.split('|')) {
       const words = normalize(form).split(/\s+/).filter(Boolean);
       if (words.length < 2) continue;
@@ -98,7 +108,8 @@ export function matchList(index: ListIndex, text: string): number[] {
     // One slipped letter is fine in a longer word, two in a long one, and a few in a whole saying (أمثال).
     const max = f.length >= 14 ? Math.floor(f.length * 0.15) : f.length >= 9 ? 2 : f.length >= 5 ? 1 : 0;
     if (!max) continue;
-    for (const [k, i] of index.keys) if (k.length >= 4 && within(f, k, max)) { out.add(i); break; }
+    // A slip is forgiven anywhere but the first letter: «جالد» is not «خالد» (letter questions depend on it).
+    for (const [k, i] of index.keys) if (k.length >= 4 && k[0] === f[0] && within(f, k, max)) { out.add(i); break; }
   }
   return [...out];
 }
@@ -111,20 +122,77 @@ export type ListRound = {
   at: Record<string, number>;
   /** The latest finds, newest last, for the broadcast page. */
   feed: { k: string; text: string }[];
+  /** Answers the streamer accepted on top of the list (index = list length + position here). */
+  extra?: string[];
+  /** What the chat typed that isn't on the list, by matching form — the streamer can accept it. */
+  unknown?: Record<string, { text: string; by: string[]; at: Record<string, number> }>;
+  /** Scores before this round's points, so accepting an answer after the time can recount. */
+  before?: Record<string, number>;
 };
 
 export const newListRound = (): ListRound => ({ found: {}, at: {}, feed: [] });
 
+/** How many not-on-the-list answers are kept for the streamer to look at. */
+const UNKNOWN_MAX = 120;
+
 /** A player's message during the answer time: the new right answers it names. */
 export function listAnswer(round: ListRound, index: ListIndex, answers: string[], key: string, text: string, now: number): ListRound | null {
   const got = round.found[key] ?? [];
-  const fresh = matchList(index, text).filter((i) => !got.includes(i));
-  if (!fresh.length) return null;
+  const extra = round.extra ?? [];
+  const extraIx = extra.length ? buildListIndex(extra) : null;
+  const parts = text.split(/[,،\n/+]+/).map((p) => p.trim()).filter(Boolean);
+  const fresh: number[] = [];
+  const unknown = { ...(round.unknown ?? {}) };
+  let changed = false;
+  for (const part of parts.length > 1 ? parts : [text]) {
+    const hits = [...matchList(index, part), ...(extraIx ? matchList(extraIx, part).map((j) => answers.length + j) : [])];
+    if (hits.length) {
+      for (const i of hits) if (!got.includes(i) && !fresh.includes(i)) fresh.push(i);
+      continue;
+    }
+    // Not on the list: keep it for the streamer, who can accept it (a point for everyone who typed it).
+    const f = listFold(part);
+    if (f.length < 2 || f.length > 40 || /^\d+$/.test(f)) continue;
+    const u = unknown[f];
+    if (u?.by.includes(key)) continue;
+    if (!u && Object.keys(unknown).length >= UNKNOWN_MAX) continue;
+    unknown[f] = { text: u?.text ?? part.slice(0, 40), by: [...(u?.by ?? []), key], at: { ...(u?.at ?? {}), [key]: now } };
+    changed = true;
+  }
+  if (!fresh.length && !changed) return null;
+  const name = (i: number) => answerName(i < answers.length ? answers[i]! : extra[i - answers.length]!);
   return {
-    found: { ...round.found, [key]: [...got, ...fresh] },
-    at: { ...round.at, [key]: now },
-    feed: [...round.feed, ...fresh.map((i) => ({ k: key, text: answerName(answers[i]!) }))].slice(-FEED),
+    ...round,
+    unknown,
+    found: fresh.length ? { ...round.found, [key]: [...got, ...fresh] } : round.found,
+    at: fresh.length ? { ...round.at, [key]: now } : round.at,
+    feed: fresh.length ? [...round.feed, ...fresh.map((i) => ({ k: key, text: name(i) }))].slice(-FEED) : round.feed,
   };
+}
+
+/** The streamer accepts a not-on-the-list answer: it joins the list and everyone who typed it gets the point. */
+export function acceptUnknown(round: ListRound, answersLength: number, foldKey: string): ListRound | null {
+  const u = round.unknown?.[foldKey];
+  if (!u) return null;
+  const extra = [...(round.extra ?? []), u.text];
+  const idx = answersLength + extra.length - 1;
+  const found = { ...round.found };
+  const at = { ...round.at };
+  for (const k of u.by) {
+    if ((found[k] ?? []).includes(idx)) continue;
+    found[k] = [...(found[k] ?? []), idx];
+    at[k] = Math.max(at[k] ?? 0, u.at[k] ?? 0);
+  }
+  const unknown = { ...round.unknown };
+  delete unknown[foldKey];
+  return { ...round, extra, unknown, found, at, feed: [...round.feed, ...u.by.map((k) => ({ k, text: u.text }))].slice(-FEED) };
+}
+
+/** The streamer drops a not-on-the-list answer (wrong, or a joke). */
+export function rejectUnknown(round: ListRound, foldKey: string): ListRound {
+  const unknown = { ...(round.unknown ?? {}) };
+  delete unknown[foldKey];
+  return { ...round, unknown };
 }
 
 /** Final order: most answers first, then whoever reached that count first. */

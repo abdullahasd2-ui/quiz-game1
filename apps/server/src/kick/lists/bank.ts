@@ -1,9 +1,14 @@
 // «عدّها» questions, built from the data lists: each question is a prompt plus every accepted answer.
 // Built once at startup; the stream page asks for one question at a time (/api/kick/lists/next).
 import { COUNTRIES } from './data/countries';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { listFold } from '@quiz/shared';
 import { CITIES, US_STATES, SA_REGIONS, RIVERS, MOUNTAINS, SEAS, LANDMARKS } from './data/places';
 import { CLUBS, LEAGUES } from './data/clubs';
 import { PLAYERS, NATIONS } from './data/players';
+import { PLAYERS2 } from './data/players2';
 import { GAMES, GAME_CHARACTERS } from './data/games';
 import { ANIMALS, LISTS } from './data/general';
 import { EXTRA } from './data/extra';
@@ -11,7 +16,7 @@ import { ISLAMIC } from './data/islamic';
 import { PROVERBS } from './data/proverbs';
 
 export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs';
-export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[] };
+export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[]; letter?: string };
 
 export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[] = [
   { id: 'football', name: 'كورة', icon: '⚽' },
@@ -35,32 +40,121 @@ function letters(a: string): Set<string> {
   }
   return out;
 }
+/** The forms of an answer whose first letter is `l` (joined), or null when none is. */
+function formsStarting(a: string, l: string): string | null {
+  const keep = a.split('|').filter((f) => letters(f).has(l));
+  return keep.length ? keep.join('|') : null;
+}
 /** Merge forms of the same answer that came from different lists, keep order, drop exact repeats. */
 function uniq(items: string[]): string[] {
+  // The same answer from two lists («النيل» and «نهر النيل|Nile») is one answer: merged when any written form matches.
   const seen = new Map<string, number>();
   const out: string[] = [];
   for (const it of items) {
-    const head = it.split('|')[0]!.trim();
-    if (seen.has(head)) {
-      const i = seen.get(head)!;
-      const forms = new Set([...out[i]!.split('|'), ...it.split('|')]);
-      out[i] = [...forms].join('|');
-    } else {
-      seen.set(head, out.length);
-      out.push(it);
+    const forms = it.split('|').map((f) => f.trim()).filter(Boolean);
+    const keys = forms.map(listFold).filter((k) => k.length >= 2);
+    const hit = keys.map((k) => seen.get(k)).find((i) => i !== undefined);
+    if (hit !== undefined) {
+      out[hit] = [...new Set([...out[hit]!.split('|'), ...forms])].join('|');
+      for (const k of keys) if (!seen.has(k)) seen.set(k, hit);
+    } else if (forms.length) {
+      for (const k of keys) seen.set(k, out.length);
+      out.push(forms.join('|'));
     }
   }
   return out;
 }
 
+// ---------- Wikidata lists (built once with SPARQL; see wd/*.json) ----------
+const WD_DIR = join(dirname(fileURLToPath(import.meta.url)), 'wd');
+/** Rows of one Wikidata list: «عربي|أسماء ثانية|English», plus the group it was asked for (publisher…). */
+function wd(name: string): { a: string; g?: string }[] {
+  try {
+    return (JSON.parse(readFileSync(join(WD_DIR, `${name}.json`), 'utf8')) as { a: string; g?: string }[]).map((r) => ({ ...r, a: withShort(r.a) }));
+  } catch {
+    return [];
+  }
+}
+const PREFIXES = ['نهر ', 'جبل ', 'جبال ', 'بحيرة ', 'جزيرة ', 'جزر ', 'بركان ', 'مسجد ', 'جامع ', 'مدينة '];
+/** Adds the short form people actually type: «نهر النيل» → «النيل», «Lake Victoria» → «Victoria». */
+function withShort(a: string): string {
+  const forms = trustworthy(a.split('|'));
+  for (const f of [...forms]) {
+    for (const p of PREFIXES) if (f.startsWith(p) && f.length - p.length >= 3) forms.push(f.slice(p.length));
+    const en = f.replace(/^(Lake|Mount|Mt\.?) /, '').replace(/ (River|Island|Lake|Mountain|Volcano)$/, '');
+    if (en !== f && en.length >= 3) forms.push(en);
+  }
+  return [...new Set(forms)].join('|');
+}
+/**
+ * Wikidata's other names are typed by anyone and some are wrong (a Chinese city «الخنساء»): an Arabic other name is kept
+ * only when it looks like the main name (shares its first two letters or most of its letters). English stays as is.
+ */
+function trustworthy(forms: string[]): string[] {
+  const [main, ...rest] = forms;
+  if (!main) return forms;
+  const m = listFold(main);
+  return [main, ...rest.filter((f) => {
+    if (!/[\u0600-\u06FF]/.test(f)) return true;
+    const k = listFold(f);
+    if (k.slice(0, 2) === m.slice(0, 2) || k.includes(m) || m.includes(k)) return true;
+    const shared = [...new Set(k)].filter((c) => m.includes(c)).length;
+    return shared / Math.max(new Set(k).size, 1) >= 0.7;
+  })];
+}
+const wdItems = (name: string) => wd(name).map((r) => r.a);
+
+const CITY_LABELS: Record<string, string> = {
+  cn: 'الصين', in: 'الهند', br: 'البرازيل', ru: 'روسيا', iq: 'العراق', dz: 'الجزائر', mx: 'المكسيك', ca: 'كندا', au: 'أستراليا', ar: 'الأرجنتين',
+  sy: 'سوريا', ir: 'إيران', pk: 'باكستان', jo: 'الأردن', ly: 'ليبيا', sd: 'السودان', lb: 'لبنان', om: 'عمان', bh: 'البحرين', tn: 'تونس', kw: 'الكويت', qa: 'قطر', id: 'إندونيسيا', ye: 'اليمن',
+};
+/** Game publishers as named on Wikidata → our company keys. */
+const PUBLISHER: Record<string, string> = {
+  Nintendo: 'nintendo', 'Nintendo of America': 'nintendo', 'The Pokémon Company': 'nintendo', 'Sony Interactive Entertainment': 'sony', 'Sony Computer Entertainment': 'sony',
+  'Electronic Arts': 'ea', 'EA Sports': 'ea', Konami: 'konami', Capcom: 'capcom', 'Square Enix': 'square', Square: 'square', Enix: 'square', 'Bandai Namco Entertainment': 'bandai',
+  Namco: 'bandai', Bandai: 'bandai', 'Xbox Game Studios': 'ms', 'Microsoft Studios': 'ms', 'Warner Bros. Games': 'wb', 'Bethesda Softworks': 'bethesda', '2K': '2k', 'Valve Corporation': 'valve',
+  FromSoftware: 'fromsoft', Ubisoft: 'ubisoft', Activision: 'activision', 'Activision Blizzard': 'activision', Sega: 'sega', 'Rockstar Games': 'rockstar', 'Blizzard Entertainment': 'blizzard', 'Epic Games': 'epic', 'Riot Games': 'riot',
+};
+let augmented = false;
+/** Once: the Wikidata lists join the hand-written ones (same answer merged). */
+function augment() {
+  if (augmented) return;
+  augmented = true;
+  for (const [k, v] of Object.entries(CITIES)) v.items.push(...wdItems(`city-${k}`));
+  for (const [k, label] of Object.entries(CITY_LABELS)) {
+    const items = wdItems(`city-${k}`);
+    if (items.length >= 8) CITIES[k] = { label, items };
+  }
+  RIVERS.push(...wdItems('rivers'));
+  MOUNTAINS.push(...wdItems('mountains'));
+  LISTS.carBrands!.items.push(...wdItems('carbrands'));
+  LISTS.foods!.items.push(...wdItems('dishes'));
+  LISTS.sports!.items.push(...wdItems('sports'));
+  LISTS.instruments!.items.push(...wdItems('instruments'));
+  LISTS.superheroes!.items.push(...wdItems('marvel'));
+  EXTRA.airlines!.items.push(...wdItems('airlines'));
+  EXTRA.languages!.items.push(...wdItems('languages'));
+  EXTRA.islands!.items.push(...wdItems('islands'));
+  ISLAMIC.mosques!.items.push(...wdItems('mosques'));
+  EXTRA.lakes = { cat: 'geo', text: 'اذكر بحيرات', items: wdItems('lakes') };
+  EXTRA.volcanoes = { cat: 'geo', text: 'اذكر براكين', items: wdItems('volcanoes') };
+  for (const r of [...wd('games_pub'), ...wd('games_dev')]) {
+    const co = r.g ? PUBLISHER[r.g] : undefined;
+    GAMES.push([r.a, co ?? '']);
+  }
+}
+
 export function buildBank(): ListQuestion[] {
   const qs: ListQuestion[] = [];
-  const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5) => {
+  augment();
+  const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5, letter?: string) => {
     const a = uniq(answers.filter(Boolean));
-    if (a.length >= min) qs.push({ id, cat, text, answers: a });
+    if (a.length >= min) qs.push({ id, cat, text, answers: a, ...(letter ? { letter } : {}) });
   };
   const byLetter = (id: string, cat: ListCategory, what: string, items: string[], min = 6) => {
-    for (const l of LETTERS) add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, items.filter((a) => letters(a).has(l)), min);
+    // Only the Arabic forms that really start with the letter are accepted («ميسي» for م, not «ليونيل ميسي» or «Messi»).
+    for (const l of LETTERS)
+      add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, items.map((a) => formsStarting(a, l)).filter((a): a is string => a !== null), min, l);
   };
 
   // ---------- Geography ----------
@@ -97,7 +191,18 @@ export function buildBank(): ListQuestion[] {
   add('geo-gcc', 'geo', 'اذكر دول الخليج وعواصمها', ['السعودية', 'الإمارات|الامارات', 'الكويت', 'قطر', 'البحرين', 'عمان', 'الرياض', 'أبوظبي|ابوظبي', 'مدينة الكويت', 'الدوحة', 'المنامة', 'مسقط'], 4);
 
   // ---------- Football ----------
-  const P = PLAYERS.map(([name, nat, pos, clubs]) => ({ name, nat, pos, clubs: clubs.split(' ').filter(Boolean) }));
+  // Both player lists, same player merged by name (forms and clubs together); entries without clubs only add nothing.
+  const byName = new Map<string, { name: string; nat: string; pos: string; clubs: string[] }>();
+  for (const [name, nat, pos, clubs] of [...PLAYERS, ...PLAYERS2.filter((x) => x[3].trim())]) {
+    const head = name.split('|')[0]!.trim();
+    const cl = clubs.split(' ').filter((c) => c && CLUBS[c]);
+    const had = byName.get(head);
+    if (had) {
+      had.name = [...new Set([...had.name.split('|'), ...name.split('|')])].join('|');
+      had.clubs = [...new Set([...had.clubs, ...cl])];
+    } else byName.set(head, { name, nat, pos, clubs: cl });
+  }
+  const P = [...byName.values()];
   const clubName = (id: string) => CLUBS[id]![0].split('|')[0]!;
   const leagueOf = (id: string) => CLUBS[id]?.[1];
   const POS: Record<string, string> = { G: 'حراس مرمى', D: 'مدافعين', M: 'لاعبي وسط', F: 'مهاجمين وأجنحة' };
@@ -178,6 +283,7 @@ export function buildBank(): ListQuestion[] {
   for (const [k, n] of Object.entries(AT)) add(`gn-animals-${k}`, 'general', `اذكر ${n}`, A.filter((a) => a.tags.includes(k)).map((a) => a.name));
   byLetter('gn-animals', 'general', 'حيوانات', A.map((a) => a.name), 4);
   for (const [k, v] of Object.entries(LISTS)) {
+    if (k === 'anime') continue; // no anime questions
     const cat = v.cat as ListCategory;
     add(`gn-${k}`, cat, v.text, v.items);
     // Every list also by first letter («اذكر رياضات تبدأ بحرف …»), where there are enough answers.

@@ -1,6 +1,7 @@
 import {
   chatMessage,
   kickPlayer,
+  judgeUnknown,
   deal,
   finish,
   KICK_CHANNEL_RE,
@@ -46,7 +47,7 @@ import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
 import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
-import { ListLive, ListResult } from './ListParts';
+import { ListLive, ListResult, UnknownAnswers } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
@@ -282,9 +283,9 @@ export function KickQuizPage() {
         body: JSON.stringify({ cats: listChosen, exclude: cur.used.map((u) => u.replace(/^list:/, '')) }),
       });
       if (!res.ok) throw new Error('خلصت الأسئلة في هذي الفئات');
-      const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[] };
+      const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[]; letter?: string };
       const cat = listCats.find((c) => c.id === q.cat);
-      if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
+      if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, listLetter: q.letter, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
       setError('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطأ');
@@ -523,8 +524,8 @@ export function KickQuizPage() {
                   </div>
                   <div>
                     <div className="mb-2 text-sm font-black">🔁 عدد الأسئلة</div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[5, 10, 15].map((n) => (
+                    <div className="grid grid-cols-4 gap-2">
+                      {[5, 10, 15, 30].map((n) => (
                         <button key={n} type="button" onClick={() => setHideRounds(n)} className={cn('rounded-xl border-2 py-2 text-sm font-black', hideRounds === n ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel')}>
                           {n} أسئلة
                         </button>
@@ -757,13 +758,14 @@ export function KickQuizPage() {
           {(state.phase === 'answer' || state.phase === 'result') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
-                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
+                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{state.variant === 'list' ? 'كل جواب صح نقطة' : `${q.points} نقطة`}{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
                 {state.phase === 'answer' && left !== null && <span className="font-black tabular-nums text-q-cyan">⏱ {left}</span>}
               </div>
               {state.variant === 'list' ? (
                 <div>
                   <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
                   {state.phase === 'answer' ? <ListLive state={state} /> : <ListResult state={state} />}
+                  <UnknownAnswers state={state} onJudge={(key, accept) => ref.current && set(judgeUnknown(ref.current, key, accept))} />
                 </div>
               ) : state.variant === 'hide' ? (
                 <div>
