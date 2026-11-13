@@ -111,20 +111,77 @@ export type ListRound = {
   at: Record<string, number>;
   /** The latest finds, newest last, for the broadcast page. */
   feed: { k: string; text: string }[];
+  /** Answers the streamer accepted on top of the list (index = list length + position here). */
+  extra?: string[];
+  /** What the chat typed that isn't on the list, by matching form — the streamer can accept it. */
+  unknown?: Record<string, { text: string; by: string[]; at: Record<string, number> }>;
+  /** Scores before this round's points, so accepting an answer after the time can recount. */
+  before?: Record<string, number>;
 };
 
 export const newListRound = (): ListRound => ({ found: {}, at: {}, feed: [] });
 
+/** How many not-on-the-list answers are kept for the streamer to look at. */
+const UNKNOWN_MAX = 120;
+
 /** A player's message during the answer time: the new right answers it names. */
 export function listAnswer(round: ListRound, index: ListIndex, answers: string[], key: string, text: string, now: number): ListRound | null {
   const got = round.found[key] ?? [];
-  const fresh = matchList(index, text).filter((i) => !got.includes(i));
-  if (!fresh.length) return null;
+  const extra = round.extra ?? [];
+  const extraIx = extra.length ? buildListIndex(extra) : null;
+  const parts = text.split(/[,،\n/+]+/).map((p) => p.trim()).filter(Boolean);
+  const fresh: number[] = [];
+  const unknown = { ...(round.unknown ?? {}) };
+  let changed = false;
+  for (const part of parts.length > 1 ? parts : [text]) {
+    const hits = [...matchList(index, part), ...(extraIx ? matchList(extraIx, part).map((j) => answers.length + j) : [])];
+    if (hits.length) {
+      for (const i of hits) if (!got.includes(i) && !fresh.includes(i)) fresh.push(i);
+      continue;
+    }
+    // Not on the list: keep it for the streamer, who can accept it (a point for everyone who typed it).
+    const f = listFold(part);
+    if (f.length < 2 || f.length > 40 || /^\d+$/.test(f)) continue;
+    const u = unknown[f];
+    if (u?.by.includes(key)) continue;
+    if (!u && Object.keys(unknown).length >= UNKNOWN_MAX) continue;
+    unknown[f] = { text: u?.text ?? part.slice(0, 40), by: [...(u?.by ?? []), key], at: { ...(u?.at ?? {}), [key]: now } };
+    changed = true;
+  }
+  if (!fresh.length && !changed) return null;
+  const name = (i: number) => answerName(i < answers.length ? answers[i]! : extra[i - answers.length]!);
   return {
-    found: { ...round.found, [key]: [...got, ...fresh] },
-    at: { ...round.at, [key]: now },
-    feed: [...round.feed, ...fresh.map((i) => ({ k: key, text: answerName(answers[i]!) }))].slice(-FEED),
+    ...round,
+    unknown,
+    found: fresh.length ? { ...round.found, [key]: [...got, ...fresh] } : round.found,
+    at: fresh.length ? { ...round.at, [key]: now } : round.at,
+    feed: fresh.length ? [...round.feed, ...fresh.map((i) => ({ k: key, text: name(i) }))].slice(-FEED) : round.feed,
   };
+}
+
+/** The streamer accepts a not-on-the-list answer: it joins the list and everyone who typed it gets the point. */
+export function acceptUnknown(round: ListRound, answersLength: number, foldKey: string): ListRound | null {
+  const u = round.unknown?.[foldKey];
+  if (!u) return null;
+  const extra = [...(round.extra ?? []), u.text];
+  const idx = answersLength + extra.length - 1;
+  const found = { ...round.found };
+  const at = { ...round.at };
+  for (const k of u.by) {
+    if ((found[k] ?? []).includes(idx)) continue;
+    found[k] = [...(found[k] ?? []), idx];
+    at[k] = Math.max(at[k] ?? 0, u.at[k] ?? 0);
+  }
+  const unknown = { ...round.unknown };
+  delete unknown[foldKey];
+  return { ...round, extra, unknown, found, at, feed: [...round.feed, ...u.by.map((k) => ({ k, text: u.text }))].slice(-FEED) };
+}
+
+/** The streamer drops a not-on-the-list answer (wrong, or a joke). */
+export function rejectUnknown(round: ListRound, foldKey: string): ListRound {
+  const unknown = { ...(round.unknown ?? {}) };
+  delete unknown[foldKey];
+  return { ...round, unknown };
 }
 
 /** Final order: most answers first, then whoever reached that count first. */

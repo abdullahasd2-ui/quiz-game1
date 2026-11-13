@@ -4,6 +4,7 @@ import { COUNTRIES } from './data/countries';
 import { CITIES, US_STATES, SA_REGIONS, RIVERS, MOUNTAINS, SEAS, LANDMARKS } from './data/places';
 import { CLUBS, LEAGUES } from './data/clubs';
 import { PLAYERS, NATIONS } from './data/players';
+import { PLAYERS2 } from './data/players2';
 import { GAMES, GAME_CHARACTERS } from './data/games';
 import { ANIMALS, LISTS } from './data/general';
 import { EXTRA } from './data/extra';
@@ -97,7 +98,18 @@ export function buildBank(): ListQuestion[] {
   add('geo-gcc', 'geo', 'اذكر دول الخليج وعواصمها', ['السعودية', 'الإمارات|الامارات', 'الكويت', 'قطر', 'البحرين', 'عمان', 'الرياض', 'أبوظبي|ابوظبي', 'مدينة الكويت', 'الدوحة', 'المنامة', 'مسقط'], 4);
 
   // ---------- Football ----------
-  const P = PLAYERS.map(([name, nat, pos, clubs]) => ({ name, nat, pos, clubs: clubs.split(' ').filter(Boolean) }));
+  // Both player lists, same player merged by name (forms and clubs together); entries without clubs only add nothing.
+  const byName = new Map<string, { name: string; nat: string; pos: string; clubs: string[] }>();
+  for (const [name, nat, pos, clubs] of [...PLAYERS, ...PLAYERS2.filter((x) => x[3].trim())]) {
+    const head = name.split('|')[0]!.trim();
+    const cl = clubs.split(' ').filter((c) => c && CLUBS[c]);
+    const had = byName.get(head);
+    if (had) {
+      had.name = [...new Set([...had.name.split('|'), ...name.split('|')])].join('|');
+      had.clubs = [...new Set([...had.clubs, ...cl])];
+    } else byName.set(head, { name, nat, pos, clubs: cl });
+  }
+  const P = [...byName.values()];
   const clubName = (id: string) => CLUBS[id]![0].split('|')[0]!;
   const leagueOf = (id: string) => CLUBS[id]?.[1];
   const POS: Record<string, string> = { G: 'حراس مرمى', D: 'مدافعين', M: 'لاعبي وسط', F: 'مهاجمين وأجنحة' };

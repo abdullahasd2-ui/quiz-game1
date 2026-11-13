@@ -9,7 +9,7 @@
 import { MIN_SCORE } from './game';
 import { JOIN_WORDS, normalize } from './puzzle';
 import type { QuestionType } from './schemas';
-import { buildListIndex, listAnswer, listRanking, newListRound, LIST_BONUS, type ListIndex, type ListRound } from './listquiz';
+import { acceptUnknown, buildListIndex, listAnswer, listRanking, newListRound, rejectUnknown, LIST_BONUS, type ListIndex, type ListRound } from './listquiz';
 
 export const STREAM_CHOOSE_MS = 20_000;
 export const STREAM_ANSWER_MS = 30_000;
@@ -410,7 +410,11 @@ function indexOf(answers: string[]): ListIndex {
 /** «عدّها» ends: a point per right answer, and 5/3/2 more for the top three. */
 function resolveList(state: StreamState): StreamState {
   const s = clone(state);
-  const list = s.round!.list ?? newListRound();
+  const list = { ...(s.round!.list ?? newListRound()) };
+  // Recounting after the streamer accepted an answer: start again from the scores before this round.
+  if (list.before) s.scores = { ...list.before };
+  else list.before = { ...s.scores };
+  s.round!.list = list;
   const rank = listRanking(list);
   const rows: StreamResult['rows'] = {};
   for (const k of new Set([...s.joined, ...Object.keys(list.found)])) {
@@ -425,6 +429,20 @@ function resolveList(state: StreamState): StreamState {
   s.phase = 'result';
   s.deadline = null;
   return s;
+}
+
+/**
+ * «عدّها»: the streamer accepts (or drops) an answer the chat typed that isn't on the list.
+ * During the time it just counts; after the time the round's points are counted again.
+ */
+export function judgeUnknown(state: StreamState, foldKey: string, accept: boolean): StreamState {
+  const r = state.round;
+  if (state.variant !== 'list' || !r?.list || (state.phase !== 'answer' && state.phase !== 'result')) return state;
+  const list = accept ? acceptUnknown(r.list, r.question.listAnswers?.length ?? 0, foldKey) : rejectUnknown(r.list, foldKey);
+  if (!list) return state;
+  const s = clone(state);
+  s.round!.list = list;
+  return s.phase === 'result' ? resolveList(s) : s;
 }
 
 function resolve(state: StreamState): StreamState {

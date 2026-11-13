@@ -1,6 +1,7 @@
 import {
   chatMessage,
   kickPlayer,
+  judgeUnknown,
   deal,
   finish,
   KICK_CHANNEL_RE,
@@ -46,7 +47,7 @@ import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
 import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
-import { ListLive, ListResult } from './ListParts';
+import { ListLive, ListResult, UnknownAnswers } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
@@ -757,13 +758,14 @@ export function KickQuizPage() {
           {(state.phase === 'answer' || state.phase === 'result') && q && r && (
             <div>
               <div className="mb-3 flex items-center justify-between text-sm">
-                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
+                <span className="rounded-full bg-q-gold/15 px-3 py-1 font-black text-q-gold">{state.variant === 'list' ? 'كل جواب صح نقطة' : `${q.points} نقطة`}{q.categoryName ? ` · ${q.categoryName}` : ''}</span>
                 {state.phase === 'answer' && left !== null && <span className="font-black tabular-nums text-q-cyan">⏱ {left}</span>}
               </div>
               {state.variant === 'list' ? (
                 <div>
                   <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
                   {state.phase === 'answer' ? <ListLive state={state} /> : <ListResult state={state} />}
+                  <UnknownAnswers state={state} onJudge={(key, accept) => ref.current && set(judgeUnknown(ref.current, key, accept))} />
                 </div>
               ) : state.variant === 'hide' ? (
                 <div>

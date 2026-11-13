@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildListIndex, listFold, matchList } from './listquiz';
-import { chatMessage, deal, newStream, tick, toBoard, type StreamState } from './streamquiz';
+import { chatMessage, deal, judgeUnknown, newStream, tick, toBoard, type StreamState } from './streamquiz';
 
 const answers = ['ليونيل ميسي|ميسي|Messi', 'كريستيانو رونالدو|رونالدو|Ronaldo|CR7', 'لوكا مودريتش|Modric', 'أنطوان غريزمان|جريزمان|Griezmann', 'الهلال|Al Hilal'];
 
@@ -56,5 +56,22 @@ describe('a list round', () => {
     // Ali and Sara both have 2 — Ali got there first.
     expect(s.scores).toMatchObject({ ali: 7, sara: 5, omar: 3, noor: 0 });
     expect(s.result?.rows.ali).toMatchObject({ found: 2, bonus: 5 });
+  });
+
+  it('the streamer accepts an answer that is not on the list, during or after the time', () => {
+    let s = start();
+    s = chatMessage(s, 'Ali', 'نيمار', 1);
+    s = chatMessage(s, 'Sara', 'نيمار، ميسي', 2);
+    s = chatMessage(s, 'Omar', 'هههههه', 3);
+    const key = Object.keys(s.round!.list!.unknown!).find((k) => s.round!.list!.unknown![k]!.text === 'نيمار')!;
+    expect(s.round!.list!.unknown![key]!.by).toEqual(['ali', 'sara']);
+    s = tick(s, 30_000);
+    expect(s.scores).toMatchObject({ sara: 6, ali: 0 });
+    s = judgeUnknown(s, key, true);
+    // Recounted: Sara 2 answers (+5), Ali 1 (+3)
+    expect(s.scores).toMatchObject({ sara: 7, ali: 4 });
+    expect(s.round!.list!.unknown![key]).toBeUndefined();
+    const omar = Object.keys(s.round!.list!.unknown!)[0]!;
+    expect(judgeUnknown(s, omar, false).round!.list!.unknown![omar]).toBeUndefined();
   });
 });
