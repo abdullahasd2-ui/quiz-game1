@@ -1,6 +1,10 @@
 // «عدّها» questions, built from the data lists: each question is a prompt plus every accepted answer.
 // Built once at startup; the stream page asks for one question at a time (/api/kick/lists/next).
 import { COUNTRIES } from './data/countries';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { listFold } from '@quiz/shared';
 import { CITIES, US_STATES, SA_REGIONS, RIVERS, MOUNTAINS, SEAS, LANDMARKS } from './data/places';
 import { CLUBS, LEAGUES } from './data/clubs';
 import { PLAYERS, NATIONS } from './data/players';
@@ -38,24 +42,91 @@ function letters(a: string): Set<string> {
 }
 /** Merge forms of the same answer that came from different lists, keep order, drop exact repeats. */
 function uniq(items: string[]): string[] {
+  // The same answer from two lists («النيل» and «نهر النيل|Nile») is one answer: merged when any written form matches.
   const seen = new Map<string, number>();
   const out: string[] = [];
   for (const it of items) {
-    const head = it.split('|')[0]!.trim();
-    if (seen.has(head)) {
-      const i = seen.get(head)!;
-      const forms = new Set([...out[i]!.split('|'), ...it.split('|')]);
-      out[i] = [...forms].join('|');
-    } else {
-      seen.set(head, out.length);
-      out.push(it);
+    const forms = it.split('|').map((f) => f.trim()).filter(Boolean);
+    const keys = forms.map(listFold).filter((k) => k.length >= 2);
+    const hit = keys.map((k) => seen.get(k)).find((i) => i !== undefined);
+    if (hit !== undefined) {
+      out[hit] = [...new Set([...out[hit]!.split('|'), ...forms])].join('|');
+      for (const k of keys) if (!seen.has(k)) seen.set(k, hit);
+    } else if (forms.length) {
+      for (const k of keys) seen.set(k, out.length);
+      out.push(forms.join('|'));
     }
   }
   return out;
 }
 
+// ---------- Wikidata lists (built once with SPARQL; see wd/*.json) ----------
+const WD_DIR = join(dirname(fileURLToPath(import.meta.url)), 'wd');
+/** Rows of one Wikidata list: «عربي|أسماء ثانية|English», plus the group it was asked for (publisher…). */
+function wd(name: string): { a: string; g?: string }[] {
+  try {
+    return (JSON.parse(readFileSync(join(WD_DIR, `${name}.json`), 'utf8')) as { a: string; g?: string }[]).map((r) => ({ ...r, a: withShort(r.a) }));
+  } catch {
+    return [];
+  }
+}
+const PREFIXES = ['نهر ', 'جبل ', 'جبال ', 'بحيرة ', 'جزيرة ', 'جزر ', 'بركان ', 'مسجد ', 'جامع ', 'مدينة '];
+/** Adds the short form people actually type: «نهر النيل» → «النيل», «Lake Victoria» → «Victoria». */
+function withShort(a: string): string {
+  const forms = a.split('|');
+  for (const f of [...forms]) {
+    for (const p of PREFIXES) if (f.startsWith(p) && f.length - p.length >= 3) forms.push(f.slice(p.length));
+    const en = f.replace(/^(Lake|Mount|Mt\.?) /, '').replace(/ (River|Island|Lake|Mountain|Volcano)$/, '');
+    if (en !== f && en.length >= 3) forms.push(en);
+  }
+  return [...new Set(forms)].join('|');
+}
+const wdItems = (name: string) => wd(name).map((r) => r.a);
+
+const CITY_LABELS: Record<string, string> = {
+  cn: 'الصين', in: 'الهند', br: 'البرازيل', ru: 'روسيا', iq: 'العراق', dz: 'الجزائر', mx: 'المكسيك', ca: 'كندا', au: 'أستراليا', ar: 'الأرجنتين',
+  sy: 'سوريا', ir: 'إيران', pk: 'باكستان', jo: 'الأردن', ly: 'ليبيا', sd: 'السودان', lb: 'لبنان', om: 'عمان', bh: 'البحرين', tn: 'تونس', kw: 'الكويت', qa: 'قطر', id: 'إندونيسيا', ye: 'اليمن',
+};
+/** Game publishers as named on Wikidata → our company keys. */
+const PUBLISHER: Record<string, string> = {
+  Nintendo: 'nintendo', 'Nintendo of America': 'nintendo', 'The Pokémon Company': 'nintendo', 'Sony Interactive Entertainment': 'sony', 'Sony Computer Entertainment': 'sony',
+  'Electronic Arts': 'ea', 'EA Sports': 'ea', Konami: 'konami', Capcom: 'capcom', 'Square Enix': 'square', Square: 'square', Enix: 'square', 'Bandai Namco Entertainment': 'bandai',
+  Namco: 'bandai', Bandai: 'bandai', 'Xbox Game Studios': 'ms', 'Microsoft Studios': 'ms', 'Warner Bros. Games': 'wb', 'Bethesda Softworks': 'bethesda', '2K': '2k', 'Valve Corporation': 'valve',
+  FromSoftware: 'fromsoft', Ubisoft: 'ubisoft', Activision: 'activision', 'Activision Blizzard': 'activision', Sega: 'sega', 'Rockstar Games': 'rockstar', 'Blizzard Entertainment': 'blizzard', 'Epic Games': 'epic', 'Riot Games': 'riot',
+};
+let augmented = false;
+/** Once: the Wikidata lists join the hand-written ones (same answer merged). */
+function augment() {
+  if (augmented) return;
+  augmented = true;
+  for (const [k, v] of Object.entries(CITIES)) v.items.push(...wdItems(`city-${k}`));
+  for (const [k, label] of Object.entries(CITY_LABELS)) {
+    const items = wdItems(`city-${k}`);
+    if (items.length >= 8) CITIES[k] = { label, items };
+  }
+  RIVERS.push(...wdItems('rivers'));
+  MOUNTAINS.push(...wdItems('mountains'));
+  LISTS.carBrands!.items.push(...wdItems('carbrands'));
+  LISTS.foods!.items.push(...wdItems('dishes'));
+  LISTS.sports!.items.push(...wdItems('sports'));
+  LISTS.instruments!.items.push(...wdItems('instruments'));
+  LISTS.superheroes!.items.push(...wdItems('marvel'));
+  LISTS.anime!.items.push(...wdItems('anime'));
+  EXTRA.airlines!.items.push(...wdItems('airlines'));
+  EXTRA.languages!.items.push(...wdItems('languages'));
+  EXTRA.islands!.items.push(...wdItems('islands'));
+  ISLAMIC.mosques!.items.push(...wdItems('mosques'));
+  EXTRA.lakes = { cat: 'geo', text: 'اذكر بحيرات', items: wdItems('lakes') };
+  EXTRA.volcanoes = { cat: 'geo', text: 'اذكر براكين', items: wdItems('volcanoes') };
+  for (const r of [...wd('games_pub'), ...wd('games_dev')]) {
+    const co = r.g ? PUBLISHER[r.g] : undefined;
+    GAMES.push([r.a, co ?? '']);
+  }
+}
+
 export function buildBank(): ListQuestion[] {
   const qs: ListQuestion[] = [];
+  augment();
   const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5) => {
     const a = uniq(answers.filter(Boolean));
     if (a.length >= min) qs.push({ id, cat, text, answers: a });
