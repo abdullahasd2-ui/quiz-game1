@@ -50,7 +50,7 @@ export function ListResult({ state, big = false }: { state: StreamState; big?: b
   const res = state.result;
   const r = state.round;
   if (!res || !r?.list) return null;
-  const answers = r.question.listAnswers ?? [];
+  const answers = [...(r.question.listAnswers ?? []), ...(r.list.extra ?? [])];
   const winners = Object.entries(res.rows)
     .filter(([, row]) => (row.found ?? 0) > 0)
     .sort((a, b) => (b[1].bonus ?? 0) - (a[1].bonus ?? 0) || (b[1].found ?? 0) - (a[1].found ?? 0))
@@ -93,6 +93,33 @@ export function ListResult({ state, big = false }: { state: StreamState; big?: b
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+/** Control page only: what the chat typed that isn't on the list — the streamer accepts (a point to all who typed it) or drops it. */
+export function UnknownAnswers({ state, onJudge }: { state: StreamState; onJudge: (key: string, accept: boolean) => void }) {
+  const unknown = state.round?.list?.unknown ?? {};
+  const items = Object.entries(unknown).sort((a, b) => b[1].by.length - a[1].by.length);
+  if (!items.length) return null;
+  return (
+    <div className="mt-3 rounded-2xl border border-q-cyan/30 bg-q-cyan/5 p-3">
+      <div className="mb-1 text-sm font-black text-q-cyan">❓ أجوبة مو موجودة في القائمة ({items.length})</div>
+      <div className="mb-2 text-[11px] text-white/50">إذا الجواب صح اضغط ✓ وينحسب لكل اللي كتبوه، حتى بعد ما يخلص الوقت. الرقم = كم واحد كتبه.</div>
+      <div className="flex max-h-48 flex-wrap gap-1.5 overflow-auto">
+        {items.map(([key, u]) => (
+          <span key={key} className="flex items-center gap-1 rounded-lg border border-q-line bg-q-panel py-0.5 ps-2 pe-0.5 text-xs font-black">
+            {u.text}
+            <span className="rounded bg-white/10 px-1 text-[10px] text-white/60">{u.by.length}</span>
+            <button type="button" title="جواب صح — احسبه" className="rounded-md bg-q-green/20 px-1.5 text-q-green hover:bg-q-green/35" onClick={() => onJudge(key, true)}>
+              ✓
+            </button>
+            <button type="button" title="غلط — شيله" className="rounded-md px-1.5 text-white/40 hover:bg-q-red/20 hover:text-q-red" onClick={() => onJudge(key, false)}>
+              ✕
+            </button>
+          </span>
+        ))}
       </div>
     </div>
   );
