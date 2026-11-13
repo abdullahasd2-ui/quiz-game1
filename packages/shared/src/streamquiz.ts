@@ -35,7 +35,7 @@ export type StreamQuestion = {
 export type StreamPhase = 'lobby' | 'board' | 'streamer' | 'choose' | 'shuffle' | 'answer' | 'steal' | 'result' | 'over';
 /** reverse: only in «جاوب أو بادل أو اعكس». */
 export type StreamChoice = 'answer' | 'swap' | 'reverse';
-export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed' | 'reverse-win' | 'reverse-lose' | 'mutual' | 'void' | 'list';
+export type StreamOutcome = 'answer-right' | 'answer-wrong' | 'swap-win' | 'swap-lose' | 'idle' | 'flip' | 'flipped-right' | 'flipped-wrong' | 'hid-safe' | 'hid-found' | 'stolen' | 'robbed' | 'reverse-win' | 'reverse-lose' | 'mutual' | 'void' | 'list' | 'reversed';
 /**
  * swap = «جاوب أو بادل» (a swapper takes the streamer's answer: ×2 or minus).
  * flip = «جاوب أو اقلب» (the flipped player's result is turned over: right = minus, wrong = plus; the flipper scores nothing).
@@ -273,7 +273,8 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
       SWAP_WORDS.includes(t) ? 'swap' : s.variant === 'triple' && REVERSE_WORDS.includes(t) ? 'reverse' : ANSWER_WORDS.includes(t) ? 'answer' : null;
     // The streamer's swap partner is answering for him: no swapping out of it — except in «جاوب أو بادل أو اعكس»,
     // where swapping or reversing back on the streamer leaves them both with nothing.
-    if (!c || (partner && s.variant !== 'triple') || r.choices[key] === c) return s;
+    // The streamer's partner may pick him back (2/3): like two teams picking each other in the main game, both get zero.
+    if (!c || r.choices[key] === c) return s;
     s = clone(s);
     s.round!.choices[key] = c;
     // Everyone has chosen: no need to wait out the clock.
@@ -281,7 +282,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     if (s.joined.every((k) => k === rr.streamer?.partner || rr.choices[k] !== undefined)) return startAnswer(s, now);
     return s;
   }
-  if (s.phase === 'answer' && (r.choices[key] === 'answer' || (partner && s.variant !== 'triple') || s.variant === 'hide') && r.picks[key] === undefined) {
+  if (s.phase === 'answer' && (r.choices[key] === 'answer' || s.variant === 'hide') && r.picks[key] === undefined) {
     const i = parseOption(text, r.question.options);
     if (i === null) return s;
     s = clone(s);
@@ -289,7 +290,7 @@ export function chatMessage(state: StreamState, user: string, text: string, now 
     s.round!.pickAt![key] = now;
     // Everyone who can answer has answered: end the question now.
     const rr = s.round!;
-    const canAnswer = s.joined.filter((k) => s.variant === 'hide' || rr.choices[k] === 'answer' || (k === rr.streamer?.partner && s.variant !== 'triple'));
+    const canAnswer = s.joined.filter((k) => s.variant === 'hide' || rr.choices[k] === 'answer');
     if (canAnswer.every((k) => rr.picks[k] !== undefined)) return resolve(s);
     return s;
   }
@@ -477,6 +478,12 @@ function resolve(state: StreamState): StreamState {
       else apply(k, 'flipped-wrong', q.points, picked);
     };
     const chatFlipped = [...players].some((k) => choices[k] === 'swap');
+    // The streamer flipped a player who flipped him back: both get zero, as in the main game.
+    if (st.partner && choices[st.partner] === 'swap') {
+      apply(s.streamer, 'mutual', 0, null);
+      for (const k of players) apply(k, k === st.partner ? 'mutual' : choices[k] === 'swap' ? 'void' : picks[k] === undefined ? 'idle' : picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', k !== st.partner && choices[k] !== 'swap' && picks[k] === q.correctIndex ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k] ?? null);
+      return finishResolve(s, rows, st, null, false);
+    }
     if (st.choice === 'swap') apply(s.streamer, 'flip', 0, null);
     // The chat flipped the streamer: his own answer is turned over, once, however many flipped.
     else if (chatFlipped && sp !== null) flipped(s.streamer, sp);
@@ -505,9 +512,12 @@ function resolve(state: StreamState): StreamState {
       else apply(s.streamer, pp === q.correctIndex ? 'reverse-lose' : 'reverse-win', pp === q.correctIndex ? -P : P, null);
     } else if (st.choice === 'swap') apply(s.streamer, targetRight ? 'swap-win' : 'swap-lose', targetRight ? P * 2 : -P, sp);
     else if (targetRight && [...players].some((k) => choices[k] === 'swap')) apply(s.streamer, 'robbed', 0, sp);
+    // Reversed by the chat: like the main game, the reversed side scores nothing for its answer.
+    else if ([...players].some((k) => choices[k] === 'reverse')) apply(s.streamer, 'reversed', 0, sp);
     else apply(s.streamer, targetRight ? 'answer-right' : 'answer-wrong', targetRight ? P : 0, sp);
     for (const k of players) {
       if (k === partner && mutual) apply(k, 'mutual', 0, null);
+      else if (k === partner && st.choice === 'reverse' && picks[k] !== undefined) apply(k, 'reversed', 0, picks[k]!);
       else if (choices[k] === 'swap' || choices[k] === 'reverse') {
         // Swappers take the streamer's answer (his own or his swap partner's); reversing works only on his own answer.
         if (target === null || (choices[k] === 'reverse' && st.choice !== 'answer')) apply(k, 'void', 0, null);
@@ -522,6 +532,17 @@ function resolve(state: StreamState): StreamState {
       }
     }
     return finishResolve(s, rows, st, sp, st.choice === 'reverse' ? pp === q.correctIndex : targetRight);
+  }
+  // The streamer swapped with a player who swapped back: both get zero, and there is no answer for the chat to take.
+  if (st.partner && choices[st.partner] === 'swap') {
+    apply(s.streamer, 'mutual', 0, null);
+    for (const k of players) {
+      if (k === st.partner) apply(k, 'mutual', 0, null);
+      else if (choices[k] === 'swap') apply(k, 'void', 0, null);
+      else if (picks[k] === undefined) apply(k, 'idle', 0, null);
+      else apply(k, picks[k] === q.correctIndex ? 'answer-right' : 'answer-wrong', picks[k] === q.correctIndex ? pointsAt(q, s.round!.answerAt, s.round!.pickAt?.[k]) : 0, picks[k]!);
+    }
+    return finishResolve(s, rows, st, null, false);
   }
   if (st.choice === 'swap') apply(s.streamer, streamerCorrect ? 'swap-win' : 'swap-lose', streamerCorrect ? q.points * 2 : -q.points, sp);
   // Someone in the chat swapped onto the streamer's right answer: they take it (×2) and the streamer gets nothing («انزرف»).

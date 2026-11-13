@@ -61,7 +61,6 @@ describe('stream quiz', () => {
     const run = (text: string) => {
       let s = begin('Ali', 'Sara');
       s = streamerAct(s, { type: 'swap', user: 'ali' }, 0);
-      s = say(s, 'Ali', '2'); // the partner cannot swap out
       s = say(s, 'Sara', '2'); // swaps with the streamer, who swapped himself
       s = streamerAct(s, { type: 'show' }, 1);
       s = say(s, 'Ali', text);
@@ -71,6 +70,15 @@ describe('stream quiz', () => {
     expect(run('2').result?.rows.ali?.outcome).toBe('robbed');
     expect(run('1').scores).toMatchObject({ abdullah: -300, ali: 0, sara: -300 });
     expect(streamerAct(begin('Ali'), { type: 'swap', user: 'nobody' }, 0).phase).toBe('streamer');
+  });
+
+  it('the streamer and his partner picking each other (2 back): zero for both, as in the main game', () => {
+    let s = streamerAct(begin('Ali', 'Sara'), { type: 'swap', user: 'ali' }, 0);
+    s = say(say(s, 'Ali', '2'), 'Sara', '2');
+    s = streamerAct(streamerAct(s, { type: 'show' }, 1), { type: 'finish' }, 2);
+    expect(s.scores).toMatchObject({ abdullah: 0, ali: 0, sara: 0 });
+    expect(s.result?.rows.abdullah?.outcome).toBe('mutual');
+    expect(s.result?.rows.sara?.outcome).toBe('void');
   });
 
   it('timeouts move the phases', () => {
@@ -142,16 +150,19 @@ describe('جاوب أو بادل أو اعكس', () => {
     for (const [u, t] of answers) s = say(s, u, t);
     return streamerAct(s, { type: 'finish' }, 2);
   };
-  it('chat: 3 reverses the streamer (right = minus, wrong = plus); the streamer keeps his own points', () => {
+  it('chat: 3 reverses the streamer (right = minus, wrong = plus); reversed, the streamer scores nothing (main game)', () => {
     const right = play(streamerAct(tri('Ali', 'Sara'), { type: 'answer', index: 1 }, 0), [['Ali', '3'], ['Sara', '2']], []);
     expect(right.scores).toMatchObject({ abdullah: 0, ali: -300, sara: 600 });
     expect(right.result?.rows.ali?.outcome).toBe('reverse-lose');
     const wrong = play(streamerAct(tri('Ali'), { type: 'answer', index: 0 }, 0), [['Ali', '3']], []);
     expect(wrong.scores).toMatchObject({ abdullah: 0, ali: 300 });
+    const only = play(streamerAct(tri('Ali'), { type: 'answer', index: 1 }, 0), [['Ali', '3']], []);
+    expect(only.scores).toMatchObject({ abdullah: 0, ali: -300 });
+    expect(only.result?.rows.abdullah?.outcome).toBe('reversed');
   });
-  it('streamer reverses a player: the player answers for himself, the streamer scores the other way round', () => {
+  it('streamer reverses a player: the player answers and scores nothing; the streamer scores the other way round', () => {
     const s = streamerAct(tri('Ali'), { type: 'reverse', user: 'ali' }, 0);
-    expect(play(s, [], [['Ali', '2']]).scores).toMatchObject({ abdullah: -300, ali: 300 });
+    expect(play(s, [], [['Ali', '2']]).scores).toMatchObject({ abdullah: -300, ali: 0 });
     expect(play(s, [], [['Ali', '1']]).scores).toMatchObject({ abdullah: 300, ali: 0 });
   });
   it('streamer swapped: chat swappers take the partner\'s answer, chat reversers get nothing', () => {
