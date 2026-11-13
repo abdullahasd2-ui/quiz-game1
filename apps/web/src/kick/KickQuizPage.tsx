@@ -75,6 +75,7 @@ export const OUTCOME: Record<StreamOutcome, { label: string; cls: string }> = {
   mutual: { label: '🤝 اختار هو والستريمر بعض — صفر', cls: 'text-q-gold' },
   void: { label: '🚫 الستريمر ما جاوب بنفسه — ما فيه شي ينعكس أو يتبادل', cls: 'text-white/50' },
   list: { label: '✍️ عدّ', cls: 'text-q-green' },
+  reversed: { label: '↩️ انعكس عليه — ما ياخذ نقاط السؤال', cls: 'text-q-gold' },
   robbed: { label: '😵 انزرف! جوابه صح بس النقاط راحت للي بادل', cls: 'text-q-gold' },
   idle: { label: '⏱ ما جاوب', cls: 'text-white/50' },
 };
@@ -827,6 +828,8 @@ export function KickQuizPage() {
                     <div key={i} className={cn(i === 0 ? 'text-xl font-black' : 'text-sm font-bold', toneClass[l.tone])}>{l.text}</div>
                   ))}
                 </div>
+              ) : result.rows[state.streamer]?.outcome === 'mutual' ? (
+                <div className="mb-1 text-xl font-black text-q-gold">🤝 أنت و{state.names[result.streamerPartner ?? ''] ?? ''} اخترتوا بعض — الاثنين صفر</div>
               ) : (
               <div className={cn('mb-1 text-xl font-black', result.streamerCorrect ? 'text-q-green' : 'text-q-red')}>
                 {result.streamerChoice === 'swap' ? `${L.icon} ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${state.names[result.streamerPartner ?? ''] ?? ''}` : 'جاوب'} — {result.streamerPick === null ? '⏱ بدون جواب' : result.streamerCorrect ? '✅ صح' : '❌ غلط'}

@@ -27,8 +27,8 @@ export function tripleLines(state: StreamState, you: boolean): { text: string; t
   } else if (st?.choice === 'reverse') {
     const p = partner ? r.picks[partner] : undefined;
     if (p === undefined) out.push({ text: `↩️ ${he} عكس على ${name(partner)} — وما جاوب، فما فيه نقاط`, tone: 'dim' });
-    else if (p === res.correctIndex) out.push({ text: `↩️ ${he} عكس على ${name(partner)} — جاوب صح، فنقص من ${you ? 'ك' : 'الستريمر'} ${P}`, tone: 'bad' });
-    else out.push({ text: `↩️ ${he} عكس على ${name(partner)} — جاوب غلط، فزاد ${you ? 'لك' : 'للستريمر'} ${P}`, tone: 'good' });
+    else if (p === res.correctIndex) out.push({ text: `↩️ ${he} عكس على ${name(partner)} — جاوب صح، فنقص من ${you ? 'ك' : 'الستريمر'} ${P}، و${name(partner)} ما ياخذ نقاط السؤال`, tone: 'bad' });
+    else out.push({ text: `↩️ ${he} عكس على ${name(partner)} — جاوب غلط، فزاد ${you ? 'لك' : 'للستريمر'} ${P}، و${name(partner)} ما ياخذ شي`, tone: 'good' });
   } else if (st?.choice === 'swap') {
     out.push(
       res.streamerCorrect
@@ -37,6 +37,7 @@ export function tripleLines(state: StreamState, you: boolean): { text: string; t
     );
   } else {
     out.push({ text: `${he} جاوب — ${res.streamerPick === null ? '⏱ بدون جواب' : res.streamerCorrect ? '✅ صح' : '❌ غلط'}`, tone: res.streamerCorrect ? 'good' : 'bad' });
+    if (reversers && !(res.streamerCorrect && swappers)) out.push({ text: `↩️ ${reversers} عكسوا ${you ? 'عليك' : 'على الستريمر'} — ${you ? 'ما تاخذ' : 'ما ياخذ'} نقاط السؤال`, tone: 'gold' });
     if (res.streamerCorrect && swappers) out.push({ text: `😵 ${you ? 'انزرفت' : 'الستريمر انزرف'}! ${swappers} بادلوا ${you ? 'معك' : 'معه'} وأخذوا دبل النقاط — ${you ? 'ما لك' : 'ما له'} شي`, tone: 'gold' });
   }
 

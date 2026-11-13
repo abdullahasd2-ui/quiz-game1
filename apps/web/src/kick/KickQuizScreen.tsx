@@ -313,7 +313,10 @@ export function KickQuizScreen() {
                   ))}
                 </div>
               )}
-              {result && state.variant !== 'hide' && state.variant !== 'triple' && state.variant !== 'list' && (
+              {result && (state.variant === 'swap' || state.variant === 'flip' || !state.variant) && result.rows[state.streamer]?.outcome === 'mutual' && (
+                <div className="mt-4 text-center text-2xl font-black text-q-gold">🤝 الستريمر و{displayName(state, result.streamerPartner ?? '')} اختاروا بعض — الاثنين صفر</div>
+              )}
+              {result && state.variant !== 'hide' && state.variant !== 'triple' && state.variant !== 'list' && result.rows[state.streamer]?.outcome !== 'mutual' && (
                 <div className="mt-4 text-center text-xl font-black">
                   {result.streamerChoice === 'swap' ? `الستريمر ${L.did} ${state.variant === 'flip' ? 'على' : 'مع'} ${displayName(state, result.streamerPartner ?? '')}` : swappers > 0 && state.variant === 'flip' ? `الشات قلب على الستريمر (${swappers})` : 'الستريمر جاوب'} —{' '}
                   <span className={result.streamerCorrect ? 'text-q-green' : 'text-q-red'}>{result.streamerPick === null ? 'بدون جواب' : result.streamerCorrect ? 'صح ✅' : 'غلط ❌'}</span>
