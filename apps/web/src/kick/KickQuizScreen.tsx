@@ -141,7 +141,7 @@ export function KickQuizScreen() {
               </div>
               <div className="mx-auto mt-4 max-w-xl rounded-xl bg-q-panel p-4 text-lg">
                 يطلع سؤال، واكتبوا أكبر عدد من الأجوبة في {Math.round((state.answerMs ?? 30000) / 1000)} ثانية
-                <div className="mt-1 text-base text-white/70">كل جواب صح = نقطة · الأول +5 · الثاني +3 · الثالث +2</div>
+                <div className="mt-1 text-base text-white/70">كل جواب صح نقطة · وآخر الوقت: الأول ياخذ 5 نقاط زيادة، والثاني 3، والثالث نقطتين</div>
               </div>
               <div className="mt-3 text-white/60">
                 اكتبوا <b className="text-q-gold">دخول</b> للمشاركة · المشاركون {state.joined.length}
