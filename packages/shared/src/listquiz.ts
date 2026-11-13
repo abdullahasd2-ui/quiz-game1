@@ -33,6 +33,14 @@ export function listFold(text: string): string {
     .replace(/ç/g, 'c');
 }
 
+/** The letter a name starts with as people see it: «الرياض» → ر, «ألمانيا» → ا, «إيطاليا» → ا. */
+export function firstLetter(name: string): string {
+  let w = name.trim();
+  if (w.startsWith('ال') && w.length > 3) w = w.slice(2);
+  const c = w[0] ?? '';
+  return /[أإآٱ]/.test(c) ? 'ا' : c === 'ى' ? 'ي' : c;
+}
+
 /** An answer as stored: «اسم|صيغة ثانية|English». The first form is the one shown. */
 export const answerName = (a: string) => a.split('|')[0]!.trim();
 
@@ -42,17 +50,19 @@ export type ListIndex = { exact: Map<string, number>; keys: [string, number][] }
  * Lookup for one question's answers: every written form, plus the last word of a multi-word name («ليونيل ميسي» → «ميسي»)
  * when no other answer shares it.
  */
-export function buildListIndex(answers: string[]): ListIndex {
+/** `letter`: a «تبدأ بحرف …» question — only names that start with it count (no «ميسي» from «ليونيل ميسي» for ل). */
+export function buildListIndex(answers: string[], letter?: string): ListIndex {
   const exact = new Map<string, number>();
   const clash = new Set<string>();
   answers.forEach((a, i) => {
     for (const form of a.split('|')) {
+      if (letter && firstLetter(form) !== firstLetter(letter)) continue;
       const f = listFold(form);
       if (f.length >= 2) exact.set(f, exact.has(f) && exact.get(f) !== i ? exact.get(f)! : i);
     }
   });
   const last = new Map<string, number>();
-  answers.forEach((a, i) => {
+  if (!letter) answers.forEach((a, i) => {
     for (const form of a.split('|')) {
       const words = normalize(form).split(/\s+/).filter(Boolean);
       if (words.length < 2) continue;
@@ -98,7 +108,8 @@ export function matchList(index: ListIndex, text: string): number[] {
     // One slipped letter is fine in a longer word, two in a long one, and a few in a whole saying (أمثال).
     const max = f.length >= 14 ? Math.floor(f.length * 0.15) : f.length >= 9 ? 2 : f.length >= 5 ? 1 : 0;
     if (!max) continue;
-    for (const [k, i] of index.keys) if (k.length >= 4 && within(f, k, max)) { out.add(i); break; }
+    // A slip is forgiven anywhere but the first letter: «جالد» is not «خالد» (letter questions depend on it).
+    for (const [k, i] of index.keys) if (k.length >= 4 && k[0] === f[0] && within(f, k, max)) { out.add(i); break; }
   }
   return [...out];
 }

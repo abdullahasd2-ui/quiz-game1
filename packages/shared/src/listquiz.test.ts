@@ -27,6 +27,14 @@ describe('matching', () => {
     expect(matchList(p, 'من جد وجد')).toEqual([1]);
     expect(matchList(p, 'الصبر')).toEqual([]);
   });
+  it('letter questions: only names starting with the letter, and no slip on the first letter', () => {
+    const ix = buildListIndex(['ليونيل ميسي', 'خالد', 'خليل|جليل'], 'خ');
+    expect(matchList(ix, 'ميسي')).toEqual([]);
+    expect(matchList(ix, 'جالد')).toEqual([]);
+    expect(matchList(ix, 'جليل')).toEqual([]);
+    expect(matchList(ix, 'خالد')).toEqual([1]);
+    expect(matchList(ix, 'خاليد')).toEqual([1]);
+  });
   it('folds hamza, ta marbuta and ya', () => {
     expect(listFold('أنطوان')).toBe(listFold('انطوان'));
     expect(listFold('مكة')).toBe(listFold('مكه'));
