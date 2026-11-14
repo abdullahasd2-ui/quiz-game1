@@ -120,6 +120,10 @@ let augmented = false;
 function augment() {
   if (augmented) return;
   augmented = true;
+  delete GAME_CHARACTERS.pokemon;
+  EXTRA.cartoons!.items = EXTRA.cartoons!.items.filter((x) => !ANIME_CHARACTERS.has(x.split('|')[0]!.trim()));
+  // Pokémon characters in the Smash list.
+  EXTRA.zelda!.items = EXTRA.zelda!.items.filter((x) => !['بيكاتشو', 'جيغلي باف', 'لوكاريو'].includes(x.split('|')[0]!.trim()));
   for (const [k, v] of Object.entries(CITIES)) v.items.push(...wdItems(`city-${k}`));
   for (const [k, label] of Object.entries(CITY_LABELS)) {
     const items = wdItems(`city-${k}`);
@@ -144,11 +148,16 @@ function augment() {
   }
 }
 
+/** No Pokémon and no anime anywhere in «عدّها»: not as a question, not as an answer. */
+const BANNED = /بوكيمون|بوكيمن|pok[eé]mon|بيكاتشو|pikachu|أنمي|انمي|anime|ناروتو|naruto|ون بيس|one piece|دراغون بول|دراجون بول|dragon ball|بليتش|bleach|قاتل الشياطين|demon slayer|kimetsu|جوجو|jojo|هجوم العمالقة|attack on titan|my hero academia|هنتر|hunter x hunter|ديث نوت|death note|كابتن ماجد|captain tsubasa|غرندايزر|grendizer|سيلور مون|sailor moon|يو غي أوه|yu-gi-oh|ديجيمون|digimon|جوجوتسو|jujutsu|ساموراي إكس|gundam|غاندام|evangelion|إيفانجيليون|sword art online|سورد آرت/i;
+const ANIME_CHARACTERS = new Set(['كابتن ماجد', 'غرندايزر', 'عدنان', 'لينا', 'هايدي', 'سالي', 'ريمي', 'سنان', 'شين تشان', 'دورايمون', 'نوبيتا', 'كونان', 'فلونة', 'سابق ولاحق', 'ليدي باغ']);
+
 export function buildBank(): ListQuestion[] {
   const qs: ListQuestion[] = [];
   augment();
   const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5, letter?: string) => {
-    const a = uniq(answers.filter(Boolean));
+    if (BANNED.test(text)) return;
+    const a = uniq(answers.filter((x) => x && !BANNED.test(x)));
     if (a.length >= min) qs.push({ id, cat, text, answers: a, ...(letter ? { letter } : {}) });
   };
   const byLetter = (id: string, cat: ListCategory, what: string, items: string[], min = 6) => {
