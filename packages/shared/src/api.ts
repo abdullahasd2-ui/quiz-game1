@@ -79,7 +79,8 @@ export type UsageStats = {
   };
   today: { visitors: number; visits: number; games: number };
   byDay: UsageDay[];
-  platforms: { platform: Platform; visitors: number }[];
+  /** Different devices: `visitors` in the chosen days, `allTime` since the start (each device counted once). */
+  platforms: { platform: Platform; visitors: number; allTime: number }[];
   modes: { mode: RoomMode; variant: Variant; games: number }[];
   topCategories: { categoryId: number; name: string; games: number }[];
 };
