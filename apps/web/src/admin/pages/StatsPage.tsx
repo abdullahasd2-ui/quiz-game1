@@ -17,7 +17,7 @@ export const num = new Intl.NumberFormat('en');
 const dayLabel = new Intl.DateTimeFormat('ar-u-nu-latn', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const fmtDay = (day: string) => dayLabel.format(new Date(`${day}T00:00:00Z`));
 
-const PLATFORM_LABEL: Record<Platform, string> = { web: 'الموقع', ios: 'iPhone', android: 'Android' };
+const PLATFORM_LABEL: Record<Platform, string> = { web: 'الموقع', ios: 'تطبيق iPhone', android: 'تطبيق Android' };
 const MODE_LABEL: Record<RoomMode, string> = { mobile: 'جوال', tv: 'تلفاز' };
 const VARIANT_LABEL: Record<Variant, string> = {
   swap: 'جاوب أو بادل',
@@ -189,8 +189,21 @@ function UsageSection() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <ChartCard title="المنصات" description="الزوار حسب الجهاز" loading={usage.isPending}>
-          {u && <BarList rows={u.platforms.map((p) => ({ key: p.platform, label: PLATFORM_LABEL[p.platform], value: p.visitors }))} empty="لا زيارات بعد" />}
+        <ChartCard title="المنصات" description="أجهزة مختلفة في هذي الفترة — كل جهاز ينحسب مرة وحدة مهما دخل" loading={usage.isPending}>
+          {u && (
+            <>
+              <BarList rows={u.platforms.filter((p) => p.visitors > 0).map((p) => ({ key: p.platform, label: PLATFORM_LABEL[p.platform], value: p.visitors }))} empty="لا زيارات بعد" />
+              <div className="mt-4 border-t border-white/10 pt-3 text-sm">
+                <div className="mb-1 text-xs text-white/50">من البداية (كل جهاز مرة وحدة)</div>
+                {u.platforms.map((p) => (
+                  <div key={p.platform} className="flex justify-between py-0.5">
+                    <span>{PLATFORM_LABEL[p.platform]}</span>
+                    <b className="tabular-nums">{p.allTime.toLocaleString('en')}</b>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </ChartCard>
         <ChartCard title="طريقة اللعب" description="الألعاب التي بدأت" loading={usage.isPending}>
           {u && (

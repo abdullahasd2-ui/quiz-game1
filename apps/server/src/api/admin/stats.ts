@@ -36,9 +36,11 @@ export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () =>
         left join (select day, count(*)::int as visitors, sum(visits)::int as visits from daily_visits group by day) v on v.day = d::date
         left join (select ${gameDay} as day, count(*)::int as games, count(finished_at)::int as finished from games group by 1) g on g.day = d::date
         order by d`),
-      rows<{ platform: UsageStats['platforms'][number]['platform']; visitors: number }>(sql`
-        select platform, count(distinct device_id)::int as "visitors" from daily_visits where day >= ${since}
-        group by platform order by 2 desc, 1`),
+      // Each device once (however many times it opened): in the chosen days, and since the start.
+      rows<UsageStats['platforms'][number]>(sql`
+        select platform, count(distinct device_id) filter (where day >= ${since})::int as "visitors",
+          count(distinct device_id)::int as "allTime"
+        from daily_visits group by platform order by 2 desc, 1`),
       rows<UsageStats['modes'][number]>(sql`
         select mode, variant, count(*)::int as "games" from games where started_at is not null and ${gameDay} >= ${since}
         group by mode, variant order by 3 desc`),

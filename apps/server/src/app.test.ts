@@ -290,7 +290,7 @@ describe('usage stats', () => {
     expect(usage.today).toEqual({ visitors: 2, visits: 4, games: 3 });
     expect(usage.byDay).toHaveLength(7);
     expect(usage.byDay.at(-1)).toMatchObject({ visitors: 2, visits: 4, games: 3, finished: 1 });
-    expect(usage.platforms).toEqual([{ platform: 'web', visitors: 1 }, { platform: 'ios', visitors: 1 }]);
+    expect(usage.platforms).toEqual([{ platform: 'web', visitors: 1, allTime: 1 }, { platform: 'ios', visitors: 1, allTime: 1 }, { platform: 'android', visitors: 0, allTime: 1 }]);
     expect(usage.topCategories).toEqual([{ categoryId: geo, name: 'جغرافيا', games: 2 }]);
 
     const live = await app.inject({ method: 'GET', url: '/api/admin/stats/live', headers: { cookie } });
