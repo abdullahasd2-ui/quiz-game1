@@ -365,6 +365,8 @@ describe('«عدّها» lists', () => {
     const all = listBank().filter((x) => x.cat === 'football').map((x) => x.id);
     const none = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['football'], exclude: all } });
     expect(none.statusCode).toBe(404);
+    const hard = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['geo'], levels: ['hard'], exclude: [] } });
+    expect((hard.json() as { level: string }).level).toBe('hard');
   });
 });
 

@@ -3,7 +3,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { drawQuestion, listPublicCategories } from '../game/catalog';
 import { MANA } from './packs/mana';
-import { LIST_CATEGORIES, listBank } from './lists/bank';
+import { LIST_CATEGORIES, LIST_LEVELS, listBank } from './lists/bank';
 
 /** Team packs by their code (given to the team; anyone with it can open the pack, answers included). */
 const PACKS = [MANA];
@@ -34,10 +34,15 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
     const bank = listBank();
     return LIST_CATEGORIES.map((c) => ({ ...c, count: bank.filter((q) => q.cat === c.id).length }));
   });
-  app.post<{ Body: { cats?: unknown; exclude?: unknown } }>('/api/kick/lists/next', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
+  app.get('/api/kick/lists/levels', async () => {
+    const bank = listBank();
+    return LIST_LEVELS.map((l) => ({ ...l, count: bank.filter((q) => q.level === l.id).length }));
+  });
+  app.post<{ Body: { cats?: unknown; levels?: unknown; exclude?: unknown } }>('/api/kick/lists/next', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
     const cats = Array.isArray(req.body?.cats) ? req.body.cats.map(String) : [];
     const exclude = new Set(Array.isArray(req.body?.exclude) ? req.body.exclude.map(String).slice(0, 2000) : []);
-    const pool = listBank().filter((q) => (cats.length === 0 || cats.includes(q.cat)) && !exclude.has(q.id));
+    const levels = Array.isArray(req.body?.levels) ? req.body.levels.map(String) : [];
+    const pool = listBank().filter((q) => (cats.length === 0 || cats.includes(q.cat)) && (levels.length === 0 || levels.includes(q.level)) && !exclude.has(q.id));
     if (!pool.length) return reply.code(404).send({ error: 'خلصت الأسئلة' });
     // Each chosen category gets an equal chance, however many questions it has (football alone has the most).
     const left = [...new Set(pool.map((q) => q.cat))];

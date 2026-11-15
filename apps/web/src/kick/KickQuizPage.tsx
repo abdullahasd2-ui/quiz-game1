@@ -106,6 +106,8 @@ export function KickQuizPage() {
   /** «عدّها»: its categories (from the server) and the ones picked. */
   const [listCats, setListCats] = useState<{ id: string; name: string; icon: string; count: number }[]>([]);
   const hotStream = usePopular()?.streamVariants[0];
+  /** «عدّها» difficulty: any of سهل/متوسط/صعب (at least one). */
+  const [listLevels, setListLevels] = useState<string[]>(['easy', 'medium', 'hard']);
   const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games', 'islamic', 'proverbs']);
   const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
@@ -282,7 +284,7 @@ export function KickQuizPage() {
       const res = await fetch(`${SERVER_URL}/api/kick/lists/next`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ cats: listChosen, exclude: cur.used.map((u) => u.replace(/^list:/, '')) }),
+        body: JSON.stringify({ cats: listChosen, levels: listLevels, exclude: cur.used.map((u) => u.replace(/^list:/, '')) }),
       });
       if (!res.ok) throw new Error('خلصت الأسئلة في هذي الفئات');
       const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[]; letter?: string };
@@ -300,6 +302,7 @@ export function KickQuizPage() {
     if (!ref.current) return;
     if (variant === 'list') {
       if (!listChosen.length) return setError('اختر فئة وحدة على الأقل');
+      if (!listLevels.length) return setError('اختر مستوى صعوبة واحد على الأقل');
       setError('');
       set(toBoard({ ...ref.current, totalCells: hideRounds, answerMs: answerSec * 1000, board: undefined, variant, pack: undefined }));
       return;
@@ -520,6 +523,25 @@ export function KickQuizPage() {
                             className={cn('rounded-xl border-2 px-2 py-2 text-sm font-black transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
                           >
                             {c.icon} {c.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mb-2 text-sm font-black">🎯 مستوى الصعوبة <span className="text-[11px] font-bold text-white/50">(اختر واحد أو أكثر)</span></div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([['easy', '🟢', 'سهل', 'أجوبة كثيرة يعرفها الكل'], ['medium', '🟡', 'متوسط', 'تحتاج معرفة أكثر'], ['hard', '🔴', 'صعب', 'أجوبة قليلة أو موضوع متخصص']] as const).map(([id, icon, name, hint]) => {
+                        const on = listLevels.includes(id);
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setListLevels((cur) => (on ? cur.filter((x) => x !== id) : [...cur, id]))}
+                            className={cn('rounded-xl border-2 px-2 py-2 text-center transition-all', on ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel opacity-60')}
+                          >
+                            <div className="text-sm font-black">{icon} {name}</div>
+                            <div className="text-[10px] text-white/50">{hint}</div>
                           </button>
                         );
                       })}

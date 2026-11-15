@@ -16,7 +16,30 @@ import { ISLAMIC } from './data/islamic';
 import { PROVERBS } from './data/proverbs';
 
 export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs';
-export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[]; letter?: string };
+export type ListLevel = 'easy' | 'medium' | 'hard';
+export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[]; letter?: string; level: ListLevel };
+export const LIST_LEVELS: { id: ListLevel; name: string; icon: string }[] = [
+  { id: 'easy', name: 'سهل', icon: '🟢' },
+  { id: 'medium', name: 'متوسط', icon: '🟡' },
+  { id: 'hard', name: 'صعب', icon: '🔴' },
+];
+
+/** Lists that are long but that few people can name much from (lakes, volcanoes…): never «سهل». */
+const NICHE = /^(geo-cities-(cn|in|br|ru|mx|ca|au|ar|ir|pk|id|ly|sd|sy|iq|dz|jo|tn|lb|om|bh|kw|qa|jp)|ex-lakes|ex-volcanoes|ex-islands|geo-mountains|geo-rivers|ex-deserts|gm-co-|gm-all|is-mosques|is-imams|is-readers|ex-airlines|ex-watches|ex-famousArabs|ex-scientists)/;
+/** Lists everyone can name a lot from: always «سهل» when long enough. */
+const EVERYDAY = /^(gn-(animals|fruits|vegetables|fruitveg|colors|jobs|foods|desserts|drinks|bodyParts|clothes|home|kitchen|boys|girls|sports|carBrands|apps|months)|geo-(countries|capitals|arab|cities-sa)|ex-(supermarket|school|emotions|shapes|weather)|fb-all|fb-pos-|fb-league-(es|en|sa)$|fb-club-(rma|bar|hil|nas)$|is-(names|pillars|prayers|hijriMonths|zikr)|pv-all|gn-surahs$|gn-prophets$)/;
+
+/**
+ * How hard a question is, from how much there is to name and how everyday the subject is:
+ * «سهل» = lots of answers most people know, «صعب» = few answers or a specialist subject.
+ */
+function levelOf(q: Omit<ListQuestion, 'level'>): ListLevel {
+  const n = q.answers.length;
+  if (q.letter) return n >= 25 && !NICHE.test(q.id) ? 'easy' : n >= 10 ? 'medium' : 'hard';
+  if (EVERYDAY.test(q.id) && n >= 12) return 'easy';
+  if (NICHE.test(q.id)) return n >= 60 ? 'medium' : 'hard';
+  return n >= 40 ? 'easy' : n >= 12 ? 'medium' : 'hard';
+}
 
 export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[] = [
   { id: 'football', name: 'كورة', icon: '⚽' },
@@ -145,7 +168,7 @@ function augment() {
 }
 
 export function buildBank(): ListQuestion[] {
-  const qs: ListQuestion[] = [];
+  const qs: Omit<ListQuestion, 'level'>[] = [];
   augment();
   const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5, letter?: string) => {
     const a = uniq(answers.filter(Boolean));
@@ -328,7 +351,7 @@ export function buildBank(): ListQuestion[] {
   const everything = [...A.map((a) => a.name), ...COUNTRIES.map((c) => c[0]), ...COUNTRIES.map((c) => c[1]), ...Object.values(LISTS).filter((l) => l.cat === 'general').flatMap((l) => l.items)];
   byLetter('gn-any', 'general', 'أي شيء (حيوان، أكل، دولة، اسم، مهنة…)', everything, 10);
 
-  return qs;
+  return qs.map((q) => ({ ...q, level: levelOf(q) }));
 }
 
 let cached: ListQuestion[] | null = null;
