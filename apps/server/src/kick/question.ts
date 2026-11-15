@@ -1,12 +1,11 @@
-import { POINTS } from '@quiz/shared';
+import { POINTS, type QuestionPack } from '@quiz/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { drawQuestion, listPublicCategories } from '../game/catalog';
-import { MANA } from './packs/mana';
 import { LIST_CATEGORIES, LIST_LEVELS, listBank } from './lists/bank';
 
 /** Team packs by their code (given to the team; anyone with it can open the pack, answers included). */
-const PACKS = [MANA];
+const PACKS: QuestionPack[] = [];
 
 const query = z.object({ category: z.coerce.number().int().positive(), points: z.coerce.number().refine((p) => (POINTS as readonly number[]).includes(p)) });
 
