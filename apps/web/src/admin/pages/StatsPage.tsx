@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { PageHeader } from '../AdminLayout';
+import { CategoryBoard, Champions, ModesDonut, Records } from './StatsHighlights';
 
 const LIVE_REFRESH_MS = 5000;
 export const PERIODS = [7, 30, 90] as const;
@@ -179,6 +180,9 @@ function UsageSection() {
         />
       </div>
 
+      {u && <Champions u={u} />}
+      {u && <Records days={u.byDay} />}
+
       <div className="mb-4 grid gap-4 lg:grid-cols-2">
         <ChartCard title="الزوار يوميًا" description="أجهزة مختلفة فتحت اللعبة" loading={usage.isPending}>
           {u && <DailyBars days={u.byDay} value={(d) => d.visitors} unit="زائر" />}
@@ -206,15 +210,10 @@ function UsageSection() {
           )}
         </ChartCard>
         <ChartCard title="طريقة اللعب" description="الألعاب التي بدأت" loading={usage.isPending}>
-          {u && (
-            <BarList
-              rows={u.modes.map((m) => ({ key: `${m.mode}-${m.variant}`, label: `${VARIANT_LABEL[m.variant]} · ${MODE_LABEL[m.mode]}`, value: m.games }))}
-              empty="لم تبدأ أي لعبة بعد"
-            />
-          )}
+          {u && <ModesDonut u={u} />}
         </ChartCard>
         <ChartCard title="أكثر الفئات لعبًا" description="عدد الألعاب التي اختارتها" loading={usage.isPending}>
-          {u && <BarList rows={u.topCategories.map((c) => ({ key: String(c.categoryId), label: c.name, value: c.games }))} empty="لم تبدأ أي لعبة بعد" share={false} />}
+          {u && <CategoryBoard u={u} />}
         </ChartCard>
       </div>
     </section>
@@ -267,8 +266,9 @@ export function DailyBars<D extends { day: string }>({ days, value, unit }: { da
             const v = value(d);
             return (
               <div key={d.day} className="group relative flex h-full flex-1 items-end justify-center" tabIndex={0} aria-label={`${fmtDay(d.day)}: ${v} ${unit}`}>
+                {v === max && v > 0 && <div className="absolute -top-4 text-[11px]">👑</div>}
                 <div
-                  className="w-full max-w-6 rounded-t bg-primary transition-opacity group-hover:opacity-80"
+                  className={cn('w-full max-w-6 rounded-t transition-opacity group-hover:opacity-80', v === max && v > 0 ? 'bg-amber-400' : 'bg-primary')}
                   style={{ height: v ? `max(${(v / max) * 100}%, 3px)` : 0 }}
                 />
                 <div className="pointer-events-none absolute bottom-full z-10 mb-1 hidden whitespace-nowrap rounded-md border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md group-hover:block group-focus:block" dir="rtl">
