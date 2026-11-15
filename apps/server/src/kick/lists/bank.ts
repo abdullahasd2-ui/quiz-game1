@@ -25,7 +25,7 @@ export const LIST_LEVELS: { id: ListLevel; name: string; icon: string }[] = [
 ];
 
 /** Lists that are long but that few people can name much from (lakes, volcanoes…): never «سهل». */
-const NICHE = /^(geo-cities-(cn|in|br|ru|mx|ca|au|ar|ir|pk|id|ly|sd|sy|iq|dz|jo|tn|lb|om|bh|kw|qa|jp)|ex-lakes|ex-volcanoes|ex-islands|geo-mountains|geo-rivers|ex-deserts|gm-co-|gm-all|is-mosques|is-imams|is-readers|ex-airlines|ex-watches|ex-famousArabs|ex-scientists)/;
+const NICHE = /^(geo-cities-(cn|in|br|ru|mx|ca|au|ar|ir|pk|id|ly|sd|sy|iq|dz|jo|tn|lb|om|bh|kw|qa|jp)|ex-lakes|ex-volcanoes|ex-islands|geo-mountains|geo-rivers|ex-deserts|gm-co-|gm-all|is-mosques|is-imams|is-readers|ex-airlines|ex-watches|ex-famousArabs|ex-scientists|ex-actors)/;
 /** Lists everyone can name a lot from: always «سهل» when long enough. */
 const EVERYDAY = /^(gn-(animals|fruits|vegetables|fruitveg|colors|jobs|foods|desserts|drinks|bodyParts|clothes|home|kitchen|boys|girls|sports|carBrands|apps|months)|geo-(countries|capitals|arab|cities-sa)|ex-(supermarket|school|emotions|shapes|weather)|fb-all|fb-pos-|fb-league-(es|en|sa)$|fb-club-(rma|bar|hil|nas)$|is-(names|pillars|prayers|hijriMonths|zikr)|pv-all|gn-surahs$|gn-prophets$)/;
 
@@ -126,6 +126,15 @@ function trustworthy(forms: string[]): string[] {
   })];
 }
 const wdItems = (name: string) => wd(name).map((r) => r.a);
+/** Squad players of the big clubs from Wikidata (wd/players.json): «اسم|English», nationality, position, club ids. */
+function wdPlayers(): [string, string, string, string][] {
+  try {
+    const rows = JSON.parse(readFileSync(join(WD_DIR, 'players.json'), 'utf8')) as { a: string; n: string; p: string; c: string }[];
+    return rows.map((r) => [r.a, r.n, r.p, r.c]);
+  } catch {
+    return [];
+  }
+}
 
 const CITY_LABELS: Record<string, string> = {
   cn: 'الصين', in: 'الهند', br: 'البرازيل', ru: 'روسيا', iq: 'العراق', dz: 'الجزائر', mx: 'المكسيك', ca: 'كندا', au: 'أستراليا', ar: 'الأرجنتين',
@@ -161,17 +170,23 @@ function augment() {
   ISLAMIC.mosques!.items.push(...wdItems('mosques'));
   EXTRA.lakes = { cat: 'geo', text: 'اذكر بحيرات', items: wdItems('lakes') };
   EXTRA.volcanoes = { cat: 'geo', text: 'اذكر براكين', items: wdItems('volcanoes') };
+  EXTRA.famousArabs!.items.push(...wdItems('poets'));
+  EXTRA.singers = { cat: 'general', text: 'اذكر مطربين ومطربات عرب', items: wdItems('singers') };
+  EXTRA.actors = { cat: 'general', text: 'اذكر ممثلين وممثلات عرب', items: wdItems('actors') };
   for (const r of [...wd('games_pub'), ...wd('games_dev')]) {
     const co = r.g ? PUBLISHER[r.g] : undefined;
     GAMES.push([r.a, co ?? '']);
   }
 }
 
+/** No anime and no Pokémon anywhere, also not as a game or a cartoon answer. */
+const NO_ANIME = /بوكيمون|بيكاتشو|pok[eé]mon|pikachu|أنمي|انمي|anime/i;
+
 export function buildBank(): ListQuestion[] {
   const qs: Omit<ListQuestion, 'level'>[] = [];
   augment();
   const add = (id: string, cat: ListCategory, text: string, answers: string[], min = 5, letter?: string) => {
-    const a = uniq(answers.filter(Boolean));
+    const a = uniq(answers.filter((x) => x && !NO_ANIME.test(x)));
     if (a.length >= min) qs.push({ id, cat, text, answers: a, ...(letter ? { letter } : {}) });
   };
   const byLetter = (id: string, cat: ListCategory, what: string, items: string[], min = 6) => {
@@ -216,7 +231,7 @@ export function buildBank(): ListQuestion[] {
   // ---------- Football ----------
   // Both player lists, same player merged by name (forms and clubs together); entries without clubs only add nothing.
   const byName = new Map<string, { name: string; nat: string; pos: string; clubs: string[] }>();
-  for (const [name, nat, pos, clubs] of [...PLAYERS, ...PLAYERS2.filter((x) => x[3].trim())]) {
+  for (const [name, nat, pos, clubs] of [...PLAYERS, ...PLAYERS2.filter((x) => x[3].trim()), ...wdPlayers()]) {
     const head = name.split('|')[0]!.trim();
     const cl = clubs.split(' ').filter((c) => c && CLUBS[c]);
     const had = byName.get(head);
@@ -270,7 +285,7 @@ export function buildBank(): ListQuestion[] {
   for (const [rk, [rl, nats]] of Object.entries(REGION))
     for (const [lg, ln] of Object.entries(LEAGUES))
       add(`fb-region-${rk}-${lg}`, 'football', `اذكر لاعبين ${rl} لعبوا في ${ln}`, P.filter((p) => nats.includes(p.nat) && p.clubs.some((c) => leagueOf(c) === lg)).map((p) => p.name), 6);
-  const arabNat = new Set(['sa', 'eg', 'ma', 'dz', 'tn']);
+  const arabNat = new Set(['sa', 'eg', 'ma', 'dz', 'tn', 'iq', 'qa', 'ae', 'kw', 'jo', 'sy', 'lb', 'om', 'bh', 'ly', 'sd', 'ps', 'ye']);
   add('fb-arab', 'football', 'اذكر لاعبين عرب', P.filter((p) => arabNat.has(p.nat)).map((p) => p.name));
   add('fb-african', 'football', 'اذكر لاعبين أفارقة', P.filter((p) => ['eg', 'ma', 'dz', 'tn', 'sn', 'ci', 'ng', 'cm', 'gh', 'ga', 'gn', 'ml', 'lr'].includes(p.nat)).map((p) => p.name));
   add('fb-asian', 'football', 'اذكر لاعبين آسيويين', P.filter((p) => ['sa', 'jp', 'kr', 'ir', 'au'].includes(p.nat)).map((p) => p.name), 5);
@@ -294,8 +309,9 @@ export function buildBank(): ListQuestion[] {
   add('gm-ps', 'games', 'اذكر ألعاب حصرية على بلايستيشن', G.filter((g) => g.tags.includes('ps')).map((g) => g.name));
   add('gm-xbox', 'games', 'اذكر ألعاب حصرية على إكس بوكس', G.filter((g) => g.tags.includes('xbox')).map((g) => g.name), 4);
   add('gm-mobile', 'games', 'اذكر ألعاب جوال مشهورة', ['ببجي|PUBG', 'فري فاير|Free Fire', 'كلاش أوف كلانس|Clash of Clans', 'كلاش رويال|Clash Royale', 'براول ستارز|Brawl Stars', 'صب واي سيرفرز|Subway Surfers', 'كاندي كراش|Candy Crush', 'أنغري بيردز|Angry Birds', 'بوكيمون غو|Pokemon Go', 'كول أوف ديوتي موبايل|COD Mobile', 'روبلوكس|Roblox', 'ماينكرافت|Minecraft', 'أمونغ أس|Among Us', 'ستومبل غايز|Stumble Guys', 'موبايل ليجندز|Mobile Legends', 'جينشين إمباكت|Genshin Impact', 'فورتنايت|Fortnite', 'إي فوتبول|eFootball|بيس', 'إي إيه إف سي موبايل|FC Mobile', 'تيمبل رن|Temple Run', 'فروت نينجا|Fruit Ninja', 'كاتشب', 'هاي داي|Hay Day', 'بوم بيتش|Boom Beach', 'لودو ستار|لودو|Ludo', 'كيرم|Carrom', 'جواكر|Jawaker', 'بلوت|Baloot', 'تريكس', 'أسفلت|Asphalt', 'هيل كلايمب|Hill Climb Racing', 'جيومتري داش|Geometry Dash', 'فلابي بيرد|Flappy Bird', 'شطرنج|Chess', 'ببجي نيو ستيت', 'وايلد ريفت|Wild Rift', 'هونكاي|Honkai', 'آرينا أوف فالور|Arena of Valor'].filter((x) => x.includes('|')), 6);
-  const SERIES: Record<string, string> = { mario: 'ماريو', zelda: 'زيلدا', pokemon: 'بوكيمون', cod: 'كول أوف ديوتي', gta: 'جي تي إي', ac: 'أساسنز كريد', re: 'ريزدنت إيفل', ff: 'فاينل فانتسي', gow: 'غود أوف وار', forza: 'فورزا', halo: 'هيلو' };
+  const SERIES: Record<string, string> = { mario: 'ماريو', zelda: 'زيلدا', cod: 'كول أوف ديوتي', gta: 'جي تي إي', ac: 'أساسنز كريد', re: 'ريزدنت إيفل', ff: 'فاينل فانتسي', gow: 'غود أوف وار', forza: 'فورزا', halo: 'هيلو' };
   for (const [k, n] of Object.entries(SERIES)) add(`gm-series-${k}`, 'games', `اذكر ألعاب من سلسلة ${n}`, G.filter((g) => g.tags.includes(k)).map((g) => g.name), 3);
+  delete GAME_CHARACTERS.pokemon; // no Pokémon
   for (const [k, v] of Object.entries(GAME_CHARACTERS)) add(`gm-chars-${k}`, 'games', `اذكر شخصيات من ${v.label}`, v.items);
   byLetter('gm-all', 'games', 'ألعاب فيديو', G.map((g) => g.name), 5);
 
