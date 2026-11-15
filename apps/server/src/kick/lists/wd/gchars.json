@@ -1,0 +1,707 @@
+[
+{
+"a": "ميكي ماوس|Mickey Mouse"
+},
+{
+"a": "بطوط|Donald Duck"
+},
+{
+"a": "ماريو|Mario"
+},
+{
+"a": "دارث فيدر|Darth Vader"
+},
+{
+"a": "ميني ماوس|Minnie Mouse"
+},
+{
+"a": "يودا|Yoda"
+},
+{
+"a": "الجوكر|The Joker"
+},
+{
+"a": "لوك سكاي ووكر|Luke Skywalker"
+},
+{
+"a": "القنفذ سونيك|Sonic the Hedgehog"
+},
+{
+"a": "بندق|Goofy"
+},
+{
+"a": "أوبي وان كينوبي|Obi-Wan Kenobi"
+},
+{
+"a": "الأميرة ليا|Princess Leia"
+},
+{
+"a": "تكس|Tux"
+},
+{
+"a": "كونت دراكولا|Count Dracula"
+},
+{
+"a": "ديدي بطوطة|Daisy Duck"
+},
+{
+"a": "المرأة القطة|Catwoman"
+},
+{
+"a": "ديدبول|Deadpool"
+},
+{
+"a": "دهب|Scrooge McDuck"
+},
+{
+"a": "هان سولو|Han Solo"
+},
+{
+"a": "بالباتين|Palpatine"
+},
+{
+"a": "لويجي|Luigi"
+},
+{
+"a": "سي ثري بي أو|C-3PO"
+},
+{
+"a": "سموغ|Smaug"
+},
+{
+"a": "بادمي أميدالا|Padmé Amidala"
+},
+{
+"a": "لارا كروفت|Lara Croft"
+},
+{
+"a": "تشوباكا|Chewbacca"
+},
+{
+"a": "الأميرة بيتش|Princess Peach"
+},
+{
+"a": "كوي غون جين|Qui-Gon Jinn"
+},
+{
+"a": "آر تو دي تو|R2-D2"
+},
+{
+"a": "ميس ويندو|Mace Windu"
+},
+{
+"a": "باوزر|Bowser"
+},
+{
+"a": "هارلي كوين|Harley Quinn"
+},
+{
+"a": "دونكي كونغ|Donkey Kong"
+},
+{
+"a": "روبرت لانغدون|Robert Langdon"
+},
+{
+"a": "ذو الوجهين|Two-Face"
+},
+{
+"a": "دارث مول|Darth Maul"
+},
+{
+"a": "غوردون فريمان|Gordon Freeman"
+},
+{
+"a": "كونت دوكو|Count Dooku"
+},
+{
+"a": "الضفدع كامل|Kermit the Frog"
+},
+{
+"a": "دكتور دوم|Doctor Doom"
+},
+{
+"a": "سليندر مان|Slender Man"
+},
+{
+"a": "بوبا فيت|Boba Fett"
+},
+{
+"a": "ريدلر|Riddler"
+},
+{
+"a": "نيكو بيليك|Niko Bellic"
+},
+{
+"a": "دكتور إغمان|Dr. Eggman"
+},
+{
+"a": "كارل جونسون|Carl Johnson"
+},
+{
+"a": "الجنرال غريفوس|General Grievous"
+},
+{
+"a": "آيفي السامة|Poison Ivy"
+},
+{
+"a": "كابتن مارفل|Captain Marvel"
+},
+{
+"a": "رأس الغول|Ra's al Ghul"
+},
+{
+"a": "بين|Bane"
+},
+{
+"a": "البطريق|The Penguin"
+},
+{
+"a": "لينك|Link"
+},
+{
+"a": "جيمس غوردون|Jim Gordon"
+},
+{
+"a": "لاندو كاليريسيان|Lando Calrissian"
+},
+{
+"a": "جابا ذا هات|Jabba the Hutt"
+},
+{
+"a": "جار جار بينكس|Jar Jar Binks"
+},
+{
+"a": "جيرالت من ريفيا|Geralt of Rivia"
+},
+{
+"a": "كنج بنج|Kingpin"
+},
+{
+"a": "مو سيزلاك|Moe Szyslak"
+},
+{
+"a": "سكوبي دو|Scooby-Doo"
+},
+{
+"a": "النضناض ناكلز|Knuckles the Echidna"
+},
+{
+"a": "نيد فلاندرز|Ned Flanders"
+},
+{
+"a": "تود|Toad"
+},
+{
+"a": "ألفريد بيني وورث|Alfred Pennyworth"
+},
+{
+"a": "كريبر|Creeper"
+},
+{
+"a": "الأميرة زيلدا|Princess Zelda"
+},
+{
+"a": "أبو ناهاسابيمبيتلون|Apu Nahasapeemapetilon"
+},
+{
+"a": "العميل 47|Agent 47"
+},
+{
+"a": "مستر فريز|Mr. Freeze"
+},
+{
+"a": "آيمي روز|Amy Rose"
+},
+{
+"a": "هلبوي|Hellboy"
+},
+{
+"a": "كريتوس|Kratos"
+},
+{
+"a": "ديدشوت|Deadshot"
+},
+{
+"a": "سكوربيون|Scorpion"
+},
+{
+"a": "تومي فيرسيتي|Tommy Vercetti"
+},
+{
+"a": "إتسيو أوديتوري|Ezio Auditore da Firenze"
+},
+{
+"a": "آدا ونغ|Ada Wong"
+},
+{
+"a": "ارثر مورغان|Arthur Morgan"
+},
+{
+"a": "سباون|Spawn"
+},
+{
+"a": "أوزوالد الأرنب المحظوظ|Oswald the Lucky Rabbit"
+},
+{
+"a": "كارنج|Carnage"
+},
+{
+"a": "شاغي روجرز|Shaggy Rogers"
+},
+{
+"a": "كراش بانديكوت|Crash Bandicoot"
+},
+{
+"a": "ديثستروك|Deathstroke"
+},
+{
+"a": "ساموس أران|Samus Aran"
+},
+{
+"a": "ماستر شيف|Master Chief"
+},
+{
+"a": "فلما دينكلي|Velma Dinkley"
+},
+{
+"a": "فريد جونز|Fred Jones"
+},
+{
+"a": "هال جوردان|Hal Jordan"
+},
+{
+"a": "ساب-زيرو|Sub-Zero"
+},
+{
+"a": "جي-مان|G-Man"
+},
+{
+"a": "كيلر كروك|Killer Croc"
+},
+{
+"a": "دافني بليك|Daphne Blake"
+},
+{
+"a": "شانغ تسونغ|Shang Tsung"
+},
+{
+"a": "الطائر بن لا أحد|Altaïr Ibn-La'Ahad"
+},
+{
+"a": "تريفور فيليبس|Trevor Philips"
+},
+{
+"a": "ريو|Ryu"
+},
+{
+"a": "أدميرال أكبر|Admiral Ackbar"
+},
+{
+"a": "ليو كانغ|Liu Kang"
+},
+{
+"a": "ستيف|Steve"
+},
+{
+"a": "ليوناردو|Leonardo"
+},
+{
+"a": "بلاك أدام|Black Adam"
+},
+{
+"a": "القائد سنوك|Supreme Leader Snoke"
+},
+{
+"a": "رايدن|Raiden"
+},
+{
+"a": "هاتر المجنون|Mad Hatter"
+},
+{
+"a": "أبوكاليبس|Apocalypse"
+},
+{
+"a": "غلادوس|GLaDOS"
+},
+{
+"a": "جون مارستون|John Marston"
+},
+{
+"a": "جوني كايج|Johnny Cage"
+},
+{
+"a": "تشن لي|Chun-Li"
+},
+{
+"a": "روزالينا|Rosalina"
+},
+{
+"a": "ماكس روكاتانسكي|Max Rockatansky"
+},
+{
+"a": "ألكس فانس|Alyx Vance"
+},
+{
+"a": "جين كازاما|Jin Kazama"
+},
+{
+"a": "كاساني تيتو|Kasane Teto"
+},
+{
+"a": "كانو|Kano"
+},
+{
+"a": "شاو كان|Shao Kahn"
+},
+{
+"a": "سانس"
+},
+{
+"a": "كابتن برايس|Captain Price"
+},
+{
+"a": "رفاييل|Raphael"
+},
+{
+"a": "ألبرت ويسكر|Albert Wesker"
+},
+{
+"a": "كيتانا|Kitana"
+},
+{
+"a": "كلاود سترايف|Cloud Strife"
+},
+{
+"a": "جورو|Goro"
+},
+{
+"a": "سورا|Sora"
+},
+{
+"a": "أكوما|Akuma"
+},
+{
+"a": "مايكل أنجلو|Michelangelo"
+},
+{
+"a": "دوناتيلو|Donatello"
+},
+{
+"a": "دكتور نيو كورتيكس|Doctor Neo Cortex"
+},
+{
+"a": "داميان واين|Damian Wayne"
+},
+{
+"a": "كلود|Claude"
+},
+{
+"a": "إيلي|Ellie"
+},
+{
+"a": "مان-بات|Man-Bat"
+},
+{
+"a": "ربتايل|Reptile"
+},
+{
+"a": "ايريث جينسبورو|Aerith Gainsborough"
+},
+{
+"a": "كن ماسترز|Ken Masters"
+},
+{
+"a": "نيغن|Negan"
+},
+{
+"a": "سونيا بليد|Sonya Blade"
+},
+{
+"a": "فيجا|Vega"
+},
+{
+"a": "هيهاتشي ميشيما|Heihachi Mishima"
+},
+{
+"a": "ديزموند مايلز|Desmond Miles"
+},
+{
+"a": "ميلينا|Mileena"
+},
+{
+"a": "السيدة ديميتريسكو|Alcina Dimitrescu"
+},
+{
+"a": "تاليا الغول|Talia al Ghul"
+},
+{
+"a": "ناثان دريك|Nathan Drake"
+},
+{
+"a": "كارماين فالكون|Carmine Falcone"
+},
+{
+"a": "فكتور زاش|Victor Zsasz"
+},
+{
+"a": "كونغ لاو|Kung Lao"
+},
+{
+"a": "دانتي|Dante"
+},
+{
+"a": "بيرامد هد|Pyramid Head"
+},
+{
+"a": "سام فيشر|Sam Fisher"
+},
+{
+"a": "كازويا ميشيما|Kazuya Mishima"
+},
+{
+"a": "فوكس ماكلاود|Fox McCloud"
+},
+{
+"a": "القناع الأسود|Black Mask"
+},
+{
+"a": "ساره كيريغان|Sarah Kerrigan"
+},
+{
+"a": "دالسيم|Dhalsim"
+},
+{
+"a": "آش وليمز|Ash Williams"
+},
+{
+"a": "جيد|Jade"
+},
+{
+"a": "إرماك|Ermac"
+},
+{
+"a": "إيثان وينترز|Ethan Winters"
+},
+{
+"a": "رايمان|Rayman"
+},
+{
+"a": "أماندا والر|Amanda Waller"
+},
+{
+"a": "لايتنينغ|Lightning"
+},
+{
+"a": "نمسيس|Nemesis"
+},
+{
+"a": "ميتل سونيك|Metal Sonic"
+},
+{
+"a": "سكتور|Sektor"
+},
+{
+"a": "غايل|Guile"
+},
+{
+"a": "ميغا مان|Mega Man"
+},
+{
+"a": "دوم جاي|Doomguy"
+},
+{
+"a": "ترايسر|Tracer"
+},
+{
+"a": "ميتا نايت|Meta Knight"
+},
+{
+"a": "جاكس|Jax"
+},
+{
+"a": "إيميلي روتشيفورت|Lili"
+},
+{
+"a": "جينكس|Jinx"
+},
+{
+"a": "نينا وليمز|Nina Williams"
+},
+{
+"a": "سموك|Smoke"
+},
+{
+"a": "كنشي|Kenshi"
+},
+{
+"a": "فايرفلاي|Firefly"
+},
+{
+"a": "سيري|Cirilla Fiona Elen Riannon"
+},
+{
+"a": "كامي|Cammy White"
+},
+{
+"a": "سليمان غروندي|Solomon Grundy"
+},
+{
+"a": "إيدي غوردو|Eddy Gordo"
+},
+{
+"a": "الخفاشة روج|Rouge the Bat"
+},
+{
+"a": "بلانكا|Blanka"
+},
+{
+"a": "بو-بو بير|Boo-Boo Bear"
+},
+{
+"a": "فورينا|Furina"
+},
+{
+"a": "المحقق بولوك|Harvey Bullock"
+},
+{
+"a": "أناركي|Anarky"
+},
+{
+"a": "جيم راينور|Jim Raynor"
+},
+{
+"a": "هامر هيد|Hammerhead"
+},
+{
+"a": "كورتانا|Cortana"
+},
+{
+"a": "بولين|Pauline"
+},
+{
+"a": "يوشيميتسو|Yoshimitsu"
+},
+{
+"a": "ينيفر من فنغربرغ|Yennefer of Vengerberg"
+},
+{
+"a": "ساغات|Sagat"
+},
+{
+"a": "باول فينيكس|Paul Phoenix"
+},
+{
+"a": "إيوري ياجامي|Iori Yagami"
+},
+{
+"a": "كريستي مونتيرو|Christie Monteiro"
+},
+{
+"a": "بيل تينر|Bill Tanner"
+},
+{
+"a": "لي تشاولان|Lee Chaolan"
+},
+{
+"a": "فالكو لومباردي|Falco Lombardi"
+},
+{
+"a": "إدموند هوندا|E. Honda"
+},
+{
+"a": "هو تاو|Hu Tao"
+},
+{
+"a": "كاسومي|Kasumi"
+},
+{
+"a": "نايت وولف|Nightwolf"
+},
+{
+"a": "زيرو|Zero"
+},
+{
+"a": "بيتر باركر|Peter Parker"
+},
+{
+"a": "أياني|Ayane"
+},
+{
+"a": "سترايكر|Kurtis Stryker"
+},
+{
+"a": "هوورانغ|Hwoarang"
+},
+{
+"a": "لينغ شاويو|Ling Xiaoyu"
+},
+{
+"a": "سيندل|Sindel"
+},
+{
+"a": "جراي فوكس|Gray Fox"
+},
+{
+"a": "آلان غرانت|Alan Grant"
+},
+{
+"a": "لارس ألكسندرسون|Lars Alexandersson"
+},
+{
+"a": "ألوكارد|Alucard"
+},
+{
+"a": "الدكتور أبو الأشرار|Heinz Doofenshmirtz"
+},
+{
+"a": "سبايرو|Spyro"
+},
+{
+"a": "إدوارد كينواي|Edward Kenway"
+},
+{
+"a": "القائد شيبرد|Commander Shepard"
+},
+{
+"a": "سكارليت|Skarlet"
+},
+{
+"a": "آشلي غراهام|Ashley Graham"
+},
+{
+"a": "كيسي كايج|Cassie Cage"
+},
+{
+"a": "هيدكراب|headcrab"
+},
+{
+"a": "كيو كوساناغي|Kyo Kusanagi"
+},
+{
+"a": "كابال|Kabal"
+},
+{
+"a": "فرجيل|Vergil"
+},
+{
+"a": "مارشال لاو|Marshall Law"
+},
+{
+"a": "تاكي|Taki"
+},
+{
+"a": "فاي|Vi"
+},
+{
+"a": "كينغ|King"
+},
+{
+"a": "أسوكا كازاما|Asuka Kazama"
+},
+{
+"a": "جون كازاما|Jun Kazama"
+},
+{
+"a": "شيفا ألمور|Sheva Alomar"
+}
+]

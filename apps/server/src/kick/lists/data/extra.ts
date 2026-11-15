@@ -1,5 +1,5 @@
 // More lists, one question each.
-export const EXTRA: Record<string, { cat: 'general' | 'games' | 'geo' | 'football'; text: string; items: string[] }> = {
+export const EXTRA: Record<string, { cat: 'general' | 'games' | 'geo' | 'football' | 'islamic'; text: string; items: string[] }> = {
   // ---- games ----
   valorant: { cat: 'games', text: 'اذكر شخصيات (عملاء) فالورانت', items: ['جيت|Jett', 'فينيكس|Phoenix', 'ريز|Raze', 'ريينا|Reyna', 'يورو|Yoru', 'نيون|Neon', 'إيسو|Iso', 'سيج|Sage', 'سايفر|Cypher', 'كيلجوي|Killjoy', 'تشامبر|Chamber',
     'ديدلوك|Deadlock', 'فايز|Vyse', 'بريمستون|Brimstone', 'فايبر|Viper', 'أومين|Omen', 'أسترا|Astra', 'هاربر|Harbor', 'كلوف|Clove', 'سوفا|Sova', 'بريتش|Breach', 'سكاي|Skye', 'كاي أو|KAY/O', 'فيد|Fade', 'غيكو|Gekko', 'تيجو|Tejo', 'وايلاي|Waylay'] },

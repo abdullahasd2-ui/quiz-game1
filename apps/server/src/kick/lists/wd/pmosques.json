@@ -1,0 +1,7634 @@
+[
+{
+"a": "آيا صوفيا|Hagia Sophia",
+"g": "tr"
+},
+{
+"a": "المسجد الحرام|Al-Masjid Al-Haram",
+"g": "sa"
+},
+{
+"a": "المصلى القبلي|Al-Aqsa Mosque",
+"g": "ps"
+},
+{
+"a": "جامع السلطان أحمد|Sultan Ahmed Mosque",
+"g": "tr"
+},
+{
+"a": "قبة الصخرة|Dome of the Rock",
+"g": "ps"
+},
+{
+"a": "جامع بني أمية الكبير|Umayyad Mosque",
+"g": "sy"
+},
+{
+"a": "جبل المعبد|Temple Mount",
+"g": "ps"
+},
+{
+"a": "مسجد سليمان القانوني|Süleymaniye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بادشاهي|Badshahi Mosque",
+"g": "pk"
+},
+{
+"a": "جامع السليمية|Selimiye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قباء|Quba Mosque",
+"g": "sa"
+},
+{
+"a": "المسجد الجامع بدلهي|Jama Masjid, Delhi",
+"g": "in"
+},
+{
+"a": "جامع الشيخ زايد|Sheikh Zayed Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الحسن الثاني|Hassan II Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الملك فيصل|Faisal Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد أصفهان الجامع|Jameh Mosque of Isfahan",
+"g": "ir"
+},
+{
+"a": "العتبة العلوية المقدسة|Imam Ali Mosque",
+"g": "iq"
+},
+{
+"a": "جهار منار|Charminar",
+"g": "in"
+},
+{
+"a": "مسجد الشاه|Shah Mosque",
+"g": "ir"
+},
+{
+"a": "جامع حلب الكبير|Great Mosque of Aleppo",
+"g": "sy"
+},
+{
+"a": "مسجد ابن طولون|Mosque of Ibn Tulun",
+"g": "eg"
+},
+{
+"a": "جامع عقبة بن نافع|Great Mosque of Kairouan",
+"g": "tn"
+},
+{
+"a": "كنيسة خورا|Chora Church",
+"g": "tr"
+},
+{
+"a": "مسجد نصير الملك|Nasir-ol-Molk Mosque",
+"g": "ir"
+},
+{
+"a": "المسجد الأزرق|Blue Mosque",
+"g": "af"
+},
+{
+"a": "المسجد الجامع في سامراء|Great Mosque of Samarra",
+"g": "iq"
+},
+{
+"a": "مسجد بيبي خانم|Bibi-Khanym Mosque",
+"g": "uz"
+},
+{
+"a": "جامع الكتبية|Koutoubia Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الاستقلال|Istiqlal Mosque",
+"g": "id"
+},
+{
+"a": "الجامع الأزهر|al-Azhar Mosque",
+"g": "eg"
+},
+{
+"a": "يني جامع|New Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد الكبير ومشفى ديوريجي|Divriği Great Mosque and Hospital",
+"g": "tr"
+},
+{
+"a": "جامع خوجه تبه|Kocatepe Mosque",
+"g": "tr"
+},
+{
+"a": "العتبة العسكرية المقدسة|Al-Askari Shrine",
+"g": "iq"
+},
+{
+"a": "جامع أورطة كوي|Ortaköy Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الفاتح|Fatih Istanbul Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد القبلتين|Masjid al-Qiblatain",
+"g": "sa"
+},
+{
+"a": "مسجد الشيخ لطف الله|Sheikh Lotfollah Mosque",
+"g": "ir"
+},
+{
+"a": "جامع عمرو بن العاص|Mosque of Amr ibn al-As",
+"g": "eg"
+},
+{
+"a": "العتبة الحسينية المقدسة|Imam Husayn Mausoleum",
+"g": "iq"
+},
+{
+"a": "جامع آيا صوفيا الصغير|Little Hagia Sophia",
+"g": "tr"
+},
+{
+"a": "مسجد وزير خان|Wazir Khan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد نغارا|National Mosque of Malaysia",
+"g": "my"
+},
+{
+"a": "مسجد محمد علي|Muhammad Ali Mosque",
+"g": "eg"
+},
+{
+"a": "جامع السلطان قابوس الأكبر|Sultan Qaboos Grand Mosque",
+"g": "om"
+},
+{
+"a": "مسجد كوهرشاد|Goharshad Mosque",
+"g": "ir"
+},
+{
+"a": "الجامع الكبير النوري|Great Mosque of al-Nuri",
+"g": "iq"
+},
+{
+"a": "مسجد كبود|Blue Mosque",
+"g": "ir"
+},
+{
+"a": "جامع صقللي محمد باشا|Sokollu Mehmed Pasha I Mosque",
+"g": "tr"
+},
+{
+"a": "جامع رستم باشا|Rüstem Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد الجامع كوالالمبور|Sultan Abdul Samad Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بوترا|Putra Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الجمعة|Friday Mosque of Herat",
+"g": "af"
+},
+{
+"a": "العتبة الكاظمية المقدسة|Al-Kadhimiya Mosque",
+"g": "iq"
+},
+{
+"a": "المسجد العمري الكبير، غزة|Great Mosque of Gaza",
+"g": "ps"
+},
+{
+"a": "مسجد أولو جامع|Bursa Grand Mosque",
+"g": "tr"
+},
+{
+"a": "جامع بايزيد الثاني|Bayezid II Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عمر|Mosque of Omar",
+"g": "ps"
+},
+{
+"a": "جامع الفاتحية|Pammakaristos Church",
+"g": "tr"
+},
+{
+"a": "جامع مهرماه سلطان|Mihrimah Edirnekapı Mosque",
+"g": "tr"
+},
+{
+"a": "جامع زيرك كليسة|Zeyrek Mosque",
+"g": "tr"
+},
+{
+"a": "جامع لاله لي|Laleli Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد الأحمر|Lal Masjid",
+"g": "pk"
+},
+{
+"a": "جامع كتشاوة|Ketchaoua Mosque",
+"g": "dz"
+},
+{
+"a": "جامع أحمد الفاتح|Al Fateh Grand Mosque",
+"g": "bh"
+},
+{
+"a": "جامع نور عثمانية|Nuruosmaniye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ومدرسة السلطان الناصر حسن|Mosque-Madrassa of Sultan Hassan",
+"g": "eg"
+},
+{
+"a": "مسجد الملك عبد الله الأول|King Abdullah I Mosque",
+"g": "jo"
+},
+{
+"a": "جامع طولمة باغجة|Dolmabahçe Mosque",
+"g": "tr"
+},
+{
+"a": "كنيسة آيا صوفيا|Hagia Sophia, Trabzon",
+"g": "tr"
+},
+{
+"a": "جامع أيوب سلطان|Eyüp Sultan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أبو العباس المرسي|El-Mursi Abul Abbas Mosque",
+"g": "eg"
+},
+{
+"a": "الجامع الكبير لمدينة الجزائر|Djamaa El Kebir of Algiers",
+"g": "dz"
+},
+{
+"a": "جامع جامليجة|Çamlıca Mosque",
+"g": "tr"
+},
+{
+"a": "جامع الجزائر|Djamaa El Djazaïr",
+"g": "dz"
+},
+{
+"a": "جامع الإمام الأعظم|Abu Hanifa Mosque",
+"g": "iq"
+},
+{
+"a": "بيت القرآن|Beit Al Quran",
+"g": "bh"
+},
+{
+"a": "كنيسة الصعود|Chapel of the Ascension",
+"g": "ps"
+},
+{
+"a": "جامع صابانجي المركزي|Sabancı Merkez Camii",
+"g": "tr"
+},
+{
+"a": "مسجد جمكران|Jamkaran Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد السلطان صلاح الدين عبد العزيز|Sultan Salahuddin Abdul Aziz Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الحاكم بأمر الله|Al-Hakim Mosque",
+"g": "eg"
+},
+{
+"a": "جامع بودروم|Bodrum Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيت الرحمن الكبير|Baiturrahman Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الإمام الحسين بالقاهرة|Al-Hussein Mosque",
+"g": "eg"
+},
+{
+"a": "جامع العرب|Arab Istanbul Mosque",
+"g": "tr"
+},
+{
+"a": "جامع فناري عيسى|Fenari Isa Mosque",
+"g": "tr"
+},
+{
+"a": "الجامع الأخضر|Bursa Green Mosque",
+"g": "tr"
+},
+{
+"a": "جامع امارة العتيق|Eski Imaret Mosque",
+"g": "tr"
+},
+{
+"a": "الجامع القديم|Old Mosque",
+"g": "tr"
+},
+{
+"a": "جامع الشرفات الثلاث|Sherefeli Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شاه جهان|Shah Jahan Mosque",
+"g": "pk"
+},
+{
+"a": "جامع يلدز|Yıldız Hamidi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سليم الأول|Yavuz Selim Mosque",
+"g": "tr"
+},
+{
+"a": "جامع يني والدة|Yeni Üsküdar Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شيرامان جمعة|Cheraman Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد الزيتونة|Al-Zaytunah Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد الكوفة|Great Mosque of Kufa",
+"g": "iq"
+},
+{
+"a": "جامع محمد الأمين|Mohammad Al-Amin Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد علاء الدين|Alâeddin Mosque",
+"g": "tr"
+},
+{
+"a": "جامع قلندرخانه|Kalenderhane Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد جول|Gül Mosque",
+"g": "tr"
+},
+{
+"a": "جامع سنان باشا|Sinan Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "جامع السلطانة الأم برتونهال|Pertevniyal Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد موتي بالقلعة الحمراء|Moti Masjid, Delhi",
+"g": "in"
+},
+{
+"a": "مسجد الرفاعي|Al-Rifa'i Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد إبراهيم أغا مستحفظان|Aqsunqur Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد حيرامي أحمد باشا|Hirami Ahmed Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد يفلي منارة|Antalya Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد خوجة مصطفى باشا|Koça Mustafa Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد الكبير|Great Mosque of Diyarbakır",
+"g": "tr"
+},
+{
+"a": "جامع يزد|Jameh Mosque of Yazd",
+"g": "ir"
+},
+{
+"a": "تاج المساجد|Taj-ul-Masajid",
+"g": "in"
+},
+{
+"a": "المسجد الأخضر|Green Mosque",
+"g": "af"
+},
+{
+"a": "مسجد عبد الله بن سلام|Abdallah Ibn Salam Mosque",
+"g": "dz"
+},
+{
+"a": "العتبة العباسية|Al Abbas Mosque",
+"g": "iq"
+},
+{
+"a": "مقام السيدة زينب في الشام|Sayyidah Zaynab Mosque",
+"g": "sy"
+},
+{
+"a": "الجامع الكبير|Great Mosque of Sana'a",
+"g": "ye"
+},
+{
+"a": "كاتدرائية أني|Cathedral of Ani",
+"g": "tr"
+},
+{
+"a": "جامع قلج علي باشا|Kılıç Ali Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الوكيل|Vakil Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا بزرك|Agha Bozorg Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد مكة|Mecca Masjid",
+"g": "in"
+},
+{
+"a": "مسجد بل خشتي|Pul-e Khishti Mosque",
+"g": "af"
+},
+{
+"a": "مسجد الحاج بيادا|Haji Piyada Mosque",
+"g": "af"
+},
+{
+"a": "المسجد الأعظم بسلا|The Great Mosque of Salé",
+"g": "ma"
+},
+{
+"a": "مسجد النبي هابيل|Nabi Habeel Mosque",
+"g": "sy"
+},
+{
+"a": "جامع خالد بن الوليد|Khalid ibn al-Walid Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد زينب سلطان|Zeynep Sultan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سانكاكتار هايريتين|Sancaktar Hayrettin Mosque",
+"g": "tr"
+},
+{
+"a": "جامع الشاكرين|Şakirin Mosque",
+"g": "tr"
+},
+{
+"a": "جامع زال محمود باشا|Zal Mahmud Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "أياصوفيا إزنيق|Hagia Sophia, Iznik",
+"g": "tr"
+},
+{
+"a": "الجامع الكبير|Grand Jamia Mosque, Lahore",
+"g": "pk"
+},
+{
+"a": "مسجد دماك الكبير|Demak Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد البلوري|Crystal Mosque",
+"g": "my"
+},
+{
+"a": "مسجد المنطقة الفدرالية|Federal Territory Mosque",
+"g": "my"
+},
+{
+"a": "مسجد عبد الرحمن|Abdul Rahman Mosque",
+"g": "af"
+},
+{
+"a": "مسجد ومدرسة الناصر قلاوون|Al-Nasir Muhammad Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الأمير عبد القادر|Emir Abdelkader Mosque",
+"g": "dz"
+},
+{
+"a": "المسجد الكبير|Grand Mosque",
+"g": "kw"
+},
+{
+"a": "جامع قرجي|Gurgi Mosque",
+"g": "ly"
+},
+{
+"a": "جامع النصرتية|Nusretiye Mosque",
+"g": "tr"
+},
+{
+"a": "جامع أمير سلطان|Emir Sultan Mosque",
+"g": "tr"
+},
+{
+"a": "جامع عتيق علي باشا|Gazi Atik Ali Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عيسي بك|İsa Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عتيق مصطفى باشا|Atik Mustafa Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد زاهر|Zahir Mosque",
+"g": "my"
+},
+{
+"a": "مسجد باب البرادعيين|Bab El-Baradeiyin Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد حمودة باشا|Hammouda Pacha Mosque",
+"g": "tn"
+},
+{
+"a": "كاتدرائية طرابلس|Tripoli Cathedral",
+"g": "ly"
+},
+{
+"a": "جامع أصلان خانه|Aslanhane Mosque",
+"g": "tr"
+},
+{
+"a": "جامع فيروز آغا|Firuz Ağa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أدينا|Adina Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الجامع أغرة|Jama Masjid",
+"g": "in"
+},
+{
+"a": "مسجد سيدي سيد|Sidi Saiyyed Mosque",
+"g": "in"
+},
+{
+"a": "مسجد محبت خان|Mohabbat Khan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد شاه دو شامشيرا|Shah-Do Shamshira Mosque",
+"g": "af"
+},
+{
+"a": "مسجد الجن|Mosque of the Jinn",
+"g": "sa"
+},
+{
+"a": "مسجد أبي الحجاج الأقصري|Abu Haggag Mosque",
+"g": "eg"
+},
+{
+"a": "المسجد الأعظم بتازة|The Great Mosque of Taza",
+"g": "ma"
+},
+{
+"a": "مسجد حسن الباشا|Hassan Pasha Mosque",
+"g": "dz"
+},
+{
+"a": "المسجد الكبير|Great Mosque of Tlemcen",
+"g": "dz"
+},
+{
+"a": "مسجد ابن فارس|Ben Farès Mosque",
+"g": "dz"
+},
+{
+"a": "الجامع الكبير بسوسة|Great Mosque of Sousse",
+"g": "tn"
+},
+{
+"a": "مقام رقية بنت الحسين|Sayyidah Ruqayya Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الصالح|Al Saleh Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد إلياس بك|İlyas Bey Mosque",
+"g": "tr"
+},
+{
+"a": "جامع شيشلي|Şişli Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد حاجي بيرام|Hacı Bayram Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد تقسيم|Taksim Mosque",
+"g": "tr"
+},
+{
+"a": "جامع شمسي باشا|Şemsi Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد غيانفابي|Gyanvapi Mosque",
+"g": "in"
+},
+{
+"a": "مسجد فاتحبوري|Fatehpuri Masjid",
+"g": "in"
+},
+{
+"a": "مسجد موتي|Moti Masjid",
+"g": "pk"
+},
+{
+"a": "مسجد طوبى|Masjid e Tooba",
+"g": "pk"
+},
+{
+"a": "مسجد جاوة الوسطى الكبير|Great Mosque of Central Java",
+"g": "id"
+},
+{
+"a": "مسجد كوتا كينابالو|Kota Kinabalu City Mosque",
+"g": "my"
+},
+{
+"a": "مسجد كابيتان كيلينغ|Kapitan Keling Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مغوكي عطاري|Magok-i-Attari Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد عيد غا|Id Gah Mosque",
+"g": "af"
+},
+{
+"a": "مسجد ابن يوسف|Ibn Yusuf Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بتينمل|Great Mosque of Tinmal",
+"g": "ma"
+},
+{
+"a": "المسجد الجديد|Djamaa al-Djedid",
+"g": "dz"
+},
+{
+"a": "جامع الإمام محمد بن عبد الوهاب|Imam Muhammad ibn Abd al-Wahhab Mosque",
+"g": "qa"
+},
+{
+"a": "مسجد جميرا|Jumeirah Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد دبي الكبير|Grand Mosque",
+"g": "ae"
+},
+{
+"a": "الجامع الصلاحي الكبير|Great Mosque of Nablus",
+"g": "ps"
+},
+{
+"a": "مسجد الوالدة العتيق|Atik Valide Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أشرف أوغلي|Eşrefoğlu Mosque",
+"g": "tr"
+},
+{
+"a": "جامع كفوي|Kefeli Mosque",
+"g": "tr"
+},
+{
+"a": "جامع قزوين|Jameh Mosque of Qazvin",
+"g": "ir"
+},
+{
+"a": "مسجد منارة قدوس|Menara Kudus Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بالا حوض|Bolo Haouz Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد الملك سعود|King Saud Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الأقمر|Al-Aqmar Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد السلطان المؤيد شيخ|Sultan Al-Muayyad Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الفتاح العليم|Al-Fattah al-Alim mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة السلطان الناصر محمد|Madrassa of Al-Nasir Muhammad",
+"g": "eg"
+},
+{
+"a": "مسجد المنصور|Al-Mansour Mosque",
+"g": "ma"
+},
+{
+"a": "جامع الأندلس|Andalusian Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد مكناس الكبير|Meknes Grand Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد سيدي عقبة|Sidi Okba Mosque",
+"g": "dz"
+},
+{
+"a": "جامع أبو دلف|Abu Delf Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الملك الحسين|King Hussain Mosque",
+"g": "jo"
+},
+{
+"a": "جامع النوري|Great Mosque of al-Nuri",
+"g": "sy"
+},
+{
+"a": "مسجد الخميس|Khamis Mosque",
+"g": "bh"
+},
+{
+"a": "المصلى المرواني|Marwani Mosque",
+"g": "ps"
+},
+{
+"a": "جامع دفتردار|Defterdar Mosque",
+"g": "tr"
+},
+{
+"a": "جامع تشويقية|Teşviki Mosque",
+"g": "tr"
+},
+{
+"a": "جامع المجيدية الصغير|Küçük Mecidi Mosque",
+"g": "tr"
+},
+{
+"a": "جامع بروجرد|Jameh Mosque of Borujerd",
+"g": "ir"
+},
+{
+"a": "مسجد شاه|Shah Mosque",
+"g": "ir"
+},
+{
+"a": "تاريخانية|Tarikhaneh",
+"g": "ir"
+},
+{
+"a": "جامع تبريز|Jameh Mosque of Tabriz",
+"g": "ir"
+},
+{
+"a": "مسجد مريم زماني بيكم|Mosque of Mariyam Zamani Begum",
+"g": "pk"
+},
+{
+"a": "مسجد الشاكرين|As Syakirin Mosque",
+"g": "my"
+},
+{
+"a": "مسجد العبودية|Ubudiah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مضائق ملقا|Malacca Straits Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بينانج|Penang State Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مدريد المركزي|Madrid Central Mosque",
+"g": "es"
+},
+{
+"a": "مسجد كالان|Kalan Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد ضرار|Demolition of Masjid al-Dirar",
+"g": "sa"
+},
+{
+"a": "مسجد الجمعة|Al Jum'ah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد البيعة|Bay'ah Mosque",
+"g": "sa"
+},
+{
+"a": "مجموعة السلطان الظاهر برقوق|Mosque-Madrassa of Sultan Barquq",
+"g": "eg"
+},
+{
+"a": "مسجد علي بتشين|Ali Bitchin Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد براني|El Barani Mosque",
+"g": "dz"
+},
+{
+"a": "الجامع الكبير في المهدية|Great Mosque of Mahdia",
+"g": "tn"
+},
+{
+"a": "جامع سيدي محرز|Sidi Mahrez Mosque",
+"g": "tn"
+},
+{
+"a": "جامع أم القرى|Umm al-Qura Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الخلفاء|AlKhulafa Mosque",
+"g": "iq"
+},
+{
+"a": "جامع النبي يونس|Mosque of the Prophet Yunus",
+"g": "iq"
+},
+{
+"a": "جامع السنانية|Sinan Pasha Mosque",
+"g": "sy"
+},
+{
+"a": "الجامع الأموي|Great Mosque of Hama",
+"g": "sy"
+},
+{
+"a": "جامع القرمانلي|Caramanli mosque",
+"g": "ly"
+},
+{
+"a": "مسجد المحضار|Al-Muhdhar Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد الجمعة الجديد|Yeni Cuma Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيبيك|Bebek Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بورمالي|Burmalı Mosque",
+"g": "tr"
+},
+{
+"a": "الجامع الكبير في أضنة|Adana Mosque",
+"g": "tr"
+},
+{
+"a": "جوك ميدرس|Gök Medrese",
+"g": "tr"
+},
+{
+"a": "جامع عتيق|Atiq Jameh Mosque of Shiraz",
+"g": "ir"
+},
+{
+"a": "جامع ورامين|Jameh Mosque of Varamin",
+"g": "ir"
+},
+{
+"a": "مسجد الجامع|Jama Masjid, Champaner",
+"g": "in"
+},
+{
+"a": "مسجد سيدي بشير|Sidi Bashir Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الأندلسي|Spanish Mosque",
+"g": "in"
+},
+{
+"a": "مسجد عطالله بجنبور|Atala Masjid, Jaunpur",
+"g": "in"
+},
+{
+"a": "مسجد السلطان تيبو|Tipu Sultan Mosque",
+"g": "in"
+},
+{
+"a": "مسجد علمجير|Alamgir Mosque",
+"g": "in"
+},
+{
+"a": "مسجد سنهري لاهور|Suneri Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد بنغكودو|Bingkudu Mosque",
+"g": "id"
+},
+{
+"a": "مسجد غرب سومطرة الكبير|Grand Mosque of West Sumatra",
+"g": "id"
+},
+{
+"a": "مسجد يوجياكرتا الكبير|Kauman Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كامبونغ لاوت|Kampung Laut Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان أبو بكر|Sultan Abu Bakar Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان أحمد شاه|Sultan Ahmad Shah State Mosque",
+"g": "my"
+},
+{
+"a": "مسجد توانكو ميزان زين العابدين|Tuanku Mizan Zainal Abidin Mosque",
+"g": "my"
+},
+{
+"a": "مسجد البشارات|Basharat Mosque",
+"g": "es"
+},
+{
+"a": "مسجد بالاند|Baland Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد حضرة الخضر|Hazrat-Hyzr Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد آق|Ak Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد بخارى|Namazgoh Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد التنعيم|Masjid al-Taneem",
+"g": "sa"
+},
+{
+"a": "مسجد جواثا|Jawatha Mosque",
+"g": "sa"
+},
+{
+"a": "ذا الحليفة|Masjid-u-Shajarah",
+"g": "sa"
+},
+{
+"a": "مسجد العنبرية|Amberiye Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الإجابة|Al-Ijabah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد سليمان باشا الخادم|Sulayman Pasha Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الفتح|Al-Fath Mosque",
+"g": "eg"
+},
+{
+"a": "مدرسة السلطان الأشرف برسباى|Al-Ashraf Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد اللؤلؤة|Lulua Mosque",
+"g": "eg"
+},
+{
+"a": "المسجد الكبير 1 نوفمبر 1954|1st November of 1954 Great Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد ابن خيرون|Three Doors Mosque",
+"g": "tn"
+},
+{
+"a": "الجامع الكبير بالمنستير|Great Mosque of Monastir",
+"g": "tn"
+},
+{
+"a": "جامع بورقيبة|Hanafi Mosque of Bourguiba",
+"g": "tn"
+},
+{
+"a": "الفنار، المركز الثقافي الإسلامي القطري|Abdulla Bin Zaid Al Mahmoud Islamic Cultural Center",
+"g": "qa"
+},
+{
+"a": "المسجد العمري|Al-Omari Mosque",
+"g": "sy"
+},
+{
+"a": "المسجد العمري الكبير|Al-Omari Grand Mosque",
+"g": "lb"
+},
+{
+"a": "جامع النصر|An-Nasr Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد البيرة الكبير|Jamal Abdel Nasser Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد السيد هاشم|Sayed al-Hashim Mosque",
+"g": "ps"
+},
+{
+"a": "جامع الخضراء|Al-Khadra Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الشمعة|Al-Shamah Mosque",
+"g": "ps"
+},
+{
+"a": "جامع الجند|Jennad Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد منوشهر|Menüçehr Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد تيكيلي محمد باشا|Tekeli Mehmet Paşa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مالتبة|Maltepe Mosque",
+"g": "tr"
+},
+{
+"a": "المتحف العسكري|Istanbul Military Museum",
+"g": "tr"
+},
+{
+"a": "جامع أيازما|Ayazma Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد النبوي|Al-Nabi Mosque",
+"g": "ir"
+},
+{
+"a": "جامع زنجان|Jameh Mosque of Zanjan",
+"g": "ir"
+},
+{
+"a": "مدرسة تشهارباغ|Chaharbagh Madrasa",
+"g": "ir"
+},
+{
+"a": "أدهاي دين كا جهونبرا|Adhai Din Ka Jhonpra",
+"g": "in"
+},
+{
+"a": "مسجد بانباري|Panbari Mosque",
+"g": "in"
+},
+{
+"a": "المسجد اللؤلؤي|Moti Masjid",
+"g": "in"
+},
+{
+"a": "مسجد ديان المهري|Dian Al-Mahri Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ميدان الكبير|Great Mosque of Medan",
+"g": "id"
+},
+{
+"a": "مسجد الجبار الكبير|Al-Jabbar Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كامبونغ هولو|Kampung Hulu Mosque",
+"g": "my"
+},
+{
+"a": "مسجد صباح|Sabah State Mosque",
+"g": "my"
+},
+{
+"a": "مسجد عابدين|Abidin Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الجمعة|Dzhuma Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد أودينا|Odina Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد الفسح|Fas'h mosque",
+"g": "sa"
+},
+{
+"a": "مجموعة السلطان الأشرف قايتباي|Sultan Qaytbay Complex",
+"g": "eg"
+},
+{
+"a": "جامع السيدة نفيسة|Al-Sayeda Nafeesah Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد السيدة زينب في القاهرة|Al-Sayeda Zainab Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد أصلم السلحدار|Mosque of Aslam al-Silahdar",
+"g": "eg"
+},
+{
+"a": "المسجد الأعظم بطنجة|The Great Mosque of Tangier",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بشفشاون|The Great Mosque of Chefchaouen",
+"g": "ma"
+},
+{
+"a": "مسجد أهل فاس|Ahl Fez Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد للا عبلة|Lalla Abla Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد سيدي بلحسن|Sidi Bel Hasan Mosque",
+"g": "dz"
+},
+{
+"a": "جامع باب الجزيرة|Bab Jazira Mosque",
+"g": "tn"
+},
+{
+"a": "الجامع الجديد|El Jedid Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد لاز|Mosque of Laz",
+"g": "tn"
+},
+{
+"a": "جامع النبي جرجيس|Saint George Mosque",
+"g": "iq"
+},
+{
+"a": "المسجد الحسيني|Al Husseini Mosque",
+"g": "jo"
+},
+{
+"a": "جامع العادلية|Al-Adiliyah Mosque",
+"g": "sy"
+},
+{
+"a": "جامع درويش باشا|Darwish Pasha Mosque",
+"g": "sy"
+},
+{
+"a": "جامع البهرمية|Bahramiyah Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد أويس القرني|Uwais al-Qarni Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد الأمير فخر الدين|Fakhredine Mosque",
+"g": "lb"
+},
+{
+"a": "جامع درغوت باشا|Sidi Darghut Mosque",
+"g": "ly"
+},
+{
+"a": "مسجد البراق|Al-Buraq mosque",
+"g": "ps"
+},
+{
+"a": "مسجد جنين الكبير|Fatima Khatun Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد سيدنا عمر|Sidna Omar mosque",
+"g": "ps"
+},
+{
+"a": "مسجد عارف آغا|Arif Agha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيلربي|Beylerbeyi mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قوناق|Konak Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أميرغان|Emirgan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد السليمية|Selim Konya Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الشيخ مطر|Şeyh Muhtar Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد التحرير|Liberation mosque",
+"g": "tr"
+},
+{
+"a": "مسجد روم محمد باشا|Rum Mehmed Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "الجامع الكبير في طرسوس|Grand Mosque of Tarsus",
+"g": "tr"
+},
+{
+"a": "مسجد إبراهيم باشا الخادم|Ese Kapi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مناستير|Manastır Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد حصار|Hisar Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أغا نور|Agha Nur Mosque",
+"g": "ir"
+},
+{
+"a": "الجمعة مسجد|Jome mosque",
+"g": "ir"
+},
+{
+"a": "المسجد السلطاني|Soltani Mosque",
+"g": "ir"
+},
+{
+"a": "جامع مكي|Jameh Mosque of Makki",
+"g": "ir"
+},
+{
+"a": "الجامع الكبير كاشمر|Jameh Mosque of Kashmar",
+"g": "ir"
+},
+{
+"a": "بيكمبور المسجد الكبير، دينديقل|Begumpur Mosque, Dindigul",
+"g": "in"
+},
+{
+"a": "المسجد الجامع بيجابور|Jama Masjid, Bijapur",
+"g": "in"
+},
+{
+"a": "المسجد الجامع جنبور|Jama Masjid, Jaunpur",
+"g": "in"
+},
+{
+"a": "مسجد لال دلهي|Lal Masjid, Delhi",
+"g": "in"
+},
+{
+"a": "مسجد ناخودا|Nakhoda Masjid",
+"g": "in"
+},
+{
+"a": "مسجد أكبرآبادي|Akbarabadi Mosque",
+"g": "in"
+},
+{
+"a": "مسجد الجامعة الكبير في كراتشي|Grand Jamia Mosque, Karachi",
+"g": "pk"
+},
+{
+"a": "مسجد كايو جاو|Tuo Kayu Jao Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بنتن الكبير|Great Mosque of Banten",
+"g": "id"
+},
+{
+"a": "مسجد التقوى|At-Taqwa Mosque, Cirebon",
+"g": "id"
+},
+{
+"a": "مسجد السلطان سوريان شاه|Sultan Suriansyah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد نور الايمان|Nurul Iman Mosque, Padang",
+"g": "id"
+},
+{
+"a": "مسجد راو راو|Rao Rao Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الوسطى منقونيغاران|Masjid Wustho Mangkunegaran",
+"g": "id"
+},
+{
+"a": "المسجد الأكبر|Al-Akbar Mosque",
+"g": "id"
+},
+{
+"a": "مسجد السلطان عبد الصمد|Sultan Abdul Samad Mosque",
+"g": "my"
+},
+{
+"a": "المسجد العظيم|Al Azim Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان سليمان|Sultan Sulaiman Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطانة زهرة|Tengku Tengah Zaharah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد علاء الدين|Alâeddin Jugra Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان إدريس شاه|Sultan Idris Shah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد جوبلي بيراك السلطان إسماعيل بيترا|Sultan Ismail Petra Mosque",
+"g": "my"
+},
+{
+"a": "مسجد ترانغيره|Tranquerah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد نكري سمبيلن|Negeri Sembilan Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الملك عبد العزيز|King Abdelaziz Mosque",
+"g": "es"
+},
+{
+"a": "مسجد الأندلس|Al-Andalus Mosque",
+"g": "es"
+},
+{
+"a": "مسجد خوست|Khost Mosque",
+"g": "af"
+},
+{
+"a": "مسجد السقيا|Mosque of Al-Saqiya",
+"g": "sa"
+},
+{
+"a": "مركز مصر الثقافي الإسلامي|Egypt's Islamic Cultural Center",
+"g": "eg"
+},
+{
+"a": "مسجد الطنبغا المارداني|Mosque of Amir al-Maridani",
+"g": "eg"
+},
+{
+"a": "جامع الظاهر بيبرس|Mosque of al-Zahir Baybars",
+"g": "eg"
+},
+{
+"a": "مسجد جمال الدين يوسف الاستادار|Gamal Eddin Youssef Istadar Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد المحمودية|Mosque of al-Mahmudiya",
+"g": "eg"
+},
+{
+"a": "مسجد الشرفاء|Al-Shorafaa Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد مدرسة الواد|Al-Wad School Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد ابن صلاح|Ibn Salah Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد باب الكيسة|Bab Al-Kissa Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد القدس|Al-Quds Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد باب دكالة الكبير|Bab Doukkala Grand Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الديوان|Al-Diwan Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد المحمدي|Mohammadi Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد سيدي بومدين|Sidi Boumediene Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد عبد الحميد بن باديس|Abdelhamid Ben Badis Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي رمضان|Sidi Ramdan Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد المشور|El Mechouar Mosque",
+"g": "dz"
+},
+{
+"a": "جامع القصر|Ksar Mosque",
+"g": "tn"
+},
+{
+"a": "جامع يوسف داي|Youssef Dey Mosque",
+"g": "tn"
+},
+{
+"a": "جامع القصبة|Kasbah Mosque",
+"g": "tn"
+},
+{
+"a": "جامع باب بحر|Mosque of Bab Bhar",
+"g": "tn"
+},
+{
+"a": "الجامع الكبير بتستور|Great Mosque of Testour",
+"g": "tn"
+},
+{
+"a": "مسجد خلوية سيدي محرز|Mosque of Khelloua of Sidi Mahrez",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي عامر|Mosque of Sidi Ameur",
+"g": "tn"
+},
+{
+"a": "مرقد سلمان الفارسي|Salman Al-Farsi Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد السهلة|Al-Sahlah Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الرحمن|Al-Rahman Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الأحمدية|Mosque of Ahmadiyah",
+"g": "iq"
+},
+{
+"a": "جامع الموصل الكبير|Mosul Grand Mosque",
+"g": "iq"
+},
+{
+"a": "جامع جليل الخياط|Jalil Khayat Mosque",
+"g": "iq"
+},
+{
+"a": "الجامع الكبير|Great Mosque",
+"g": "iq"
+},
+{
+"a": "جامع المقام|Al-Maqam Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الشعيبية|Al-Shuaibiyah Mosque",
+"g": "sy"
+},
+{
+"a": "جامع مراد باشا|Murad Pasha Mosque",
+"g": "sy"
+},
+{
+"a": "المسجد العتيق|Atiq Mosque",
+"g": "ly"
+},
+{
+"a": "مسجد النيلين|Al-Nilin Mosque",
+"g": "sd"
+},
+{
+"a": "جامع النبي يحيى|Nabi Yahya Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الجوالي|Al-Jawali Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد كاتب الولاية|Welayat Mosque",
+"g": "ps"
+},
+{
+"a": "جامع البكيرية|Al-Bakiriyya Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد دفتردار مصطفى باشا|Defterdar Mustafa Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عتيق علي باشا|Atik Ali Pasha mosque",
+"g": "tr"
+},
+{
+"a": "مسجد زاغان باشا|Zagan Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد التوني زاده|Altunizade Mosque",
+"g": "tr"
+},
+{
+"a": "جامع وتكية ارطغرل|Ertuğrul Tekke Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الخرقة الشريفة|Hirka-i Serif Mosque",
+"g": "tr"
+},
+{
+"a": "جامع حضرة المقداد|Muğdat Mosque",
+"g": "tr"
+},
+{
+"a": "جامع بياله باشا|Piyale Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد توكلو ديدي|Toklu Dede Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ياغ|Yağ Camii",
+"g": "tr"
+},
+{
+"a": "جامع العزيزية|Aziziye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مراد باشا|Murat Paşa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد صاحب الأمر|Saheb-ol-Amr Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ملك|Malek Mosque",
+"g": "ir"
+},
+{
+"a": "جامع نائين|Jameh Mosque of Nain",
+"g": "ir"
+},
+{
+"a": "جامع فردوس|Jameh Mosque of Ferdows",
+"g": "ir"
+},
+{
+"a": "جامع ساوة|Jameh Mosque of Saveh",
+"g": "ir"
+},
+{
+"a": "جامع أمل|Jameh Mosque of Amol",
+"g": "ir"
+},
+{
+"a": "مسجد سنهري|Sunehri Masjid",
+"g": "in"
+},
+{
+"a": "المسجد المغربي|Moorish Mosque, Kapurthala",
+"g": "in"
+},
+{
+"a": "مسجد حياة بخشي|Hayat Bakshi Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مالك بن دينار|Malik Dinar Mosque",
+"g": "in"
+},
+{
+"a": "مسجد السيد جمال الدين|Sayyid Jamaluddin Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كلثوم بيجوم|Kulsum Begum Masjid",
+"g": "in"
+},
+{
+"a": "مسجد الحجر|Pathar Masjid",
+"g": "in"
+},
+{
+"a": "مسجد بهونك|Bhong Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد داي انكه|Dai Anga Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد تشاكتشان|Chaqchan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد سيربون الكبير|Great Mosque of Cirebon",
+"g": "id"
+},
+{
+"a": "مسجد سواهلونتو الكبير|Nurul Islam Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سوراكارتا الكبير|Great Mosque of Surakarta",
+"g": "id"
+},
+{
+"a": "مسجد ملانغ الكبير|Great Mosque of Malang",
+"g": "id"
+},
+{
+"a": "مسجد كت موتيه|Cut Mutiah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد امبل|Ampel Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الأزهر|Al-Azhar Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بيت الرحيم|Baiturrahim Mosque",
+"g": "id"
+},
+{
+"a": "مسجد شينغ هو|Muhammad Cheng Hoo Mosque",
+"g": "id"
+},
+{
+"a": "مسجد السلطان إبراهيم|Sultan Ibrahim Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد كامبونج كلينج|Kampung Kling Mosque",
+"g": "my"
+},
+{
+"a": "مسجد النور|An-Nur Jamek Mosque, Labuan",
+"g": "my"
+},
+{
+"a": "مسجد سرمبان|Seremban Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الأمنية|Al-Amaniah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الكوثر|Al-Kauthar Mosque",
+"g": "my"
+},
+{
+"a": "مسجد علوي|Alwi Mosque",
+"g": "my"
+},
+{
+"a": "خرقة النبي محمد|Shrine of the Cloak",
+"g": "af"
+},
+{
+"a": "مسجد نمرة|Masjid Namirah",
+"g": "sa"
+},
+{
+"a": "المساجد السبعة|The Seven Mosques",
+"g": "sa"
+},
+{
+"a": "جامع الإمام تركي بن عبد الله|Imam Turki bin Abdullah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد جمال عبد الناصر|Gamal Abdel Nasser Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد جمال الدين محمود الاستادار|Mahmud al-Kurdi Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة ابن تغري بردي|Mosque of Taghribirdi",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة صرغتمش الناصري|Madrasa of Sarghatmish",
+"g": "eg"
+},
+{
+"a": "مسجد السيدة عائشة|Sayeda Aisha Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد رابعة العدوية|Rabaa Al-Adawiya Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد النور|Al-Nour Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد العطارين|Attarine Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الصالح طلائع|Al-Salih Tala'i Mosque",
+"g": "eg"
+},
+{
+"a": "مشهد رقية بنت علي|Mausoleum of Sayyida Ruqayya",
+"g": "eg"
+},
+{
+"a": "مجموعة الأمير شيخو العمري الناصري|Mosque and Khanqah of Shaykhu",
+"g": "eg"
+},
+{
+"a": "مسجد زاوية الجيوشى|Juyushi Mosque",
+"g": "eg"
+},
+{
+"a": "مجموعة محمد بك أبو الذهب|Muhammad Bek Abu El Dahab Complex",
+"g": "eg"
+},
+{
+"a": "مسجد سيدي بو عبيد|Sidi Bou Abid Mosque",
+"g": "ma"
+},
+{
+"a": "جامع القرويين|Al-Qarawiyyin Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الحمراء|Alhamra Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد بوجلود|Bou Jeloud Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بوجدة|The Great Mosque of Oujda",
+"g": "ma"
+},
+{
+"a": "مسجد مولاي سليمان|Moulay Slimane Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد السنة|Sunnah Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد صالح باي|Salah Bey Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد الباي محمد عثمان الكبير|Imam el-Houari Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد الجامع الكبير|Great Mosque of Constantine",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي الحلوي|Sidi El Haloui Mosque",
+"g": "dz"
+},
+{
+"a": "جامع الهواء|Al Haoua Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد القبة|El Kobba Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد ملي ملي|Mosque of Melmli",
+"g": "tn"
+},
+{
+"a": "جامع 17 رمضان|Mosque of 17 Ramadan",
+"g": "iq"
+},
+{
+"a": "الحضرة القادرية|Sheikh Abdul Qader al-Jilani Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الحيدرخانة|Haydar-Khana Mosque",
+"g": "iq"
+},
+{
+"a": "جامع السراي|Al-Sarai Mosque",
+"g": "iq"
+},
+{
+"a": "مدرسة الآصفية|Alasifia school",
+"g": "iq"
+},
+{
+"a": "جامع خطوة الإمام علي|Imam Ali Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الحنانة|Al-Hannanah Mosque",
+"g": "iq"
+},
+{
+"a": "جامع زمرد خاتون|Zumurrud Khatun Mosque",
+"g": "iq"
+},
+{
+"a": "جامع النور|Al Noor Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد النقطة|Al-Nuqtah Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الأقصاب|Aqsab Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الأمير منصور عساف|Emir Assaf Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد عابدين|Abdeen Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الملكة أروى بنت أحمد الصليحي|Queen Arwa Mosque",
+"g": "ye"
+},
+{
+"a": "جامع قبة المهدي|Al-Mahdi Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد غازي ميهال بك|Gazi Mihal Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد علاء|Ala Mosque",
+"g": "tr"
+},
+{
+"a": "جامع مسيح محمد باشا|Mesih Mehmed Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد لاري|Lari Mosque",
+"g": "tr"
+},
+{
+"a": "جامع بايزيد الأول|Bayezid I Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شيخ سليمان|Şeyh Süleyman Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سيواس الكبير|Sivas Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قاسم آغا|Kasım Ağa Mosque, Istanbul",
+"g": "tr"
+},
+{
+"a": "جامع محمد معارفي|Maarifi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مليكة خاتون|Melike Hatun Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد المفتي|Mufti-Jami Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد برتاو باشا|Pertev Paşa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أولياء قاسم باشا|Evliya Kasim Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "جامع باش دراق|Başdurak Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الفاتح في تيريلي|Fatih Mosque, Bursa",
+"g": "tr"
+},
+{
+"a": "مسجد كازداغلي|Kazdağlı Mosque",
+"g": "tr"
+},
+{
+"a": "جامع بهرام باشا|Behram Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد حاجي أوزبك|Hacı Özbek Mosque",
+"g": "tr"
+},
+{
+"a": "جامع دار الحديث|Darülhadis Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد دشتي|Dashti Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد رحيم خان|Rahim Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد جارتشي|Jarchi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد حيدرية|Heydariyeh Mosque",
+"g": "ir"
+},
+{
+"a": "حسينية إرشاد|Ershad Hussainiya",
+"g": "ir"
+},
+{
+"a": "جامع أهر|Jameh Mosque of Ahar",
+"g": "ir"
+},
+{
+"a": "جامع كاشان|Jameh Mosque of Kashan",
+"g": "ir"
+},
+{
+"a": "مسجد دار الإحسان|Dar ul-Ihsan Mosque",
+"g": "ir"
+},
+{
+"a": "جامع نطنز|Jameh Mosque of Natanz",
+"g": "ir"
+},
+{
+"a": "مسجد سبهسالار|Sepahsalar Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ركن الملك|Rukn al-Molk Mosque",
+"g": "ir"
+},
+{
+"a": "جامع كرمان|Jameh Mosque of Kerman",
+"g": "ir"
+},
+{
+"a": "مسجد سنهري القلعة الحمراء|Shahi Sunehri Masjid",
+"g": "in"
+},
+{
+"a": "مسجد المدينة شيلونغ|Madina Mosque, Shillong",
+"g": "in"
+},
+{
+"a": "مسجد خيرت آباد|Khairatabad Mosque",
+"g": "in"
+},
+{
+"a": "مسجد ناجينا في قلعة أغرا|Nagina Masjid",
+"g": "in"
+},
+{
+"a": "مسجد شير شاه صوري|Sher Shah Suri Masjid",
+"g": "in"
+},
+{
+"a": "مسجد ألف نور|Thousand Lights Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الأقصى|Aqsa Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد الشهيد غنج|Shaheed Ganj Mosque",
+"g": "pk"
+},
+{
+"a": "المسجد العباسي|Abbasi Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد فلمبان الكبير|Great Mosque of Palembang",
+"g": "id"
+},
+{
+"a": "مسجد عزيز|Azizi Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بونتياناك الكبير|Jami Mosque of Pontianak",
+"g": "id"
+},
+{
+"a": "مسجد جانتينغ الكبير|Ganting Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد اندرابوري|Indrapuri Old Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ساكا تونغال|Saka Tunggal Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بوساكا بانوا لاوس|Heritage Mosque of Banua Lawas",
+"g": "id"
+},
+{
+"a": "مسجد مانتنجان|Mantingan Mosque",
+"g": "id"
+},
+{
+"a": "مسجد تيلوك بيور الكبير|Teluk Bayur Grand Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الأحمر في بانجونان|Red Mosque of Panjunan",
+"g": "id"
+},
+{
+"a": "المسجد الكبير|Kubang Putih Grand Mosque",
+"g": "id"
+},
+{
+"a": "مركز جاكرتا الإسلامي|Jakarta Islamic Centre",
+"g": "id"
+},
+{
+"a": "مسجد مانونجايا|Manonjaya Grand Mosque",
+"g": "id"
+},
+{
+"a": "المسجد العثماني ميدان|Al-Osmani Mosque",
+"g": "id"
+},
+{
+"a": "مسجد جميك تالواك|Jami Mosque of Taluak",
+"g": "id"
+},
+{
+"a": "مسجد جميك سلطان ناتا|Jami Mosque of Sintang",
+"g": "id"
+},
+{
+"a": "مسجد الأندلس|Andalas Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بايور الكبير|Bayur Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الشيخ برهان الدين الكبير|Raya Syekh Burhanuddin Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سلطان تيرناتي|Sultan of Ternate Mosque",
+"g": "id"
+},
+{
+"a": "مسجد وباوي|Wapauwe Old Mosque",
+"g": "id"
+},
+{
+"a": "مسجد السلطان إسماعيل|Sultan Ismail Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سيدنا أبو بكر الصديق|Saidina Abu Bakar As Siddiq Mosque",
+"g": "my"
+},
+{
+"a": "مسجد ملقا الصيني|Malacca Chinese Mosque",
+"g": "my"
+},
+{
+"a": "مسجد كوتا إسكندر|Kota Iskandar Mosque",
+"g": "my"
+},
+{
+"a": "مسجد أبو بكر الملكي|Abu Bakar Royal Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الأكرم|Al Akram Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بترا جايا|Petra Jaya State Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سانداكان|Sandakan District Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان إسكندر|Sultan Iskandar Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بينانغ العائم|Penang Floating Mosque",
+"g": "my"
+},
+{
+"a": "جامع الرحمن|Al-Rahman Kuala Lumpur Mosque",
+"g": "my"
+},
+{
+"a": "مسجد المنستير لا ريال|Mezquita de Almonaster",
+"g": "es"
+},
+{
+"a": "مسجد مغوك كوربا|Magok-i-Kurpa Mosque",
+"g": "uz"
+},
+{
+"a": "مجمع جامع أنديجان|Andijan Jame Mosque Complex",
+"g": "uz"
+},
+{
+"a": "مسجد لشكر كاه|Lashkar Gah Mosque",
+"g": "af"
+},
+{
+"a": "نوبهار|Nava Vihara",
+"g": "af"
+},
+{
+"a": "مسجد الغمامة|Mosque of Al-Ghamama",
+"g": "sa"
+},
+{
+"a": "مسجد عمر بن الخطاب|Omar ibn AlKhatab Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد بني حرام|Mosque of Bani Haram",
+"g": "sa"
+},
+{
+"a": "مسجد عتبان بن مالك|Mosque of Atban Bin Malik",
+"g": "sa"
+},
+{
+"a": "مسجد السبق|As-Sabaq Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد قاني باي المحمدي|Mosque of Qanibay al-Muhammadi",
+"g": "eg"
+},
+{
+"a": "مجموعة السلطان الناصر فرج بن برقوق|Mosque and Khanqah of Farag ibn Barquq",
+"g": "eg"
+},
+{
+"a": "مسجد العارف بالله|Sidi Arif Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد البرديني|Al-Burdayni Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد تربانة|Tirbana Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة الأمير خاير بك|Amir Khayrbak Funerary Complex",
+"g": "eg"
+},
+{
+"a": "مسجد الطابية|El-Tabia Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد أحمد البدوي|Ahmad Al-Badawi Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الشرابليين|Al-Sharabliyyin Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد مولاي عبد الله|Moulay Abdullah Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بالرباط|The Great Mosque of Rabat",
+"g": "ma"
+},
+{
+"a": "مسجد البيضاء|Al-Bayda Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بأصيلة|The Great Mosque of Asilah",
+"g": "ma"
+},
+{
+"a": "مسجد محمد الخامس|Mohammed V Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد ولد الحمراء|Ould Al Hamra Mosque",
+"g": "ma"
+},
+{
+"a": "جامع الترك|Mosque of the Turks",
+"g": "tn"
+},
+{
+"a": "جامع الحلق|Al Haliq Mosque",
+"g": "tn"
+},
+{
+"a": "الجامع الكبير|Great Mosque of Sfax",
+"g": "tn"
+},
+{
+"a": "جامع حرمل|Harmel Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد الشرباتي|Mosque of El Charbati",
+"g": "tn"
+},
+{
+"a": "مسجد حمودة باشا الحسيني|Mosque of Petit Pacha",
+"g": "tn"
+},
+{
+"a": "مسجد البرادعية|Mosque of El Bradia",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي الأنصاري|Mosque of Sidi El Ansari",
+"g": "tn"
+},
+{
+"a": "مسجد بن حميدة|Ben Hmida Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد الحفصية|Mosque of El Hafsia",
+"g": "tn"
+},
+{
+"a": "جامع سيدي منصور|Mosque of Sidi Mansour",
+"g": "tn"
+},
+{
+"a": "مسجد قاره برني|Mosque of Karah Borni",
+"g": "tn"
+},
+{
+"a": "جامع الخلاني|Al Khalani Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الأزبك|Azbak Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الوزير|Al-Wazeer Mosque",
+"g": "iq"
+},
+{
+"a": "المسجد الشيعي الإيراني، بر دبي|Iranian Mosque, Bur Dubai",
+"g": "ae"
+},
+{
+"a": "مسجد البدية|Al Badiyah Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الإمام الحسين|Imam Hussein Mosque",
+"g": "kw"
+},
+{
+"a": "مسجد أبو درويش|Abu Darweesh Mosque",
+"g": "jo"
+},
+{
+"a": "جامع أبي الفداء|Abu'l-Fida Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الأطروش|Al-Otrush Mosque",
+"g": "sy"
+},
+{
+"a": "جامع السفاحية|Al-Saffahiyah Mosque",
+"g": "sy"
+},
+{
+"a": "جامع معرة النعمان الكبير|Great Mosque of Maarrat al-Numan",
+"g": "sy"
+},
+{
+"a": "مسجد طينال|Taynal Mosque",
+"g": "lb"
+},
+{
+"a": "المسجد المنصوري الكبير|Mansouri Great Mosque",
+"g": "lb"
+},
+{
+"a": "جامع الناقة|Al-Naqah Mosque",
+"g": "ly"
+},
+{
+"a": "المسجد الحنبلي|Hanbali Mosque, Nablus",
+"g": "ps"
+},
+{
+"a": "جامع ابن عثمان|Ibn Uthman Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد أم النصر|Umm al-Naser Mosque",
+"g": "ps"
+},
+{
+"a": "جامع المظفر|Mudhaffar Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد غازي هودجا|Gazi Hodja Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد القاضي بدر الدين|Kadı Bedreddin Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد واساط عتيق علي باشا|Vasat Atik Ali Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عشاق الكبير|Uşak Grand Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد إسكندر باشا|İskender Pasha Mosque, Trabzon",
+"g": "tr"
+},
+{
+"a": "مسجد حبيب النجار|Habib'i Neccar Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد محمود باشا|Mahmut Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مئذنة كيسيك|Kesik Minare",
+"g": "tr"
+},
+{
+"a": "مسجد طرسوس القديم|Old Mosque, Tarsus",
+"g": "tr"
+},
+{
+"a": "دير خاخولي|Khakhuli Monastery",
+"g": "tr"
+},
+{
+"a": "مسجد تشينيلي|Çinili Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد محمود بك|Mahmut Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سنجقلار|Sancaklar mosque",
+"g": "tr"
+},
+{
+"a": "مسجد لال باشا|Laal Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قرة مصطفى باشا|Merzifonlu Kara Mustafa Paşa Mosque, Merzifon",
+"g": "tr"
+},
+{
+"a": "جامع خداوندكار|Hüdavendigar Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سكبانباشي|Sekbanbaşı Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بلابان آغا|Balaban Aga Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بوياجي|Boyacı Mosque",
+"g": "tr"
+},
+{
+"a": "جامع إبراهيم باشا الخادم|Hadim Ibrahim Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "جامع حضرت سليمان|Hazreti Süleyman Mosque",
+"g": "tr"
+},
+{
+"a": "المئذنة والجامع برسيان|Jameh Mosque of Bersian",
+"g": "ir"
+},
+{
+"a": "جامع أردستان|Jameh Mosque of Ardestan",
+"g": "ir"
+},
+{
+"a": "مسجد المنارة|Menareh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد لنبان|Lonban Mosque",
+"g": "ir"
+},
+{
+"a": "جامع بابل|Jameh Mosque of Babol",
+"g": "ir"
+},
+{
+"a": "الجامع الكبير نيسابور|Jameh Mosque of Nishapur",
+"g": "ir"
+},
+{
+"a": "جامع كاج|Jameh Mosque of Kaj",
+"g": "ir"
+},
+{
+"a": "مسجد أشترجان|Jameh Mosque of Ashtarjan",
+"g": "ir"
+},
+{
+"a": "مسجد عبد الله بن عمر|Abdullah ibn Umar Mosque",
+"g": "ir"
+},
+{
+"a": "جامع طهران|Jameh Mosque of Tehran",
+"g": "ir"
+},
+{
+"a": "مسجد الحكيم|Hakim Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد سردار|Sardar Mosque",
+"g": "ir"
+},
+{
+"a": "جامع أرومية|Jameh Mosque of Urmia",
+"g": "ir"
+},
+{
+"a": "جامع شافعي|Jameh Mosque of Shafei",
+"g": "ir"
+},
+{
+"a": "مسجد إيلجي|Ilchi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد هفشوية|Jameh Mosque of Haftshuyeh",
+"g": "ir"
+},
+{
+"a": "سارخيج روزا|Sarkhej Roza",
+"g": "in"
+},
+{
+"a": "مسجد الشعر المبارك الكبير|Shahre Mubarak Grand Masjid",
+"g": "in"
+},
+{
+"a": "المسجد العالي|Aali Mosque",
+"g": "in"
+},
+{
+"a": "مسجد قاضي مار الكبير|Kazimar Big Mosque",
+"g": "in"
+},
+{
+"a": "مسجد خيركي|Khirki Masjid",
+"g": "in"
+},
+{
+"a": "مسجد باثار كي|Pathar ki Masjid",
+"g": "in"
+},
+{
+"a": "مسجد شاهي جاميا|Shahi jamia masjid",
+"g": "in"
+},
+{
+"a": "بارا غومباد|Bara Gumbad",
+"g": "in"
+},
+{
+"a": "مسجد الجمعة مومباي|Jama Masjid, Mumbai",
+"g": "in"
+},
+{
+"a": "مسجد كابولي باغ|Kabuli Bagh Mosque with enclosure wall",
+"g": "in"
+},
+{
+"a": "مسجد الصفا|Safa Masjid",
+"g": "in"
+},
+{
+"a": "مسجد الجامع|Jamia Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد أمبورك|Amburiq Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد ميمون الجديد|New Memon Masjid",
+"g": "pk"
+},
+{
+"a": "مسجد بالوبو القديم|Palopo Old Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سلطان رياو الكبير|Grand Mosque of Riau Sultan",
+"g": "id"
+},
+{
+"a": "مسجد سومينيب الكبير|Great Mosque of Sumenep",
+"g": "id"
+},
+{
+"a": "مسجد الاتحاد|Al-Ittihad Mosque Jatibarang",
+"g": "id"
+},
+{
+"a": "مسجد غاروت الكبير|Great Mosque of Garut",
+"g": "id"
+},
+{
+"a": "مسجد البيان البليغ|Bayan Beleq Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سونغاي جامبو|Jamik Sungai Jambu Mosque",
+"g": "id"
+},
+{
+"a": "مسجد محمدان|Muhammadan Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ليما كاوم الكبير|Lima Kaum Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كوتو نان امبيك|Tuo Koto Nan Ampek Mosque",
+"g": "id"
+},
+{
+"a": "مسجد باتيمبورك القديم|Patimburak Old Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الفلاح الكبير|Masjid Agung Al-Falah",
+"g": "id"
+},
+{
+"a": "مسجد باندونغ الكبير|Grand Mosque of Bandung",
+"g": "id"
+},
+{
+"a": "مسجد تانه|Masjid Tanah",
+"g": "my"
+},
+{
+"a": "مسجد السلطان عبد العزيز شاه|Sultan Abdul Aziz Shah Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد التقوى|Al Taqwa Mosque",
+"g": "my"
+},
+{
+"a": "مسجد النور كوتاراي|An-Nur Kotaraya Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مؤسسة البخاري|Al-Bukhary Mosque",
+"g": "my"
+},
+{
+"a": "مسجد المكتفي بالله شاه|Al-Muktafi Billah Shah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الامام الغزالي|Imam Al Ghazali Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطان ابراهيم|Sultan Ibrahim Mosque",
+"g": "my"
+},
+{
+"a": "مسجد عبد الرحمن بن عوف|Abdul Rahman Auf Mosque",
+"g": "my"
+},
+{
+"a": "مسجد باسير غودانغ|Pasir Gudang Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مؤسسة محمد نوح|Mohamed Noah Foundation Mosque",
+"g": "my"
+},
+{
+"a": "مسجد فوينخيرولا في إسبانيا|Fuengirola Mosque",
+"g": "es"
+},
+{
+"a": "مسجد غرناطة|Granada Mosque",
+"g": "es"
+},
+{
+"a": "مدرسة محمد رحيم خان|Mohammed Rahim Khan madrasa",
+"g": "uz"
+},
+{
+"a": "دار التلاوة|Dorut Tilavat",
+"g": "uz"
+},
+{
+"a": "فرقة خوجة غاوكوشان|Khoja Gaukushan Ensemble",
+"g": "uz"
+},
+{
+"a": "مسجد بانصود|Pansod Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد كوكاند الجامع|Kokand city mosque",
+"g": "uz"
+},
+{
+"a": "مسجد عبد الله بن عباس بالطائف|Abdullah Ibn Abbas Mosque, Ta'if",
+"g": "sa"
+},
+{
+"a": "مسجد الرحمة|Al-Rahmah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد السجدة|As-Sajadah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الفضيخ|Mosque of Al-Fadeekh",
+"g": "sa"
+},
+{
+"a": "مسجد الرحمن الرحيم|Al-Rahman Al-Rahim Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد سادات قريش|Sadat Quraish Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد وسبيل سليمان أغا السلحدار|Mosque-Sabil of Sulayman Agha al-Silahdar",
+"g": "eg"
+},
+{
+"a": "مسجد قاني باي الرماح|Qanibay Al Ramah Mosque",
+"g": "eg"
+},
+{
+"a": "جامع سنان باشا|Sinan Pasha Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد سيدي شبل الأسود|Sidi Shibl al-Aswad Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة ألجاي اليوسفي|Madrasa of Uljay al-Yusufi",
+"g": "eg"
+},
+{
+"a": "مسجد ألماس الحاجب|Mosque of Ulmas al-Hajib",
+"g": "eg"
+},
+{
+"a": "مسجد السلطان أبو العلا|Abu al-'Ila Mosque",
+"g": "eg"
+},
+{
+"a": "مجموعة السلطان الأشرف الغوري|Sultan Al-Ghuri Complex",
+"g": "eg"
+},
+{
+"a": "مسجد الرصيف|Al Raseef Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد أبو الحسن المريني|Abu Al-Hassan Al-Marini Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد عين الخيل|Ain Al Khail Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد بريمة|Buraima Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد القطة|Al-Qita Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد لالة جامع الزهر|Lalla Jemaa El-Zehar Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد لالة الشهباء|Lalla Al-Shahba Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الكبير لمدينة ندرومة|Great Mosque of Nedroma",
+"g": "dz"
+},
+{
+"a": "مسجد سفير|Safir Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد الرحمان|El Rahman Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد أغادير|Agadir Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد المنصورة|Mansourah Mosque",
+"g": "dz"
+},
+{
+"a": "الجامع الأعظم|Great Mosque of Béjaïa",
+"g": "dz"
+},
+{
+"a": "مسجد الباي|Hassan Bey Mosque",
+"g": "dz"
+},
+{
+"a": "جامع صاحب الطابع|Saheb Ettabaâ Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد الباي|Al Bey Mosque",
+"g": "tn"
+},
+{
+"a": "جامع الحجامين|Mosque of El Hajjamine",
+"g": "tn"
+},
+{
+"a": "جامع التبانين|Mosque of Tabbanine",
+"g": "tn"
+},
+{
+"a": "جامع السبخة|Mosque of Sabkha",
+"g": "tn"
+},
+{
+"a": "مسجد الطراز|Mosque of Etarraz",
+"g": "tn"
+},
+{
+"a": "المسجد الحبيبي|Mosque of El Habibi",
+"g": "tn"
+},
+{
+"a": "جامع البرج|Mosque of El Borj",
+"g": "tn"
+},
+{
+"a": "مسجد حمام الرميمي|Mosque of Hammam El Rmimi",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي البغدادي|Mosque of Sidi El Baghdadi",
+"g": "tn"
+},
+{
+"a": "مسجد السيدة عجولة|Mosque of Saïda Adjoula",
+"g": "tn"
+},
+{
+"a": "الجامع الأحمدي|Mosque of El Ahmadi",
+"g": "tn"
+},
+{
+"a": "جامع أبي محمد المرجاني|Mosque of Abi Mohamed El Morjani",
+"g": "tn"
+},
+{
+"a": "مسجد الإشبيلي|El Ichbili Mosque",
+"g": "tn"
+},
+{
+"a": "جامع الهنتاتي|Mosque of El Hentati",
+"g": "tn"
+},
+{
+"a": "جامع المهراس|Mosque of El Mehras",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي بوحديد|Mosque of Sidi Bou Hadid",
+"g": "tn"
+},
+{
+"a": "مسجد الشيخ الرصاع|Mosque of Cheikh Rasâa",
+"g": "tn"
+},
+{
+"a": "مسجد الكيال|Mosque of El Kayal",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي علي بن زياد|Mosque of Sidi Ali Ben Ziyad",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي قويسم|Mosque of Sidi Gouicem",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي البلاغ|Mosque of Sidi Bellagh",
+"g": "tn"
+},
+{
+"a": "مسجد الدباغين|Mosque of Edabaghine",
+"g": "tn"
+},
+{
+"a": "جامع السلطان ويس|Sultan Wais Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ عمر السهروردي|Mausoleum of Umar Suhrawardi",
+"g": "iq"
+},
+{
+"a": "مسجد النخيلة|Al-Nukhailah Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الحمراء|al-Hamra Mosque",
+"g": "iq"
+},
+{
+"a": "جامع السليمانية الكبير|Ibrahim Pasha Baban",
+"g": "iq"
+},
+{
+"a": "جامع الباشا|Pasha Mosque, Mosul",
+"g": "iq"
+},
+{
+"a": "جامع المرادية|Al Mardiyah Mosque",
+"g": "iq"
+},
+{
+"a": "جامع النبي شيت|Mosque of the Prophet Shith",
+"g": "iq"
+},
+{
+"a": "جامع مرجان|Mosque of Morgan",
+"g": "iq"
+},
+{
+"a": "جامع العمادية الكبير|Great Mosque of Amadiya",
+"g": "iq"
+},
+{
+"a": "مسجد الشيخ خليفة بن زايد آل نهيان|Sheikh Khalifa Bin Zayed Al Nahyan Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد مريم أم عيسى|Mary, Mother of Jesus Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الشيخ زايد في الفجيرة|Sheikh Zayed Mosque, Fujairah",
+"g": "ae"
+},
+{
+"a": "مسجد فاطمة الزهراء|Siddiqa Fatima Zahra Mosque",
+"g": "kw"
+},
+{
+"a": "مسجد عجلون الكبير|Great mosque Ajlun",
+"g": "jo"
+},
+{
+"a": "جامع الرحمن|Ar-Rahman Mosque",
+"g": "sy"
+},
+{
+"a": "جامع يلبغا|Yalbugha Mosque",
+"g": "sy"
+},
+{
+"a": "جامع التونبوغا|Altun Bogha Mosque",
+"g": "sy"
+},
+{
+"a": "جامع القيقان|Al-Qaiqan Mosque",
+"g": "sy"
+},
+{
+"a": "جامع محمد الأمين عمان|Mohammed Al Ameen Mosque",
+"g": "om"
+},
+{
+"a": "جامع محمد بن يوسف الحسن|Al Hasan Mosque",
+"g": "bh"
+},
+{
+"a": "المسجد العتيق، أوجلة|Atiq Mosque, Awjila",
+"g": "ly"
+},
+{
+"a": "مسجد الحمادية|Al-Hamadiyya Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد علي بن مروان|Ibn Marwan Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الشيخ علي البكاء|Sheikh Ali al-Bakka Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الأيبكي|Aybaki Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد المحكمة في غزة|Mahkamah Mosque",
+"g": "ps"
+},
+{
+"a": "جامع العمري|Al-Omari Mosque, Dura",
+"g": "ps"
+},
+{
+"a": "جامع الهادي|Al-Hadi Mosque",
+"g": "ye"
+},
+{
+"a": "المدرسة الأشرفية|Al-Ashrafiya Madrasa",
+"g": "ye"
+},
+{
+"a": "جامع الأشاعر|Al-Asha'ir Mosque",
+"g": "ye"
+},
+{
+"a": "قبة طلحة|Talha Mosque",
+"g": "ye"
+},
+{
+"a": "جامع العيدروس|Aidrus Mosque",
+"g": "ye"
+},
+{
+"a": "الجامع الكبير|Ermenek Great Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ملاطية الكبير|Great Mosque of Malatya",
+"g": "tr"
+},
+{
+"a": "مسجد عائشة الدين|Ayşekadın Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد إسماعيل آغا|Baruthane Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مزيت بك|Mezit Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شيخي جلبي|Şeyh Çelebi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد يحيى بك|Yahya Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أورهان غازي|Orhan Gazi Mosque",
+"g": "tr"
+},
+{
+"a": "جامع إسكندر باشا|İskender Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شرواني|Şirvani Mosque",
+"g": "tr"
+},
+{
+"a": "مجمع السلطان بايزيد الثاني الصحي|Sultan Bayezid II Complex",
+"g": "tr"
+},
+{
+"a": "جامع بكلربك|Beylerbeyi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد مرسين القديم|Old Mosque, Mersin",
+"g": "tr"
+},
+{
+"a": "مسجد مرعش الكبير|Grand Mosque of Marash",
+"g": "tr"
+},
+{
+"a": "مدرسة جوك|Gök Medrese",
+"g": "tr"
+},
+{
+"a": "جامع ولدي يانيتش|Veled-i Yaniç Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيري محمد باشا|Piri Mehmed Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "جامع نصر الله|Nasrullah Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد جابان أوغلي|Çapanoğlu Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد السنجاك هوجازاده|Alsancak Hocazade Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد هاندان آغا|Handan Agha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الحاج أغا علي|Haj Agha Ali Mosque",
+"g": "ir"
+},
+{
+"a": "جامع أردكان|Jameh Mosque of Ardakan",
+"g": "ir"
+},
+{
+"a": "مسجد دومناره|Do Menareh Mosque",
+"g": "ir"
+},
+{
+"a": "جامع جهرم|Jameh Mosque of Jahrom",
+"g": "ir"
+},
+{
+"a": "مسجد الملوك الأربعة|Chahar Padshahan",
+"g": "ir"
+},
+{
+"a": "مسجد فرح أباد|Farahabad Mosque",
+"g": "ir"
+},
+{
+"a": "جامع دماوند|Jameh Mosque of Damavand",
+"g": "ir"
+},
+{
+"a": "جامع ميمة|Jameh Mosque of Meymeh",
+"g": "ir"
+},
+{
+"a": "جامع آرادان|Jameh Mosque of Aradan",
+"g": "ir"
+},
+{
+"a": "مسجد عماد الدولة|Imad al-Dawla Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد داش آغليان|Dash Aghlian Mosque",
+"g": "ir"
+},
+{
+"a": "مصلى طهران الكبير|Grand Musalla of Tehran",
+"g": "ir"
+},
+{
+"a": "مسجد الأعظم|Azam Mosque of Qom",
+"g": "ir"
+},
+{
+"a": "جامع قم|Jameh Mosque of Qom",
+"g": "ir"
+},
+{
+"a": "مسجد خانم|Khanum Mosque",
+"g": "ir"
+},
+{
+"a": "جامع أرسنجان|Jameh Mosque of Arsanjan",
+"g": "ir"
+},
+{
+"a": "جامع فرومد|Jameh Mosque of Farumad",
+"g": "ir"
+},
+{
+"a": "جامع فهرج|Jameh Mosque of Fahraj",
+"g": "ir"
+},
+{
+"a": "مسجد الإمام الحسن العسكري|Imam Hasan al-Askari Mosque",
+"g": "ir"
+},
+{
+"a": "جامع جرجان|Jameh Mosque of Gorgan",
+"g": "ir"
+},
+{
+"a": "جامع غرمي|Jameh Mosque of Germi",
+"g": "ir"
+},
+{
+"a": "جامع مرند|Jameh Mosque of Marand",
+"g": "ir"
+},
+{
+"a": "مسجد الإمام|Soltani Mosque",
+"g": "ir"
+},
+{
+"a": "جامع دامغان|Jameh Mosque of Damghan",
+"g": "ir"
+},
+{
+"a": "جامع تستر|Jameh Mosque of Shushtar",
+"g": "ir"
+},
+{
+"a": "مسجد السيد|Seyyed Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج صفر علي|Hajj Safar Ali Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد سارو تقي|Sarutaqi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد مصرية|Mesri Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج محمد جعفر أباد أي|Muhammad Jafar Abadei Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الجمعة كيلاكاراي|Jumma Masjid of Kilakarai",
+"g": "in"
+},
+{
+"a": "مسجد قلعة كهنه|Qila-i-Kuhna Mosque",
+"g": "in"
+},
+{
+"a": "مسجد قطب العالم|Qutub-e-Alam's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مبارك|Mubarak Mosque",
+"g": "in"
+},
+{
+"a": "خير المنازل|Khair-ul-Manzil",
+"g": "in"
+},
+{
+"a": "مسجد جامع ، بهيلاي|Jama Masjid, Bhilai",
+"g": "in"
+},
+{
+"a": "مسجد لال دروازه|Lal Darwaza Masjid, Jaunpur",
+"g": "in"
+},
+{
+"a": "مسجد مامبورام|Mampuram Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مشكال|Mishkal Mosque",
+"g": "in"
+},
+{
+"a": "مسجد سيد محي الدين|Muhyuddin Andavar Mosque",
+"g": "in"
+},
+{
+"a": "مسجد ناجينا|Nagina Masjid, Champaner",
+"g": "in"
+},
+{
+"a": "مسجد تولي|Toli Masjid",
+"g": "in"
+},
+{
+"a": "مركز جماعة محل|Central Mahallu Jama'ath",
+"g": "in"
+},
+{
+"a": "مسجد شمبتابالي|Chempittapally Mosque",
+"g": "in"
+},
+{
+"a": "ناجور دارجا|Nagore Dargah",
+"g": "in"
+},
+{
+"a": "مسجد زيارات شريف|Ziarat Shareef",
+"g": "in"
+},
+{
+"a": "مسجد آخوند ملا شاه|Akhund Mulla Shah's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد محمد بن عبد الله|Muhammad Bin Abdullah Mosque",
+"g": "in"
+},
+{
+"a": "مسجد أفضل جنج|Afzal Gunj Masjid",
+"g": "in"
+},
+{
+"a": "المسجد الجامع|Great Mosque, Budaun",
+"g": "in"
+},
+{
+"a": "مسجد قاسم علي خان|Qasim Ali Khan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد بوديسار|Bhodesar Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد الشيخ عبد الحميد أبولونغ|Jami Mosque of Datu Abulung",
+"g": "id"
+},
+{
+"a": "مسجد باوان تاو|Bawan Tua Mosque",
+"g": "id"
+},
+{
+"a": "مسجد مركز الإسلام|Al-Markaz Al-Islami Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بالاي غادانغ مونغو|Balai Gadang Mungo Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سبيل المهتدين الكبير|Sabilal Muhtadin Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد نور الإيمان كوتو جادانج|Nurul Iman Mosque of Koto Gadang",
+"g": "id"
+},
+{
+"a": "مسجد جامع كامبونغ بارو إنباك|Jami Kampung Baru Inpak Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بيت المكمور الكبير|Baitul Makmur Meulaboh Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بانكات|Su'ada Mosque",
+"g": "id"
+},
+{
+"a": "مسجد مركز الاسلام|Samarinda Islamic Center Mosque",
+"g": "id"
+},
+{
+"a": "مسجد نور الهدى|Nurul Huda Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كوتو بارو الكبير|Koto Baru Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الإحسانية|Ikhsaniyyah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد لوار بنتانغ|Luar Batang Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير أتس ثوروه|Ats-Tsauroh Great Mosque of Serang",
+"g": "id"
+},
+{
+"a": "المسجد العائم في بالو|Floating Mosque of Palu",
+"g": "id"
+},
+{
+"a": "مسجد دار الإحسان|Darul Ehsan Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بندر بارو اودا|Bandar Baru UDA Jamek Mosque",
+"g": "my"
+},
+{
+"a": "مسجد كلاغ الملكي|Klang Royal Town Mosque",
+"g": "my"
+},
+{
+"a": "مسجد ليبوه اتشيه|Lebuh Aceh Mosque",
+"g": "my"
+},
+{
+"a": "مسجد شارع بالوه|Masjid Jalan Paloh, Ipoh",
+"g": "my"
+},
+{
+"a": "مسجد مطار سوبانغ|Subang Airport Mosque",
+"g": "my"
+},
+{
+"a": "مسجد تون عبد العزيز|Tun Abdul Aziz Mosque",
+"g": "my"
+},
+{
+"a": "مسجد تون حسين أون|Masjid Jamek Larkin",
+"g": "my"
+},
+{
+"a": "مسجد نونغ شيك|Kolam Ayer Mosque",
+"g": "my"
+},
+{
+"a": "مسجد اونغكو تون امينة|Ungku Tun Aminah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مطار سيناي|Senai Airport Mosque",
+"g": "my"
+},
+{
+"a": "مسجد راجا الانغ|Raja Alang Mosque",
+"g": "my"
+},
+{
+"a": "مسجد برليس الحكومي|Perlis State Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سيدنا عثمان بن عفان|Saidina Uthman Bin Affan Mosque",
+"g": "my"
+},
+{
+"a": "مسجد المرابطين|Al-Morabito Mosque",
+"g": "es"
+},
+{
+"a": "مسجد مليلية|Central Mosque of Melilla",
+"g": "es"
+},
+{
+"a": "مسجد خوناخان|Khonakhan Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد لانغاروتا|Langarota Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد القبة الزرقاء|Kok Gumbaz mosque in Shahrisabz",
+"g": "uz"
+},
+{
+"a": "مسجد أمير مظفر خان|Amir Muzaffarkhan Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد شعر النبي|Mosque of the Hair of the Prophet",
+"g": "af"
+},
+{
+"a": "ضريح سخي|Sakhi Shrine",
+"g": "af"
+},
+{
+"a": "مسجد المشعر الحرام|Al-Mash'ar al-Haram Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد المنارتين|Manartain mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الراية|Al-Rayah Mosque, Mecca",
+"g": "sa"
+},
+{
+"a": "مسجد بني بياضة|Bani Bayadhah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الفقير|Al-Fuqair Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد بني حارثة|Bani Haritsah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد البوصيري|Al-Busiri Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الصحابة|Al-Sahaba Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد قجماس الإسحاقي|Amir Qijmas al-Ishaqi Mosque",
+"g": "eg"
+},
+{
+"a": "جامع النبي دانيال|Nabi Daniel Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الدمرداش|Demerdash Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة سنجر الجاولي|Tomb of Salar and Sangar-al-Gawli",
+"g": "eg"
+},
+{
+"a": "مسجد القائد إبراهيم|Qaed Ibrahim Mosque",
+"g": "eg"
+},
+{
+"a": "المسجد الأعظم بفاس الجديد|The Great Mosque of New Fez",
+"g": "ma"
+},
+{
+"a": "مسجد لالة عودة|Lalla Aouda Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد النور|Al Noor Mosque",
+"g": "ma"
+},
+{
+"a": "جامع مالك بن أنس|Jāmiʻ al-ʻĀbidīn",
+"g": "tn"
+},
+{
+"a": "جامع سبحان الله|Mosque of Soubhan Allah",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي بلحسن الحلفاوي|Mosque of Sidi Belhassen El Halfaoui",
+"g": "tn"
+},
+{
+"a": "مسجد ترنجة|Mosque of Tronja",
+"g": "tn"
+},
+{
+"a": "مسجد الفال|Mosque of El Fell",
+"g": "tn"
+},
+{
+"a": "مسجد الصفار|Mosque of El Sfar",
+"g": "tn"
+},
+{
+"a": "مسجد ويشكة|Mosque of Ouichka",
+"g": "tn"
+},
+{
+"a": "مسجد بومنيجل|Mosque of Abi Mnigel",
+"g": "tn"
+},
+{
+"a": "مسجد الغاصرون|Mosque of El Ghassiroun",
+"g": "tn"
+},
+{
+"a": "جامع سيدي البحري|Sidi El Bahri Mosque",
+"g": "tn"
+},
+{
+"a": "جامع بوشويشة|Bou Chouaicha Mosque",
+"g": "tn"
+},
+{
+"a": "جامع الدريبة|Driba Mosque",
+"g": "tn"
+},
+{
+"a": "جامع الإمام الباهر|Imam al-Baher Mosque",
+"g": "iq"
+},
+{
+"a": "جامع سيد سلطان علي|Mosque of Sayed Sultan Ali",
+"g": "iq"
+},
+{
+"a": "جامع الشاوي|Al-Shawy Mosque",
+"g": "iq"
+},
+{
+"a": "الجامع الأموي|Umayyad Mosque of Mosul",
+"g": "iq"
+},
+{
+"a": "جامع أم الطبول|Um al-Tabboul Mosque",
+"g": "iq"
+},
+{
+"a": "جامع براثا|Buratha Mosque",
+"g": "iq"
+},
+{
+"a": "جامع حمو القدو|Hamu al-Qadu Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الكواز|Al-Kawaz Mosque",
+"g": "iq"
+},
+{
+"a": "جامع السراجي|Al-Sarraji Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الشيخة سلامة|Sheikha Salama mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الملك فيصل|King Faisal Mosque, Sharjah",
+"g": "ae"
+},
+{
+"a": "مسجد الإمام باقر|Imam Baqir Mosque",
+"g": "kw"
+},
+{
+"a": "مدرسة الفردوس|Al-Firdaws Madrasa",
+"g": "sy"
+},
+{
+"a": "جامع الحنابلة|Hanabila Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد الشواذنة|Al-Shawathna Mosque",
+"g": "om"
+},
+{
+"a": "جامع السلطان قابوس بصحار|Sultan Qaboos Grand Mosque",
+"g": "om"
+},
+{
+"a": "مسجد الزواوي|Zawawi Mosque",
+"g": "om"
+},
+{
+"a": "جامع السلطان قابوس بالبريمي|Sultan Qaboos Grand Mosque, Al-Buraimi",
+"g": "om"
+},
+{
+"a": "مسجد أبو خضرة|Abu Khadra Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد معمار سنان|Mimar Sinan Mosque",
+"g": "tr"
+},
+{
+"a": "المسجد الجديد|Malatya Yeni Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد خير الدين بربروس|Barbaros Hayrettin Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بادمليك|Bademlik Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد حيدر آغا|Hıdır Agha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد كوشجو دوغان|Kuşçu Doğan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ساريجا باشا|Sarıca Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بلابان باشا|Balaban Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيديفيزاده أحمد بي|Bedevizade Ahmed Bey Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد غالب باشا|Galip Paşa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد علي باشا حكيم أوغلو|Hekimoğlu Ali Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قويولارني|Kuyularonu Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سحلبجي أوغلي|Salepçioğlu Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد غوجيلي|Göğceli Mosque",
+"g": "tr"
+},
+{
+"a": "جامع المرادية|Muradiye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أحمد حمدي آقسكي|Ahmet Hamdi Akseki Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عزت باشا|İzzet Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد المئذنة الحمراء|Kırmızı Beyoğlu Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ييرالتي|Yeraltı Camii",
+"g": "tr"
+},
+{
+"a": "مسجد بايزيد الثاني في أماسيا|Bayezid II Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد منارة بورمالي|Burmalı Amasya Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عمر باشا|Ömer Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيرجي الكبير|Birgi Grand Mosque",
+"g": "tr"
+},
+{
+"a": "جامع سجاس|Jameh Mosque of Sojas",
+"g": "ir"
+},
+{
+"a": "مسجد لرزادة|Lorzadeh Mosque",
+"g": "ir"
+},
+{
+"a": "جامع دزفول|Jameh Mosque of Dezful",
+"g": "ir"
+},
+{
+"a": "مسجد ملك بن عباس|Malek ibn Abbas Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشهداء|Shohada Mosque",
+"g": "ir"
+},
+{
+"a": "جامع شاهرود|Jameh Mosque of Shahrud",
+"g": "ir"
+},
+{
+"a": "مسجد الباب الجديد|Darvazeh No mosque",
+"g": "ir"
+},
+{
+"a": "جامع مهر أباد|Jameh Mosque of Mehrabad",
+"g": "ir"
+},
+{
+"a": "جامع رقة|Jameh Mosque of Raqqeh",
+"g": "ir"
+},
+{
+"a": "جامع رادكان|Jameh Mosque of Radkan",
+"g": "ir"
+},
+{
+"a": "مسجد ميربنج|Mirpanj Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد علي قلي أغا|Ali Qoli Agha Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أربعون أختران|Chehel Akhtaran Mosque",
+"g": "ir"
+},
+{
+"a": "جامع نوش آباد|Jameh Mosque of Nushabad",
+"g": "ir"
+},
+{
+"a": "مسجد حاجي جلال|Haji Jalal Mosque",
+"g": "ir"
+},
+{
+"a": "جامع نمين|Jameh Mosque of Namin",
+"g": "ir"
+},
+{
+"a": "جامع مرنديز|Jameh Mosque of Marandiz",
+"g": "ir"
+},
+{
+"a": "جامع ساري|Jameh Mosque of Sari",
+"g": "ir"
+},
+{
+"a": "مسجد رنكوني عبادان|Rangooniha Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أمير جقماق|Amir Chakhmaq Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد مقصودبيك|Maqsud Beyk Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا ضياء الدين|Agha Zia al-Din Mosque",
+"g": "ir"
+},
+{
+"a": "جامع أبر كوه|Jameh Mosque of Abarkuh",
+"g": "ir"
+},
+{
+"a": "جامع باتشيان|Jameh Mosque of Pachian",
+"g": "ir"
+},
+{
+"a": "جامع تكاب|Jameh Mosque of Takab",
+"g": "ir"
+},
+{
+"a": "جامع سمنان|Jameh Mosque of Semnan",
+"g": "ir"
+},
+{
+"a": "مسجد الصفا|Safa Mosque",
+"g": "ir"
+},
+{
+"a": "المسجد الخشبي|Wooden Mosque",
+"g": "ir"
+},
+{
+"a": "إسبي مزغت|Espi Mazget",
+"g": "ir"
+},
+{
+"a": "جامع لار|Jameh Mosque of Lar",
+"g": "ir"
+},
+{
+"a": "مسجد بامنار|Pamenar Mosque",
+"g": "ir"
+},
+{
+"a": "جامع أراك|Jameh Mosque of Arak",
+"g": "ir"
+},
+{
+"a": "جامع خوزان|Jameh Mosque of Khozan",
+"g": "ir"
+},
+{
+"a": "جامع سبزوار|Jameh Mosque of Sabzevar",
+"g": "ir"
+},
+{
+"a": "جامع بندر عباس|Jameh Mosque of Bandar Abbas",
+"g": "ir"
+},
+{
+"a": "جامع كرمانشاه|Jameh Mosque of Kermanshah",
+"g": "ir"
+},
+{
+"a": "جامع الكبير نيريز|Jameh Mosque of Kabir Neyriz",
+"g": "ir"
+},
+{
+"a": "مسجد صخر ترك|Tark Stone Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج صمد خان|Haj Samad Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشيخ بسطامي|Sheikh Bastami Mosque",
+"g": "ir"
+},
+{
+"a": "جامع قشم|Jameh Mosque of Qeshm",
+"g": "ir"
+},
+{
+"a": "جامع زيردة|Zirdeh Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سراب|Jameh Mosque of Sarab",
+"g": "ir"
+},
+{
+"a": "مسجد ميدان|Meydan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد خسرو شير|abas abad Mosque",
+"g": "ir"
+},
+{
+"a": "المئذنة والجامع غار|Jameh Mosque of Gar",
+"g": "ir"
+},
+{
+"a": "مسجد مركز نظام الدين|Nizamuddin Markaz Masjeed",
+"g": "in"
+},
+{
+"a": "مسجد الجمعة درمشالله|Jama Masjid Dharamshala",
+"g": "in"
+},
+{
+"a": "مادين صاحب|Madin Sahib",
+"g": "in"
+},
+{
+"a": "مسجد دامري|Damdi Masjid",
+"g": "in"
+},
+{
+"a": "المسجد الكبير|Kalan Masjid",
+"g": "in"
+},
+{
+"a": "مسجد سونهري باغ|Sunehri Bagh Mosque",
+"g": "in"
+},
+{
+"a": "مسجد موتشوندي|Muchundi Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الجامع بورت بلير|Delanipur Jama Mosque, Port Blair",
+"g": "in"
+},
+{
+"a": "مسجد ميران|Meeran Mosque",
+"g": "in"
+},
+{
+"a": "مسجد خطبة|Khutba Mosque, Pondicherry",
+"g": "in"
+},
+{
+"a": "مسجد فوتي|Fauti Mosque",
+"g": "in"
+},
+{
+"a": "مسجد غوريبالايام|Goripalayam Mosque",
+"g": "in"
+},
+{
+"a": "مسجد حافظ أحمد خان|Hafiz Ahmad Khan Mosque",
+"g": "in"
+},
+{
+"a": "خانقاه الهجر|Hijron Ka Khanqah",
+"g": "in"
+},
+{
+"a": "مسجد همايون|Humanyun Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كترا|Katra Masjid",
+"g": "in"
+},
+{
+"a": "جامع رشيد|Masjid-e-Rasheed",
+"g": "in"
+},
+{
+"a": "مسجد المدينة|Madina Mosque",
+"g": "in"
+},
+{
+"a": "مسجد غريب نواز|Masjid Ghareeb Nawaz",
+"g": "in"
+},
+{
+"a": "مسجد اوداثي بالي|Odathil Palli",
+"g": "in"
+},
+{
+"a": "مسجد تازاتانغادي الجمعة|Thazhathangady Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد أثر جماد|Athar Jamad Masjid",
+"g": "in"
+},
+{
+"a": "دستغير صاحب|Dastgeer Sahib",
+"g": "in"
+},
+{
+"a": "مسجد زينات بخش|Masjid Zeenath Baksh",
+"g": "in"
+},
+{
+"a": "مسجد مشير آباد|Musheerabad Masjid",
+"g": "in"
+},
+{
+"a": "مسجد زينة المساجد|Zeenat-ul-Masajid",
+"g": "in"
+},
+{
+"a": "مسجد مبارك بيغوم|Masjid Mubarak Begum",
+"g": "in"
+},
+{
+"a": "الجامع في أوباركوت|Jumma Masjid and Cannon",
+"g": "in"
+},
+{
+"a": "مسجد أقصى|Aqsa Mosque",
+"g": "in"
+},
+{
+"a": "مسجد شب برات|Shab Bhar Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد أونشي|Oonchi Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد نيفين|Neevin Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد العيد شاه عيد غاه|Shahi Eid Gah Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد شاهي شيترال|Shahi Mosque",
+"g": "pk"
+},
+{
+"a": "ضريح بابا فريد|Shrine of Baba Farid",
+"g": "pk"
+},
+{
+"a": "مسجد صالح كمبة|Saleh Kamboh Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد شاهي|Shahi Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد إلياسي|Ilyasi Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد كاسونياتان|Kasunyatan Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كالي باسير|Kalipasir Mosque",
+"g": "id"
+},
+{
+"a": "مسجد أنجكي|Angke Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بنجرماسين|Jami Mosque of Banjarmasin",
+"g": "id"
+},
+{
+"a": "مسجد اير تريس|Jami Mosque of Air Tiris",
+"g": "id"
+},
+{
+"a": "مسجد كرامات بانوا هلات|Keramat Banua Halat Mosque",
+"g": "id"
+},
+{
+"a": "مسجد دار السلام الكبير|Darussalam Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ماكاسار الكبير|Great Mosque of Makassar",
+"g": "id"
+},
+{
+"a": "مسجد كتانغا|Katangka Mosque",
+"g": "id"
+},
+{
+"a": "المسجد القديم جانغ بنغكوك|Gang Bengkok Old Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير دار السلام|Darussalam Grand Mosque, Palangka Raya",
+"g": "id"
+},
+{
+"a": "مسجد المجاهدين|Al Mujaheddin Mosque",
+"g": "my"
+},
+{
+"a": "مسجد عمرو بن العاص|Amru Al-As Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطانة افزان|Tengku Ampuan Afzan Mosque",
+"g": "my"
+},
+{
+"a": "مسجد السلطانة جماح|Tengku Ampuan Jemaah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد زيد بن حارثة|Zaid bin Haritsah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الفلك|Al-Falak Mosque",
+"g": "my"
+},
+{
+"a": "مسجد باسير بلانغي الملكي|Pasir Pelangi Royal Mosque",
+"g": "my"
+},
+{
+"a": "مسجد محمدية|Muhammadiah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد مولاي المهدي|Muley El-Mehdi Mosque",
+"g": "es"
+},
+{
+"a": "مسجد سيرلي|Sirli Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد خواجه إلغور|Khoja Ilgor Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد عبد المالك|Abdumalik Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد الخيف|Al-Khayf Mosque",
+"g": "sa"
+},
+{
+"a": "جامع الملك خالد|King Khalid Grand Mosque",
+"g": "sa"
+},
+{
+"a": "جامع مطار الملك خالد|King Khalid Airport Mosque",
+"g": "sa"
+},
+{
+"a": "جامع عبد العزيز عبد الله الشربتلي|Abdulaziz Abdullah Sharbatly Mosque",
+"g": "sa"
+},
+{
+"a": "المشعر الحرام|Al-Mash‘ar Al-Ḥarām",
+"g": "sa"
+},
+{
+"a": "مسجد العريش|Al-Arish Mosque, Medina",
+"g": "sa"
+},
+{
+"a": "مسجد أبي بكر الصديق|Abu Bakr Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد المدهون|Al Qantara Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد آل أبو ستيت|Al Abu Stit mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة قايتباي|Mosque of Qaytbay",
+"g": "eg"
+},
+{
+"a": "مسجد السيدة سكينة|Mosque of Sayyida Sukayna",
+"g": "eg"
+},
+{
+"a": "قبة الإمام الشافعي|Mausoleum of Imam al-Shafi'i",
+"g": "eg"
+},
+{
+"a": "مسجد الحبشي|Al-Habashi Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد المالك الجوكندار|Mosque of Almalik al-Gukandar",
+"g": "eg"
+},
+{
+"a": "مسجد سيدي بشر|Sidi Bishr Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد القصبة بطنجة|Kasbah Mosque in Tangier",
+"g": "ma"
+},
+{
+"a": "مسجد أولاد الإمام|Awlad al-Imam Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد الأمان|Aman Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي غانم|Sidi Ghanem Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد عين البربر|Aïn Berber Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد ترشيش|Mosque of Tarchich",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي مردوم|Mosque of Sidi Mardoum",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي معاوية|Mosque of Sidi Maaouia",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي الحاري|Mosque of Sidi El Hari",
+"g": "tn"
+},
+{
+"a": "مسجد السيدة مسيكة|Mosque of Saïda Msika",
+"g": "tn"
+},
+{
+"a": "مسجد اسطا مراد|Mosque of Usta Mourad",
+"g": "tn"
+},
+{
+"a": "مسجد النقيري|Mosque of El Nakiri",
+"g": "tn"
+},
+{
+"a": "جامع سيدي عبد المولى|Sidi Abdelmoula Mosque",
+"g": "tn"
+},
+{
+"a": "جامع العجوزين|El Ajouzine Mosque",
+"g": "tn"
+},
+{
+"a": "جامع سيدي إلياس|Sidi Elyes Mosque",
+"g": "tn"
+},
+{
+"a": "جامع سيدي عمر كمون|Sidi Amar Kammoun Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد أحمد بن حنبل|Ahmad ibn Hanbal Mosque",
+"g": "iq"
+},
+{
+"a": "جامع وتكية خانقاه الخالدية|Khalidiya Khanqah Mosque and Tekke",
+"g": "iq"
+},
+{
+"a": "جامع النبي دانيال|The mosque of the prophet Daniel",
+"g": "iq"
+},
+{
+"a": "مسجد عبد العزيز السامرائي|Abdul-Aziz al-Samarrai Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الأربعين شهيدا|Al-Arba'een Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الإمام محسن|Al-Imam Muhsin Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد المدينة التعليمية|Education City Mosque",
+"g": "qa"
+},
+{
+"a": "مسجد الشارقة|Sharjah Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الإمام الطيب|Imam Al-Tayeb Mosque",
+"g": "ae"
+},
+{
+"a": "مسجد الإمام المهدي|Imam Mahdi Mosque",
+"g": "kw"
+},
+{
+"a": "جامع التوحيد|Tawhid Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد الأتاسي|Al-Atassi Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الشيخ محيي الدين بن عربي|Ibn 'Arabi Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد النبي هوري|Mosque of Prophet Huri",
+"g": "sy"
+},
+{
+"a": "مسجد البرطاسي|Al-Burtasi Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد التوبة|Al-Tawbat Mosque",
+"g": "lb"
+},
+{
+"a": "جامع الأويسي|Al-Uwaysiyat Mosque",
+"g": "lb"
+},
+{
+"a": "المسجد المعلق طرابلس|Mu'allaq Mosque",
+"g": "lb"
+},
+{
+"a": "جامع الأمير منذر|Emir Munzer Mosque",
+"g": "lb"
+},
+{
+"a": "جامع المجيدية|Al-Majidiyyeh Mosque",
+"g": "lb"
+},
+{
+"a": "جامع مراد آغا|Murad Agha Mosque",
+"g": "ly"
+},
+{
+"a": "مسجد القيمري|Al-Qaymariyya Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد السلطان إبراهيم بن أدهم|Sultan Ibrahim Ibn Adham Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الحيات|Hayat mosque",
+"g": "ps"
+},
+{
+"a": "مسجد التوحيد|Al Tawheed Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد الأنصار|Alansar Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد الإيمان|Alemaan Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد الشهداء|Al Shohada Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد البليلي|Albolaily Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد حنظل|Hanzal Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد قبة الزوم|Masjid Qubbat Bayt Az-Zum",
+"g": "ye"
+},
+{
+"a": "مسجد رشادية|Reşadiye Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد نالي|Nallı Masjid",
+"g": "tr"
+},
+{
+"a": "مسجد قرية يسيليورت|Yeşilyurt Village Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سايت|Site Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد علاء الدين في غازي عنتاب|Alaüddevle Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الشيخ شجاع|Sheikh Shuja Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الملا مصطفى باشا|Molla Mustafa Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سلجوق خاتون|Selçuk Hatun Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد ستي شاه سلطان|Sitti Sultan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد سوله جلبي|Süle Çelebi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شاه ملك|Şah Melek Mosque",
+"g": "tr"
+},
+{
+"a": "جامع شهاب الدين باشا|Şehabeddin Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أكساراي الكبير|Ulu Camii",
+"g": "tr"
+},
+{
+"a": "مسجد علي باشا|Ali Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عزت محمد باشا|Izzet Mehmet Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد كأني أكلت|Sanki Yedim Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد قاسم بلوط|Kazim Bulut Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد كستانه بازاري|Kestanepazarı Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد السلطان|Sultan Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد غوزلولك|Güzeloluk mosque",
+"g": "tr"
+},
+{
+"a": "مسجد حاجي ويس زاده|Hacıveyiszade Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الحاج محمد حسين|Haj Muhammad Husayn Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد تبريزي ها|Tabrizi Mosque",
+"g": "ir"
+},
+{
+"a": "جامع داراب|Jameh Mosque of Darab",
+"g": "ir"
+},
+{
+"a": "حسينية الأعظم|Azam Hussainiya",
+"g": "ir"
+},
+{
+"a": "جامع بستك|Jameh Mosque of Bastak",
+"g": "ir"
+},
+{
+"a": "مسجد حجتية|Hojjatieh Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سرابي|Jameh Mosque of Sarabi",
+"g": "ir"
+},
+{
+"a": "جامع إسلامية|Jameh Mosque of Eslamiyeh",
+"g": "ir"
+},
+{
+"a": "مسجد مهويد|Mahvid Mosque",
+"g": "ir"
+},
+{
+"a": "جامع قبلة|Jameh Mosque of Qiblah",
+"g": "ir"
+},
+{
+"a": "المصلى الكبير|Grand Musalla of Isfahan",
+"g": "ir"
+},
+{
+"a": "مسجد كبود غنبد|Kabud Gonbad Mosque",
+"g": "ir"
+},
+{
+"a": "الجامع في خرمشهر|Jameh Mosque of Khorramshahr",
+"g": "ir"
+},
+{
+"a": "مسجد ومرقد محمد المحروق|Imamzadeh Muhammad al-Mahruq",
+"g": "ir"
+},
+{
+"a": "جامع همدان|Jameh Mosque of Hamadan",
+"g": "ir"
+},
+{
+"a": "جامع فتح أباد|Jameh Mosque of Fathabad",
+"g": "ir"
+},
+{
+"a": "جامع غناباد|Jameh Mosque of Gonabad",
+"g": "ir"
+},
+{
+"a": "جامع قروة|Jameh Mosque of Qerveh",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج شهباز خان|Haj Shahbazkhan Mosque",
+"g": "ir"
+},
+{
+"a": "جامع جاجرم|Jameh Mosque of Jajarm",
+"g": "ir"
+},
+{
+"a": "جامع خوانسار|Jameh Mosque of Khvansar",
+"g": "ir"
+},
+{
+"a": "مسجد بوناني جمعة|Ponnani Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد مادائي|Madayi Palli",
+"g": "in"
+},
+{
+"a": "مسجد منى|Mina Mosque",
+"g": "in"
+},
+{
+"a": "مسجد دستور خان|Dastur Khan's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد راني روباماتي|Rani Rupamati's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد أحمد شاه|Ahmad Shah's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد بابا لولوي|Baba Lului's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد قطب الدين|Qutbuddin Mosque",
+"g": "in"
+},
+{
+"a": "مسجد دارما كيدانغو|Dharma Kidangu Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الجامع ناغبور|Jama Masjid, Nagpur",
+"g": "in"
+},
+{
+"a": "المسجد الشاهي|Shahi Masjid Prayagraj",
+"g": "in"
+},
+{
+"a": "مسجد أنواري|Masjid-o-Anwari",
+"g": "in"
+},
+{
+"a": "ميان مشك|Mian Mishk Masjid",
+"g": "in"
+},
+{
+"a": "مسجد محيي الدين أندافار|Mohaideen Andavar Mosque",
+"g": "in"
+},
+{
+"a": "مسجد بريامت|Periamet Mosque",
+"g": "in"
+},
+{
+"a": "مسجد تريبليكان لابي|Triplicane Labbai Jamaath Masjid",
+"g": "in"
+},
+{
+"a": "مسجد موث كي|Moth Ki Masjid",
+"g": "in"
+},
+{
+"a": "مسجد بهرام جونغ|Bahram Jung Mosque",
+"g": "in"
+},
+{
+"a": "مسجد شاهي جامع|Shahi Jama Masjid, Sambhal",
+"g": "in"
+},
+{
+"a": "مسجد آلا وردي خان|Mosque of Ala Vardi Khan",
+"g": "in"
+},
+{
+"a": "مسجد العزيزية|Azizia Masjid, Hyderabad",
+"g": "in"
+},
+{
+"a": "مسجد لات|Lat Masjid",
+"g": "in"
+},
+{
+"a": "مسجد بلال|Masjid-e-Bilal",
+"g": "in"
+},
+{
+"a": "مسجد موتي|Moti Masjid",
+"g": "in"
+},
+{
+"a": "مسجد قطب شاهي لانجر هوز|Masjid E Qutub Shahi Langer Houz",
+"g": "in"
+},
+{
+"a": "مسجد بريماماتي|Premamati Mosque",
+"g": "in"
+},
+{
+"a": "مركز رايويند|Raiwind Markaz",
+"g": "pk"
+},
+{
+"a": "مسجد الصادق|Al-Sadiq Mosque",
+"g": "pk"
+},
+{
+"a": "جامع الملك سلمان في إسلام أباد|Salman bin Abdulaziz Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد مركزي جامع|Markazi Jamia Masjid",
+"g": "pk"
+},
+{
+"a": "مسجد المتقدمين|Mutaqaddimin Mosque",
+"g": "id"
+},
+{
+"a": "مسجد أكبر التقوى|Akbar At-Taqwa Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الإرشاد|Al-Irsyad Mosque",
+"g": "id"
+},
+{
+"a": "مسجد تقوى المحمدية|Taqwa Muhammadiyah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد المكمور|Al Makmur Mosque",
+"g": "id"
+},
+{
+"a": "المسجد العائم الأمينة|Terapung Al-Aminah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الأنصار|Al-Anshor Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كيه إتش هاشم أشعري الكبير|KH Hasyim Asy'ari Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الفضة كوتاجيدي|Kotagede Silver Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الكرامة|Al-Karomah Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سونغاي بانار|Sungai Banar Jami Mosque",
+"g": "id"
+},
+{
+"a": "مسجد البيت الأمين|Al-Baitul Amien Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الامتزاج|Al-Imtizaj Mosque",
+"g": "id"
+},
+{
+"a": "مسجد العلم|Al-Alam Kendari Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير البنتاني|Al-Bantani Grand Mosque",
+"g": "id"
+},
+{
+"a": "جامع الشيخ زايد الكبير|Sheikh Zayed Grand Mosque, Surakarta",
+"g": "id"
+},
+{
+"a": "مسجد كاومان سمارانغ",
+"g": "id"
+},
+{
+"a": "مسجد بانغليما كينتا|Panglima Kinta Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سيدنا عمر بن الخطاب|Saidina Umar Al Khattab Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الهداية|Al Hidayah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد بوشونغ بيردانا|Puchong Perdana Mosque",
+"g": "my"
+},
+{
+"a": "مسجد راجا حاجي في سبيل الله|Raja Haji Fisabilillah Mosque",
+"g": "my"
+},
+{
+"a": "مسجد ساندكان الجامع|Sandakan Jamek Mosque",
+"g": "my"
+},
+{
+"a": "المركز الإسلامي الثقافي في إسبانيا|Islamic Cultural Center and Mosque of Madrid",
+"g": "es"
+},
+{
+"a": "مسجد كوسونسوي|Kosonsoy Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد منار|Minor Mosque",
+"g": "uz"
+},
+{
+"a": "جامع الدخيل|Al Dakheel Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الجعرانة|Masjid Al-Ji'ranah",
+"g": "sa"
+},
+{
+"a": "مسجد القبلي|Al-Qibli Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الملك فهد|King Fahd Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الدرع|Al-Deraa Mosque",
+"g": "sa"
+},
+{
+"a": "جامع مركز الملك عبد الله المالي|KAFD Grand Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد عكاش",
+"g": "sa"
+},
+{
+"a": "مسجد وخانقاه الأشرف برسباي|Khanqah-Mausoleum of Sultan Barsbay",
+"g": "eg"
+},
+{
+"a": "مسجد وضريح الأمير أحمد المحمندار|Mosque and Mausoleum of Amir Ahmad al-Mihmandar",
+"g": "eg"
+},
+{
+"a": "مسجد سيدي إبراهيم الدسوقي|Ibrahim El-Desouki Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد مصطفى محمود|Mostafa Mahmoud Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد خشقدم الأحمدي|Mosque of Khushqadam El-Ahmadi",
+"g": "eg"
+},
+{
+"a": "مسجد الأنوار المعلق|Al Anwar Hanging Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الأميرة لالة لطيفة|Princess Lalla Latifa Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الكبير في غرداية|Grand Mosque of Gardaya",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي خالد|Sidi Khaled Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي إبراهيم المصمودي|Sidi Brahim al-Masmudi Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد لالة غريبة|Lalla Ghriba Mosque, Tlemcen",
+"g": "dz"
+},
+{
+"a": "مسجد لالة الرؤية|Lalla al-Ruya Mosque",
+"g": "dz"
+},
+{
+"a": "الجامع الأخضر|Sidi Lakhdar Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد باب زير|Bab Zir Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد الأمة",
+"g": "dz"
+},
+{
+"a": "جامع الأجانب|Mosque of the Strangers",
+"g": "tn"
+},
+{
+"a": "جامع تلاكين|Tlakin Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي صالح بو قبرين|Mosque of Sidi Salah Bou Kabrine",
+"g": "tn"
+},
+{
+"a": "مسجد الغوري|Mosque of El Ghouri",
+"g": "tn"
+},
+{
+"a": "جامع عادلة خاتون|Adile Hatun Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد المستعصم بالله|Al-Musta'sim Billah Mosque",
+"g": "iq"
+},
+{
+"a": "مدرسة محمد امين السويدي|Khidr Elias Shrine",
+"g": "iq"
+},
+{
+"a": "جامع الحاج بنية|Al Haj Bonnea Mosque",
+"g": "iq"
+},
+{
+"a": "جامع العاقولي|Al-Aquli Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الشابندر|Shabandar Mosque",
+"g": "iq"
+},
+{
+"a": "جامع عطا|Atta Mosque",
+"g": "iq"
+},
+{
+"a": "الجامع الكبير في القلعة|Great Mosque of Kirkuk Citadel",
+"g": "iq"
+},
+{
+"a": "مسجد ومركز الفاروق عمر بن الخطاب|Al Farooq Omar Bin Al Khatab mosque",
+"g": "ae"
+},
+{
+"a": "ضريح جعفر بن أبي طالب|Ja'far ibn Abi Talib Mosque",
+"g": "jo"
+},
+{
+"a": "الجامع الكبير في الرقة|Great Mosque of Raqqa",
+"g": "sy"
+},
+{
+"a": "جامع المهمندار|Mahmandar Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد النعيسة|Naissa Mosque",
+"g": "sy"
+},
+{
+"a": "جامع التوبة|Al-Tawba Mosque",
+"g": "sy"
+},
+{
+"a": "جامع تنكز|Tankiz Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الطواشي|Al-Tawashi Mosque",
+"g": "sy"
+},
+{
+"a": "جامع بحسيتا|Bahsita Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الصاحبية|Al-Sahibiyah Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد السلطان إبراهيم بن أدهم|Sultan Ibrahim Ibn Adham Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد العطار|Al-Attar Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد عبد الواحد المكناسي|Abd al-Wahid Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد مازن بن غضوبة|Mazin Bin Ghadoubah Mosque",
+"g": "om"
+},
+{
+"a": "جامع فاروق|Farouq mosque, Khartoum",
+"g": "sd"
+},
+{
+"a": "مسجد ابن عثمان، الخليل|Ibn Othman Mosque, Hebron",
+"g": "ps"
+},
+{
+"a": "جامع الظفر دمري غزة|Al-Zafar Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد القلعة|al-Qala'a Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد اليعقوبي|Al-Yaqoubi Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد سعد وسعيد|Sa'ad and Sa'eed Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد الشاذلي|Al-Shadhili Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد عبد الهادي السودي|Abdulhadi as-Soudi Mosque",
+"g": "ye"
+},
+{
+"a": "جامع صلاح الدين|Salah al-Din Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد شعبان آغا|Şaban Ağa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بهرمشاه|Behramşah Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الأمير بايندير|Emir Bayındır Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عبد الحكيم سنجق|Abdulhakim Sanjak Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد نيشانجي محمد باشا|Nişancı Mehmed Pasha Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد شب صفا خاتون|Şepsefa Hatun Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد فروح شاه|Ferruhşah Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد إيبليكجي|İplikçi Mosque, Konya",
+"g": "tr"
+},
+{
+"a": "مجمع هاتونيا|Hatuniye complex",
+"g": "tr"
+},
+{
+"a": "مسجد حاجي بشير آغا|Hacı Beşir Ağa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بيركيتزاد علي أفندي|Bereketzade Ali Efendi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد عبد الحميد خان|Abdülhamid Han Mosque",
+"g": "tr"
+},
+{
+"a": "جامع زواره|Jameh Mosque of Zavareh",
+"g": "ir"
+},
+{
+"a": "جامع كلبايكان|Jameh Mosque of Golpayegan",
+"g": "ir"
+},
+{
+"a": "جامع خليل أباد|Jameh Mosque of Khalilabad",
+"g": "ir"
+},
+{
+"a": "جامع غوغان|Jameh Mosque of Gugan",
+"g": "ir"
+},
+{
+"a": "مسجد أستاد وشاغرد|Mosque of Master and Student",
+"g": "ir"
+},
+{
+"a": "مسجد ميرزا موسى|Mirza Musa Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا ميرزا محمد باقر|Agha Mirza Muhammad Baqir Chahar Suqi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد هاجر خاتون|Hajar Khatoon Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد قبا|Qoba Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا عباس|Agha Abbas Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد فخر الدولة|Fakhr al-Dawla Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد هدايت|Hedayat Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد طاهر|Tahir Mosque",
+"g": "in"
+},
+{
+"a": "مسجد محافظ خان|Muhafiz Khan Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كامبالاكاد الجمعة|Kambalakkad juma msjid",
+"g": "in"
+},
+{
+"a": "مسجد أشوت بيبي|Achut Bibi's Mosque and Tomb",
+"g": "in"
+},
+{
+"a": "مسجد هيبات خان|Haibat Khan's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد الأمانة العامة|Secretariat Mosque",
+"g": "in"
+},
+{
+"a": "مسجد بيبي كي|Bibi Ki Masjid",
+"g": "in"
+},
+{
+"a": "مسجد مالك عالم|Malik Alam's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد سيد عثمان|Saiyad Usman Mosque and Tomb",
+"g": "in"
+},
+{
+"a": "مسجد محيدين|Mohidden Mosque, Lakshadweep",
+"g": "in"
+},
+{
+"a": "مسجد الجمعة بولانشيري|Juma Masjid, Pullancheri",
+"g": "in"
+},
+{
+"a": "مسجد كيفادا|Kevada Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كولورفيلا الجمعة|Kolloorvila Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد شوراسي خمبا|Chaurasi Khamba Mosque",
+"g": "in"
+},
+{
+"a": "مسجد أوبال كالان|Masjid Uppal Kalan",
+"g": "in"
+},
+{
+"a": "مسجد رحيم خان|Masjid-e-Raheem Khan",
+"g": "in"
+},
+{
+"a": "مسجد صادق قصاعي|Sadna Qasai Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مأمور|Masjid Mamoor",
+"g": "in"
+},
+{
+"a": "مسجد نيليكونو محيي الدين الجمعة|Nellikunnu Muhyaddin Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد راني سبري|Rani Sipri's Mosque and Tomb",
+"g": "in"
+},
+{
+"a": "مسجد الشيعة الجامع|Shia Jama Masjid, Delhi",
+"g": "in"
+},
+{
+"a": "مسجد قطب شاهي|Baro Shona Masjid",
+"g": "in"
+},
+{
+"a": "مسجد بصري شاه|Basri Shah Mosque",
+"g": "in"
+},
+{
+"a": "مسجد باومان|Bawaman Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كمال مول|Bhojshala and Kamal Maula’s Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كازا فيرونا|Casa Verona's Mosque",
+"g": "in"
+},
+{
+"a": "المسجد الأصفر|Yellow Mosque",
+"g": "in"
+},
+{
+"a": "جامع متيجيل|Motijheel Jama Mosque",
+"g": "in"
+},
+{
+"a": "الجامع في نيرول|Jama Masjid, Nerul",
+"g": "in"
+},
+{
+"a": "مسجد أندو|Andu Masjid",
+"g": "in"
+},
+{
+"a": "الجامع في كلكندة|Jama Masjid, Golconda",
+"g": "in"
+},
+{
+"a": "مسجد نوماهلا|Noumahla Masjid",
+"g": "in"
+},
+{
+"a": "مسجد سات تاد|Sat Tad Masjid",
+"g": "in"
+},
+{
+"a": "مسجد تشوك كي|Chowk Ke Masjid",
+"g": "in"
+},
+{
+"a": "مسجد كوتايميدو|Kottaimedu Mosque",
+"g": "in"
+},
+{
+"a": "مسجد نوري|Noori Masjid",
+"g": "in"
+},
+{
+"a": "مسجد كالي|Kali Masjid, Jalna",
+"g": "in"
+},
+{
+"a": "مسجد المستشفى العسكري جهلم|CMH Masjid Jhelum",
+"g": "pk"
+},
+{
+"a": "مسجد منزل جاه|Manzilgah",
+"g": "pk"
+},
+{
+"a": "مسجد محمود الغزنوي|Mahmud Ghaznavi Mosque",
+"g": "pk"
+},
+{
+"a": "جامع مسجد ثال|Jamia Masjid Thal",
+"g": "pk"
+},
+{
+"a": "مسجد سونهري|Sunehri Mosque, Peshawar",
+"g": "pk"
+},
+{
+"a": "مسجد يادغار|Yadgaar Mosque",
+"g": "pk"
+},
+{
+"a": "المسجد الكبير رياض الصالحين|Riadhusshalihin Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سيوهاده|Syuhada Mosque",
+"g": "id"
+},
+{
+"a": "مسجد أغونغ مانونغال|Agung Manunggal Bantul Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بيت الرحمن|Baiturrahman Sungayang Mosque",
+"g": "id"
+},
+{
+"a": "مسجد مركز بيت المخلصين الإسلامي|Baitul Mukhlisin Islamic Center Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير بيت المكمور في تانجونغ أوبان|Baitul Makmur Tanjung Uban Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد النوير بكوجان|An-Nawier Mosque",
+"g": "id"
+},
+{
+"a": "مسجد البيت القديم|Great Mosque of Al-Baitul Qadim",
+"g": "id"
+},
+{
+"a": "مسجد سوندا كيلابا|Sunda Kelapa Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كيراتون سامباس|Masjid Sultan Muhammad Syafi'oeddin II",
+"g": "id"
+},
+{
+"a": "مسجد تحفة الراغبين|Tuhfaturroghibin Jami Mosque",
+"g": "id"
+},
+{
+"a": "مسجد المحمدية|Kelayan Muhammadiyah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد السعادة|Saadah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الصراط المستقيم|Shiratal Mustaqiem Mosque",
+"g": "id"
+},
+{
+"a": "مسجد لاوتزه 2|Lautze 2 Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير الأعظم|Al-Azhom Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الطاهر|At-Thohir Mosque",
+"g": "id"
+},
+{
+"a": "المسجد الكبير الاستقلال|Al-Istiqlal Great Mosque, Murung Raya",
+"g": "id"
+},
+{
+"a": "المسجد الكبير الروضة|Ar Raudhah Great Mosque",
+"g": "id"
+},
+{
+"a": "مسجد مفتاح الجنة",
+"g": "id"
+},
+{
+"a": "مسجد المقربين",
+"g": "id"
+},
+{
+"a": "مسجد تاون بادانغ|Town Padang Mosque",
+"g": "my"
+},
+{
+"a": "مسجد تان سري عين الدين وحيد|Tan Sri Ainuddin Wahid Mosque",
+"g": "my"
+},
+{
+"a": "مسجد توانكو مناور الملكي|Tuanku Munawir Royal Mosque",
+"g": "my"
+},
+{
+"a": "مسجد رزالي|Razaleigh Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سري سندايان|Sri Sendayan Mosque",
+"g": "my"
+},
+{
+"a": "مسجد ديجارون|Deggaron Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد شاكر|Chakar Mosque",
+"g": "uz"
+},
+{
+"a": "مسجد حاجي دنيا غل نيازي الجامع|Hajji Dunya Gul Niazi Jamia Masjid",
+"g": "af"
+},
+{
+"a": "جامع الإمام الحسين بالدمام|Mosque of Imam Hussein",
+"g": "sa"
+},
+{
+"a": "مسجد الجفالي|Jaffali Mosque",
+"g": "sa"
+},
+{
+"a": "جامع حسن عناني|Hassan Enany Mosque",
+"g": "sa"
+},
+{
+"a": "جامع الراجحي|Al Rajhi Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الملك عبد الله|King Abdullah Mosque",
+"g": "sa"
+},
+{
+"a": "جامع حي السفارات الكبير|Hayy Assafarat Grand Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الأميرة لطيفة بنت سلطان|Princess Latifa bint Sultan Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الملك عبد العزيز|King Abdulaziz Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الشافعي|Al-Shafi'i Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد المعمار|al-Mi'mar",
+"g": "sa"
+},
+{
+"a": "مسجد عداس|Addas Mosque",
+"g": "sa"
+},
+{
+"a": "جامع سيد الشهداء|Sayyid Ash-Shuhada Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد المحلي|Al-Mahaly Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد العباسي|El-Abbasi Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد سيدي ياقوت العرش|Sidi Yaqut Al-Arsh Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد السلطان قايتباي|Sultan Qaytbay Roda Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد السيدة حورية|Mosque of Sayyida Huriyya",
+"g": "eg"
+},
+{
+"a": "مسجد البحر|El-Bahr mosque, Dumyat",
+"g": "eg"
+},
+{
+"a": "مسجد زغلول|Zaghloul Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد على الكاشف جمال الدين|El-Kashef Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الحاج عبد الباقى جوريجى|Shurbagi Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الحصري|Al-Hosary Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد المعيني|El-Ma'eini mosque, Dumyat",
+"g": "eg"
+},
+{
+"a": "مسجد الملكة صفية|mosque of al-Malika Safiyya",
+"g": "eg"
+},
+{
+"a": "جامع القرافة|Jami al-Qarafa Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة أيتمش البجاسي|mosque of Aitmisch al-Bagasi",
+"g": "eg"
+},
+{
+"a": "زاوية وسبيل فرج بن برقوق|Zawiya-Sabil Faraj Ibn Barquq",
+"g": "eg"
+},
+{
+"a": "مسجد الحديدي",
+"g": "eg"
+},
+{
+"a": "مسجد القصبة|Kasbah Mosque",
+"g": "ma"
+},
+{
+"a": "المسجد الأعظم بتارودانت|The Great Mosque of Taroudant",
+"g": "ma"
+},
+{
+"a": "مسجد السلام|Al Salam Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد لالة غريبة|Lalla Ghariba Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد الرحمة|El Rahma Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد ابن تومرت|Ibn Toumert Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد سيدي عبد الرحمان الثعالبي|Sidi Abderrahman Mosque",
+"g": "dz"
+},
+{
+"a": "جامع سيدي محمد شريف|Mohammed Ech-Charif Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد عمر بن الخطاب",
+"g": "dz"
+},
+{
+"a": "مسجد النور",
+"g": "dz"
+},
+{
+"a": "جامع سيدي بن غلاب|Sidi Ben Ghalleb Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي عبد الرحمان|Sidi Abderrahmane Mosque",
+"g": "tn"
+},
+{
+"a": "جامع فضلون|Jemaâ Fadhloun",
+"g": "tn"
+},
+{
+"a": "مسجد المالك|Al Malek Mosque",
+"g": "tn"
+},
+{
+"a": "الجامع الكبير بباجة|Great Mosque of Béja",
+"g": "tn"
+},
+{
+"a": "مسجد دار الآغة|Mosque of Dar El Agha",
+"g": "tn"
+},
+{
+"a": "مسجد بو فتاتة|Bu Ftata Mosque",
+"g": "tn"
+},
+{
+"a": "جامع المسدي|El Mseddi Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد تاجديت|Tajdit Mosque",
+"g": "tn"
+},
+{
+"a": "جامع الأغوات|Aghawat Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الإمام موسى الكاظم|Imam Mosa Al Kadhim Grand Mousque",
+"g": "iq"
+},
+{
+"a": "جامع العقرب|Mosque Scorpio",
+"g": "iq"
+},
+{
+"a": "مسجد الإمام علي الشرقي|Imam Ali Al Sharqi Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد الشيخ جواد الصادق|Sheikh Jawad Al-Sadiq Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الرابعية|Al-Raabiya Mosque",
+"g": "iq"
+},
+{
+"a": "جامع العسافي|Al Asafi Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الزيواني|Ziwani Mosque",
+"g": "iq"
+},
+{
+"a": "جامع قمرية|Qumaria Mosque",
+"g": "iq"
+},
+{
+"a": "جامع ومرقد النبي يوشع|Joshua Mosque",
+"g": "iq"
+},
+{
+"a": "جامع البصرة الكبير|Basrah Great Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ رجب|Shaykh Rajab Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الخاصكي",
+"g": "iq"
+},
+{
+"a": "جامع الخاتون",
+"g": "iq"
+},
+{
+"a": "جامع الراشد الشمالي القديم",
+"g": "iq"
+},
+{
+"a": "جامع عمر بن الخطاب",
+"g": "iq"
+},
+{
+"a": "جامع محمد الفاتح",
+"g": "iq"
+},
+{
+"a": "مسجد علي حسين الراشد",
+"g": "iq"
+},
+{
+"a": "جامع باب سليمان",
+"g": "iq"
+},
+{
+"a": "مسجد القرطاس",
+"g": "iq"
+},
+{
+"a": "جامع الفقير",
+"g": "iq"
+},
+{
+"a": "جامع العزيز الحكيم",
+"g": "iq"
+},
+{
+"a": "مسجد كتارا|Katara Mosque",
+"g": "qa"
+},
+{
+"a": "جامع عمر بن الخطاب",
+"g": "qa"
+},
+{
+"a": "مسجد الرحيم|Masjid Al Rahim",
+"g": "ae"
+},
+{
+"a": "المسجد الإيراني|Iranian Mosque, Satwa",
+"g": "ae"
+},
+{
+"a": "جامع الإمام الصادق|Imam Jaʿfar as-Ṣādiq Mosque",
+"g": "kw"
+},
+{
+"a": "مسجد علي بن أبي طالب|Ali bin Abi Talib Mosque",
+"g": "jo"
+},
+{
+"a": "ضريح النبي شعيب|Prophet Shu'ayb Mosque",
+"g": "jo"
+},
+{
+"a": "مسجد لستب|Listeb Mosque",
+"g": "jo"
+},
+{
+"a": "مسجد عبد القادر الجيلاني|Abdul Qadir Gilani Mosque, Jordan",
+"g": "jo"
+},
+{
+"a": "الجامع العمري|Al-Omari Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الإيمان|Al Iman Mosque",
+"g": "sy"
+},
+{
+"a": "جامع باب المصلى|Bab Musalla Mosque",
+"g": "sy"
+},
+{
+"a": "جامع أرسلان باشا",
+"g": "sy"
+},
+{
+"a": "جامع الحسنين",
+"g": "sy"
+},
+{
+"a": "جامع سعال|Sa'al Mosque",
+"g": "om"
+},
+{
+"a": "مسجد الدارة|Al Darah Mosque",
+"g": "bh"
+},
+{
+"a": "مسجد ميدان الجزائر|Algeria Square Mosque",
+"g": "ly"
+},
+{
+"a": "مسجد علي بن أبي طالب|Ali bin Abi Talib Mosque",
+"g": "ly"
+},
+{
+"a": "المسجد الكبير|Khartoum Grand Mosque",
+"g": "sd"
+},
+{
+"a": "مسجد الشيخ لولو|Sheikh Lu'lu' Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد قلاوون|Qalawun mosque",
+"g": "ps"
+},
+{
+"a": "مسجد المغاربة|Al-Maghariba mosque",
+"g": "ps"
+},
+{
+"a": "رباط علاء الدين|Ala'eddin Al Basiri Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد عمر بن الخطاب|Mosque of Omar, Tulkarm",
+"g": "ps"
+},
+{
+"a": "مسجد سنيريا|Sanniriya Mosque",
+"g": "ps"
+},
+{
+"a": "جامع الأنبياء",
+"g": "ps"
+},
+{
+"a": "مسجد باعلوي|Ba'alawi Mosque",
+"g": "ye"
+},
+{
+"a": "مسجد العباس|Al Abbas Mosque",
+"g": "ye"
+},
+{
+"a": "الجامع الكبير في زبيد|Great Mosque of Zabid",
+"g": "ye"
+},
+{
+"a": "مسجد بلال الحبشي|Bilal-i Habeşi Masjid",
+"g": "tr"
+},
+{
+"a": "جامع الشيخ أبو الوفا|Shaykh Ebu'l Vefa Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أصلح الدين|Aslahaddin Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد بوسيكلي|Böcekli Mosque",
+"g": "tr"
+},
+{
+"a": "قبر آهي إيفرين|Tomb of Ahi Evren",
+"g": "tr"
+},
+{
+"a": "مسجد غولبهار خاتون|Gülbahar Hatun Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الحصن|Masjid al-Hisn",
+"g": "tr"
+},
+{
+"a": "مسجد النقيب|Nakip Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد كيلتشي|Kileci Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد الهداية|Hidayet Mosque",
+"g": "tr"
+},
+{
+"a": "مجمع مسجد زينل عابدين|Zeynel Abidin Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد أغا محمود|Agha Mahmud Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج غفار|Tomb of Haft-Tanan",
+"g": "ir"
+},
+{
+"a": "مسجد علويان|Alavian Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أزيران|Eziran Mosque",
+"g": "ir"
+},
+{
+"a": "مدرسة ومسجد الشيخ عبد الحسين|Sheikh Abdolhossein Mosque",
+"g": "ir"
+},
+{
+"a": "جامع بيدخت|Jameh Mosque of Bidokht",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج سر تيب|Haj Sartip Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا|Agha Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ميرزا علي أكبر|Mirza Ali Akbar Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد مجد الدولة|Majd al-Dawla Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد نظام الدولة|Nizam al-Dawla Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد السيد عزيز الله|Seyyed Azizollah Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ومدرسة الحاج قنبر علي خان|Haj Qanbar Ali Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد نقشينة بيدغل|Naqshineh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أبو البركات|Abul Barakat Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شورين|Sheverin Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سراوان|Jameh Mosque of Dezak",
+"g": "ir"
+},
+{
+"a": "مسجد سرخي|Red Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سنغان|Jameh Mosque of Sangan",
+"g": "ir"
+},
+{
+"a": "مسجد توران بشت|Turan Posht Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا غلام علي|Agha Gholam Ali Mosque",
+"g": "ir"
+},
+{
+"a": "جامع بردسكن|Old Jameh Mosque of Bardaskan",
+"g": "ir"
+},
+{
+"a": "مسجد بل سنغي|Stone Bridge Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ملا علي أران|Mulla Ali Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ومدرسة خان|Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إمام حسن عسكري أمل|Imam Hassan Askari Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ومدرسة صالحية|Salehiyyeh Mosque and Madrasa",
+"g": "ir"
+},
+{
+"a": "مسجد ولي العصر|Vali-e-Asr Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سنندج|Jameh Mosque of Sanandaj",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج سميع|Haj Sami Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد مطلب خان|Motalleb Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أبو ذر|Abuzar Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج علي كوتشك|Haj Ali Kuchak Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ظلمات وضريح مير عماد|Zolmat Mosque and Tomb of Mir Emad",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج رجب علي|Haj Rajab Ali Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سيراف|Jameh Mosque of Siraf",
+"g": "ir"
+},
+{
+"a": "المسجد والمئذنة سين|Jameh Mosque of Sin",
+"g": "ir"
+},
+{
+"a": "مسجد ملك زوزن|Malek Zozan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شهيدي",
+"g": "ir"
+},
+{
+"a": "مسجد علي بن أبي طالب",
+"g": "ir"
+},
+{
+"a": "مسجد محمود|Masjid e Mahmood, Choolaimedu",
+"g": "in"
+},
+{
+"a": "مسجد ميا خان الجشتي|Miya Khan Chishti's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد محمد غوث|Mohammed Ghous Mosque",
+"g": "in"
+},
+{
+"a": "مسجد عالمغير|Alamgir Mosque, Aurangabad",
+"g": "in"
+},
+{
+"a": "مسجد أنوار|Anwaar Mosque",
+"g": "in"
+},
+{
+"a": "مسجد المنارة الواحدة|Ek Minar Mosque, Raichur",
+"g": "in"
+},
+{
+"a": "مسجد شاهبور|Shahpur Mosque",
+"g": "in"
+},
+{
+"a": "مسجد سونغام|Sungam Mosque",
+"g": "in"
+},
+{
+"a": "مسجد تيزو الجامع|Tezu Jama Mosque, Arunachal Pradesh",
+"g": "in"
+},
+{
+"a": "مسجد إيدابالي الجمعة|Edappally Juma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد جاما|Jama Masjid, Erandol",
+"g": "in"
+},
+{
+"a": "مسجد كاتوبافا|Kattubava Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مصري|Misri Masjid",
+"g": "in"
+},
+{
+"a": "مسجد سنجولي|Sanjauli Mosque",
+"g": "in"
+},
+{
+"a": "مسجد صلاح خامبا|Solah Khamba Mosque",
+"g": "in"
+},
+{
+"a": "ضريح ومسجد دلاور خان|Dilawar Khan's Tomb and Mosque",
+"g": "in"
+},
+{
+"a": "مسجد علي فرهاد خان|Ali Farhad Khan's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد أيزوال|Aizwal Mosque",
+"g": "in"
+},
+{
+"a": "مسجد ليلا غومباج كي|Lila Gumbaj Ki Masjid",
+"g": "in"
+},
+{
+"a": "مسجد نادر شاه|Nadir Shah Mosque",
+"g": "in"
+},
+{
+"a": "مسجد بوث رود الجمعة|Butt Road Jumma Masjid",
+"g": "in"
+},
+{
+"a": "مسجد تشوكامبا|Chaukhamba Mosque",
+"g": "in"
+},
+{
+"a": "جامع قدم الرسول|Qadam Rasul Mosque",
+"g": "in"
+},
+{
+"a": "مسجد كيرور|Kheraul mosque",
+"g": "in"
+},
+{
+"a": "الجامع في بهاروش|Jami Masjid, Bharuch",
+"g": "in"
+},
+{
+"a": "مسجد جهانجهري|Jhanjhari Masjid",
+"g": "in"
+},
+{
+"a": "مسجد شاتا|Chatta Masjid",
+"g": "in"
+},
+{
+"a": "مسجد عيدكه|Eidgah, Kheri",
+"g": "in"
+},
+{
+"a": "مسجد ريواند|Raywand Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد بيت المكرم|Baitul Mukarram Masjid",
+"g": "pk"
+},
+{
+"a": "مسجد ساوي|Sawi Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد كياي جيدي|Kyai Gede Mosque",
+"g": "id"
+},
+{
+"a": "مسجد الهلال داتو تيرو|Nurul Hilal Dato Tiro Mosque",
+"g": "id"
+},
+{
+"a": "مسجد سونان جيري|Sunan Giri Mosque",
+"g": "id"
+},
+{
+"a": "مسجد البركة|Al-Barkah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد لاويان|Laweyan Mosque",
+"g": "id"
+},
+{
+"a": "مسجد التين|At-Tin Mosque",
+"g": "id"
+},
+{
+"a": "مسجد نور اليقين|Nurul Yaqin Aie Bangih Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ايمان الدين الكبير|Imanuddin Mosque",
+"g": "id"
+},
+{
+"a": "مسجد ستي ديرزاناه|Siti Djirzanah Mosque",
+"g": "id"
+},
+{
+"a": "مسجد كوراي تاجي|Kuraitaji Grand Mosque",
+"g": "id"
+},
+{
+"a": "مسجد بوكوالامان|Pakualaman Mosque",
+"g": "id"
+},
+{
+"a": "مسجد أول فتح المبين",
+"g": "id"
+},
+{
+"a": "مسجد المهاجرين",
+"g": "id"
+},
+{
+"a": "مسجد بابول شير",
+"g": "id"
+},
+{
+"a": "مسجد لانداك",
+"g": "id"
+},
+{
+"a": "مسجد عاجي امير حسن الدين",
+"g": "id"
+},
+{
+"a": "مسجد سيلالو",
+"g": "id"
+},
+{
+"a": "مسجد الكريم الكبير",
+"g": "id"
+},
+{
+"a": "مسجد بيت الجليل",
+"g": "id"
+},
+{
+"a": "مسجد ناتونا الكبير",
+"g": "id"
+},
+{
+"a": "مسجد وليو الكبير",
+"g": "id"
+},
+{
+"a": "مسجد أرا دامانسارا|Ara Damansara Mosque",
+"g": "my"
+},
+{
+"a": "مسجد البخاري|Albukhary Mosque",
+"g": "my"
+},
+{
+"a": "مسجد سلام|Salam Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد المدي|Al Madi Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الحلة|Hilla Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الخضر|Al-Khidr Mosque",
+"g": "sa"
+},
+{
+"a": "جامع عائشة الراجحي|Aisha Alrajhi Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد العظام|Alitham Mosque, Al-'Ula",
+"g": "sa"
+},
+{
+"a": "مسجد الجعلانية|Al-Jalaniyah Mosque",
+"g": "sa"
+},
+{
+"a": "مسجد الصخرات",
+"g": "sa"
+},
+{
+"a": "مسجد الجزيرة",
+"g": "sa"
+},
+{
+"a": "مسجد العصبة",
+"g": "sa"
+},
+{
+"a": "مسجد الكورنيش",
+"g": "sa"
+},
+{
+"a": "مسجد ابن لادن",
+"g": "sa"
+},
+{
+"a": "مسجد مقمل",
+"g": "sa"
+},
+{
+"a": "مسجد الباشا",
+"g": "sa"
+},
+{
+"a": "مسجد بني عبد الأشهل",
+"g": "sa"
+},
+{
+"a": "مسجد عينين",
+"g": "sa"
+},
+{
+"a": "مسجد بلال بن رباح",
+"g": "sa"
+},
+{
+"a": "مسجد علي بن أبي طالب",
+"g": "sa"
+},
+{
+"a": "مسجد الفيلقية",
+"g": "sa"
+},
+{
+"a": "مسجد اليمامة",
+"g": "sa"
+},
+{
+"a": "مسجد التوفيقي|Al-Tawfeqi Mosque",
+"g": "eg"
+},
+{
+"a": "الجامع العتيق|Old Mosque of Shali",
+"g": "eg"
+},
+{
+"a": "مسجد المصطفى|Al-Mostafa Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الميناء|Al-Mina Mosque",
+"g": "eg"
+},
+{
+"a": "الجامع العمري|al-Amri mosque",
+"g": "eg"
+},
+{
+"a": "المسجد العباسي|Al-Abbasi mosque",
+"g": "eg"
+},
+{
+"a": "مسجد الخضيري|Al-Khudayri mosque",
+"g": "eg"
+},
+{
+"a": "مسجد حاتم|Hatem Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد المواساة|Al Mouwasat Mosque",
+"g": "eg"
+},
+{
+"a": "مدرسة العيني|mosque, madrasa and tomb of sheikh al-Islam al-Alama Badr ad-Din al-Aini",
+"g": "eg"
+},
+{
+"a": "مسجد عثمان كتخدا|Al-Kikhia mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة جوهر اللالا|Jawhar al-Lala Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد ومدرسة أبو بكر مزهر|Mosque and madrasa of Abu Bakr Muzhir",
+"g": "eg"
+},
+{
+"a": "مسجد الشاطئ|Al-Shate'e Mosque",
+"g": "eg"
+},
+{
+"a": "مسجد أبو الخير الكليباتي|Zawiya of Abu al-Khayr al-Kulaybati",
+"g": "eg"
+},
+{
+"a": "مسجد عمر مكرم|Omar Makram mosque",
+"g": "eg"
+},
+{
+"a": "المسجد التوفيقي",
+"g": "eg"
+},
+{
+"a": "مسجد إسماعيل بن مازن الهواري",
+"g": "eg"
+},
+{
+"a": "مسجد الشيخ إبراهيم",
+"g": "eg"
+},
+{
+"a": "مسجد عبد الرحيم القناوي",
+"g": "eg"
+},
+{
+"a": "مسجد الإمام زين العابدين",
+"g": "eg"
+},
+{
+"a": "جامع البنات",
+"g": "eg"
+},
+{
+"a": "مسجد وخانقاه سعيد السعداء",
+"g": "eg"
+},
+{
+"a": "مسجد السيدة فاطمة",
+"g": "eg"
+},
+{
+"a": "مسجد الشرطة",
+"g": "eg"
+},
+{
+"a": "مسجد السلام",
+"g": "eg"
+},
+{
+"a": "مسجد عبد المنعم رياض",
+"g": "eg"
+},
+{
+"a": "مسجد بن يوسف بالصويرة|Ben Youssef Mosque in Essaouira",
+"g": "ma"
+},
+{
+"a": "مسجد محمد الخامس لأكادير|Mohammed V Mosque of Agadir",
+"g": "ma"
+},
+{
+"a": "مسجد السودان|Sudan Mosque",
+"g": "ma"
+},
+{
+"a": "مسجد أبو مروان الشريف|Mosquée de Sidi Bou Merouane",
+"g": "dz"
+},
+{
+"a": "مسجد الباي محمد الكبير|mosque of Bey Mohamed el-Kébir",
+"g": "dz"
+},
+{
+"a": "مسجد خبيب ابن عدي|Khubayb ibn Adiy Mosque",
+"g": "dz"
+},
+{
+"a": "مسجد القصر القديم",
+"g": "dz"
+},
+{
+"a": "الجامع الكبير بقبلي|Great Mosque of Kebili",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي لصيق|Sidi Lsig Mosque",
+"g": "tn"
+},
+{
+"a": "جامع سيدي عبيد الأخضر|Sidi Abid Lakhdar Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد العمران|El Omrane Mosque",
+"g": "tn"
+},
+{
+"a": "جامع مراد باي|Small Mosque of Béja",
+"g": "tn"
+},
+{
+"a": "جامع بلد الحضر|Bled El Hadhar Mosque",
+"g": "tn"
+},
+{
+"a": "جامع اللخمي|Sidi Ellakhmi Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد الرقود السبعة|Mosque of the Seven Sleepers",
+"g": "tn"
+},
+{
+"a": "جامع الشيخ|El Cheikh Mosque",
+"g": "tn"
+},
+{
+"a": "مسجد سيدي بن عيسى|Sidi Ben Aissa Mosque",
+"g": "tn"
+},
+{
+"a": "جامع أيوب بك الجليلي|Ayub Bey al-Jalili Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الإحسائي|Al Khalidiya mosque",
+"g": "iq"
+},
+{
+"a": "جامع الفضل|Fadl Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد النور|Alnoor Mosque",
+"g": "iq"
+},
+{
+"a": "جامع جولي|Mohamed Jolly Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد بشر الحافي|Bishr al-Hafi Mosque",
+"g": "iq"
+},
+{
+"a": "مسجد السيد محمود|Mosque of Arnā’ūt",
+"g": "iq"
+},
+{
+"a": "مسجد السيدة زينب|Sayyidah Zaynab Mosque",
+"g": "iq"
+},
+{
+"a": "جامع دهوك الكبير|Great Mosque of Duhok",
+"g": "iq"
+},
+{
+"a": "جامع فتاح باشا|Fattah Pasha Mosque",
+"g": "iq"
+},
+{
+"a": "جامع منورة خاتون|Manoura Khatoun Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ سراج الدين|Siraj al-Din Mosque",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ جنيد البغدادي|Shaykh Junayd al-Baghdadi Mosque",
+"g": "iq"
+},
+{
+"a": "جامع المفتي|Great Mosque of Koya",
+"g": "iq"
+},
+{
+"a": "جامع الوفائية|Wafaaia Mosque",
+"g": "iq"
+},
+{
+"a": "جامع النداء",
+"g": "iq"
+},
+{
+"a": "جامع علي الموسوي",
+"g": "iq"
+},
+{
+"a": "جامع الحاج أمين جلبي",
+"g": "iq"
+},
+{
+"a": "جامع العلي",
+"g": "iq"
+},
+{
+"a": "جامع العمري",
+"g": "iq"
+},
+{
+"a": "جامع اليقظة",
+"g": "iq"
+},
+{
+"a": "جامع بكر أفندي",
+"g": "iq"
+},
+{
+"a": "جامع خزام",
+"g": "iq"
+},
+{
+"a": "جامع عبد الله بك",
+"g": "iq"
+},
+{
+"a": "جامع أبو الزهراء الصادق الأمين",
+"g": "iq"
+},
+{
+"a": "جامع ذي المنارتين",
+"g": "iq"
+},
+{
+"a": "جامع الخشيرم",
+"g": "iq"
+},
+{
+"a": "جامع العشرة المبشرة",
+"g": "iq"
+},
+{
+"a": "جامع القيوم",
+"g": "iq"
+},
+{
+"a": "جامع مالك بن أنس",
+"g": "iq"
+},
+{
+"a": "جامع محمد الخلف القديم",
+"g": "iq"
+},
+{
+"a": "مسجد السميط",
+"g": "iq"
+},
+{
+"a": "مسجد القطانة",
+"g": "iq"
+},
+{
+"a": "جامع أبي الخفيف",
+"g": "iq"
+},
+{
+"a": "جامع السيف",
+"g": "iq"
+},
+{
+"a": "جامع العرب",
+"g": "iq"
+},
+{
+"a": "جامع النجادة",
+"g": "iq"
+},
+{
+"a": "جامع جوارتا الكبير",
+"g": "iq"
+},
+{
+"a": "جامع حمزة الفداغ",
+"g": "iq"
+},
+{
+"a": "جامع ومرقد الإمام قاسم",
+"g": "iq"
+},
+{
+"a": "مسجد الإبراهيم",
+"g": "iq"
+},
+{
+"a": "مسجد الحسي",
+"g": "iq"
+},
+{
+"a": "مسجد الزهير",
+"g": "iq"
+},
+{
+"a": "مسجد ومرقد حبيب العجمي",
+"g": "iq"
+},
+{
+"a": "جامع التوكندي",
+"g": "iq"
+},
+{
+"a": "جامع الجويجي",
+"g": "iq"
+},
+{
+"a": "جامع حمزة الفوقاني",
+"g": "iq"
+},
+{
+"a": "جامع باب الطويل",
+"g": "iq"
+},
+{
+"a": "جامع مناوي لجم الصغير",
+"g": "iq"
+},
+{
+"a": "مسجد حمو الصراف",
+"g": "iq"
+},
+{
+"a": "جامع أم النعاج",
+"g": "iq"
+},
+{
+"a": "مسجد ومرقد الشيخ علي",
+"g": "iq"
+},
+{
+"a": "جامع راوندوز الكبير",
+"g": "iq"
+},
+{
+"a": "جامع ديانا الكبير",
+"g": "iq"
+},
+{
+"a": "مرقد ومسجد الشيخ معصوم",
+"g": "iq"
+},
+{
+"a": "جامع بالكيان القديم",
+"g": "iq"
+},
+{
+"a": "جامع خانقا كفري",
+"g": "iq"
+},
+{
+"a": "جامع حمدان البلد",
+"g": "iq"
+},
+{
+"a": "مرقد ومسجد صدر الدين",
+"g": "iq"
+},
+{
+"a": "مسجد الشيخ محمد البلقيسي",
+"g": "iq"
+},
+{
+"a": "جامع الكرناوي",
+"g": "iq"
+},
+{
+"a": "جامع القدس",
+"g": "iq"
+},
+{
+"a": "مسجد الدليجان",
+"g": "iq"
+},
+{
+"a": "مسجد ابن غانم",
+"g": "iq"
+},
+{
+"a": "مسجد ومدرسة الحاج زكر",
+"g": "iq"
+},
+{
+"a": "جامع أم مسجد",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ عبدال",
+"g": "iq"
+},
+{
+"a": "جامع الشيخ محمد",
+"g": "iq"
+},
+{
+"a": "جامع عمر الأسود",
+"g": "iq"
+},
+{
+"a": "جامع جمشيد",
+"g": "iq"
+},
+{
+"a": "جامع الحامدين",
+"g": "iq"
+},
+{
+"a": "جامع الحاج منصور",
+"g": "iq"
+},
+{
+"a": "مسجد ومرقد عيسى الجيلاني",
+"g": "iq"
+},
+{
+"a": "جامع قضيب البان",
+"g": "iq"
+},
+{
+"a": "جامع نعمان باشا",
+"g": "iq"
+},
+{
+"a": "جامع عويسيان",
+"g": "iq"
+},
+{
+"a": "مسجد الحاج عبد القادر سعيد الدباغ",
+"g": "iq"
+},
+{
+"a": "جامع المأمون",
+"g": "iq"
+},
+{
+"a": "مسجد شمس الدين الأموي",
+"g": "iq"
+},
+{
+"a": "مسجد اليتيم",
+"g": "iq"
+},
+{
+"a": "مسجد المحكمة",
+"g": "iq"
+},
+{
+"a": "جامع الشهوان",
+"g": "iq"
+},
+{
+"a": "جامع العشرة المبشرين",
+"g": "iq"
+},
+{
+"a": "مسجد بلد السيد",
+"g": "iq"
+},
+{
+"a": "جامع حمدان البز",
+"g": "iq"
+},
+{
+"a": "مسجد السليمانية",
+"g": "iq"
+},
+{
+"a": "مسجد مشيرب",
+"g": "qa"
+},
+{
+"a": "مسجد زوبيا القديم",
+"g": "jo"
+},
+{
+"a": "الجامع الكبير في سرمين|Great Mosque of Sarmin",
+"g": "sy"
+},
+{
+"a": "الجامع المعلق في دمشق|Al-Muallaq Mosque",
+"g": "sy"
+},
+{
+"a": "جامع المغربي|Sheikh Muhammad al-Maghribi Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد دار السلام|Al-Salam Mosque, Syria",
+"g": "sy"
+},
+{
+"a": "جامع الكويتي|Al-Osmaane Mosque",
+"g": "sy"
+},
+{
+"a": "مسجد التكية السليمانية|Sulaymaniyya Takiyya Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الجراح|Jarrah Mosque",
+"g": "sy"
+},
+{
+"a": "جامع الإمام الصادق",
+"g": "sy"
+},
+{
+"a": "جامع البختي",
+"g": "sy"
+},
+{
+"a": "مسجد عائشة بكار|Aisha Bakkar Mosque",
+"g": "lb"
+},
+{
+"a": "جامع الفاروق|Al-Farouq Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد الداعوق|Al Da'ouk Mosque",
+"g": "lb"
+},
+{
+"a": "مسجد السلطان محمد الفاتح|Sultan Muhammad Al-Fatih Mosque",
+"g": "lb"
+},
+{
+"a": "جامع السلطان قابوس بنزوى|Sultan Qaboos Grand Mosque",
+"g": "om"
+},
+{
+"a": "جامع أحمد باشا القرملي|Ahmed Pasha Karamanli Mosque",
+"g": "ly"
+},
+{
+"a": "جامع الخروبة|Al-Kharouba Mosque",
+"g": "ly"
+},
+{
+"a": "جامع عبد الوهاب القيسي|Sidi Abdul Wahab Mosque",
+"g": "ly"
+},
+{
+"a": "جامع عصمان|Osman Mosque",
+"g": "ly"
+},
+{
+"a": "مسجد الشهيد|Ash-Shahid mosque Khartoum",
+"g": "sd"
+},
+{
+"a": "المسجد الكبير|Great Mosque of Khan Yunis",
+"g": "ps"
+},
+{
+"a": "مسجد محمد الفاتح|Sultan Muhammad Al-Fateh Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد القرمي|Al-Qarmi Mosque",
+"g": "ps"
+},
+{
+"a": "مسجد المئذنة الحمراء|Red Minaret Mosque, Jerusalem",
+"g": "ps"
+},
+{
+"a": "مسجد عثمان بن عفان|Uthman ibn Affan mosque",
+"g": "ps"
+},
+{
+"a": "جامع البيك",
+"g": "ps"
+},
+{
+"a": "مسجد الشهيد إبراهيم المقادمة",
+"g": "ps"
+},
+{
+"a": "جامع سفيان|Sufyan Mosque",
+"g": "ye"
+},
+{
+"a": "جامع الأبهر|Al-abhar Mosque",
+"g": "ye"
+},
+{
+"a": "جامع أنطاكيا الكبير|mosque in Antakya, Hatay",
+"g": "tr"
+},
+{
+"a": "مسجد بويوكدير كارا محمد كيتودا|Büyükdere Kara Mehmet Kethüda Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد باكالزاده|Bakkalzade Mosque",
+"g": "tr"
+},
+{
+"a": "جامع أهي جلبي|Ahi Çelebi Mosque",
+"g": "tr"
+},
+{
+"a": "مسجد محمدية|Mohammadiyeh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد سبز|Sabz Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد راه تشمان|Rah-e Chaman Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إسحاق ميرزا|Eshaq Mirza Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد غازران|Gazran Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد موسى الرضا|Musa al-Reza Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشيخ|Sheikh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج جعفر دايي|Haj Jafar Dayi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج ميرزا محمد صادق|Haj Mirza Mohammad Sadeq Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد اليادران|Aliyadaran Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد سبزة ميدان|Sabzeh Meydan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أحمد بيغ|Ahmad Beig Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ثقة الإسلام|Seqat al-Islam Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ومدرسة شمس أباد|Mosque and School of Shamsabad",
+"g": "ir"
+},
+{
+"a": "مسجد شيشة|Shisheh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد علي خوراسغان|Ali Mosque of Khorasgan",
+"g": "ir"
+},
+{
+"a": "مسجد خواجة شهدا|Khajeh Shohada Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج السيد جوادي|Haj Seyed Javadi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شالبافان|Shalbafan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشيخ ابو الحسن|Sheikh Abolhassan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ميرزا تقي|Mirza Taqi Mosque",
+"g": "ir"
+},
+{
+"a": "جامع خدا كرم|Jameh Mosque of Khoda Karam",
+"g": "ir"
+},
+{
+"a": "مسجد أدينة خان|Adineh Khan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشهيد ثالث|Shahid Sales Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج ملا أغا|Haj Mulla Agha Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد حسين بن علي|Hossein ibn Ali Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ملك دينار|Malek Dinar Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شهداي ابن سينا|Shohada-ye Ibn Sina Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد باكتنغ|Paktang Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ملاكر بلايي علي|Mulla Karbalai Ali Mosque",
+"g": "ir"
+},
+{
+"a": "مرقد إسماعيل|Imamzadeh Ismail",
+"g": "ir"
+},
+{
+"a": "مسجد مولا|Mola Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد غنبد أزادان|Gonbad-e Azadan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد بهشتي نجاد|Beheshtinejad Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد معز الدين|Moez al-Din Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج رضا|Haj Reza Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ميرزا صادق|Mirza Sadeq Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد سلماسي|Salmasi Mosque and cistern",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج يونس|Haj Yunes Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج خدارحم|Haj Khodarahm Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد تل عاشقان|Tal-e Asheghan Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد خياط ها|Khayyatha Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إمام جمعة|Imam Jomeh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الشيخ علي خان زنغنة|Sheikh Ali Khan Zanganeh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إمامزادة|Imamzadeh Seyyed Jamal",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج غني|Haj Ghani Mosque",
+"g": "ir"
+},
+{
+"a": "مدرسة ومسجد خازن الملك|Mosque and School of Khazen al-Molk",
+"g": "ir"
+},
+{
+"a": "مسجد كرماني|Kermani Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد نو بازار|Now Mosque of the Bazaar",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج زينل|Haj Zeynal Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد قطبية|Qotbiyeh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ومعبد النار سنغي|Fire Temple of Ij",
+"g": "ir"
+},
+{
+"a": "مسجد حضرت فاطمة|Hazrat Fatemeh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الحاج إبراهيم بيك|Haj Ebrahim Beyk Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أمير المؤمنين|Amir al-Momenin Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إيبكتشيلر|Ipekchiler Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد ملا مهدي|Mulla Mahdi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد الوند|Alvand Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد رنغينة|Rangineh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد آية الله|Ayatollah Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد دال ذال|Imamzadeh Dal Zal",
+"g": "ir"
+},
+{
+"a": "المئذنة والجامع نغار|Jameh Mosque of Negar",
+"g": "ir"
+},
+{
+"a": "مسجد تة باغ لله|Teh Bagh Laleh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد قصر منشي|Qasr-e Monshi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد خواجة روح الله|Khajeh Ruhollah Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد السيد صادق روحاني|Seyed Sadeq Rouhani Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد نظر بيغ|Nazar Beyg Mosque",
+"g": "ir"
+},
+{
+"a": "جامع جي|Jameh Mosque of Jey",
+"g": "ir"
+},
+{
+"a": "مسجد الشهيد صدوقي|Shahid Sadoughi Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شيشة غري|Shishehgari Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد با درخت سوختة|Pa Derakht-e Sukhteh Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد إمام حسن دهدق|Imam Hassan Mosque of Dehdaq",
+"g": "ir"
+},
+{
+"a": "مسجد السيد إسماعيل|Sayyid Ismail Mosque and cistern",
+"g": "ir"
+},
+{
+"a": "مسجد أبو المحسن|Abolmohsen Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد أغا السيد كاظم|Agha Seyyed Kazem Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد قراملك|Qaramalek Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد زيرك أباد|Zirakabad Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد شهر أباد|Jameh Mosque of Shahrabad",
+"g": "ir"
+},
+{
+"a": "جامع سعد الدين|Jameh Mosque of Sad ol Din",
+"g": "ir"
+},
+{
+"a": "مسجد يسرلو|Yasarlu Mosque",
+"g": "ir"
+},
+{
+"a": "مسجد بن نادار|Ben Nadar Mosque",
+"g": "ir"
+},
+{
+"a": "جامع سيف أباد|Jameh Mosque of Seyfabad",
+"g": "ir"
+},
+{
+"a": "مسجد نو|Now Mosque of Shiraz",
+"g": "ir"
+},
+{
+"a": "مسجد الشيخ فايز|Sheikh Fayz Mosque",
+"g": "ir"
+},
+{
+"a": "جامع كوشة|Jameh Mosque of Kusheh",
+"g": "ir"
+},
+{
+"a": "مسجد غنج علي خان|Ganjali Khan Mosque",
+"g": "ir"
+},
+{
+"a": "المدرسة الأمريكية لأصفهان|American school of Isfahan",
+"g": "ir"
+},
+{
+"a": "مسجد نواب الجامع|Nawab Jamia Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مالك عيسى|Malik Isan's Mosque",
+"g": "in"
+},
+{
+"a": "مسجد السيفي|Saifee Masjid",
+"g": "in"
+},
+{
+"a": "مسجد تيبو سلطان|Tipu Sultan Masjid Tollygunge",
+"g": "in"
+},
+{
+"a": "مسجد مغل|Moghal Masjid, Mumbai",
+"g": "in"
+},
+{
+"a": "مسجد هلال خان غازي|Hilal Khan Ghazi Mosque",
+"g": "in"
+},
+{
+"a": "مسجد بيغومبور|Begumpur Mosque",
+"g": "in"
+},
+{
+"a": "مسجد مقام|Maqam Masjid",
+"g": "in"
+},
+{
+"a": "مسجد ساوكار|Saukar Masjid",
+"g": "in"
+},
+{
+"a": "جامع رضا|Raza Jama Masjid",
+"g": "in"
+},
+{
+"a": "مسجد لال|Lal Masjid, Tijara",
+"g": "in"
+},
+{
+"a": "مسجد الأنوري|Masjid-e-Anwari",
+"g": "in"
+},
+{
+"a": "مسجد ملثورو وكيلثيرو|Meltheru and Keeltheru Mosques",
+"g": "in"
+},
+{
+"a": "جامع ظفر خان الغازي|Dargah of Zafar Khan Gazi",
+"g": "in"
+},
+{
+"a": "مسجد ثانيسار باثار|Thanesar Pathar Masjid",
+"g": "in"
+},
+{
+"a": "المسجد القديم|Purani Masjid, Dewaitha",
+"g": "in"
+},
+{
+"a": "مسجد باوا قاسم ولي الله|Bawa Kassim Valiyullah Masjid, Elankadai",
+"g": "in"
+},
+{
+"a": "مسجد نجيب آباد|Najibabad Mosque",
+"g": "in"
+},
+{
+"a": "مسجد راجغان|Rajgan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد آخوند بانجو بابا|Akhund Panju Baba Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد علي محمد خان|Ali Muhammad Khan Mosque",
+"g": "pk"
+},
+{
+"a": "مسجد المدينة|Madni Masjid, Islamabad",
+"g": "pk"
+},
+{
+"a": "مسجد نور الأمين|Nurul Amin Pagaruyung Mosque",
+"g": "id"
+},
+{
+"a": "مسجد المنان|Grand Mosque Al Mannan",
+"g": "id"
+},
+{
+"a": "مسجد لاوتزه|Lautze Mosque",
+"g": "id"
+},
+{
+"a": "مسجد تانارا الكبير",
+"g": "id"
+},
+{
+"a": "مسجد الشيخ سامبو",
+"g": "id"
+},
+{
+"a": "مسجد النور",
+"g": "id"
+},
+{
+"a": "مسجد نانغالو الكبير",
+"g": "id"
+},
+{
+"a": "مسجد رايوس الكبير",
+"g": "id"
+},
+{
+"a": "مسجد بينارانغ",
+"g": "id"
+},
+{
+"a": "مسجد بيت الرحيم الكبير",
+"g": "id"
+},
+{
+"a": "مسجد هونتو سلطان اماي",
+"g": "id"
+},
+{
+"a": "مسجد سورونغ الأكبر",
+"g": "id"
+},
+{
+"a": "مسجد جوبينج بارو جاميك|Masjid Baru Gopeng",
+"g": "my"
+},
+{
+"a": "مسجد سيبو|Sibu Town Mosque",
+"g": "my"
+},
+{
+"a": "مسجد الملك فهد|King Fahd Mosque",
+"g": "es"
+}
+]

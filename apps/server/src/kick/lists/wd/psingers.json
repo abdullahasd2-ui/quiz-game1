@@ -1,0 +1,6342 @@
+[
+{
+"a": "مايكل جاكسون|Michael Jackson",
+"g": "us"
+},
+{
+"a": "تشارلي تشابلن|Charlie Chaplin",
+"g": "gb"
+},
+{
+"a": "مارلين مونرو|Marilyn Monroe",
+"g": "us"
+},
+{
+"a": "شاكيرا",
+"g": "es"
+},
+{
+"a": "كوربن بلو|Corbin Bleu",
+"g": "us"
+},
+{
+"a": "إلفيس بريسلي|Elvis Presley",
+"g": "us"
+},
+{
+"a": "مارلينه ديتريش|Marlene Dietrich",
+"g": "us"
+},
+{
+"a": "ليدي غاغا",
+"g": "us"
+},
+{
+"a": "مادونا|Madonna",
+"g": "us"
+},
+{
+"a": "جون لينون|John Lennon",
+"g": "gb"
+},
+{
+"a": "بوب ديلن|Bob Dylan",
+"g": "us"
+},
+{
+"a": "تايلور سويفت|Taylor Swift",
+"g": "us"
+},
+{
+"a": "لوي أرمسترونغ|Louis Armstrong",
+"g": "us"
+},
+{
+"a": "بيونسيه",
+"g": "us"
+},
+{
+"a": "فريدي ميركوري|Freddie Mercury",
+"g": "gb"
+},
+{
+"a": "إمينيم|Eminem",
+"g": "us"
+},
+{
+"a": "لانا دل راي|Lana Del Rey",
+"g": "us"
+},
+{
+"a": "سكارليت جوهانسون|Scarlett Johansson",
+"g": "us"
+},
+{
+"a": "أودري هيبورن|Audrey Hepburn",
+"g": "gb"
+},
+{
+"a": "جودي غارلند|Judy Garland",
+"g": "us"
+},
+{
+"a": "بريجيت باردو|Brigitte Bardot",
+"g": "fr"
+},
+{
+"a": "هيبي كامارغو|Hebe Camargo",
+"g": "br"
+},
+{
+"a": "جيم موريسون|Jim Morrison",
+"g": "us"
+},
+{
+"a": "بول مكارتني|Paul McCartney",
+"g": "gb"
+},
+{
+"a": "بريتني سبيرز|Britney Spears",
+"g": "us"
+},
+{
+"a": "مايا أنجيلو|Maya Angelou",
+"g": "us"
+},
+{
+"a": "إديث بياف|Édith Piaf",
+"g": "fr"
+},
+{
+"a": "أريانا غراندي|Ariana Grande",
+"g": "us"
+},
+{
+"a": "مايلي سايرس|Miley Cyrus",
+"g": "us"
+},
+{
+"a": "فرانك سيناترا|Frank Sinatra",
+"g": "us"
+},
+{
+"a": "فرانك سيناترا|Frank Sinatra",
+"g": "it"
+},
+{
+"a": "ألان ديلون|Alain Delon",
+"g": "fr"
+},
+{
+"a": "كيتي بيري|Katy Perry",
+"g": "us"
+},
+{
+"a": "جينيفر لوبيز|Jennifer Lopez",
+"g": "us"
+},
+{
+"a": "آفريل لافين|Avril Lavigne",
+"g": "fr"
+},
+{
+"a": "كلينت إيستوود|Clint Eastwood",
+"g": "us"
+},
+{
+"a": "ويتني هيوستن|Whitney Houston",
+"g": "us"
+},
+{
+"a": "ويل سميث|Will Smith",
+"g": "us"
+},
+{
+"a": "أديل|Adele",
+"g": "gb"
+},
+{
+"a": "جيمي هندريكس|Jimi Hendrix",
+"g": "us"
+},
+{
+"a": "ديفيد بوي|David Bowie",
+"g": "gb"
+},
+{
+"a": "نيكول كيدمان|Nicole Kidman",
+"g": "us"
+},
+{
+"a": "ديمي لوفاتو|Demi Lovato",
+"g": "us"
+},
+{
+"a": "كيت وينسليت|Kate Winslet",
+"g": "gb"
+},
+{
+"a": "صوفيا لورين|Sophia Loren",
+"g": "fr"
+},
+{
+"a": "صوفيا لورين|Sophia Loren",
+"g": "it"
+},
+{
+"a": "جوينيث بالترو|Gwyneth Paltrow",
+"g": "us"
+},
+{
+"a": "إيمي واينهاوس|Amy Winehouse",
+"g": "gb"
+},
+{
+"a": "شارلوت رامبلينغ|Charlotte Rampling",
+"g": "gb"
+},
+{
+"a": "شارلوت رامبلينغ|Charlotte Rampling",
+"g": "fr"
+},
+{
+"a": "كيرت كوبين|Kurt Cobain",
+"g": "us"
+},
+{
+"a": "فاليري ليونتيف|Valery Leontiev",
+"g": "us"
+},
+{
+"a": "ستيفن سيغال|Steven Seagal",
+"g": "us"
+},
+{
+"a": "ماريا كاري|Mariah Carey",
+"g": "us"
+},
+{
+"a": "بيلي إيليش",
+"g": "us"
+},
+{
+"a": "أندرو غارفيلد",
+"g": "us"
+},
+{
+"a": "أندرو غارفيلد",
+"g": "gb"
+},
+{
+"a": "أميتاب بجن|Amitabh Bachchan",
+"g": "in"
+},
+{
+"a": "جورج هاريسون|George Harrison",
+"g": "gb"
+},
+{
+"a": "سيلينا",
+"g": "us"
+},
+{
+"a": "بينغ كروسبي|Bing Crosby",
+"g": "us"
+},
+{
+"a": "كايلي مينوغ|Kylie Minogue",
+"g": "gb"
+},
+{
+"a": "شير|Cher",
+"g": "us"
+},
+{
+"a": "جوني كاش|Johnny Cash",
+"g": "us"
+},
+{
+"a": "إلتون جون|Elton John",
+"g": "gb"
+},
+{
+"a": "جون ترافولتا|John Travolta",
+"g": "us"
+},
+{
+"a": "أريثا فرانكلين|Aretha Franklin",
+"g": "us"
+},
+{
+"a": "بروس ويليس",
+"g": "us"
+},
+{
+"a": "باليسترينا|Giovanni Pierluigi da Palestrina",
+"g": "it"
+},
+{
+"a": "لوتشانو بافاروتي",
+"g": "it"
+},
+{
+"a": "ليلى داونز",
+"g": "us"
+},
+{
+"a": "ليلى داونز",
+"g": "mx"
+},
+{
+"a": "روبرت داوني جونيور|Robert Downey Jr.",
+"g": "us"
+},
+{
+"a": "دوا ليبا",
+"g": "gb"
+},
+{
+"a": "تينا ترنر|Tina Turner",
+"g": "us"
+},
+{
+"a": "كرستوفر لي|Christopher Lee",
+"g": "gb"
+},
+{
+"a": "باريس هيلتون|Paris Hilton",
+"g": "us"
+},
+{
+"a": "ماي وست|Mae West",
+"g": "us"
+},
+{
+"a": "برنس|Prince",
+"g": "us"
+},
+{
+"a": "دانيال رادكليف|Daniel Radcliffe",
+"g": "gb"
+},
+{
+"a": "أم كلثوم|Umm Kulthum",
+"g": "eg"
+},
+{
+"a": "إيدي ميرفي|Eddie Murphy",
+"g": "us"
+},
+{
+"a": "فرانك زابا|Frank Zappa",
+"g": "us"
+},
+{
+"a": "كانييه ويست|Kanye West",
+"g": "us"
+},
+{
+"a": "باربرا سترايساند|Barbra Streisand",
+"g": "us"
+},
+{
+"a": "بريانكا شوبرا|Priyanka Chopra",
+"g": "in"
+},
+{
+"a": "كاري فيشر|Carrie Fisher",
+"g": "us"
+},
+{
+"a": "ووبي غولدبرغ|Whoopi Goldberg",
+"g": "us"
+},
+{
+"a": "بروس سبرينغستين|Bruce Springsteen",
+"g": "us"
+},
+{
+"a": "ري تشارلز|Ray Charles",
+"g": "us"
+},
+{
+"a": "برونو مارس",
+"g": "us"
+},
+{
+"a": "ديفيد لينش|David Lynch",
+"g": "us"
+},
+{
+"a": "سلمى حايك|Salma Hayek",
+"g": "us"
+},
+{
+"a": "أنستزيا|Anastacia",
+"g": "us"
+},
+{
+"a": "أوزي أوزبورن|Ozzy Osbourne",
+"g": "gb"
+},
+{
+"a": "هيو جاكمان",
+"g": "gb"
+},
+{
+"a": "سلمى حايك|Salma Hayek",
+"g": "fr"
+},
+{
+"a": "نويمي",
+"g": "it"
+},
+{
+"a": "سلمى حايك|Salma Hayek",
+"g": "mx"
+},
+{
+"a": "بيرس بروسنان|Pierce Brosnan",
+"g": "us"
+},
+{
+"a": "جانيت جاكسون|Janet Jackson",
+"g": "us"
+},
+{
+"a": "زيندايا|Zendaya",
+"g": "us"
+},
+{
+"a": "سلمان خان|Salman Khan",
+"g": "gb"
+},
+{
+"a": "بيرس بروسنان|Pierce Brosnan",
+"g": "gb"
+},
+{
+"a": "جورج مايكل|George Michael",
+"g": "gb"
+},
+{
+"a": "سلمان خان|Salman Khan",
+"g": "in"
+},
+{
+"a": "لورين باكال|Lauren Bacall",
+"g": "us"
+},
+{
+"a": "فريد أستير|Fred Astaire",
+"g": "us"
+},
+{
+"a": "دوريس داي|Doris Day",
+"g": "us"
+},
+{
+"a": "جوان بيز|Joan Baez",
+"g": "us"
+},
+{
+"a": "كاثرين زيتا جونز|Catherine Zeta-Jones",
+"g": "gb"
+},
+{
+"a": "مارجوري إستيانو|Marjorie Estiano",
+"g": "br"
+},
+{
+"a": "جيرارد ديبارديو|Gérard Depardieu",
+"g": "ae"
+},
+{
+"a": "ليال عبود|Layal Abboud",
+"g": "lb"
+},
+{
+"a": "ميشيل فايفر|Michelle Pfeiffer",
+"g": "us"
+},
+{
+"a": "جيليان أندرسون|Gillian Anderson",
+"g": "us"
+},
+{
+"a": "جيليان أندرسون|Gillian Anderson",
+"g": "gb"
+},
+{
+"a": "جيرارد ديبارديو|Gérard Depardieu",
+"g": "fr"
+},
+{
+"a": "جين وايلدر|Gene Wilder",
+"g": "us"
+},
+{
+"a": "إلا فيتزجيرالد|Ella Fitzgerald",
+"g": "us"
+},
+{
+"a": "إريك كلابتون|Eric Clapton",
+"g": "us"
+},
+{
+"a": "ستيفي وندر|Stevie Wonder",
+"g": "us"
+},
+{
+"a": "جانيس جوبلين|Janis Joplin",
+"g": "us"
+},
+{
+"a": "جيمس براون|James Brown",
+"g": "us"
+},
+{
+"a": "درو باريمور|Drew Barrymore",
+"g": "us"
+},
+{
+"a": "أليشيا كيز",
+"g": "us"
+},
+{
+"a": "إريك كلابتون|Eric Clapton",
+"g": "gb"
+},
+{
+"a": "تشاك بيري|Chuck Berry",
+"g": "us"
+},
+{
+"a": "جون غودمان|John Goodman",
+"g": "us"
+},
+{
+"a": "بي بي كينغ",
+"g": "us"
+},
+{
+"a": "ميك جاغر|Mick Jagger",
+"g": "gb"
+},
+{
+"a": "شارل أزنافور|Charles Aznavour",
+"g": "fr"
+},
+{
+"a": "ساي|Psy",
+"g": "kr"
+},
+{
+"a": "ميريام ماكيبا|Miriam Makeba",
+"g": "dz"
+},
+{
+"a": "سنوب دوغ|Snoop Dogg",
+"g": "us"
+},
+{
+"a": "يوكو أونو|Yoko Ono",
+"g": "us"
+},
+{
+"a": "جوزفين بيكر|Josephine Baker",
+"g": "us"
+},
+{
+"a": "شيرلي تيمبل|Shirley Temple",
+"g": "us"
+},
+{
+"a": "إيمي آدمز|Amy Adams",
+"g": "us"
+},
+{
+"a": "جولي آندروز|Julie Andrews",
+"g": "gb"
+},
+{
+"a": "جوزفين بيكر|Josephine Baker",
+"g": "fr"
+},
+{
+"a": "أندريا بوتشيلي|Andrea Bocelli",
+"g": "it"
+},
+{
+"a": "إيمي آدمز|Amy Adams",
+"g": "it"
+},
+{
+"a": "ناتاليا أوريرو|Natalia Oreiro",
+"g": "es"
+},
+{
+"a": "إيمي روسوم|Emmy Rossum",
+"g": "us"
+},
+{
+"a": "فكتوريا بيكهام|Victoria Beckham",
+"g": "gb"
+},
+{
+"a": "شيرلي ماكلين|Shirley MacLaine",
+"g": "us"
+},
+{
+"a": "مارلين مانسن|Marilyn Manson",
+"g": "us"
+},
+{
+"a": "إد شيران|Ed Sheeran",
+"g": "gb"
+},
+{
+"a": "ستينغ|Sting",
+"g": "gb"
+},
+{
+"a": "عاليا بهات|Alia Bhatt",
+"g": "gb"
+},
+{
+"a": "رافي شانكار|Ravi Shankar",
+"g": "in"
+},
+{
+"a": "بيدرو ألمودوبار|Pedro Almodóvar",
+"g": "es"
+},
+{
+"a": "ليندسي لوهان|Lindsay Lohan",
+"g": "us"
+},
+{
+"a": "زاك إيفرون|Zac Efron",
+"g": "us"
+},
+{
+"a": "إنريكيه إغليسياس|Enrique Iglesias",
+"g": "es"
+},
+{
+"a": "بيتر سلرز|Peter Sellers",
+"g": "gb"
+},
+{
+"a": "كاترين دينوف|Catherine Deneuve",
+"g": "fr"
+},
+{
+"a": "كيم باسنجر|Kim Basinger",
+"g": "us"
+},
+{
+"a": "آدم ساندلر|Adam Sandler",
+"g": "us"
+},
+{
+"a": "إيزابيل أدجاني|Isabelle Adjani",
+"g": "fr"
+},
+{
+"a": "جيمس كاغني|James Cagney",
+"g": "us"
+},
+{
+"a": "بيلي هوليدي|Billie Holiday",
+"g": "us"
+},
+{
+"a": "خواكين فينيكس|Joaquin Phoenix",
+"g": "us"
+},
+{
+"a": "روبي وليمز|Robbie Williams",
+"g": "gb"
+},
+{
+"a": "براين آدمز|Bryan Adams",
+"g": "gb"
+},
+{
+"a": "هيلاري داف|Hilary Duff",
+"g": "us"
+},
+{
+"a": "سالي فيلد|Sally Field",
+"g": "us"
+},
+{
+"a": "برايان ماي|Brian May",
+"g": "gb"
+},
+{
+"a": "فيل كولنز|Phil Collins",
+"g": "gb"
+},
+{
+"a": "أر كيلي|R. Kelly",
+"g": "us"
+},
+{
+"a": "بري لارسون|Brie Larson",
+"g": "us"
+},
+{
+"a": "دريك|Drake",
+"g": "us"
+},
+{
+"a": "جيمس هيتفيلد|James Hetfield",
+"g": "us"
+},
+{
+"a": "كوليت|Colette",
+"g": "fr"
+},
+{
+"a": "جنيفر كونلي|Jennifer Connelly",
+"g": "us"
+},
+{
+"a": "بينك|Pink",
+"g": "us"
+},
+{
+"a": "بيت سيغر|Pete Seeger",
+"g": "us"
+},
+{
+"a": "إيوان مكريغور|Ewan McGregor",
+"g": "us"
+},
+{
+"a": "جاريد ليتو|Jared Leto",
+"g": "us"
+},
+{
+"a": "جون دي لانسي|John de Lancie",
+"g": "us"
+},
+{
+"a": "إيكون",
+"g": "us"
+},
+{
+"a": "بيتر أوستينوف|Peter Ustinov",
+"g": "gb"
+},
+{
+"a": "إيوان مكريغور|Ewan McGregor",
+"g": "gb"
+},
+{
+"a": "آنا ريتا ديل بيانو|Anna Rita Del Piano",
+"g": "it"
+},
+{
+"a": "كيت هدسون|Kate Hudson",
+"g": "us"
+},
+{
+"a": "مايك مايرز|Mike Myers",
+"g": "us"
+},
+{
+"a": "نينا سيمون|Nina Simone",
+"g": "us"
+},
+{
+"a": "كارلوس ألازراكوي|Carlos Alazraqui",
+"g": "us"
+},
+{
+"a": "جوشوا باسيت|Joshua Bassett",
+"g": "us"
+},
+{
+"a": "سابرينا كاربنتر",
+"g": "us"
+},
+{
+"a": "أوليفيا رودريغو",
+"g": "us"
+},
+{
+"a": "جيرمي أيرونز|Jeremy Irons",
+"g": "gb"
+},
+{
+"a": "إيان ماكشين|Ian McShane",
+"g": "gb"
+},
+{
+"a": "مايك مايرز|Mike Myers",
+"g": "gb"
+},
+{
+"a": "روزي",
+"g": "kr"
+},
+{
+"a": "جين كيلي|Gene Kelly",
+"g": "us"
+},
+{
+"a": "بيل كوسبي|Bill Cosby",
+"g": "us"
+},
+{
+"a": "فانيسا هادجنز|Vanessa Hudgens",
+"g": "us"
+},
+{
+"a": "بيل موري|Bill Murray",
+"g": "us"
+},
+{
+"a": "ديانا روس|Diana Ross",
+"g": "us"
+},
+{
+"a": "كيلي كلاركسون|Kelly Clarkson",
+"g": "us"
+},
+{
+"a": "أماندا سيفريد|Amanda Seyfried",
+"g": "us"
+},
+{
+"a": "ريكي مارتن",
+"g": "us"
+},
+{
+"a": "جو كوكر|Joe Cocker",
+"g": "gb"
+},
+{
+"a": "جان غابين|Jean Gabin",
+"g": "fr"
+},
+{
+"a": "لاتا مانغيشكار|Lata Mangeshkar",
+"g": "in"
+},
+{
+"a": "خوليو إجلسياس|Julio Iglesias",
+"g": "es"
+},
+{
+"a": "مونتسيرات كابالي|Montserrat Caballé",
+"g": "es"
+},
+{
+"a": "ريكي مارتن",
+"g": "es"
+},
+{
+"a": "كورتني لوف|Courtney Love",
+"g": "us"
+},
+{
+"a": "ديبي رينولدز|Debbie Reynolds",
+"g": "us"
+},
+{
+"a": "جيري لويس|Jerry Lewis",
+"g": "us"
+},
+{
+"a": "إدريس إلبا|Idris Elba",
+"g": "gb"
+},
+{
+"a": "أدريانو تشيلنتانو|Adriano Celentano",
+"g": "it"
+},
+{
+"a": "شاكيل أونيل|Shaquille O'Neal",
+"g": "us"
+},
+{
+"a": "لوسيل بال|Lucille Ball",
+"g": "us"
+},
+{
+"a": "فيجو مورتينسين|Viggo Mortensen",
+"g": "us"
+},
+{
+"a": "كريستين بيل|Kristen Bell",
+"g": "us"
+},
+{
+"a": "كشا|Kesha",
+"g": "us"
+},
+{
+"a": "غولدي هاون",
+"g": "us"
+},
+{
+"a": "جون كيل|John Cale",
+"g": "gb"
+},
+{
+"a": "ناعومي كامبل|Naomi Campbell",
+"g": "gb"
+},
+{
+"a": "ألانيس موريسيت|Alanis Morissette",
+"g": "us"
+},
+{
+"a": "دين مارتن|Dean Martin",
+"g": "us"
+},
+{
+"a": "جيمي فوكس|Jamie Foxx",
+"g": "us"
+},
+{
+"a": "جيسيكا سمبسون|Jessica Simpson",
+"g": "us"
+},
+{
+"a": "أليس كوبر|Alice Cooper",
+"g": "us"
+},
+{
+"a": "غوين ستيفاني|Gwen Stefani",
+"g": "us"
+},
+{
+"a": "ريتشارد سيمونز|Richard Simmons",
+"g": "us"
+},
+{
+"a": "هيو لوري|Hugh Laurie",
+"g": "gb"
+},
+{
+"a": "ريتا أورا|Rita Ora",
+"g": "gb"
+},
+{
+"a": "جيني كيم|Jennie",
+"g": "kr"
+},
+{
+"a": "بوب هوب|Bob Hope",
+"g": "us"
+},
+{
+"a": "جاك بلاك|Jack Black",
+"g": "us"
+},
+{
+"a": "بيتي وايت|Betty White",
+"g": "us"
+},
+{
+"a": "جون مايكل تالبوت|John Michael Talbot",
+"g": "us"
+},
+{
+"a": "بوب هوب|Bob Hope",
+"g": "gb"
+},
+{
+"a": "باتريك سويزي|Patrick Swayze",
+"g": "us"
+},
+{
+"a": "إيرثا كيت|Eartha Kitt",
+"g": "us"
+},
+{
+"a": "تايرا بانكس|Tyra Banks",
+"g": "us"
+},
+{
+"a": "أشر|Usher",
+"g": "us"
+},
+{
+"a": "كاميلا كابيو|Camila Cabello",
+"g": "us"
+},
+{
+"a": "ليل وين",
+"g": "us"
+},
+{
+"a": "سوزان بويل|Susan Boyle",
+"g": "gb"
+},
+{
+"a": "ميلي بوبي براون",
+"g": "gb"
+},
+{
+"a": "ميلي بوبي براون",
+"g": "es"
+},
+{
+"a": "كاميلا كابيو|Camila Cabello",
+"g": "mx"
+},
+{
+"a": "نيل يونغ|Neil Young",
+"g": "us"
+},
+{
+"a": "جنجر روجرز|Ginger Rogers",
+"g": "us"
+},
+{
+"a": "هايدي كلوم|Heidi Klum",
+"g": "us"
+},
+{
+"a": "مايكل كيتون|Michael Keaton",
+"g": "us"
+},
+{
+"a": "سيث ماكفارلن|Seth MacFarlane",
+"g": "us"
+},
+{
+"a": "مارفين غاي|Marvin Gaye",
+"g": "us"
+},
+{
+"a": "وليم شتنر",
+"g": "us"
+},
+{
+"a": "روجر ووترز|Roger Waters",
+"g": "gb"
+},
+{
+"a": "جين مورو|Jeanne Moreau",
+"g": "fr"
+},
+{
+"a": "إيريك كانتونا|Eric Cantona",
+"g": "fr"
+},
+{
+"a": "كارلا بروني|Carla Bruni",
+"g": "fr"
+},
+{
+"a": "كارلا بروني|Carla Bruni",
+"g": "it"
+},
+{
+"a": "هانده ينر|Hande Yener",
+"g": "tr"
+},
+{
+"a": "هايدي كلوم|Heidi Klum",
+"g": "de"
+},
+{
+"a": "شيلي دوفال|Shelley Duvall",
+"g": "us"
+},
+{
+"a": "دونا سمر|Donna Summer",
+"g": "us"
+},
+{
+"a": "لو ريد|Lou Reed",
+"g": "us"
+},
+{
+"a": "زين مالك|Zayn Malik",
+"g": "gb"
+},
+{
+"a": "توتو كوتونيو|Toto Cutugno",
+"g": "it"
+},
+{
+"a": "يون هيون سيوك|Yun Hyon-seok",
+"g": "kr"
+},
+{
+"a": "بلاثيدو دومينغو|Plácido Domingo",
+"g": "es"
+},
+{
+"a": "آنا مينا|Ana Mena",
+"g": "es"
+},
+{
+"a": "نت كينغ كول|Nat King Cole",
+"g": "us"
+},
+{
+"a": "ويليام بوروز|William S. Burroughs",
+"g": "us"
+},
+{
+"a": "كريس براون",
+"g": "us"
+},
+{
+"a": "إيلي غولدنغ",
+"g": "gb"
+},
+{
+"a": "صوفي مارسو|Sophie Marceau",
+"g": "fr"
+},
+{
+"a": "لي مين هو|Lee Min-ho",
+"g": "kr"
+},
+{
+"a": "باتي سميث|Patti Smith",
+"g": "us"
+},
+{
+"a": "جون بون جوفي|Jon Bon Jovi",
+"g": "us"
+},
+{
+"a": "فيرجي|Fergie",
+"g": "us"
+},
+{
+"a": "كارلوس سانتانا|Carlos Santana",
+"g": "us"
+},
+{
+"a": "نورا جونز|Norah Jones",
+"g": "us"
+},
+{
+"a": "رود ستيوارت|Rod Stewart",
+"g": "gb"
+},
+{
+"a": "أوليفيا نيوتن جون|Olivia Newton-John",
+"g": "gb"
+},
+{
+"a": "شرادها كابور|Shraddha Kapoor",
+"g": "in"
+},
+{
+"a": "لينا ماير-لاندروت|Lena Meyer-Landrut",
+"g": "de"
+},
+{
+"a": "كارلوس سانتانا|Carlos Santana",
+"g": "mx"
+},
+{
+"a": "آنا كيندريك|Anna Kendrick",
+"g": "us"
+},
+{
+"a": "كيرت راسل|Kurt Russell",
+"g": "us"
+},
+{
+"a": "بيرت رينولدز|Burt Reynolds",
+"g": "us"
+},
+{
+"a": "جوي كينج|Joey King",
+"g": "us"
+},
+{
+"a": "بيلا ثورن|Bella Thorne",
+"g": "us"
+},
+{
+"a": "هاري بيلافونت|Harry Belafonte",
+"g": "us"
+},
+{
+"a": "ديف غرول|Dave Grohl",
+"g": "us"
+},
+{
+"a": "روبرت ميتشوم|Robert Mitchum",
+"g": "us"
+},
+{
+"a": "بليك كلارك|Blake Clark",
+"g": "us"
+},
+{
+"a": "فريد روجرز|Fred Rogers",
+"g": "us"
+},
+{
+"a": "كيندريك لامار",
+"g": "us"
+},
+{
+"a": "كيت بوش|Kate Bush",
+"g": "gb"
+},
+{
+"a": "كيفر ساذرلاند|Kiefer Sutherland",
+"g": "gb"
+},
+{
+"a": "ديفيد غيلمور|David Gilmour",
+"g": "gb"
+},
+{
+"a": "فرناندل|Fernandel",
+"g": "fr"
+},
+{
+"a": "جوني هاليدي|Johnny Hallyday",
+"g": "fr"
+},
+{
+"a": "كوينسي جونز|Quincy Jones",
+"g": "us"
+},
+{
+"a": "نيك جوناس|Nick Jonas",
+"g": "us"
+},
+{
+"a": "جوني ميتشل|Joni Mitchell",
+"g": "us"
+},
+{
+"a": "أنجيلا لانسبيري|Angela Lansbury",
+"g": "us"
+},
+{
+"a": "بودي هولي|Buddy Holly",
+"g": "us"
+},
+{
+"a": "كيني روجرز|Kenny Rogers",
+"g": "us"
+},
+{
+"a": "زوي ديشانيل",
+"g": "us"
+},
+{
+"a": "ليلي ألين|Lily Allen",
+"g": "gb"
+},
+{
+"a": "أنجيلا لانسبيري|Angela Lansbury",
+"g": "gb"
+},
+{
+"a": "داليدا|Dalida",
+"g": "eg"
+},
+{
+"a": "ألان آركين|Alan Arkin",
+"g": "us"
+},
+{
+"a": "سيندي لوبر|Cyndi Lauper",
+"g": "us"
+},
+{
+"a": "جاي لينو|Jay Leno",
+"g": "us"
+},
+{
+"a": "هيلي ستاينفيلد|Hailee Steinfeld",
+"g": "us"
+},
+{
+"a": "ليني كرافيتز|Lenny Kravitz",
+"g": "us"
+},
+{
+"a": "نيكول شيرزينغر|Nicole Scherzinger",
+"g": "us"
+},
+{
+"a": "دون ريكلز|Don Rickles",
+"g": "us"
+},
+{
+"a": "جيم فارني|Jim Varney",
+"g": "us"
+},
+{
+"a": "جورج تاكي",
+"g": "us"
+},
+{
+"a": "سيد باريت|Syd Barrett",
+"g": "gb"
+},
+{
+"a": "بيتر غابرييل|Peter Gabriel",
+"g": "gb"
+},
+{
+"a": "كريس مارتن|Chris Martin",
+"g": "gb"
+},
+{
+"a": "روبرت بلانت|Robert Plant",
+"g": "gb"
+},
+{
+"a": "فانيسا بارادي|Vanessa Paradis",
+"g": "fr"
+},
+{
+"a": "إيف مونتان|Yves Montand",
+"g": "fr"
+},
+{
+"a": "داليدا|Dalida",
+"g": "fr"
+},
+{
+"a": "بود سبنسر|Bud Spencer",
+"g": "it"
+},
+{
+"a": "يول براينر|Yul Brynner",
+"g": "us"
+},
+{
+"a": "ميراندا كوسجروف|Miranda Cosgrove",
+"g": "us"
+},
+{
+"a": "آشلي تيسديل|Ashley Tisdale",
+"g": "us"
+},
+{
+"a": "آدم ليفين|Adam Levine",
+"g": "us"
+},
+{
+"a": "راكيل ولش|Raquel Welch",
+"g": "us"
+},
+{
+"a": "ليو يي فاي|Liu Yifei",
+"g": "us"
+},
+{
+"a": "إيغي بوب|Iggy Pop",
+"g": "us"
+},
+{
+"a": "غلوريا إستيفان|Gloria Estefan",
+"g": "us"
+},
+{
+"a": "بيت ميدلر|Bette Midler",
+"g": "us"
+},
+{
+"a": "نيل باتريك هاريس|Neil Patrick Harris",
+"g": "us"
+},
+{
+"a": "لورا باوزيني|Laura Pausini",
+"g": "it"
+},
+{
+"a": "ماغي جيلنهال|Maggie Gyllenhaal",
+"g": "us"
+},
+{
+"a": "شون كومز|Sean Combs",
+"g": "us"
+},
+{
+"a": "ليونيل ريتشي|Lionel Richie",
+"g": "us"
+},
+{
+"a": "ويسلي سنايبس|Wesley Snipes",
+"g": "us"
+},
+{
+"a": "بيلي جو آرمسترونغ|Billie Joe Armstrong",
+"g": "us"
+},
+{
+"a": "بوني تايلور|Bonnie Tyler",
+"g": "gb"
+},
+{
+"a": "يوسف إسلام",
+"g": "gb"
+},
+{
+"a": "تايلور مومسن|Taylor Momsen",
+"g": "us"
+},
+{
+"a": "بول سايمون|Paul Simon",
+"g": "us"
+},
+{
+"a": "هنك وليمز|Hank Williams",
+"g": "us"
+},
+{
+"a": "جو بيشي|Joe Pesci",
+"g": "us"
+},
+{
+"a": "جينيفر لوف هيويت|Jennifer Love Hewitt",
+"g": "us"
+},
+{
+"a": "ويز خليفة",
+"g": "us"
+},
+{
+"a": "روجر تايلور|Roger Taylor",
+"g": "gb"
+},
+{
+"a": "جيمس بلانت|James Blunt",
+"g": "gb"
+},
+{
+"a": "آني لينوكس|Annie Lennox",
+"g": "gb"
+},
+{
+"a": "إروس رامادزوتي|Eros Ramazzotti",
+"g": "it"
+},
+{
+"a": "جيسو|Jisoo",
+"g": "kr"
+},
+{
+"a": "جنيفر هدسون|Jennifer Hudson",
+"g": "us"
+},
+{
+"a": "تيم كاري|Tim Curry",
+"g": "us"
+},
+{
+"a": "ميكي روني|Mickey Rooney",
+"g": "us"
+},
+{
+"a": "بريتاني ميرفي|Brittany Murphy",
+"g": "us"
+},
+{
+"a": "هايدن بانتير",
+"g": "us"
+},
+{
+"a": "تيم كاري|Tim Curry",
+"g": "gb"
+},
+{
+"a": "بروس ديكنسون|Bruce Dickinson",
+"g": "gb"
+},
+{
+"a": "كاري موليجان|Carey Mulligan",
+"g": "gb"
+},
+{
+"a": "بورس فيان|Boris Vian",
+"g": "fr"
+},
+{
+"a": "آي يو|IU",
+"g": "kr"
+},
+{
+"a": "جونقكوك|Jung Kook",
+"g": "kr"
+},
+{
+"a": "هايلي وليمز|Hayley Williams",
+"g": "us"
+},
+{
+"a": "بيلي جويل|Billy Joel",
+"g": "us"
+},
+{
+"a": "جين مانسفيلد|Jayne Mansfield",
+"g": "us"
+},
+{
+"a": "مايك شينودا|Mike Shinoda",
+"g": "us"
+},
+{
+"a": "سيسي سبيسك|Sissy Spacek",
+"g": "us"
+},
+{
+"a": "ليمي|Lemmy",
+"g": "gb"
+},
+{
+"a": "كالفين هاريس",
+"g": "gb"
+},
+{
+"a": "شارلي إكس سي إكس",
+"g": "gb"
+},
+{
+"a": "موريس شيفالييه|Maurice Chevalier",
+"g": "fr"
+},
+{
+"a": "فرانس غال|France Gall",
+"g": "fr"
+},
+{
+"a": "فكتوريا جاستيس|Victoria Justice",
+"g": "us"
+},
+{
+"a": "موبي|Moby",
+"g": "us"
+},
+{
+"a": "أنجيلا باسيت|Angela Bassett",
+"g": "us"
+},
+{
+"a": "إيمي لي|Amy Lee",
+"g": "us"
+},
+{
+"a": "جيني سلايت|Jenny Slate",
+"g": "us"
+},
+{
+"a": "أليسا ميلانو|Alyssa Milano",
+"g": "us"
+},
+{
+"a": "إكس إكس إكس تنتاسيون|XXXTentacion",
+"g": "us"
+},
+{
+"a": "ليام باين|Liam Payne",
+"g": "gb"
+},
+{
+"a": "ستيفن تيلور|Steven Tyler",
+"g": "us"
+},
+{
+"a": "ليتل ريتشارد|Little Richard",
+"g": "us"
+},
+{
+"a": "تاليا|Thalía",
+"g": "us"
+},
+{
+"a": "ماثيو برودريك|Matthew Broderick",
+"g": "us"
+},
+{
+"a": "توم وايتس|Tom Waits",
+"g": "us"
+},
+{
+"a": "طوني بينيت|Tony Bennett",
+"g": "us"
+},
+{
+"a": "كوين لطيفة|Queen Latifah",
+"g": "us"
+},
+{
+"a": "باد باني|Bad Bunny",
+"g": "us"
+},
+{
+"a": "دوجا كات",
+"g": "us"
+},
+{
+"a": "جيسي جي|Jessie J",
+"g": "gb"
+},
+{
+"a": "بيلي كونولي|Billy Connolly",
+"g": "gb"
+},
+{
+"a": "كيت موس|Kate Moss",
+"g": "gb"
+},
+{
+"a": "سام سميث|Sam Smith",
+"g": "gb"
+},
+{
+"a": "خوسيه كاريراس|José Carreras",
+"g": "es"
+},
+{
+"a": "تاليا|Thalía",
+"g": "mx"
+},
+{
+"a": "ماري تايلر مور|Mary Tyler Moore",
+"g": "us"
+},
+{
+"a": "ديزي غيليسبي|Dizzy Gillespie",
+"g": "us"
+},
+{
+"a": "أنتوني بركنز|Anthony Perkins",
+"g": "us"
+},
+{
+"a": "ويلي نيلسون|Willie Nelson",
+"g": "us"
+},
+{
+"a": "جيري لي لويس|Jerry Lee Lewis",
+"g": "us"
+},
+{
+"a": "أكسل روز|Axl Rose",
+"g": "us"
+},
+{
+"a": "ميرا سورفينو|Mira Sorvino",
+"g": "us"
+},
+{
+"a": "إيتا جيمس|Etta James",
+"g": "us"
+},
+{
+"a": "روي أوربيسون|Roy Orbison",
+"g": "us"
+},
+{
+"a": "توم يورك|Thom Yorke",
+"g": "gb"
+},
+{
+"a": "ميراي ماتيو|Mireille Mathieu",
+"g": "fr"
+},
+{
+"a": "تاركان|Tarkan",
+"g": "tr"
+},
+{
+"a": "لانا تيرنر|Lana Turner",
+"g": "us"
+},
+{
+"a": "جون دنفر|John Denver",
+"g": "us"
+},
+{
+"a": "توري أموس|Tori Amos",
+"g": "us"
+},
+{
+"a": "إليزابيث شو|Elisabeth Shue",
+"g": "us"
+},
+{
+"a": "بيلي بوب ثورنتون|Billy Bob Thornton",
+"g": "us"
+},
+{
+"a": "كريس كريستوفيرسن|Kris Kristofferson",
+"g": "us"
+},
+{
+"a": "ريبا ماكنتاير|Reba McEntire",
+"g": "us"
+},
+{
+"a": "بيني مارشال|Penny Marshall",
+"g": "us"
+},
+{
+"a": "براين ويلسون|Brian Wilson",
+"g": "us"
+},
+{
+"a": "ديف موستين|Dave Mustaine",
+"g": "us"
+},
+{
+"a": "ستيف هارفي|Steve Harvey",
+"g": "us"
+},
+{
+"a": "بليونا|Bleona",
+"g": "us"
+},
+{
+"a": "توم فيلتون|Tom Felton",
+"g": "gb"
+},
+{
+"a": "توم جونز|Tom Jones",
+"g": "gb"
+},
+{
+"a": "برايان إينو|Brian Eno",
+"g": "gb"
+},
+{
+"a": "ديزي ريدلي|Daisy Ridley",
+"g": "gb"
+},
+{
+"a": "مايكل بالين|Michael Palin",
+"g": "gb"
+},
+{
+"a": "أنجيليك كيدجو|Angelique Kidjo",
+"g": "fr"
+},
+{
+"a": "ألبرتو سوردي|Alberto Sordi",
+"g": "it"
+},
+{
+"a": "ديفيد أوغدن ستايرز|David Ogden Stiers",
+"g": "us"
+},
+{
+"a": "وودي غاثري|Woody Guthrie",
+"g": "us"
+},
+{
+"a": "ديفيد هاسيلهوف|David Hasselhoff",
+"g": "us"
+},
+{
+"a": "باولا عبدول|Paula Abdul",
+"g": "us"
+},
+{
+"a": "فاريل وليمز",
+"g": "us"
+},
+{
+"a": "شارلوت غينسبور|Charlotte Gainsbourg",
+"g": "gb"
+},
+{
+"a": "جاين بيركين|Jane Birkin",
+"g": "gb"
+},
+{
+"a": "فلورنس بيو|Florence Pugh",
+"g": "gb"
+},
+{
+"a": "ألبرت فيني|Albert Finney",
+"g": "gb"
+},
+{
+"a": "فارغ فيكرنس|Varg Vikernes",
+"g": "fr"
+},
+{
+"a": "شارلوت غينسبور|Charlotte Gainsbourg",
+"g": "fr"
+},
+{
+"a": "جاين بيركين|Jane Birkin",
+"g": "fr"
+},
+{
+"a": "ديميس روسوس|Demis Roussos",
+"g": "fr"
+},
+{
+"a": "كيم تاي هيونغ|V",
+"g": "kr"
+},
+{
+"a": "جولي دلبي|Julie Delpy",
+"g": "us"
+},
+{
+"a": "ديبي رايان|Debby Ryan",
+"g": "us"
+},
+{
+"a": "ساشا غري|Sasha Grey",
+"g": "us"
+},
+{
+"a": "جادا بينكيت سميث|Jada Pinkett Smith",
+"g": "us"
+},
+{
+"a": "هاتي ماكدانيال|Hattie McDaniel",
+"g": "us"
+},
+{
+"a": "كارمن إلكترا|Carmen Electra",
+"g": "us"
+},
+{
+"a": "ديكسي كارتر|Dixie Carter",
+"g": "us"
+},
+{
+"a": "داني جاكوبس|Danny Jacobs",
+"g": "us"
+},
+{
+"a": "ماندي مور|Mandy Moore",
+"g": "us"
+},
+{
+"a": "كارلوس منسيا|Carlos Mencia",
+"g": "us"
+},
+{
+"a": "أفا ماكس|Ava Max",
+"g": "us"
+},
+{
+"a": "سيرج تانكيان|Serj Tankian",
+"g": "us"
+},
+{
+"a": "ريك أستلي",
+"g": "gb"
+},
+{
+"a": "ناتالي ايمبروليا",
+"g": "gb"
+},
+{
+"a": "جولي دلبي|Julie Delpy",
+"g": "fr"
+},
+{
+"a": "أليزي|Alizée",
+"g": "fr"
+},
+{
+"a": "نينا هاغن|Nina Hagen",
+"g": "de"
+},
+{
+"a": "أنطونيو كارلوس جوبيم|Antônio Carlos Jobim",
+"g": "br"
+},
+{
+"a": "كاري أندروود|Carrie Underwood",
+"g": "us"
+},
+{
+"a": "ريتا مورينو|Rita Moreno",
+"g": "us"
+},
+{
+"a": "لوسي هيل|Lucy Hale",
+"g": "us"
+},
+{
+"a": "مايكل ريتشاردز|Michael Richards",
+"g": "us"
+},
+{
+"a": "بيلي كريستال|Billy Crystal",
+"g": "us"
+},
+{
+"a": "سيدى سينك",
+"g": "us"
+},
+{
+"a": "دايدو|Dido",
+"g": "gb"
+},
+{
+"a": "كارا ديليفين|Cara Delevingne",
+"g": "gb"
+},
+{
+"a": "مايكل بوبليه|Michael Bublé",
+"g": "it"
+},
+{
+"a": "فكتوريا أبريل|Victoria Abril",
+"g": "es"
+},
+{
+"a": "داريوس|Dharius",
+"g": "mx"
+},
+{
+"a": "شيريل كرو|Sheryl Crow",
+"g": "us"
+},
+{
+"a": "أنتوني كيديس|Anthony Kiedis",
+"g": "us"
+},
+{
+"a": "ديانا أغرون|Dianna Agron",
+"g": "us"
+},
+{
+"a": "جون ماير|John Mayer",
+"g": "us"
+},
+{
+"a": "بول عنقا|Paul Anka",
+"g": "us"
+},
+{
+"a": "جلوريا جاينور|Gloria Gaynor",
+"g": "us"
+},
+{
+"a": "ليندا رونستادت|Linda Ronstadt",
+"g": "us"
+},
+{
+"a": "كريس كورنيل|Chris Cornell",
+"g": "us"
+},
+{
+"a": "آدم لامبرت|Adam Lambert",
+"g": "us"
+},
+{
+"a": "تشاك ماكان|Chuck McCann",
+"g": "us"
+},
+{
+"a": "لارا فلين بويل|Lara Flynn Boyle",
+"g": "us"
+},
+{
+"a": "نايل دياموند|Neil Diamond",
+"g": "us"
+},
+{
+"a": "بوست مالون",
+"g": "us"
+},
+{
+"a": "إيمي ماكدونالد|Amy Macdonald",
+"g": "gb"
+},
+{
+"a": "موريسي|Morrissey",
+"g": "gb"
+},
+{
+"a": "غاري مور|Gary Moore",
+"g": "gb"
+},
+{
+"a": "كريس ريا|Chris Rea",
+"g": "gb"
+},
+{
+"a": "فرانسواز هاردي|Françoise Hardy",
+"g": "fr"
+},
+{
+"a": "ميلين فارمر",
+"g": "fr"
+},
+{
+"a": "راجنيكانث|Rajinikanth",
+"g": "in"
+},
+{
+"a": "تل ليندمان|Till Lindemann",
+"g": "de"
+},
+{
+"a": "رونالد غولياس|Ronald Golias",
+"g": "br"
+},
+{
+"a": "فيرمين الرابع|Fermín IV",
+"g": "mx"
+},
+{
+"a": "ميكا|Mika",
+"g": "lb"
+},
+{
+"a": "جون لي هوكر|John Lee Hooker",
+"g": "us"
+},
+{
+"a": "فاتس دومينو|Fats Domino",
+"g": "us"
+},
+{
+"a": "كارلا جوجينو|Carla Gugino",
+"g": "us"
+},
+{
+"a": "ديبي هاري|Debbie Harry",
+"g": "us"
+},
+{
+"a": "ميت لوف|Meat Loaf",
+"g": "us"
+},
+{
+"a": "ميدي واتر|Muddy Waters",
+"g": "us"
+},
+{
+"a": "جين راسل|Jane Russell",
+"g": "us"
+},
+{
+"a": "ليزا ماري بريسلي|Lisa Marie Presley",
+"g": "us"
+},
+{
+"a": "بريندا سونغ|Brenda Song",
+"g": "us"
+},
+{
+"a": "ميكا|Mika",
+"g": "us"
+},
+{
+"a": "ريتشارد تشامبرلين|Richard Chamberlain",
+"g": "us"
+},
+{
+"a": "أوسكار إسحاق|Oscar Isaac",
+"g": "us"
+},
+{
+"a": "ماندي باتينكين|Mandy Patinkin",
+"g": "us"
+},
+{
+"a": "جيمس مارسدن|James Marsden",
+"g": "us"
+},
+{
+"a": "تشارلي بوث|Charlie Puth",
+"g": "us"
+},
+{
+"a": "كليف دان|Clive Dunn",
+"g": "gb"
+},
+{
+"a": "نعومي سكوت|Naomi Scott",
+"g": "gb"
+},
+{
+"a": "ميكا|Mika",
+"g": "gb"
+},
+{
+"a": "مارك نوفلر|Mark Knopfler",
+"g": "gb"
+},
+{
+"a": "آني جيراردو|Annie Girardot",
+"g": "fr"
+},
+{
+"a": "كارلوس غارديل|Carlos Gardel",
+"g": "fr"
+},
+{
+"a": "دومينيكو مودونيو|Domenico Modugno",
+"g": "it"
+},
+{
+"a": "آشا بهوسل|Asha Bhosle",
+"g": "in"
+},
+{
+"a": "جيمين|Jimin",
+"g": "kr"
+},
+{
+"a": "سرتاب أرانر|Sertab Erener",
+"g": "tr"
+},
+{
+"a": "شريا غوشال|Shreya Ghoshal",
+"g": "in"
+},
+{
+"a": "سوناكشي سينها|Sonakshi Sinha",
+"g": "in"
+},
+{
+"a": "كانغ سولجي|Kang Seul-gi",
+"g": "kr"
+},
+{
+"a": "بارك تشانيول|Park Chan-yeol",
+"g": "kr"
+},
+{
+"a": "جو جونغ سوك|Cho Jung-seok",
+"g": "kr"
+},
+{
+"a": "شوقا|Suga",
+"g": "kr"
+},
+{
+"a": "فيروز|Fairuz",
+"g": "lb"
+},
+{
+"a": "نذر الإسلام|Kazi Nazrul Islam",
+"g": "in"
+},
+{
+"a": "كمال حسن|Kamal Haasan",
+"g": "in"
+},
+{
+"a": "كريتي سانون|Kriti Sanon",
+"g": "in"
+},
+{
+"a": "راب مونستر|RM",
+"g": "kr"
+},
+{
+"a": "غوون بو آه|BoA",
+"g": "kr"
+},
+{
+"a": "كيم سوك جين|Kim Seok-jin",
+"g": "kr"
+},
+{
+"a": "عمرو دياب|Amr Diab",
+"g": "eg"
+},
+{
+"a": "شروتي حسن|Shruti Haasan",
+"g": "in"
+},
+{
+"a": "آيرين|Irene",
+"g": "kr"
+},
+{
+"a": "سيزين آكسو|Sezen Aksu",
+"g": "tr"
+},
+{
+"a": "جايهوب|J-hope",
+"g": "kr"
+},
+{
+"a": "كيم سو هيون|Kim Soo-hyun",
+"g": "kr"
+},
+{
+"a": "شاب خالد|Khaled",
+"g": "dz"
+},
+{
+"a": "شبانة عزمي|Shabana Azmi",
+"g": "in"
+},
+{
+"a": "سوزي|Bae Suzy",
+"g": "kr"
+},
+{
+"a": "سانجاي دوت|Sanjay Dutt",
+"g": "in"
+},
+{
+"a": "كيم جونغ هيون|Kim Jong-hyun",
+"g": "kr"
+},
+{
+"a": "راجيش خانا|Rajesh Khanna",
+"g": "in"
+},
+{
+"a": "مينا كوماري|Meena Kumari",
+"g": "in"
+},
+{
+"a": "ستيفن يون|Steven Yeun",
+"g": "kr"
+},
+{
+"a": "إم يونا|Lim Yoona",
+"g": "kr"
+},
+{
+"a": "نورة فتحي|Nora Fatehi",
+"g": "ma"
+},
+{
+"a": "أمينة جهوفيتش|Emina Jahoviç",
+"g": "tr"
+},
+{
+"a": "حادثة|Hadise",
+"g": "tr"
+},
+{
+"a": "سولي|Sulli",
+"g": "kr"
+},
+{
+"a": "ألكا ياجنيك|Alka Yagnik",
+"g": "in"
+},
+{
+"a": "هيفاء وهبي|Haifa Wehbe",
+"g": "lb"
+},
+{
+"a": "بيون بيك هيون|Byun Baek-hyun",
+"g": "kr"
+},
+{
+"a": "جيهيو|Park Ji-hyo",
+"g": "kr"
+},
+{
+"a": "بارك شن هي|Park Shin-hye",
+"g": "kr"
+},
+{
+"a": "كيشور كومار|Kishore Kumar",
+"g": "in"
+},
+{
+"a": "هيونا|Hyuna",
+"g": "kr"
+},
+{
+"a": "غو ها را|Goo Hara",
+"g": "kr"
+},
+{
+"a": "بارك بو غوم|Park Bo-gum",
+"g": "kr"
+},
+{
+"a": "أللو أرجون|Allu Arjun",
+"g": "in"
+},
+{
+"a": "كيم تاي يون|Taeyeon",
+"g": "kr"
+},
+{
+"a": "ريدوان|RedOne",
+"g": "ma"
+},
+{
+"a": "فرحان أختر|Farhan Akhtar",
+"g": "in"
+},
+{
+"a": "جي دراغون|G-Dragon",
+"g": "kr"
+},
+{
+"a": "لي بيونغ هون|Lee Byung-hun",
+"g": "kr"
+},
+{
+"a": "سونو نيجام|Sonu Nigam",
+"g": "in"
+},
+{
+"a": "زوبين جارج|Zubeen Garg",
+"g": "in"
+},
+{
+"a": "فريدا بوكارا|Frida Boccara",
+"g": "ma"
+},
+{
+"a": "أوديت نارايان|Udit Narayan Jha",
+"g": "in"
+},
+{
+"a": "جيا خان|Jiah Khan",
+"g": "in"
+},
+{
+"a": "كيم يون جين|Yunjin Kim",
+"g": "kr"
+},
+{
+"a": "سوهو|Suho",
+"g": "kr"
+},
+{
+"a": "هيراي مومو|Momo",
+"g": "kr"
+},
+{
+"a": "دا-هيون|Kim Da-hyun",
+"g": "kr"
+},
+{
+"a": "سميرة سعيد|Samira Saïd",
+"g": "eg"
+},
+{
+"a": "سميرة سعيد|Samira Saïd",
+"g": "ma"
+},
+{
+"a": "بي راين|Rain",
+"g": "kr"
+},
+{
+"a": "هيون بين|Hyun Bin",
+"g": "kr"
+},
+{
+"a": "سي إل|CL",
+"g": "kr"
+},
+{
+"a": "كاي",
+"g": "kr"
+},
+{
+"a": "مينا مسعود|Mena Massoud",
+"g": "eg"
+},
+{
+"a": "رشيد طه|Rachid Taha",
+"g": "dz"
+},
+{
+"a": "إليسا|Elissa",
+"g": "lb"
+},
+{
+"a": "كاريو|Tchéky Karyo",
+"g": "tr"
+},
+{
+"a": "مادوراي شانموكهافديفو سوبولاكشمي|M. S. Subbulakshmi",
+"g": "in"
+},
+{
+"a": "جي تشانغ ووك|Ji Chang-wook",
+"g": "kr"
+},
+{
+"a": "ريو جون يول|Ryu Jun-yeol",
+"g": "kr"
+},
+{
+"a": "تشا إن وو|Cha Eun-woo",
+"g": "kr"
+},
+{
+"a": "ساندرا بارك|Sandara Park",
+"g": "kr"
+},
+{
+"a": "برابهو ديفا|Prabhu Deva",
+"g": "in"
+},
+{
+"a": "آيلي|Ailee",
+"g": "kr"
+},
+{
+"a": "شيومين|Xiumin",
+"g": "kr"
+},
+{
+"a": "دي أو|Doh Kyung-soo",
+"g": "kr"
+},
+{
+"a": "نتاشا أطلس|Natacha Atlas",
+"g": "eg"
+},
+{
+"a": "نتاشا أطلس|Natacha Atlas",
+"g": "tn"
+},
+{
+"a": "كان بونومو|Can Bonomo",
+"g": "tr"
+},
+{
+"a": "باريش مانتشو|Barış Manço",
+"g": "tr"
+},
+{
+"a": "أرشد وارثي|Arshad Warsi",
+"g": "in"
+},
+{
+"a": "هواسا|Hwasa",
+"g": "kr"
+},
+{
+"a": "لي جون غي|Lee Joon-gi",
+"g": "kr"
+},
+{
+"a": "تشوي مينهو|Choi Min-ho",
+"g": "kr"
+},
+{
+"a": "سويونغ|Sooyoung",
+"g": "kr"
+},
+{
+"a": "كيم هيون جونغ|Kim Hyun-joong",
+"g": "kr"
+},
+{
+"a": "جيسيكا جونغ|Jessica Jung",
+"g": "kr"
+},
+{
+"a": "كيم بوم|Kim Bum",
+"g": "kr"
+},
+{
+"a": "تيفاني هوانغ|Tiffany Young",
+"g": "kr"
+},
+{
+"a": "كريستال جونغ|Krystal Jung",
+"g": "kr"
+},
+{
+"a": "موكيش|Mukesh",
+"g": "in"
+},
+{
+"a": "أيوشمان كورانا|Ayushmann Khurrana",
+"g": "in"
+},
+{
+"a": "جانغ وون يونغ|Jang Won-young",
+"g": "kr"
+},
+{
+"a": "بارك بوم|Park Bom",
+"g": "kr"
+},
+{
+"a": "غو هي سون|Koo Hye-sun",
+"g": "kr"
+},
+{
+"a": "عبد الحليم حافظ|Abdelhalim Hafez",
+"g": "eg"
+},
+{
+"a": "صباح|Sabah",
+"g": "eg"
+},
+{
+"a": "صباح|Sabah",
+"g": "lb"
+},
+{
+"a": "مصطفى صندل|Mustafa Sandal",
+"g": "tr"
+},
+{
+"a": "سرحات|Serhat",
+"g": "tr"
+},
+{
+"a": "دلير مهندي|Daler Mehndi",
+"g": "in"
+},
+{
+"a": "بومان إيراني|Boman Irani",
+"g": "in"
+},
+{
+"a": "كيم يو جونغ|Kim You-jung",
+"g": "kr"
+},
+{
+"a": "ها جي وون|Ha Ji-won",
+"g": "kr"
+},
+{
+"a": "إي هيو ري|Lee Hyori",
+"g": "kr"
+},
+{
+"a": "جونغيون|Yoo Jeong-yeon",
+"g": "kr"
+},
+{
+"a": "تشايونغ|Son Chaeyoung",
+"g": "kr"
+},
+{
+"a": "سوهيون|Seo Joo-hyun",
+"g": "kr"
+},
+{
+"a": "محمد عبد الوهاب|Mohammed Abdel Wahab",
+"g": "eg"
+},
+{
+"a": "نجوى كرم|Najwa Karam",
+"g": "lb"
+},
+{
+"a": "توركان شوراي|Türkan Şoray",
+"g": "tr"
+},
+{
+"a": "إس بي بالاسوبراهمانيام|S. P. Balasubrahmanyam",
+"g": "in"
+},
+{
+"a": "بادميني كولهابوري|Padmini Kolhapure",
+"g": "in"
+},
+{
+"a": "اشوك كومار|Ashok Kumar",
+"g": "in"
+},
+{
+"a": "عاطف أسلم|Atif Aslam",
+"g": "in"
+},
+{
+"a": "لي تايمين|Lee Taemin",
+"g": "kr"
+},
+{
+"a": "سعاد ماسي|Souad Massi",
+"g": "dz"
+},
+{
+"a": "فردي طيفور|Ferdi Tayfur",
+"g": "tr"
+},
+{
+"a": "يوري|Kwon Yu-ri",
+"g": "kr"
+},
+{
+"a": "سنغري|Seungri",
+"g": "kr"
+},
+{
+"a": "وردة الجزائرية|Warda El- Djazairia",
+"g": "eg"
+},
+{
+"a": "وردة الجزائرية|Warda El- Djazairia",
+"g": "dz"
+},
+{
+"a": "وردة الجزائرية|Warda El- Djazairia",
+"g": "lb"
+},
+{
+"a": "إيلا أرون|Ila Arun",
+"g": "in"
+},
+{
+"a": "كومار سانو|Kumar Sanu",
+"g": "in"
+},
+{
+"a": "نيثيا مينين|Nithya Menen",
+"g": "in"
+},
+{
+"a": "جانغ جيون سوك|Jang Keun-suk",
+"g": "kr"
+},
+{
+"a": "يري|Yeri",
+"g": "kr"
+},
+{
+"a": "صني|Sunny",
+"g": "kr"
+},
+{
+"a": "جيون سومي|Jeon Somi",
+"g": "kr"
+},
+{
+"a": "بارك جي يون|Park Ji-yeon",
+"g": "kr"
+},
+{
+"a": "شادية|Shadia",
+"g": "eg"
+},
+{
+"a": "فرنتش مونتانا",
+"g": "ma"
+},
+{
+"a": "زولفو ليفانيلي|Zülfü Livaneli",
+"g": "tr"
+},
+{
+"a": "جاجيت سينغ|Jagjit Singh",
+"g": "in"
+},
+{
+"a": "أريجيت سينغ|Arijit Singh",
+"g": "in"
+},
+{
+"a": "تارا سوتاريا|Tara Sutaria",
+"g": "in"
+},
+{
+"a": "نيها ككار|Neha Kakkar",
+"g": "in"
+},
+{
+"a": "جوي|Joy",
+"g": "kr"
+},
+{
+"a": "كيم جاي جونغ|Kim Jae-joong",
+"g": "kr"
+},
+{
+"a": "أوه سي هون|Oh Se-hun",
+"g": "kr"
+},
+{
+"a": "مونبين|Moonbin",
+"g": "kr"
+},
+{
+"a": "جانغ نا را|Jang Na-ra",
+"g": "kr"
+},
+{
+"a": "كيم هيو يون|Kim Hyo-yeon",
+"g": "kr"
+},
+{
+"a": "كيم جونغ دي|Chen",
+"g": "kr"
+},
+{
+"a": "جيون سويون|Jeon Soyeon",
+"g": "kr"
+},
+{
+"a": "هوليا أوشار|Hülya Avşar",
+"g": "tr"
+},
+{
+"a": "إبراهيم تاتليسس|İbrahim Tatlıses",
+"g": "tr"
+},
+{
+"a": "أحمد كايا|Ahmet Kaya",
+"g": "tr"
+},
+{
+"a": "بولنت ارسوي|Bülent Ersoy",
+"g": "tr"
+},
+{
+"a": "موهانلال|Mohanlal",
+"g": "in"
+},
+{
+"a": "هام أون جونغ|Hahm Eun-jung",
+"g": "kr"
+},
+{
+"a": "ميناه|Bang Min-ah",
+"g": "kr"
+},
+{
+"a": "بارك بو يونغ|Park Bo-young",
+"g": "kr"
+},
+{
+"a": "سيو إن جوك|Seo In-guk",
+"g": "kr"
+},
+{
+"a": "كيم تشونغ ها|Chungha",
+"g": "kr"
+},
+{
+"a": "لي سو مان|Lee Soo-man",
+"g": "kr"
+},
+{
+"a": "مينزي|Minzy",
+"g": "kr"
+},
+{
+"a": "فريد الأطرش|Farid al-Atrash",
+"g": "eg"
+},
+{
+"a": "سعاد حسني|Soad Hosny",
+"g": "eg"
+},
+{
+"a": "صوفيا السعيدي|Sofia Essaïdi",
+"g": "ma"
+},
+{
+"a": "سعد لمجرد|Saad Lamjarred",
+"g": "ma"
+},
+{
+"a": "فريد الأطرش|Farid al-Atrash",
+"g": "sy"
+},
+{
+"a": "مراد بوز|Murat Boz",
+"g": "tr"
+},
+{
+"a": "نباهة تشهره|Nebahat Çehre",
+"g": "tr"
+},
+{
+"a": "نيل نيتين موكيش|Neil Nitin Mukesh",
+"g": "in"
+},
+{
+"a": "إلياياراجا|Ilaiyaraaja",
+"g": "in"
+},
+{
+"a": "غيريجا ديفي|Girija Devi",
+"g": "in"
+},
+{
+"a": "إي ها إي|Lee Hi",
+"g": "kr"
+},
+{
+"a": "مونبيول|Moonbyul",
+"g": "kr"
+},
+{
+"a": "جونغ أون جي|Jeong Eun-ji",
+"g": "kr"
+},
+{
+"a": "لي هيري|Lee Hye-ri",
+"g": "kr"
+},
+{
+"a": "يانغ هيون سوك|Yang Hyun-suk",
+"g": "kr"
+},
+{
+"a": "إي تك|Leeteuk",
+"g": "kr"
+},
+{
+"a": "ين أون هي|Yoon Eun-hye",
+"g": "kr"
+},
+{
+"a": "هيومين|Hyomin",
+"g": "kr"
+},
+{
+"a": "جاي بارك|Jay Park",
+"g": "kr"
+},
+{
+"a": "أوك تايك يون|Ok Taec-yeon",
+"g": "kr"
+},
+{
+"a": "كيم سول هيون|Kim Seolhyun",
+"g": "kr"
+},
+{
+"a": "مييون|Cho Mi-yeon",
+"g": "kr"
+},
+{
+"a": "سو هي|Sohee",
+"g": "kr"
+},
+{
+"a": "كي|Key",
+"g": "kr"
+},
+{
+"a": "تاي يانغ|Taeyang",
+"g": "kr"
+},
+{
+"a": "تشانغ من|Changmin",
+"g": "kr"
+},
+{
+"a": "يو جاي سوك|Yoo Jae-suk",
+"g": "kr"
+},
+{
+"a": "زياد الرحباني|Ziad Rahbani",
+"g": "lb"
+},
+{
+"a": "راجكومار|Dr. Rajkumar",
+"g": "in"
+},
+{
+"a": "محمود علي|Mehmood Ali",
+"g": "in"
+},
+{
+"a": "أنو مالك|Anu Malik",
+"g": "in"
+},
+{
+"a": "شانكار ماهاديفان|Shankar Mahadevan",
+"g": "in"
+},
+{
+"a": "منالي ثاكور|Monali Thakur",
+"g": "in"
+},
+{
+"a": "كيرثي سوريش|Keerthy Suresh",
+"g": "in"
+},
+{
+"a": "تشوي شي وون|Choi Siwon",
+"g": "kr"
+},
+{
+"a": "بارك هيونغ شك|Park Hyung-sik",
+"g": "kr"
+},
+{
+"a": "جو يو-ري|Jo Yu-ri",
+"g": "kr"
+},
+{
+"a": "جيسي|Jessi",
+"g": "kr"
+},
+{
+"a": "تشو كيو هيون|Cho Kyuhyun",
+"g": "kr"
+},
+{
+"a": "هيورين|Hyolyn",
+"g": "kr"
+},
+{
+"a": "أونيو|Onew",
+"g": "kr"
+},
+{
+"a": "سيفن|SE7EN",
+"g": "kr"
+},
+{
+"a": "لي سيونغ غي|Lee Seung-gi",
+"g": "kr"
+},
+{
+"a": "بارك يوتشون|Park Yoo-chun",
+"g": "kr"
+},
+{
+"a": "شاب مامي|Cheb Mami",
+"g": "dz"
+},
+{
+"a": "ميريام فارس|Myriam Fares",
+"g": "lb"
+},
+{
+"a": "جولشان|Gülşen",
+"g": "tr"
+},
+{
+"a": "أوزغه غورل|Özge Gürel",
+"g": "tr"
+},
+{
+"a": "كيه كيه|KK",
+"g": "in"
+},
+{
+"a": "باوان كاليان|Pawan Kalyan",
+"g": "in"
+},
+{
+"a": "كانيكا كابور|Kanika Kapoor",
+"g": "in"
+},
+{
+"a": "نيتي موهان|Neeti Mohan",
+"g": "in"
+},
+{
+"a": "لي دونغ هاي|Lee Dong-hae",
+"g": "kr"
+},
+{
+"a": "سون نا أون|Son Na-eun",
+"g": "kr"
+},
+{
+"a": "بانغ تشان|Bang Chan",
+"g": "kr"
+},
+{
+"a": "لي يونغ بوك|Felix",
+"g": "kr"
+},
+{
+"a": "كيم سي جونغ|Kim Se-jeong",
+"g": "kr"
+},
+{
+"a": "كيم هي تشول|Kim Hee-chul",
+"g": "kr"
+},
+{
+"a": "هاني|Hani",
+"g": "kr"
+},
+{
+"a": "هان سنغ يون|Han Seung-yeon",
+"g": "kr"
+},
+{
+"a": "مارك لي|Mark Lee",
+"g": "kr"
+},
+{
+"a": "كيم جونسو|Kim Junsu",
+"g": "kr"
+},
+{
+"a": "كارينا",
+"g": "kr"
+},
+{
+"a": "أنغام|Angham",
+"g": "eg"
+},
+{
+"a": "شيرين عبد الوهاب|Sherine",
+"g": "eg"
+},
+{
+"a": "زاهو|Zaho",
+"g": "dz"
+},
+{
+"a": "ماجدة الرومي|Majida El Roumi",
+"g": "lb"
+},
+{
+"a": "أوزجان دينيز|Özcan Deniz",
+"g": "tr"
+},
+{
+"a": "مامتا موهانداس|Mamta Mohandas",
+"g": "in"
+},
+{
+"a": "كابيل شارما|Kapil Sharma",
+"g": "in"
+},
+{
+"a": "بيجوم أختر|Begum Akhtar",
+"g": "in"
+},
+{
+"a": "إل|Kim Myung-soo",
+"g": "kr"
+},
+{
+"a": "دايسونغ|Daesung",
+"g": "kr"
+},
+{
+"a": "ايم سي وان|Yim Si-wan",
+"g": "kr"
+},
+{
+"a": "لونا|Luna",
+"g": "kr"
+},
+{
+"a": "ييجي|Hwang Ye-ji",
+"g": "kr"
+},
+{
+"a": "سو جي سوب|So Ji-sub",
+"g": "kr"
+},
+{
+"a": "غاري|Gary",
+"g": "kr"
+},
+{
+"a": "تشا تاي هيون|Cha Tae-hyun",
+"g": "kr"
+},
+{
+"a": "باك غيو ري",
+"g": "kr"
+},
+{
+"a": "ليلى مراد|Laila Mourad",
+"g": "eg"
+},
+{
+"a": "أحلام الشامسي|Ahlam",
+"g": "ae"
+},
+{
+"a": "أصالة نصري|Assala",
+"g": "sy"
+},
+{
+"a": "سيرين عبد النور|Cyrine Abdelnour",
+"g": "lb"
+},
+{
+"a": "أصالة نصري|Assala",
+"g": "bh"
+},
+{
+"a": "زكي موران|Zeki Müren",
+"g": "tr"
+},
+{
+"a": "سيلا جنتشغلو|Sıla",
+"g": "tr"
+},
+{
+"a": "ألينا تيلكي|Aleyna Tilki",
+"g": "tr"
+},
+{
+"a": "بريتام|Pritam Chakraborty",
+"g": "in"
+},
+{
+"a": "أوشا مانغيشكار|Usha Mangeshkar",
+"g": "in"
+},
+{
+"a": "كانان ديفي|Kanan Devi",
+"g": "in"
+},
+{
+"a": "أندريا إرميا|Andrea Jeremiah",
+"g": "in"
+},
+{
+"a": "أو ها يونغ|Oh Ha-young",
+"g": "kr"
+},
+{
+"a": "أوه يون سو|Oh Yeon-seo",
+"g": "kr"
+},
+{
+"a": "هويين|Wheein",
+"g": "kr"
+},
+{
+"a": "ين بو مي|Yoon Bo-mi",
+"g": "kr"
+},
+{
+"a": "تشوي جين هيوك|Choi Jin-hyuk",
+"g": "kr"
+},
+{
+"a": "سومي جو|Sumi Jo",
+"g": "kr"
+},
+{
+"a": "ريوجين|Shin Ryu-jin",
+"g": "kr"
+},
+{
+"a": "بارك تشو رونغ|Park Cho-rong",
+"g": "kr"
+},
+{
+"a": "سوجين|Soojin",
+"g": "kr"
+},
+{
+"a": "جانغ نيكول|Nicole Jung",
+"g": "kr"
+},
+{
+"a": "تايونغ|Lee Tae-yong",
+"g": "kr"
+},
+{
+"a": "روون|Ro Woon",
+"g": "kr"
+},
+{
+"a": "لي سونغ كيونغ|Lee Sung-kyoung",
+"g": "kr"
+},
+{
+"a": "كيم جونغ كوك|Kim Jong-kook",
+"g": "kr"
+},
+{
+"a": "بارك جيهون|Park Ji-hoon",
+"g": "kr"
+},
+{
+"a": "جونغ ين هو|Yunho",
+"g": "kr"
+},
+{
+"a": "هان سون هوا|Han Seon-hwa",
+"g": "kr"
+},
+{
+"a": "هاريسو|Harisu",
+"g": "kr"
+},
+{
+"a": "بارك سو يون|Park So-yeon",
+"g": "kr"
+},
+{
+"a": "يي سونغ|Yesung",
+"g": "kr"
+},
+{
+"a": "لي جون|Lee Joon",
+"g": "kr"
+},
+{
+"a": "شذى حسون|Shatha Hassoun",
+"g": "ma"
+},
+{
+"a": "لطيفة|Latifa",
+"g": "tn"
+},
+{
+"a": "كاظم الساهر|Kadim Al Sahir",
+"g": "iq"
+},
+{
+"a": "شذى حسون|Shatha Hassoun",
+"g": "iq"
+},
+{
+"a": "كاظم الساهر|Kadim Al Sahir",
+"g": "qa"
+},
+{
+"a": "عاشيق ويسل|Âşık Veysel",
+"g": "tr"
+},
+{
+"a": "كاظم كويونجو|Kâzım Koyuncu",
+"g": "tr"
+},
+{
+"a": "فرح زينب عبد الله|Farah Zeynep Abdullah",
+"g": "tr"
+},
+{
+"a": "ثريا|Suraiya",
+"g": "in"
+},
+{
+"a": "راشي خانا|Raashi Khanna",
+"g": "in"
+},
+{
+"a": "تشايون|Chaeyeon",
+"g": "kr"
+},
+{
+"a": "كيم نام جو|Kim Nam-joo",
+"g": "kr"
+},
+{
+"a": "ين بو را|Yoon Bo-ra",
+"g": "kr"
+},
+{
+"a": "يوي|Uee",
+"g": "kr"
+},
+{
+"a": "نام جي هيون|Nam Ji-hyun",
+"g": "kr"
+},
+{
+"a": "كوون يون-بي|Kwon Eun-bi",
+"g": "kr"
+},
+{
+"a": "بارك جن يونغ|Park Jin-young",
+"g": "kr"
+},
+{
+"a": "نانا|Nana",
+"g": "kr"
+},
+{
+"a": "يورا|Yura",
+"g": "kr"
+},
+{
+"a": "لي نو|Lee Know",
+"g": "kr"
+},
+{
+"a": "إيريك نام|Eric Nam",
+"g": "kr"
+},
+{
+"a": "بارك تشوا|Choa",
+"g": "kr"
+},
+{
+"a": "ألكسا|AleXa",
+"g": "kr"
+},
+{
+"a": "إي أون جو|Lee Eun-ju",
+"g": "kr"
+},
+{
+"a": "أوم جونغ هوا|Uhm Jeong-hwa",
+"g": "kr"
+},
+{
+"a": "سو كانغ جون|Seo Kang-jun",
+"g": "kr"
+},
+{
+"a": "تشوي يي-نا|Choi Ye-na",
+"g": "kr"
+},
+{
+"a": "آهن يو جين|An Yu-jin",
+"g": "kr"
+},
+{
+"a": "كانغ جي يونغ|Kang Ji-young",
+"g": "kr"
+},
+{
+"a": "كانغ إن|Kangin",
+"g": "kr"
+},
+{
+"a": "بايك أيون|Baek A-yeon",
+"g": "kr"
+},
+{
+"a": "هيو غا يون|Heo Ga-yoon",
+"g": "kr"
+},
+{
+"a": "وينتر",
+"g": "kr"
+},
+{
+"a": "هند العروسي|Hind Laroussi",
+"g": "ma"
+},
+{
+"a": "جيرار دارمون|Gérard Darmon",
+"g": "ma"
+},
+{
+"a": "معطوب الوناس|Lounès Matoub",
+"g": "dz"
+},
+{
+"a": "طاووس عمروش|Taos Amrouche",
+"g": "dz"
+},
+{
+"a": "ظافر يوسف|Dhafer Youssef",
+"g": "tn"
+},
+{
+"a": "جورج وسوف|George Wassouf",
+"g": "sy"
+},
+{
+"a": "ياسمين حمدان|Yasmine Hamdan",
+"g": "lb"
+},
+{
+"a": "ألين لحود|Aline Lahoud",
+"g": "lb"
+},
+{
+"a": "شهرزاد|Şehrazat",
+"g": "tr"
+},
+{
+"a": "ديميت اكالين|Demet Akalın",
+"g": "tr"
+},
+{
+"a": "امري ايدين|Emre Aydın",
+"g": "tr"
+},
+{
+"a": "يو يو هوني سينج|Yo Yo Honey Singh",
+"g": "in"
+},
+{
+"a": "سوخويندر سينغ|Sukhwinder Singh",
+"g": "in"
+},
+{
+"a": "ساشين بورمان|Sachin Dev Burman",
+"g": "in"
+},
+{
+"a": "بابي لاهيري|Bappi Lahiri",
+"g": "in"
+},
+{
+"a": "بي في آر رجا|PVR Raja",
+"g": "in"
+},
+{
+"a": "لي هيون وو|Lee Hyun-woo",
+"g": "kr"
+},
+{
+"a": "كيم دا سوم|Kim Da-som",
+"g": "kr"
+},
+{
+"a": "جون هيو سونغ|Jun Hyo-seong",
+"g": "kr"
+},
+{
+"a": "إم جاي بوم|JAY B",
+"g": "kr"
+},
+{
+"a": "جون جي ين|Jeon Ji-yoon",
+"g": "kr"
+},
+{
+"a": "إيجاي|Ejae",
+"g": "kr"
+},
+{
+"a": "إي سونغ من|Lee Sungmin",
+"g": "kr"
+},
+{
+"a": "ين ها|Younha",
+"g": "kr"
+},
+{
+"a": "بارك سو-جين|Park So-jin",
+"g": "kr"
+},
+{
+"a": "يوك سونغجاي|Yook Sung-jae",
+"g": "kr"
+},
+{
+"a": "بارك يي-يون|Park Ye-eun",
+"g": "kr"
+},
+{
+"a": "سيو هيون جين|Seo Hyun-jin",
+"g": "kr"
+},
+{
+"a": "غامي|Gummy",
+"g": "kr"
+},
+{
+"a": "غايين|Gain",
+"g": "kr"
+},
+{
+"a": "كانغ من هيوك|Kang Min-hyuk",
+"g": "kr"
+},
+{
+"a": "نا هاي ريونغ|Na Hae-ryung",
+"g": "kr"
+},
+{
+"a": "عمر سليمان|Omar Souleyman",
+"g": "sy"
+},
+{
+"a": "جوليا بطرس|Julia Boutros",
+"g": "lb"
+},
+{
+"a": "نوال الزغبي|Nawal El Zoghbi",
+"g": "lb"
+},
+{
+"a": "وديع الصافي|Wadie Elsafi",
+"g": "lb"
+},
+{
+"a": "ريم بنا|Rim Banna",
+"g": "ps"
+},
+{
+"a": "كنعان دوغلو|Kenan Doğulu",
+"g": "tr"
+},
+{
+"a": "يلدز تيلبه|Yıldız Tilbe",
+"g": "tr"
+},
+{
+"a": "سيبل جان|Sibel Can",
+"g": "tr"
+},
+{
+"a": "كارين ديفيد|Karen David",
+"g": "in"
+},
+{
+"a": "سدهارث|Siddharth",
+"g": "in"
+},
+{
+"a": "شهازهن بادامسيي|Shazahn Padamsee",
+"g": "in"
+},
+{
+"a": "نانسي|Nancy",
+"g": "kr"
+},
+{
+"a": "سونغ سيونغ هون|Song Seung-heon",
+"g": "kr"
+},
+{
+"a": "كيم مين جو|Kim Min-ju",
+"g": "kr"
+},
+{
+"a": "ريو هوايونغ|Ryu Hwa-young",
+"g": "kr"
+},
+{
+"a": "سونغ يو ري|Sung Yu-ri",
+"g": "kr"
+},
+{
+"a": "كيوري|Qri",
+"g": "kr"
+},
+{
+"a": "هاها|Haha",
+"g": "kr"
+},
+{
+"a": "نام جيو ري|Nam Gyu-ri",
+"g": "kr"
+},
+{
+"a": "جونغ يونغ هوا|Jung Yong-hwa",
+"g": "kr"
+},
+{
+"a": "هوانغ هيون جين|Hyunjin",
+"g": "kr"
+},
+{
+"a": "تيدي بارك|Teddy Park",
+"g": "kr"
+},
+{
+"a": "زيكو|Zico",
+"g": "kr"
+},
+{
+"a": "سيو تشانغبين|Changbin",
+"g": "kr"
+},
+{
+"a": "لي جونغ هيون|Lee Jeong-hyeon",
+"g": "kr"
+},
+{
+"a": "بانغ يونغ غك|Bang Yong-guk",
+"g": "kr"
+},
+{
+"a": "يوبين|Yubin",
+"g": "kr"
+},
+{
+"a": "سونغ جي يون|Song Jieun",
+"g": "kr"
+},
+{
+"a": "كوون نارا|Kwon Na-ra",
+"g": "kr"
+},
+{
+"a": "كيم سامويل|Samuel",
+"g": "kr"
+},
+{
+"a": "هان يي-سيول|Han Ye-seul",
+"g": "kr"
+},
+{
+"a": "كانغ دانييل|Kang Daniel",
+"g": "kr"
+},
+{
+"a": "كيم ريوك|Kim Ryeowook",
+"g": "kr"
+},
+{
+"a": "كوون سو هيون|Kwon So-hyun",
+"g": "kr"
+},
+{
+"a": "لي هونغ جي|Lee Hong-gi",
+"g": "kr"
+},
+{
+"a": "حمزة نمرة|Hamza Namira",
+"g": "eg"
+},
+{
+"a": "روبي|Ruby",
+"g": "eg"
+},
+{
+"a": "بيونة|Biyouna",
+"g": "dz"
+},
+{
+"a": "سوزان تميم|Suzanne Tamim",
+"g": "lb"
+},
+{
+"a": "عائشة جول ألدينتش|Ayşegül Aldinç",
+"g": "tr"
+},
+{
+"a": "أورخان كنجه باي|Orhan Gencebay",
+"g": "tr"
+},
+{
+"a": "عدنان سميع|Adnan Sami",
+"g": "in"
+},
+{
+"a": "بالاك موشهال|Palak Muchhal",
+"g": "in"
+},
+{
+"a": "نصار",
+"g": "in"
+},
+{
+"a": "سونغ من هو|Song Min-ho",
+"g": "kr"
+},
+{
+"a": "لي جون-هيوك|Lee Joon-hyuk",
+"g": "kr"
+},
+{
+"a": "هويا|Hoya",
+"g": "kr"
+},
+{
+"a": "لي جون هو|Lee Jun-ho",
+"g": "kr"
+},
+{
+"a": "ليزي|Park Soo-ah",
+"g": "kr"
+},
+{
+"a": "سويو|Soyou",
+"g": "kr"
+},
+{
+"a": "كيم سونغ كيو|Kim Sung-kyu",
+"g": "kr"
+},
+{
+"a": "بارك جي مين|Jamie",
+"g": "kr"
+},
+{
+"a": "كيم مين-سوك|Kim Min-seok",
+"g": "kr"
+},
+{
+"a": "نام ووهيون|Nam Woo-hyun",
+"g": "kr"
+},
+{
+"a": "تشايريونق|Chaeryeong",
+"g": "kr"
+},
+{
+"a": "جوشوا هونج|Joshua Hong",
+"g": "kr"
+},
+{
+"a": "تشو ليا|Lia",
+"g": "kr"
+},
+{
+"a": "يوجين|Eugene",
+"g": "kr"
+},
+{
+"a": "تشاي جونغ آن|Chae Jung-an",
+"g": "kr"
+},
+{
+"a": "يوجو|Yuju",
+"g": "kr"
+},
+{
+"a": "ريسي|Kwon Ri-se",
+"g": "kr"
+},
+{
+"a": "إي جونغ شن|Lee Jung-shin",
+"g": "kr"
+},
+{
+"a": "أونها|Eunha",
+"g": "kr"
+},
+{
+"a": "جونغ تشاي يون|Jung Chae-yeon",
+"g": "kr"
+},
+{
+"a": "سون دام بي|Son Dam-bi",
+"g": "kr"
+},
+{
+"a": "بادا|Bada",
+"g": "kr"
+},
+{
+"a": "كوون مينا|Kwon Mina",
+"g": "kr"
+},
+{
+"a": "كيم سو هاي|Kim So-hye",
+"g": "kr"
+},
+{
+"a": "ليم نا يونغ|Lim Na-young",
+"g": "kr"
+},
+{
+"a": "كيم كي بوم|Kim Kibum",
+"g": "kr"
+},
+{
+"a": "هوانغ مين هيون|Hwang Min-hyun",
+"g": "kr"
+},
+{
+"a": "جانغ دونغ غون|Jang Dong-geon",
+"g": "kr"
+},
+{
+"a": "من|Min",
+"g": "kr"
+},
+{
+"a": "شن دونغ|Shindong",
+"g": "kr"
+},
+{
+"a": "أون هيوك|Eunhyuk",
+"g": "kr"
+},
+{
+"a": "جونغ ها-نا|Jung Ha-na",
+"g": "kr"
+},
+{
+"a": "جيون بورام|Jeon Bo-ram",
+"g": "kr"
+},
+{
+"a": "هشام عباس|هشام عباس",
+"g": "eg"
+},
+{
+"a": "نجوى بيليزل|Najoua Belyzel",
+"g": "ma"
+},
+{
+"a": "الشاب فضيل|Faudel",
+"g": "ma"
+},
+{
+"a": "كنزة فرح|Kenza Farah",
+"g": "dz"
+},
+{
+"a": "الشابة الزهوانية|Cheba Zahouania",
+"g": "dz"
+},
+{
+"a": "الشاب فضيل|Faudel",
+"g": "dz"
+},
+{
+"a": "أمينة العنابي|Amina Annabi",
+"g": "tn"
+},
+{
+"a": "آمال المثلوثي|Emel Mathlouthi",
+"g": "tn"
+},
+{
+"a": "ديانا حداد|Diana Haddad",
+"g": "ae"
+},
+{
+"a": "مساري|Massari",
+"g": "lb"
+},
+{
+"a": "ديانا حداد|Diana Haddad",
+"g": "lb"
+},
+{
+"a": "حلا الترك|Hala Al Turk",
+"g": "bh"
+},
+{
+"a": "إركين كوراي|Erkin Koray",
+"g": "tr"
+},
+{
+"a": "أبرو غوندش|Ebru Gündeş",
+"g": "tr"
+},
+{
+"a": "سردار أورتاش|Serdar Ortaç",
+"g": "tr"
+},
+{
+"a": "مسلم جورسيس|Müslüm Gürses",
+"g": "tr"
+},
+{
+"a": "سوريندر كور|Surinder Kaur",
+"g": "in"
+},
+{
+"a": "فيشال بهاردساج|Vishal Bhardwaj",
+"g": "in"
+},
+{
+"a": "شيلبا راو|Shilpa Rao",
+"g": "in"
+},
+{
+"a": "تولسي كومار|Tulsi Kumar",
+"g": "in"
+},
+{
+"a": "شهناز كور جيل|Shehnaaz Kaur Gill",
+"g": "in"
+},
+{
+"a": "تشوي يونغ جاي|Choi Young-jae",
+"g": "kr"
+},
+{
+"a": "راينا|Raina",
+"g": "kr"
+},
+{
+"a": "جانغ هيون سيونغ|Jang Hyun-seung",
+"g": "kr"
+},
+{
+"a": "لي هاي ري|Lee Hae-ri",
+"g": "kr"
+},
+{
+"a": "كانغ مين كيونغ|Kang Min-kyeong",
+"g": "kr"
+},
+{
+"a": "لي جو يون|Lee Joo-yeon",
+"g": "kr"
+},
+{
+"a": "جونغ ريو وون|Jung Ryeo-won",
+"g": "kr"
+},
+{
+"a": "جيون هاي بن|Jeon Hye-bin",
+"g": "kr"
+},
+{
+"a": "كانغ مي نا|Kang Mi-na",
+"g": "kr"
+},
+{
+"a": "بي وو هي|Woohee",
+"g": "kr"
+},
+{
+"a": "دين|Dean",
+"g": "kr"
+},
+{
+"a": "بارك سونغ هون|Park Sung-hoon",
+"g": "kr"
+},
+{
+"a": "جو وون|Joo Won",
+"g": "kr"
+},
+{
+"a": "جينا|G.NA",
+"g": "kr"
+},
+{
+"a": "كيم أه جونغ|Kim A-jung",
+"g": "kr"
+},
+{
+"a": "بونا|Bona",
+"g": "kr"
+},
+{
+"a": "هيو سولجي|Heo Sol-ji",
+"g": "kr"
+},
+{
+"a": "شين جيمين|Shin Ji-min",
+"g": "kr"
+},
+{
+"a": "كيم تشانمي|Dohwa",
+"g": "kr"
+},
+{
+"a": "باك جونغ من|Park Jung-min",
+"g": "kr"
+},
+{
+"a": "كيم أوك بين|Kim Ok-vin",
+"g": "kr"
+},
+{
+"a": "دانا|Dana",
+"g": "kr"
+},
+{
+"a": "اونغ سونغ وو|Ong Seongwu",
+"g": "kr"
+},
+{
+"a": "هوانغ جونغ أوم|Hwang Jung-eum",
+"g": "kr"
+},
+{
+"a": "بارك سونغهون|Park Sung-hoon",
+"g": "kr"
+},
+{
+"a": "فايزة أحمد|Fayza Ahmed",
+"g": "eg"
+},
+{
+"a": "كارول سماحة|Carole Samaha",
+"g": "eg"
+},
+{
+"a": "دنيا سمير غانم|Donia Samir Ghanem",
+"g": "eg"
+},
+{
+"a": "شيخة ريميتي|Cheikha Rimitti",
+"g": "dz"
+},
+{
+"a": "الشاب حسني|Cheb Hasni",
+"g": "dz"
+},
+{
+"a": "ارام تيغران|Aram Tigran",
+"g": "sy"
+},
+{
+"a": "فايزة أحمد|Fayza Ahmed",
+"g": "sy"
+},
+{
+"a": "فايزة أحمد|Fayza Ahmed",
+"g": "lb"
+},
+{
+"a": "كارول سماحة|Carole Samaha",
+"g": "lb"
+},
+{
+"a": "بشار مراد|Bashar Murad",
+"g": "ps"
+},
+{
+"a": "آتيا|Atiye",
+"g": "tr"
+},
+{
+"a": "شوال سام|Şevval Sam",
+"g": "tr"
+},
+{
+"a": "معزز إرسوي|Muazzez Ersoy",
+"g": "tr"
+},
+{
+"a": "غلبن أرغن|Gülben Ergen",
+"g": "tr"
+},
+{
+"a": "جيم أدريان|Cem Adrian",
+"g": "tr"
+},
+{
+"a": "مزين سنار|Müzeyyen Senar",
+"g": "tr"
+},
+{
+"a": "محسون قرمز غل|Mahsun Kırmızıgül",
+"g": "tr"
+},
+{
+"a": "بانو ألكان|Banu Alkan",
+"g": "tr"
+},
+{
+"a": "فرحات آريجان|Ferhat Arıcan",
+"g": "tr"
+},
+{
+"a": "مصطفى جيجلي|Mustafa Ceceli",
+"g": "tr"
+},
+{
+"a": "إي جونغ هيون|Lee Jong-hyun",
+"g": "kr"
+},
+{
+"a": "جانغ وويونغ|Jang Wooyoung",
+"g": "kr"
+},
+{
+"a": "كيم هيون جو|Kim Hyun-joo",
+"g": "kr"
+},
+{
+"a": "غونغ ميونغ|Gong Myoung",
+"g": "kr"
+},
+{
+"a": "جونيل|Juniel",
+"g": "kr"
+},
+{
+"a": "بايك دجي-يونغ|Baek Ji-young",
+"g": "kr"
+},
+{
+"a": "شين يونا|Shin Yu-na",
+"g": "kr"
+},
+{
+"a": "بيغي غو|Peggy Gou",
+"g": "kr"
+},
+{
+"a": "بيبي|Bibi",
+"g": "kr"
+},
+{
+"a": "تشا هاك يون|N",
+"g": "kr"
+},
+{
+"a": "كي ويل|K.Will",
+"g": "kr"
+},
+{
+"a": "هيليم|Hyelim",
+"g": "kr"
+},
+{
+"a": "أون جي وون|Eun Ji-won",
+"g": "kr"
+},
+{
+"a": "هوانغ تشان سونغ|Hwang Chansung",
+"g": "kr"
+},
+{
+"a": "جايهيون|Jaehyun",
+"g": "kr"
+},
+{
+"a": "أه يونغ|Ah Young",
+"g": "kr"
+},
+{
+"a": "سوون|Kim So-won",
+"g": "kr"
+},
+{
+"a": "شيون|Xiyeon",
+"g": "kr"
+},
+{
+"a": "وونهو|Wonho",
+"g": "kr"
+},
+{
+"a": "هيزي|Heize",
+"g": "kr"
+},
+{
+"a": "كيم جونغ سوك|Kim Jung-sook",
+"g": "kr"
+},
+{
+"a": "شين هاي-جيونغ|Shin Hye-jeong",
+"g": "kr"
+},
+{
+"a": "بارك سي يون|Park Si-eun",
+"g": "kr"
+},
+{
+"a": "أنيتا تسوي|Anita Tsoy",
+"g": "kr"
+},
+{
+"a": "لي نا-يون|Lee Na-eun",
+"g": "kr"
+},
+{
+"a": "كيم هيونغ جون|Kim Hyung-jun",
+"g": "kr"
+},
+{
+"a": "كيم جون|Kim Jun",
+"g": "kr"
+},
+{
+"a": "هو يونغ جي|Heo Young-ji",
+"g": "kr"
+},
+{
+"a": "أسيل عمران|Aseel Omran",
+"g": "sa"
+},
+{
+"a": "رشدي أباظة|Rushdy Abaza",
+"g": "eg"
+},
+{
+"a": "تامر حسني|Tamer Hosny",
+"g": "eg"
+},
+{
+"a": "تحية كاريوكا|Taheyya Kariokka",
+"g": "eg"
+},
+{
+"a": "نجاة الصغيرة|Nagat Elsaghira",
+"g": "eg"
+},
+{
+"a": "أسماء لمنور|Asma Lamnawar",
+"g": "ma"
+},
+{
+"a": "صابر الرباعي|Saber Rebai",
+"g": "tn"
+},
+{
+"a": "أحمد بوخاطر|Ahmed Bukhatir",
+"g": "ae"
+},
+{
+"a": "محمد عساف|Mohammed Assaf",
+"g": "ps"
+},
+{
+"a": "شفان برور|Şivan Perwer",
+"g": "tr"
+},
+{
+"a": "ميراي دانر|Miray Daner",
+"g": "tr"
+},
+{
+"a": "توفانا توركاي|Tuvana Türkay",
+"g": "tr"
+},
+{
+"a": "كيم يوغيوم|Kim Yu-gyeom",
+"g": "kr"
+},
+{
+"a": "بوبي|Bobby",
+"g": "kr"
+},
+{
+"a": "بارك بو رام|Park Bo-ram",
+"g": "kr"
+},
+{
+"a": "هونغ جين-يونغ|Hong Jin-young",
+"g": "kr"
+},
+{
+"a": "لي جين|Lee Jin",
+"g": "kr"
+},
+{
+"a": "نو مين وو|No Min-woo",
+"g": "kr"
+},
+{
+"a": "هيوك|Hyuk",
+"g": "kr"
+},
+{
+"a": "إي هونغ بن|Lee Hong-bin",
+"g": "kr"
+},
+{
+"a": "نارشا|Narsha",
+"g": "kr"
+},
+{
+"a": "ييرين|Yerin",
+"g": "kr"
+},
+{
+"a": "سيمون دومينيك|Simon Dominic",
+"g": "kr"
+},
+{
+"a": "كيم جاي كيونغ|Kim Jae-kyung",
+"g": "kr"
+},
+{
+"a": "لي مين كي|Lee Min-ki",
+"g": "kr"
+},
+{
+"a": "إي سونغ يول|Lee Sungyeol",
+"g": "kr"
+},
+{
+"a": "بارك جونغ أه|Park Jung-ah",
+"g": "kr"
+},
+{
+"a": "بارك جيونج هوا|Park Jeong-hwa",
+"g": "kr"
+},
+{
+"a": "بيك ييرين|Baek Ye-rin",
+"g": "kr"
+},
+{
+"a": "لي سون بن|Lee Sun-bin",
+"g": "kr"
+},
+{
+"a": "يوا|Yooa",
+"g": "kr"
+},
+{
+"a": "بارك جين جو|Park Jin-joo",
+"g": "kr"
+},
+{
+"a": "أرين|Arin",
+"g": "kr"
+},
+{
+"a": "تشوي يو-جونغ|Choi Yoo-jung",
+"g": "kr"
+},
+{
+"a": "جونغ جي سو|Jung Ziso",
+"g": "kr"
+},
+{
+"a": "جون كاي|Jun. K",
+"g": "kr"
+},
+{
+"a": "تامينو|Tamino",
+"g": "eg"
+},
+{
+"a": "كليمينت رافين|Raffi",
+"g": "eg"
+},
+{
+"a": "يسرا|Yousra",
+"g": "eg"
+},
+{
+"a": "أنوشكا|Anoushka",
+"g": "eg"
+},
+{
+"a": "محمد رمضان|Mohammed Ramadan",
+"g": "eg"
+},
+{
+"a": "فرحات مهني|Ferhat Mehenni",
+"g": "dz"
+},
+{
+"a": "فلة الجزائرية|Fella El Djazairia",
+"g": "dz"
+},
+{
+"a": "كارل وولف|Karl Wolf",
+"g": "lb"
+},
+{
+"a": "سميرة توفيق|Samira Tawfiq",
+"g": "lb"
+},
+{
+"a": "إيمراه إيبك|Emrah",
+"g": "tr"
+},
+{
+"a": "سيبال توزون|Sibel Tüzün",
+"g": "tr"
+},
+{
+"a": "رأفت الرومان|Rafet El Roman",
+"g": "tr"
+},
+{
+"a": "أيلا ألجان|Ayla Algan",
+"g": "tr"
+},
+{
+"a": "إرم دريجي|İrem Derici",
+"g": "tr"
+},
+{
+"a": "تابلو|Tablo",
+"g": "kr"
+},
+{
+"a": "كيم جين وو|Kim Jin-woo",
+"g": "kr"
+},
+{
+"a": "إي سو يونغ|Lee Soo-young",
+"g": "kr"
+},
+{
+"a": "جين وون|Jung Jin-woon",
+"g": "kr"
+},
+{
+"a": "ثاندر|Thunder",
+"g": "kr"
+},
+{
+"a": "باي سول كي|Bae Seul-ki",
+"g": "kr"
+},
+{
+"a": "كيم جيون|Kei",
+"g": "kr"
+},
+{
+"a": "شينبي|SinB",
+"g": "kr"
+},
+{
+"a": "غو وو ري|Go Woo-ri",
+"g": "kr"
+},
+{
+"a": "زيون تي|Zion.T",
+"g": "kr"
+},
+{
+"a": "هو يونغ ساينغ|Heo Young-saeng",
+"g": "kr"
+},
+{
+"a": "فيرنون شوي|Vernon Chwe",
+"g": "kr"
+},
+{
+"a": "كانغ تشان هي|Kang Chan-hee",
+"g": "kr"
+},
+{
+"a": "جانغ دونغ وو|Jang Dong-woo",
+"g": "kr"
+},
+{
+"a": "لي مينهيوك|Lee Min-hyuk",
+"g": "kr"
+},
+{
+"a": "يانغ دونغ-جيون|Yang Dong-geun",
+"g": "kr"
+},
+{
+"a": "جي سوك جين|Ji Suk-jin",
+"g": "kr"
+},
+{
+"a": "جانغ يون جيونغ|Jang Yoon-jeong",
+"g": "kr"
+},
+{
+"a": "إي سونغ هون|Lee Seung-hoon",
+"g": "kr"
+},
+{
+"a": "جونغ جين يونغ|Jung Jin-young",
+"g": "kr"
+},
+{
+"a": "يو يون جونغ|Yoo Yeon-jung",
+"g": "kr"
+},
+{
+"a": "باي جين-يونغ|Bae Jin-young",
+"g": "kr"
+},
+{
+"a": "كوون يون بن|Kwon Eun-bin",
+"g": "kr"
+},
+{
+"a": "نام تيهيون|Nam Tae-hyun",
+"g": "kr"
+},
+{
+"a": "بارك سو بين|Subin",
+"g": "kr"
+},
+{
+"a": "جيون جونغ-سيو|Jeon Jong-seo",
+"g": "kr"
+},
+{
+"a": "سونيه|Sunye",
+"g": "kr"
+},
+{
+"a": "تشا إن ها|Cha In-ha",
+"g": "kr"
+},
+{
+"a": "كانغ تاي أوه|Kang Tae-oh",
+"g": "kr"
+},
+{
+"a": "يو جون سانغ|Yu Jun-sang",
+"g": "kr"
+},
+{
+"a": "كانغ تا|Kangta",
+"g": "kr"
+},
+{
+"a": "مين هيو رين|Min Hyo-rin",
+"g": "kr"
+},
+{
+"a": "جو كوون|Jo Kwon",
+"g": "kr"
+},
+{
+"a": "يون سانغ هيون|Yoon Sang-hyun",
+"g": "kr"
+},
+{
+"a": "عزيزة جلال|Aziza Jalal",
+"g": "sa"
+},
+{
+"a": "محمد منير|Mohamed Mounir",
+"g": "eg"
+},
+{
+"a": "بوب عزام|Bob Azzam",
+"g": "eg"
+},
+{
+"a": "آمال ماهر|Amal Maher",
+"g": "eg"
+},
+{
+"a": "محمد رويشة|Mohamed Rouicha",
+"g": "ma"
+},
+{
+"a": "نجاة أعتابو|Najat Aatabou",
+"g": "ma"
+},
+{
+"a": "عزيزة جلال|Aziza Jalal",
+"g": "ma"
+},
+{
+"a": "سولكينغ|Soolking",
+"g": "dz"
+},
+{
+"a": "لينا شاماميان|Lena Chamamyan",
+"g": "sy"
+},
+{
+"a": "نيكول سابا|Nicole Saba",
+"g": "lb"
+},
+{
+"a": "كي مارو|K.Maro",
+"g": "lb"
+},
+{
+"a": "وائل كفوري|Wael Kfoury",
+"g": "lb"
+},
+{
+"a": "مارسيل خليفة|Marcel Khalife",
+"g": "lb"
+},
+{
+"a": "عاصي الحلاني|Assi El Hallani",
+"g": "lb"
+},
+{
+"a": "إيمانويل جال|Emmanuel Jal",
+"g": "sd"
+},
+{
+"a": "سميحة يانكه|Semiha Yankı",
+"g": "tr"
+},
+{
+"a": "أينور دوغان|Aynur Doğan",
+"g": "tr"
+},
+{
+"a": "آيلين آسليم|Aylin Aslım",
+"g": "tr"
+},
+{
+"a": "أبرو يشار|Ebru Yaşar",
+"g": "tr"
+},
+{
+"a": "عائشة خاتون أونال|Ayşe Hatun Önal",
+"g": "tr"
+},
+{
+"a": "بورجو بيريجيك|Burcu Biricik",
+"g": "tr"
+},
+{
+"a": "هيلين بوليك|Helin Bölek",
+"g": "tr"
+},
+{
+"a": "ليو|Leo",
+"g": "kr"
+},
+{
+"a": "كين|Ken",
+"g": "kr"
+},
+{
+"a": "كيم غيو جونغ|Kim Kyu-jong",
+"g": "kr"
+},
+{
+"a": "ريو هيو-يونغ|Ryu Hyo-young",
+"g": "kr"
+},
+{
+"a": "يانغ مي غيونغ|Yang Mi-kyung",
+"g": "kr"
+},
+{
+"a": "كيم هاي-وون|Kang Hye-won",
+"g": "kr"
+},
+{
+"a": "بارك هاي سو|Park Hye-soo",
+"g": "kr"
+},
+{
+"a": "كو جون هو|Koo Jun-hoe",
+"g": "kr"
+},
+{
+"a": "تشوو|Chuu",
+"g": "kr"
+},
+{
+"a": "إريك مون|Eric Mun",
+"g": "kr"
+},
+{
+"a": "لي دونغ غون|Lee Dong-gun",
+"g": "kr"
+},
+{
+"a": "يو أرا|Yoo Ara",
+"g": "kr"
+},
+{
+"a": "روي كيم|Roy Kim",
+"g": "kr"
+},
+{
+"a": "كانغ يي سيو|Kang Ye-seo",
+"g": "kr"
+},
+{
+"a": "كيم مو يول|Kim Mu-yeol",
+"g": "kr"
+},
+{
+"a": "لي سيو جين|Lee Seo-jin",
+"g": "kr"
+},
+{
+"a": "دانييل|Danielle Marsh",
+"g": "kr"
+},
+{
+"a": "كيم سو هي|Kim So-hee",
+"g": "kr"
+},
+{
+"a": "غيون مي ري|Kyeon Mi-ri",
+"g": "kr"
+},
+{
+"a": "تشو سيونج هي|Jo Seung-hee",
+"g": "kr"
+},
+{
+"a": "إيلي|LE",
+"g": "kr"
+},
+{
+"a": "سو يونا|Seo Yu-na",
+"g": "kr"
+},
+{
+"a": "كيم وو-سوك|Kim Woo-seok",
+"g": "kr"
+},
+{
+"a": "تشوي يوجين|Choi Yu-jin",
+"g": "kr"
+},
+{
+"a": "بارك سو جين|Park Soo-jin",
+"g": "kr"
+},
+{
+"a": "يون تشاي-كيونغ|Yoon Chae-kyung",
+"g": "kr"
+},
+{
+"a": "دويونغ|Kim Doyoung",
+"g": "kr"
+},
+{
+"a": "آهن جاي-ووك|Ahn Jae-wook",
+"g": "kr"
+},
+{
+"a": "كيم جاي هوان|Kim Jae Hwan",
+"g": "kr"
+},
+{
+"a": "يو ني|U-Nee",
+"g": "kr"
+},
+{
+"a": "رامي صبري|Ramy Sabry",
+"g": "eg"
+},
+{
+"a": "صوفيا المريخ|Sofia El Marikh",
+"g": "ma"
+},
+{
+"a": "فاطمة آيت منصور عمروش|Fadhma Aït Mansour",
+"g": "dz"
+},
+{
+"a": "فدوى سليمان|Fadwa Soliman",
+"g": "sy"
+},
+{
+"a": "بديعة مصابني|Badia Masabni",
+"g": "lb"
+},
+{
+"a": "ريهان كرجا|Reyhan Karaca",
+"g": "tr"
+},
+{
+"a": "عدنان شانسيس|Adnan Şenses",
+"g": "tr"
+},
+{
+"a": "يافوز بينغول|Yavuz Bingöl",
+"g": "tr"
+},
+{
+"a": "كرم جيم|Keremcem",
+"g": "tr"
+},
+{
+"a": "سيمغي|Simge",
+"g": "tr"
+},
+{
+"a": "ماجد المهندس|Majid Al Mohandis",
+"g": "sa"
+},
+{
+"a": "ليلى غفران|Laila Ghofran",
+"g": "eg"
+},
+{
+"a": "منير مراد|Monir Morad",
+"g": "eg"
+},
+{
+"a": "جنات|Jannat",
+"g": "eg"
+},
+{
+"a": "هدى سلطان|Huda Sultan",
+"g": "eg"
+},
+{
+"a": "فاطمة تبعمرانت|Fatima Tabaamrant",
+"g": "ma"
+},
+{
+"a": "ليلى غفران|Laila Ghofran",
+"g": "ma"
+},
+{
+"a": "دنيا بطمة|Dounia Batma",
+"g": "ma"
+},
+{
+"a": "جنات|Jannat",
+"g": "ma"
+},
+{
+"a": "سلمى رشيد|Salma Rachid",
+"g": "ma"
+},
+{
+"a": "أحمد شوقي|Ahmed Chawki",
+"g": "ma"
+},
+{
+"a": "مليكة دومران|Malika Domrane",
+"g": "dz"
+},
+{
+"a": "رجاء مزيان|Raja Meziane",
+"g": "dz"
+},
+{
+"a": "رحمة رياض|Rahma Riad",
+"g": "iq"
+},
+{
+"a": "ماجد المهندس|Majid Al Mohandis",
+"g": "iq"
+},
+{
+"a": "راغب علامة|Ragheb Alama",
+"g": "ae"
+},
+{
+"a": "حسين الجسمي|Hussain Al Jassmi",
+"g": "ae"
+},
+{
+"a": "ميادة الحناوي|Mayada El Hennawy",
+"g": "sy"
+},
+{
+"a": "راغب علامة|Ragheb Alama",
+"g": "lb"
+},
+{
+"a": "أمل حجازي|Amal Hijazi",
+"g": "lb"
+},
+{
+"a": "دنيا بطمة|Dounia Batma",
+"g": "bh"
+},
+{
+"a": "فاطمة الحمروش|Fatima Hamroush",
+"g": "ly"
+},
+{
+"a": "فرحات تونغ|Ferhat Tunç",
+"g": "tr"
+},
+{
+"a": "عائشة شان|Ayşe Şan",
+"g": "tr"
+},
+{
+"a": "سمية أيدوغان|Sümeyye Aydoğan",
+"g": "tr"
+},
+{
+"a": "طلال مداح|Talal Maddah",
+"g": "sa"
+},
+{
+"a": "حمزة علاء الدين|Hamza Alaa Eldin",
+"g": "eg"
+},
+{
+"a": "رياض السنباطي|Riad al Sunbati",
+"g": "eg"
+},
+{
+"a": "إيهاب توفيق|Ehab Tawfik",
+"g": "eg"
+},
+{
+"a": "محمد حماقي|Mohamed Hamaki",
+"g": "eg"
+},
+{
+"a": "كارمن سليمان|Carmen Suleiman",
+"g": "eg"
+},
+{
+"a": "مريم صالح|Maryam Saleh",
+"g": "eg"
+},
+{
+"a": "سهام بنشقرون|Siham Benchekroun",
+"g": "ma"
+},
+{
+"a": "الشابة فضيلة|Chaba Fadela",
+"g": "dz"
+},
+{
+"a": "لونيس آيت منقلات|Lounis Ait Menguellet",
+"g": "dz"
+},
+{
+"a": "الشيخة ربيعة|Cheikha Rabia",
+"g": "dz"
+},
+{
+"a": "سليم الهلالي|Salim Halali",
+"g": "dz"
+},
+{
+"a": "سحر مقدس|Sahar Moghadass",
+"g": "ae"
+},
+{
+"a": "ديانا كرزون|Diana Karazon",
+"g": "jo"
+},
+{
+"a": "أفرام روسو|Avraam Russo",
+"g": "sy"
+},
+{
+"a": "يارا|Yara",
+"g": "lb"
+},
+{
+"a": "حامد سنو|Hamed Sinno",
+"g": "lb"
+},
+{
+"a": "زحل أولجاي|Zuhal Olcay",
+"g": "tr"
+},
+{
+"a": "فوندا أرار|Funda Arar",
+"g": "tr"
+},
+{
+"a": "دنيز سيكي|Deniz Seki",
+"g": "tr"
+},
+{
+"a": "تويغار إشيكلي|Toygar Işıklı",
+"g": "tr"
+},
+{
+"a": "مراد دالكليتش|Murat Dalkılıç",
+"g": "tr"
+},
+{
+"a": "شمس الكويتية|Shams",
+"g": "sa"
+},
+{
+"a": "أسماء أبو اليزيد|Asmaa Abulyazeid",
+"g": "eg"
+},
+{
+"a": "فيروز|Fayruz",
+"g": "eg"
+},
+{
+"a": "مصطفى قمر|Moustafa Amar",
+"g": "eg"
+},
+{
+"a": "أحمد عدوية|Ahmad Adaweyyah",
+"g": "eg"
+},
+{
+"a": "منيرة المهدية|Monira Elmahdiyya",
+"g": "eg"
+},
+{
+"a": "دينا|Dina Talaat",
+"g": "eg"
+},
+{
+"a": "إسماعيل ياسين|Esmaeil Yasin",
+"g": "eg"
+},
+{
+"a": "هاني شاكر|Hany Shaker",
+"g": "eg"
+},
+{
+"a": "ميس حمدان|Mais Hamdan",
+"g": "eg"
+},
+{
+"a": "دينا الوديدي|Dina El Wedidi",
+"g": "eg"
+},
+{
+"a": "أمينة العلوي|Amina Alaoui",
+"g": "ma"
+},
+{
+"a": "وئام الدحماني|Wiam Dahmani",
+"g": "ma"
+},
+{
+"a": "سناء موزيان|Sana Mouziane",
+"g": "ma"
+},
+{
+"a": "فاطمة الزهراء بناصر|Fatima Zahra Bennacer",
+"g": "ma"
+},
+{
+"a": "فضيلة الدزيرية|Fadhéla Dziria",
+"g": "dz"
+},
+{
+"a": "خالد حبيب|Khaled Habib",
+"g": "dz"
+},
+{
+"a": "علي غاتي|Ali Gatie",
+"g": "iq"
+},
+{
+"a": "بلقيس|Balqees",
+"g": "ae"
+},
+{
+"a": "شمس الكويتية|Shams",
+"g": "kw"
+},
+{
+"a": "ميس حمدان|Mais Hamdan",
+"g": "jo"
+},
+{
+"a": "بول بغدادليان|Paul Baghdadlian",
+"g": "sy"
+},
+{
+"a": "وليد توفيق|Walid Toufic",
+"g": "lb"
+},
+{
+"a": "أديس هارمنديان|Adiss Harmandian",
+"g": "lb"
+},
+{
+"a": "عائشة الفلاتية|Aisha Musa Ahmad",
+"g": "sd"
+},
+{
+"a": "بلقيس|Balqees",
+"g": "ye"
+},
+{
+"a": "صدى سايان|Seda Sayan",
+"g": "tr"
+},
+{
+"a": "أسكن نورينغي|Aşkın Nur Yengi",
+"g": "tr"
+},
+{
+"a": "بينار أيهان|Pınar Ayhan",
+"g": "tr"
+},
+{
+"a": "فرهاد غوتشر|Ferhat Göçer",
+"g": "tr"
+},
+{
+"a": "أوزجور جفيك|Özgür Çevik",
+"g": "tr"
+},
+{
+"a": "أمل ساين|Emel Sayın",
+"g": "tr"
+},
+{
+"a": "دفنة ساميلي|Defne Samyeli",
+"g": "tr"
+},
+{
+"a": "محترم نور|Muhterem Nur",
+"g": "tr"
+},
+{
+"a": "نوكهت دورو|Nükhet Duru",
+"g": "tr"
+},
+{
+"a": "أويكو جورمان|Öykü Gürman",
+"g": "tr"
+},
+{
+"a": "زيزي عادل|Zizi Adel",
+"g": "eg"
+},
+{
+"a": "الشيخ إمام|El Sheikh Emam",
+"g": "eg"
+},
+{
+"a": "علي كوبان|Ali Hassan Kuban",
+"g": "eg"
+},
+{
+"a": "بليغ حمدي|Baligh Hamdi",
+"g": "eg"
+},
+{
+"a": "محمد فوزي|Mohamed Fawzi Elhaw",
+"g": "eg"
+},
+{
+"a": "مي كساب|May Kassab",
+"g": "eg"
+},
+{
+"a": "شويكار|Shwikar",
+"g": "eg"
+},
+{
+"a": "حنان الطويل|Hanan El Tawil",
+"g": "eg"
+},
+{
+"a": "سمية الخشاب|Somaya Elkhashab",
+"g": "eg"
+},
+{
+"a": "حاتم عمور|Hatim Ammor",
+"g": "ma"
+},
+{
+"a": "نبيلة معن|Nabyla Maan",
+"g": "ma"
+},
+{
+"a": "حادة أوعكي|Hadda Ouakki",
+"g": "ma"
+},
+{
+"a": "منال|Manal",
+"g": "ma"
+},
+{
+"a": "رقية الدمسيرية|Rkiya Talbensirt",
+"g": "ma"
+},
+{
+"a": "فاطمة تحيحيت|Fatima Tihihit",
+"g": "ma"
+},
+{
+"a": "سليمة الزياني|Salima Ziani",
+"g": "ma"
+},
+{
+"a": "تاكفاريناس|Takfarinas",
+"g": "dz"
+},
+{
+"a": "الشاب بلال|Cheb Bilal",
+"g": "dz"
+},
+{
+"a": "رشيد بابا أحمد|Rachid Baba Ahmed",
+"g": "dz"
+},
+{
+"a": "محمد العنقة|El Hadj M'Hamed El Anka",
+"g": "dz"
+},
+{
+"a": "آسيا|Assia",
+"g": "dz"
+},
+{
+"a": "دحمان الحراشي|Dahmane El Harrachi",
+"g": "dz"
+},
+{
+"a": "حمدي بناني|Hamdi Benani",
+"g": "dz"
+},
+{
+"a": "لالجيرينو|L'Algérino",
+"g": "dz"
+},
+{
+"a": "عبد الرحمن العبدلي|Abderrahmane Abdelli",
+"g": "dz"
+},
+{
+"a": "غالية بنعلي|Ghalia Benali",
+"g": "tn"
+},
+{
+"a": "سيتا هاكوبيان|Seta Hagopian",
+"g": "iq"
+},
+{
+"a": "سارة عيدان|Sarah Idan",
+"g": "iq"
+},
+{
+"a": "ليلى كليف|Layla Kaylif",
+"g": "ae"
+},
+{
+"a": "إيما شاه|Ema Shah",
+"g": "kw"
+},
+{
+"a": "رويدا عطية|Rouwaida Attieh",
+"g": "sy"
+},
+{
+"a": "نسرين طافش|Nesreen Tafesh",
+"g": "sy"
+},
+{
+"a": "مايا نصري|Maya Nasri",
+"g": "lb"
+},
+{
+"a": "ماري كيروز|Marie Keyrouz",
+"g": "lb"
+},
+{
+"a": "ماريا نالبنديان|Maria Nalbandian",
+"g": "lb"
+},
+{
+"a": "دينا حايك|Dina Hayek",
+"g": "lb"
+},
+{
+"a": "ملحم بركات|Melhem Barakat",
+"g": "lb"
+},
+{
+"a": "هبة طوجي|Hiba Tawaji",
+"g": "lb"
+},
+{
+"a": "فضل شاكر|Fadel Chaker",
+"g": "lb"
+},
+{
+"a": "فارس كرم|Fares Karam",
+"g": "lb"
+},
+{
+"a": "باسكال مشعلاني|Pascale Machaalani",
+"g": "lb"
+},
+{
+"a": "مروان خوري|Marwan Khoury",
+"g": "lb"
+},
+{
+"a": "ميليسا|Melissa",
+"g": "lb"
+},
+{
+"a": "دومينيك حوراني|Dominique Hourani",
+"g": "lb"
+},
+{
+"a": "فضل شاكر|Fadel Chaker",
+"g": "ps"
+},
+{
+"a": "محمد عبده عثمان العسيري|Mohammed Abdu",
+"g": "sa"
+},
+{
+"a": "علاء وردي|Alaa Wardi",
+"g": "sa"
+},
+{
+"a": "فؤاد المهندس|Fouad Elmohandes",
+"g": "eg"
+},
+{
+"a": "سما المصري|Sama El Masry",
+"g": "eg"
+},
+{
+"a": "سيمون|Simone Philip Kamel",
+"g": "eg"
+},
+{
+"a": "فاطمة سعيد|Fatma Said",
+"g": "eg"
+},
+{
+"a": "دنيا مسعود|Donia Massoud",
+"g": "eg"
+},
+{
+"a": "موحا والحسين أشيبان|Moha Oulhoussein Achiban",
+"g": "ma"
+},
+{
+"a": "عموري مبارك|Ammouri Mbarek",
+"g": "ma"
+},
+{
+"a": "نعيمة سميح|Naima Samih",
+"g": "ma"
+},
+{
+"a": "هدى سعد|Hoda Saad",
+"g": "ma"
+},
+{
+"a": "شريفة كيرسيت|Cherifa Kersit",
+"g": "ma"
+},
+{
+"a": "محمد أبعمران|Mohammed Abaamran",
+"g": "ma"
+},
+{
+"a": "الشيخ الحسناوي|Cheikh El Hasnaoui",
+"g": "dz"
+},
+{
+"a": "سليمان عازم|Slimane Azem",
+"g": "dz"
+},
+{
+"a": "أعمر الزاهي|Amar Ezzahi",
+"g": "dz"
+},
+{
+"a": "جولي بياتري|Julie Pietri",
+"g": "dz"
+},
+{
+"a": "أمل بوشوشة|Amel Bouchoucha",
+"g": "dz"
+},
+{
+"a": "نعيمة عبابسة|Naïma Ababsa",
+"g": "dz"
+},
+{
+"a": "هواري منار|Houari Manar",
+"g": "dz"
+},
+{
+"a": "درصاف الحمداني|Dorsaf Hamdani",
+"g": "tn"
+},
+{
+"a": "علية التونسية|Oulaya",
+"g": "tn"
+},
+{
+"a": "سنية مبارك|Sonia M'barek",
+"g": "tn"
+},
+{
+"a": "رضا العبد الله|Rida Al Abdullah",
+"g": "iq"
+},
+{
+"a": "عفيفة إسكندر|Afifa Eskandar",
+"g": "iq"
+},
+{
+"a": "رويدا محروقي|Ruwaida al-Mahrouqi",
+"g": "ae"
+},
+{
+"a": "عبير نعمة|Abeer Nehme",
+"g": "lb"
+},
+{
+"a": "خالد مزنر|Khaled Mouzanar",
+"g": "lb"
+},
+{
+"a": "دانيا بن ساسي|Dania Ben Sassi",
+"g": "ly"
+},
+{
+"a": "وعد|Waed",
+"g": "sa"
+},
+{
+"a": "حميد الشاعري|Hamid El Shaeri",
+"g": "eg"
+},
+{
+"a": "عمر خورشيد|Omar Khorshid",
+"g": "eg"
+},
+{
+"a": "حكيم|Hakim",
+"g": "eg"
+},
+{
+"a": "زكريا أحمد|Zakariyya Ahmad",
+"g": "eg"
+},
+{
+"a": "أيتن عامر|Ayten Amer",
+"g": "eg"
+},
+{
+"a": "ساندي|Sandy",
+"g": "eg"
+},
+{
+"a": "رائف|Raef",
+"g": "eg"
+},
+{
+"a": "فريد بانغ|Farid Bang",
+"g": "ma"
+},
+{
+"a": "فرنسواز أطلان|Françoise Atlan",
+"g": "ma"
+},
+{
+"a": "الدوزي|Douzi",
+"g": "ma"
+},
+{
+"a": "عبد الوهاب الدكالي|Abdelwahab Doukkali",
+"g": "ma"
+},
+{
+"a": "الحاج بلعيد|Lhadj Belaïd",
+"g": "ma"
+},
+{
+"a": "سعيدة فكري|Saida Fikri",
+"g": "ma"
+},
+{
+"a": "هشام السكني|Hicham Sigueni",
+"g": "ma"
+},
+{
+"a": "أوم|Oum",
+"g": "ma"
+},
+{
+"a": "فيصل عزيزي|Fayçal Azizi",
+"g": "ma"
+},
+{
+"a": "ابتسام تسكت|Ibtissam Tiskat",
+"g": "ma"
+},
+{
+"a": "نيطع القايم|Neta Elkayam",
+"g": "ma"
+},
+{
+"a": "عائشة تاشنويت|Aicha Tachinouite",
+"g": "ma"
+},
+{
+"a": "كمال مسعودي|Kamel Messaoudi",
+"g": "dz"
+},
+{
+"a": "الشاب صحراوي|Cheb Sahraoui",
+"g": "dz"
+},
+{
+"a": "أمازيغ كاتب|Amazigh Kateb",
+"g": "dz"
+},
+{
+"a": "الشاب نصرو|Cheb Nasro",
+"g": "dz"
+},
+{
+"a": "شريفة|Cherifa",
+"g": "dz"
+},
+{
+"a": "حورية عايشي|Houria Aïchi",
+"g": "dz"
+},
+{
+"a": "محمد الطاهر الفرقاني|Mohamed Tahar Fergani",
+"g": "dz"
+},
+{
+"a": "طارق العربي طرقان|Tarek Alarabi Tourgan",
+"g": "dz"
+},
+{
+"a": "شافية رشدي|Chafia Rochdi",
+"g": "tn"
+},
+{
+"a": "ذكرى|Thekra",
+"g": "tn"
+},
+{
+"a": "فاطمة بوساحة|Fatma Boussaha",
+"g": "tn"
+},
+{
+"a": "لطفي بوشناق|Lotfi Bouchnak",
+"g": "tn"
+},
+{
+"a": "نادر قيراط|Nader Guirat",
+"g": "tn"
+},
+{
+"a": "صفية الشامية|Safia Chamia",
+"g": "tn"
+},
+{
+"a": "شيماء هلالي|Shayma Helali",
+"g": "tn"
+},
+{
+"a": "ناظم الغزالي|Nazem Al-Ghazali",
+"g": "iq"
+},
+{
+"a": "إلهام المدفعي|Ilham al-Madfai",
+"g": "iq"
+},
+{
+"a": "سحر طه|Sahar Taha",
+"g": "iq"
+},
+{
+"a": "سليمة مراد|Salima Murad",
+"g": "iq"
+},
+{
+"a": "نوال الكويتية|Nawal El Kuwaitia",
+"g": "kw"
+},
+{
+"a": "إلهام المدفعي|Ilham al-Madfai",
+"g": "jo"
+},
+{
+"a": "فرح يوسف|Farrah Yousef",
+"g": "sy"
+},
+{
+"a": "رامي عياش|Ramy Ayach",
+"g": "lb"
+},
+{
+"a": "جوزيف عطية|Joseph Attieh",
+"g": "lb"
+},
+{
+"a": "سحر طه|Sahar Taha",
+"g": "lb"
+},
+{
+"a": "رولا سعد|Rola Saad",
+"g": "lb"
+},
+{
+"a": "حميد الشاعري|Hamid El Shaeri",
+"g": "ly"
+},
+{
+"a": "حواء جاه الرسول|Hawa Jah Al Rasoul",
+"g": "sd"
+},
+{
+"a": "نانسي عجاج|Nancy Agag",
+"g": "sd"
+},
+{
+"a": "يوسف سويد|Yousef Sweid",
+"g": "ps"
+},
+{
+"a": "تامر نفار|Tamer Nafar",
+"g": "ps"
+},
+{
+"a": "عبد المجيد عبد الله|Abdul Majeed Abdullah",
+"g": "sa"
+},
+{
+"a": "راشد الماجد|Rashed Al-Majed",
+"g": "sa"
+},
+{
+"a": "ياسمين علي|Yasmin Ali",
+"g": "eg"
+},
+{
+"a": "ويجز|Wegz",
+"g": "eg"
+},
+{
+"a": "شعبان عبد الرحيم|Shaaban Abdel Rahim",
+"g": "eg"
+},
+{
+"a": "سيد مكاوي|Sayed Mekawy",
+"g": "eg"
+},
+{
+"a": "داود حسني|Dawood Hosni",
+"g": "eg"
+},
+{
+"a": "رانيا يوسف|Rania Youssef",
+"g": "eg"
+},
+{
+"a": "حمادة هلال|Hamada Helal",
+"g": "eg"
+},
+{
+"a": "شريفة فاضل|Sherifa Fadel",
+"g": "eg"
+},
+{
+"a": "تامر عاشور|Tamer Ashour",
+"g": "eg"
+},
+{
+"a": "رشا رزق|Rasha Rizk",
+"g": "eg"
+},
+{
+"a": "مي سليم|Mai Selim",
+"g": "eg"
+},
+{
+"a": "هاني عادل|Hany Adel",
+"g": "eg"
+},
+{
+"a": "لارتيست|Lartiste",
+"g": "ma"
+},
+{
+"a": "حسن أرسموك|Hassan Arsmouk",
+"g": "ma"
+},
+{
+"a": "يسرى كريم|Youssra Karim",
+"g": "ma"
+},
+{
+"a": "ديستنكت|Dystinct",
+"g": "ma"
+},
+{
+"a": "مسعود بلمو|Messaoud Bellemou",
+"g": "dz"
+},
+{
+"a": "كاتشو|Katchou",
+"g": "dz"
+},
+{
+"a": "آكلي يحياتن|Akli Yahiatene",
+"g": "dz"
+},
+{
+"a": "أليس فيتوسي|Alice Fitoussi",
+"g": "dz"
+},
+{
+"a": "ديهيا|Dihya",
+"g": "dz"
+},
+{
+"a": "محيي الدين بشطارزي|Mahieddine Bachtarzi",
+"g": "dz"
+},
+{
+"a": "الشابة زليخة|Zoulikha",
+"g": "dz"
+},
+{
+"a": "علي الرياحي|Ali Riahi",
+"g": "tn"
+},
+{
+"a": "شبيلة راشد|Choubeila Rached",
+"g": "tn"
+},
+{
+"a": "الهادي الجويني|Hedi Jouini",
+"g": "tn"
+},
+{
+"a": "أحمد الرباعي|Ahmed Rebai",
+"g": "tn"
+},
+{
+"a": "أردوان زاخويي|Erdewan Zaxoyî",
+"g": "iq"
+},
+{
+"a": "باسم الكربلائي|Basim al-Karbalaei",
+"g": "iq"
+},
+{
+"a": "إسراء الأصيل|Esraa Alaseel",
+"g": "iq"
+},
+{
+"a": "أصيل هميم|Aseel Hameem",
+"g": "iq"
+},
+{
+"a": "بهية الحمد|Bahiya Al-Hamad",
+"g": "qa"
+},
+{
+"a": "مي سليم|Mai Selim",
+"g": "jo"
+},
+{
+"a": "إيمان بيشة|Emanne Beasha",
+"g": "jo"
+},
+{
+"a": "جوليانا جندو|Juliana Jendo",
+"g": "sy"
+},
+{
+"a": "فهد بلان|Fahd Ballan",
+"g": "sy"
+},
+{
+"a": "سلوى القطريب|Salwa Al Katrib",
+"g": "lb"
+},
+{
+"a": "ستراك سركسيان|Setrak Sarkissian",
+"g": "lb"
+},
+{
+"a": "أحمد قعبور|Ahmad Kaabour",
+"g": "lb"
+},
+{
+"a": "دوللي شاهين|Dolly Shahine",
+"g": "lb"
+},
+{
+"a": "عبد العزيز المبارك|Abdel Aziz El Mubarak",
+"g": "sd"
+},
+{
+"a": "أيوب طارش|Ayoob Tarish",
+"g": "ye"
+},
+{
+"a": "عتاب|Etab",
+"g": "sa"
+},
+{
+"a": "داليا مبارك|Dalia Mubarak",
+"g": "sa"
+},
+{
+"a": "أمير عيد|Amir Eid",
+"g": "eg"
+},
+{
+"a": "جيهان راتب|Jihan Rateb",
+"g": "eg"
+},
+{
+"a": "كارم محمود|Karem Mahmoud",
+"g": "eg"
+},
+{
+"a": "علي الحجار|Ali El Haggar",
+"g": "eg"
+},
+{
+"a": "جابر أبو حسين|Jaber Abu Hussein",
+"g": "eg"
+},
+{
+"a": "محمود شكوكو|Shukuku",
+"g": "eg"
+},
+{
+"a": "عتاب|Etab",
+"g": "eg"
+},
+{
+"a": "نجاح سلام|Najah Sallam",
+"g": "eg"
+},
+{
+"a": "نسمة محجوب|Nesma Mahgoub",
+"g": "eg"
+},
+{
+"a": "ميرهان حسين|Mirhan Hussein",
+"g": "eg"
+},
+{
+"a": "هايدي موسى|Haidy Moussa",
+"g": "eg"
+},
+{
+"a": "عبده شريف|Abdou Cherif",
+"g": "ma"
+},
+{
+"a": "شيبا ماريا|Cheba Maria",
+"g": "ma"
+},
+{
+"a": "سامي المغربي|Samy Elmaghribi",
+"g": "ma"
+},
+{
+"a": "عبد العزيز الستاتي|Abdelaziz Stati",
+"g": "ma"
+},
+{
+"a": "الحسين السلاوي|Houcine Slaoui",
+"g": "ma"
+},
+{
+"a": "العربي باطما|Laarbi Batma",
+"g": "ma"
+},
+{
+"a": "يونس ميكري|Younes Megri",
+"g": "ma"
+},
+{
+"a": "ميمون الوجدي|Mimoun El Oujdi",
+"g": "ma"
+},
+{
+"a": "زهرة الفاسية|Zohra Al Fassiya",
+"g": "ma"
+},
+{
+"a": "سعيد أشتوك|Said Achtouk",
+"g": "ma"
+},
+{
+"a": "محمد البنسير|Mohamed Demsiri",
+"g": "ma"
+},
+{
+"a": "خديجة البيضاوية|Khadija Bidaouia",
+"g": "ma"
+},
+{
+"a": "أسماء الحمزاوي|Asma El Hamzaoui",
+"g": "ma"
+},
+{
+"a": "أنس بسبوسي|Anas Basbousi",
+"g": "ma"
+},
+{
+"a": "الشاب عزيز|Cheb Aziz",
+"g": "dz"
+},
+{
+"a": "موريس المديوني|Maurice El Mediouni",
+"g": "dz"
+},
+{
+"a": "شريف دين|Sharif Dean",
+"g": "dz"
+},
+{
+"a": "عمور عبد النور|Amour Abdenour",
+"g": "dz"
+},
+{
+"a": "ليندا تالي|Lynda Thalie",
+"g": "dz"
+},
+{
+"a": "نورة|Noura",
+"g": "dz"
+},
+{
+"a": "عثمان أغ بالي|Othmane Bali",
+"g": "dz"
+},
+{
+"a": "خليفي أحمد|Khelifi Ahmed",
+"g": "dz"
+},
+{
+"a": "مريم بلدي|Meriem Beldi",
+"g": "dz"
+},
+{
+"a": "عاشر مزراحي|Asher Mizrahi",
+"g": "tn"
+},
+{
+"a": "أماني السويسي|Amani Swissi",
+"g": "tn"
+},
+{
+"a": "حسيبة رشدي|Hassiba Rochdi",
+"g": "tn"
+},
+{
+"a": "خميس ترنان|Khemaïs Tarnane",
+"g": "tn"
+},
+{
+"a": "لويزا تونسية|Louisa Tounsia",
+"g": "tn"
+},
+{
+"a": "شهرزاد هلال|Chahrazed Helal",
+"g": "tn"
+},
+{
+"a": "صبري مصباح|Sabri Mosbah",
+"g": "tn"
+},
+{
+"a": "زكريا عبد الله|Zakaria",
+"g": "iq"
+},
+{
+"a": "سيف نبيل|Saif Nabeel",
+"g": "iq"
+},
+{
+"a": "عمر العبداللات|Omar Al-Abdallat",
+"g": "jo"
+},
+{
+"a": "رانيا الكردي|Rania Kurdi",
+"g": "jo"
+},
+{
+"a": "عزيز مرقة|Aziz Maraka",
+"g": "jo"
+},
+{
+"a": "عصام النجار|Issam Alnajjar",
+"g": "jo"
+},
+{
+"a": "ناصيف زيتون|Nassif Zeytoun",
+"g": "sy"
+},
+{
+"a": "محمد شيخو|Mihemed Şêxo",
+"g": "sy"
+},
+{
+"a": "ملحم زين|Melhem Zein",
+"g": "lb"
+},
+{
+"a": "مي حريري|May Hariri",
+"g": "lb"
+},
+{
+"a": "وائل جسار|Wael Jassar",
+"g": "lb"
+},
+{
+"a": "جورج الراسي|George El Rassi",
+"g": "lb"
+},
+{
+"a": "زكي ناصيف|Zaki Nassif",
+"g": "lb"
+},
+{
+"a": "دارين حدشيتي|Darine Hadchiti",
+"g": "lb"
+},
+{
+"a": "ميريام كلينك|Myriam Klink",
+"g": "lb"
+},
+{
+"a": "داليدا خليل|Dalida Khalil",
+"g": "lb"
+},
+{
+"a": "فريال كريم|Ferial Karim",
+"g": "lb"
+},
+{
+"a": "نجاح سلام|Najah Sallam",
+"g": "lb"
+},
+{
+"a": "يوري مرقدي|Yuri Mraqqadi",
+"g": "lb"
+},
+{
+"a": "سابين|Sabine",
+"g": "lb"
+},
+{
+"a": "نور اردكاني|Nour Ardakani",
+"g": "lb"
+},
+{
+"a": "هند البحرينية|Hind",
+"g": "bh"
+},
+{
+"a": "أيمن الأعتر|Ayman Alatar",
+"g": "ly"
+},
+{
+"a": "عبد القادر سالم|Abd El Gadir Salim",
+"g": "sd"
+},
+{
+"a": "نبيل سلامة|Nabil Salameh",
+"g": "ps"
+},
+{
+"a": "إبراهيم الحكمي|Ibrahim El Hakami",
+"g": "sa"
+},
+{
+"a": "أبو بكر سالم|Abu Bakr Salem",
+"g": "sa"
+},
+{
+"a": "نبيلة عريان|Nabila Erian",
+"g": "eg"
+},
+{
+"a": "عمرو مصطفى|Amr Mostafa",
+"g": "eg"
+},
+{
+"a": "آن برانجر|Anne Béranger",
+"g": "eg"
+},
+{
+"a": "عبده الحامولي|Abdu al-Hamuli",
+"g": "eg"
+},
+{
+"a": "كمال حسني|Kamal Hosni",
+"g": "eg"
+},
+{
+"a": "عايدة الأيوبي|Aida el Ayoubi",
+"g": "eg"
+},
+{
+"a": "لارا إسكندر|Lara Scandar",
+"g": "eg"
+},
+{
+"a": "فتحية أحمد|Fathia Ahmed",
+"g": "eg"
+},
+{
+"a": "عبد الهادي بلخياط|Abdelhadi Belkhayat",
+"g": "ma"
+},
+{
+"a": "رجاء بلمليح|Rajae Belmlih",
+"g": "ma"
+},
+{
+"a": "حسن إدباسعيد|Hassane Idbassaïd",
+"g": "ma"
+},
+{
+"a": "أحمد سلطان|Ahmed Soultan",
+"g": "ma"
+},
+{
+"a": "أمين|Amine",
+"g": "ma"
+},
+{
+"a": "عزيز السحماوي|Aziz Sahmaoui",
+"g": "ma"
+},
+{
+"a": "الحاقد|L7a9d",
+"g": "ma"
+},
+{
+"a": "الحاجة الحمداوية|Haja El Hamdaouia",
+"g": "ma"
+},
+{
+"a": "أحمد بيرو|Hajj Ahmed Piro",
+"g": "ma"
+},
+{
+"a": "أوبيل|OUBEL",
+"g": "ma"
+},
+{
+"a": "جدوان|Jedwane",
+"g": "ma"
+},
+{
+"a": "حميد بوشناق|Hamid Bouchnak",
+"g": "ma"
+},
+{
+"a": "مليكة زارا|Malika Zarra",
+"g": "ma"
+},
+{
+"a": "خربوشة|Kharboucha",
+"g": "ma"
+},
+{
+"a": "كريمة الصقلي|Karima Skalli",
+"g": "ma"
+},
+{
+"a": "الشيخ مويجو|Cheikh Mwijo",
+"g": "ma"
+},
+{
+"a": "سكينة بوخريص|Soukaina Boukries",
+"g": "ma"
+},
+{
+"a": "بلال وهيب|Bilal Wahib",
+"g": "ma"
+},
+{
+"a": "عمر واهروش|Omar Wahrouch",
+"g": "ma"
+},
+{
+"a": "علي شوهاد|Ali Chouhad",
+"g": "ma"
+},
+{
+"a": "عبد القادر شاعو|Abdelkader Chaou",
+"g": "dz"
+},
+{
+"a": "رضا طلياني|Reda Taliani",
+"g": "dz"
+},
+{
+"a": "كريم زياد|Karim Ziad",
+"g": "dz"
+},
+{
+"a": "أو لحلو|Oulahlou",
+"g": "dz"
+},
+{
+"a": "الشيخ حمادة|Sheikh Hamada",
+"g": "dz"
+},
+{
+"a": "بعزيز|Baaziz",
+"g": "dz"
+},
+{
+"a": "حسنة البشارية|Hasna El Bacharia",
+"g": "dz"
+},
+{
+"a": "هشام بومعراف|Ishem Boumaraf",
+"g": "dz"
+},
+{
+"a": "رابح درياسة|Rabah Driassa",
+"g": "dz"
+},
+{
+"a": "بوتلدجا بلقاسم|Bouteldja Belkacem",
+"g": "dz"
+},
+{
+"a": "محمد عبدالنور|Mohamed Abdennour",
+"g": "dz"
+},
+{
+"a": "بلقاسم بوقنة|Belgacem Bouguenna",
+"g": "tn"
+},
+{
+"a": "أمينة فاخت|Amina Fakhet",
+"g": "tn"
+},
+{
+"a": "فتحية خيري|Fethia Khaïri",
+"g": "tn"
+},
+{
+"a": "محمد الجموسي|Mohamed Jamoussi",
+"g": "tn"
+},
+{
+"a": "نعمة|Naama",
+"g": "tn"
+},
+{
+"a": "صليحة|Saliha",
+"g": "tn"
+},
+{
+"a": "دالي|Dalli Haddad",
+"g": "iq"
+},
+{
+"a": "دلشاد محمد سعيد|Dilshad Said",
+"g": "iq"
+},
+{
+"a": "برواز حسين|Parwaz Hussein",
+"g": "iq"
+},
+{
+"a": "رجاء بلمليح|Rajae Belmlih",
+"g": "ae"
+},
+{
+"a": "عبد الله الرويشد|Abdallah Al Rowaished",
+"g": "kw"
+},
+{
+"a": "شجون الهاجري|Shujoun Al-Hajri",
+"g": "kw"
+},
+{
+"a": "حمود الخضر|Humood AlKhudher",
+"g": "kw"
+},
+{
+"a": "فرح سراج|Farah Siraj",
+"g": "jo"
+},
+{
+"a": "ختام أبو عوض|Khetam Abuawad",
+"g": "jo"
+},
+{
+"a": "دانا صلاح|Dana Salah",
+"g": "jo"
+},
+{
+"a": "أمل عرفة|Amal Arafa",
+"g": "sy"
+},
+{
+"a": "إلياس كرم|Elias Karam",
+"g": "sy"
+},
+{
+"a": "شهد برمدا|Shahd Barmada",
+"g": "sy"
+},
+{
+"a": "وعد بوحسون|Waed Bouhassoun",
+"g": "sy"
+},
+{
+"a": "إيوان|Iwan",
+"g": "lb"
+},
+{
+"a": "سامي كلارك|Sami Clark",
+"g": "lb"
+},
+{
+"a": "علاء زلزلي|Alaa Zalzali",
+"g": "lb"
+},
+{
+"a": "نصري شمس الدين|Nasri Shamseddine",
+"g": "lb"
+},
+{
+"a": "حليم الرومي|Halim El-Roumi",
+"g": "lb"
+},
+{
+"a": "عازار حبيب|Azar Habib",
+"g": "lb"
+},
+{
+"a": "إلين خلف|Aline Khalaf",
+"g": "lb"
+},
+{
+"a": "بلال|Bilal",
+"g": "lb"
+},
+{
+"a": "غريس ديب|Grace Deeb",
+"g": "lb"
+},
+{
+"a": "خالد حمية|Khaled Hamieh",
+"g": "lb"
+},
+{
+"a": "رزان مغربي|Razan Moughrabi",
+"g": "lb"
+},
+{
+"a": "تانيا صالح|Tania Saleh",
+"g": "lb"
+},
+{
+"a": "جورجيت صايغ|Georgette Sayegh",
+"g": "lb"
+},
+{
+"a": "ريما خشيش|Rīmā Khushaysh",
+"g": "lb"
+},
+{
+"a": "هدى وديع حداد|Huda Haddad",
+"g": "lb"
+},
+{
+"a": "مايك ماسي|Mike Massy",
+"g": "lb"
+},
+{
+"a": "نانسي نصر الله|Nancy Nasrallah",
+"g": "lb"
+},
+{
+"a": "شيراز|Shiraz",
+"g": "lb"
+},
+{
+"a": "ماريتا الحلاني|Maritta Hallani, Dana Hallani, Alwalid Hallani",
+"g": "lb"
+},
+{
+"a": "علاء غواص|Ala Ghawas",
+"g": "bh"
+},
+{
+"a": "جواهر|Gawaher",
+"g": "sd"
+},
+{
+"a": "شرحبيل أحمد|Sharhabil Ahmed",
+"g": "sd"
+},
+{
+"a": "مروان أبو طاحون|Marwan",
+"g": "ps"
+},
+{
+"a": "حسين محب|Hussein Moheb",
+"g": "ye"
+},
+{
+"a": "أروى|Arwa",
+"g": "ye"
+},
+{
+"a": "أبو بكر سالم|Abu Bakr Salem",
+"g": "ye"
+},
+{
+"a": "فيصل علوي|Faisal Alawi",
+"g": "ye"
+}
+]
