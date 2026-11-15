@@ -49,6 +49,7 @@ import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { ListLive, ListResult, UnknownAnswers } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
+import { HotBadge, usePopular } from '@/game/popular';
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
@@ -104,6 +105,7 @@ export function KickQuizPage() {
   const [pack, setPack] = useState<QuestionPack | null>(null);
   /** «عدّها»: its categories (from the server) and the ones picked. */
   const [listCats, setListCats] = useState<{ id: string; name: string; icon: string; count: number }[]>([]);
+  const hotStream = usePopular()?.streamVariants[0];
   const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games', 'islamic', 'proverbs']);
   const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
@@ -489,8 +491,9 @@ export function KickQuizPage() {
                         key={v}
                         type="button"
                         onClick={() => setVariant(v)}
-                        className={cn('rounded-xl border-2 p-3 text-center transition-all', variant === v ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                        className={cn('relative rounded-xl border-2 p-3 text-center transition-all', variant === v ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
                       >
+                        {hotStream === v && <HotBadge />}
                         <div className="text-2xl">{l.icon}</div>
                         <div className="font-black text-q-gold">{l.title}</div>
                         <div className="mt-0.5 text-[11px] text-white/60">

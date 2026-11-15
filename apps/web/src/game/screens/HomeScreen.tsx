@@ -5,20 +5,22 @@ import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { Modal } from '../ui';
+import { HotBadge, usePopular } from '../popular';
 
-function Choice({ selected, onClick, icon, title, desc }: { selected: boolean; onClick: () => void; icon: string; title: string; desc: string }) {
+function Choice({ selected, onClick, icon, title, desc, hot = false }: { selected: boolean; onClick: () => void; icon: string; title: string; desc: string; hot?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'rounded-2xl border-2 bg-q-panel bg-linear-to-b from-white/[0.04] to-transparent px-4 py-5 text-center transition-all hover:-translate-y-0.5 active:scale-[0.98]',
+        'relative rounded-2xl border-2 bg-q-panel bg-linear-to-b from-white/[0.04] to-transparent px-4 py-5 text-center transition-all hover:-translate-y-0.5 active:scale-[0.98]',
         selected
           ? 'border-q-gold shadow-[inset_0_0_0_999px_rgba(247,201,72,0.07),0_0_28px_-8px_rgba(247,201,72,0.55)]'
           : 'border-q-line shadow-[0_10px_24px_-14px_rgba(0,0,0,0.8)] hover:border-white/20',
       )}
     >
+      {hot && <HotBadge />}
       <div className="mb-2 text-4xl">{icon}</div>
       <div className="text-[15px] font-black text-q-gold">{title}</div>
       <div className="mt-1 text-[11px] leading-relaxed text-white/50">{desc}</div>
@@ -39,6 +41,7 @@ const codeInputClass = 'q-input text-center text-xl font-black tracking-[0.3em] 
 
 export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [variant, setVariant] = useState<Variant>('swap');
+  const hot = usePopular()?.variants[0];
   const [mode, setMode] = useState<RoomMode>('mobile');
   const [createName, setCreateName] = useState('');
   const [joinName, setJoinName] = useState('');
@@ -132,10 +135,11 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
 
       <p className="mb-2 text-center text-[13px] text-white/50">اختار نوع اللعبة</p>
       <div className="mb-5 grid grid-cols-2 gap-3.5">
-        <Choice selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك" />
-        <Choice selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه" />
-        <Choice selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
+        <Choice hot={hot === 'swap'} selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك" />
+        <Choice hot={hot === 'flip'} selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه" />
+        <Choice hot={hot === 'hide'} selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
         <Choice
+          hot={hot === 'triple'}
           selected={variant === 'triple'}
           onClick={() => setVariant('triple')}
           icon="↩️"

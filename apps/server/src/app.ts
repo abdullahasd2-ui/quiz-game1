@@ -12,6 +12,7 @@ import { adminStatsRoutes } from './api/admin/stats';
 import { adminUploadRoutes, MAX_UPLOAD_BYTES } from './api/admin/upload';
 import { appUpdateRoutes } from './api/public/app-update';
 import { publicCategoryRoutes } from './api/public/categories';
+import { popularRoutes } from './api/public/popular';
 import { authPlugin } from './auth/plugin';
 import { env } from './env';
 import { errorHandler } from './lib/errors';
@@ -40,6 +41,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
 
   app.get('/api/health', async () => ({ ok: true }));
   await app.register(publicCategoryRoutes, { prefix: '/api/categories' });
+  await app.register(popularRoutes, { prefix: '/api/popular' });
   await app.register(appUpdateRoutes, { prefix: '/api/app', dir: env.OTA_DIR, publicOrigin: env.PUBLIC_ORIGIN });
 
   const game = attachGameServer(app, gameOptions);
