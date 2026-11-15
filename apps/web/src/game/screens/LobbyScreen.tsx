@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { teamName } from '../ui';
 import { isSelf, kickPlayer } from './PlayersPanel';
+import { HotBadge, usePopular } from '../popular';
 
 function Slot({
   avatar,
@@ -141,6 +142,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
 function CategoryPicker({ tv }: { tv: boolean }) {
   const { data: categories, isLoading, isError } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories });
   const [selected, setSelected] = useState<number[]>([]);
+  const hotCats = usePopular()?.categories ?? [];
   const [starting, setStarting] = useState(false);
 
   const toggle = (id: number) =>
@@ -180,11 +182,13 @@ function CategoryPicker({ tv }: { tv: boolean }) {
               aria-pressed={on}
               title={c.playable ? undefined : 'ليس فيها سؤال مفعّل لكل النقاط'}
               className={cn(
-                'rounded-xl border-2 px-1.5 py-3 text-center transition-all',
+                'relative rounded-xl border-2 px-1.5 py-3 text-center transition-all',
+                hotCats.includes(c.id) && !on && 'border-orange-400/60',
                 on ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel hover:border-q-gold/50',
                 !c.playable && 'cursor-not-allowed opacity-35 hover:border-q-line',
               )}
             >
+              {hotCats.includes(c.id) && c.playable && <HotBadge small />}
               <div className="mb-1 text-2xl">{c.icon}</div>
               <div className="text-[11px] font-bold">{c.name}</div>
               {!c.playable && <div className="mt-0.5 text-[9px] text-white/50">غير مكتملة</div>}

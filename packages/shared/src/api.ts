@@ -112,3 +112,10 @@ export type KickStats = {
   recent: { channel: string; variant: string | null; test: boolean; players: number; rounds: number; startedAt: string; finishedAt: string | null }[];
   live: KickLiveStream[];
 };
+
+/** What players pick most (most first), for the «🔥 الأكثر لعبًا» marks — order only, no numbers. */
+export type Popular = {
+  variants: Variant[];
+  categories: number[];
+  streamVariants: import('./streamquiz').StreamVariant[];
+};

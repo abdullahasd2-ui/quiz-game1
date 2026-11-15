@@ -367,3 +367,13 @@ describe('«عدّها» lists', () => {
     expect(none.statusCode).toBe(404);
   });
 });
+
+describe('popular', () => {
+  it('lists modes, categories and stream modes by use, without numbers', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/popular' });
+    expect(res.statusCode).toBe(200);
+    const body = res.json() as Record<string, unknown[]>;
+    expect(Object.keys(body).sort()).toEqual(['categories', 'streamVariants', 'variants']);
+    for (const v of Object.values(body)) expect(Array.isArray(v)).toBe(true);
+  });
+});
