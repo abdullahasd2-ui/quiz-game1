@@ -15,7 +15,7 @@ import { EXTRA } from './data/extra';
 import { ISLAMIC } from './data/islamic';
 import { PROVERBS } from './data/proverbs';
 
-export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs';
+export type ListCategory = 'football' | 'geo' | 'general' | 'games' | 'islamic' | 'proverbs' | 'letters';
 export type ListLevel = 'easy' | 'medium' | 'hard';
 export type ListQuestion = { id: string; cat: ListCategory; text: string; answers: string[]; letter?: string; level: ListLevel };
 export const LIST_LEVELS: { id: ListLevel; name: string; icon: string }[] = [
@@ -48,9 +48,12 @@ export const LIST_CATEGORIES: { id: ListCategory; name: string; icon: string }[]
   { id: 'games', name: 'ألعاب فيديو', icon: '🎮' },
   { id: 'islamic', name: 'إسلاميات', icon: '🕌' },
   { id: 'proverbs', name: 'أمثال', icon: '📜' },
+  // «حروف»: no questions of its own, it is every letter question of the other categories (pick a letter, get a question for it).
+  { id: 'letters', name: 'حروف', icon: '🔤' },
 ];
 
 const LETTERS = 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'.split(' ');
+export const LIST_LETTERS = LETTERS;
 /** First letters of an answer's Arabic forms («ميسي» and «ليونيل ميسي»), «ال» and hamza forms aside. */
 function letters(a: string): Set<string> {
   const out = new Set<string>();
@@ -63,9 +66,11 @@ function letters(a: string): Set<string> {
   }
   return out;
 }
+/** Names that begin with what they are («مسجد…», «جامعة…», «معركة…»): their first letter says nothing, so letter questions skip them. */
+const GENERIC = /^(ال)?(مسجد|جامع|جامعة|مطار|نهر|جبل|جبال|بحيرة|جزيرة|جزر|بركان|قلعة|قصر|متحف|برج|شلال|شلالات|معركة|موقعة|غزوة|سرية|حرب|الحرب|حصار|الدولة|دولة|سلالة|كلب|قط|مدينة|ملعب|سلسلة|كهف|مغارة|إمبراطورية|الإمبراطورية|مملكة|المملكة|سلطنة|إمارة|جمهورية|الجمهورية|صحيفة|جريدة|شركة|فرس|خيول)\s/;
 /** The forms of an answer whose first letter is `l` (joined), or null when none is. */
 function formsStarting(a: string, l: string): string | null {
-  const keep = a.split('|').filter((f) => letters(f).has(l));
+  const keep = a.split('|').filter((f) => !GENERIC.test(f.trim()) && letters(f).has(l));
   return keep.length ? keep.join('|') : null;
 }
 /** Merge forms of the same answer that came from different lists, keep order, drop exact repeats. */
@@ -127,7 +132,7 @@ function trustworthy(forms: string[]): string[] {
 }
 const wdItems = (name: string) => wd(name).map((r) => r.a);
 /** More Wikidata lists (wd/<key>.json), each a question of its own plus its letter questions. */
-const WD_EXTRA: Record<string, [Exclude<ListCategory, 'proverbs'>, string]> = {
+const WD_EXTRA: Record<string, [Exclude<ListCategory, 'proverbs' | 'letters'>, string]> = {
   elements: ['general', 'اذكر عناصر كيميائية'],
   dogs: ['general', 'اذكر سلالات كلاب'],
   painters: ['general', 'اذكر رسامين مشهورين'],
@@ -166,7 +171,7 @@ const GENRE: Record<string, string> = {
   'g-puzzle': 'ألغاز', 'g-fighting': 'قتال', 'g-horror': 'رعب', 'g-football': 'كرة قدم', 'g-sports': 'رياضية',
 };
 /** Wikidata lists split by country (wd/<key>.json rows carry the country in `g`): one question per country. */
-const WD_GROUPED: Record<string, [Exclude<ListCategory, 'proverbs'>, (g: string) => string | undefined]> = {
+const WD_GROUPED: Record<string, [Exclude<ListCategory, 'proverbs' | 'letters'>, (g: string) => string | undefined]> = {
   pactors: ['general', (g) => ADJ_M[g] && `اذكر ممثلين وممثلات ${ADJ_M[g]}`],
   psingers: ['general', (g) => ADJ_M[g] && `اذكر مطربين ومطربات ${ADJ_M[g]}`],
   pwriters: ['general', (g) => ADJ_M[g] && `اذكر كتّاب وشعراء ${ADJ_M[g]}`],

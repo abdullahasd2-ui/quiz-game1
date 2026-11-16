@@ -124,3 +124,53 @@ export function UnknownAnswers({ state, onJudge }: { state: StreamState; onJudge
     </div>
   );
 }
+
+export const LETTERS = 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'.split(' ');
+/** Letters already asked this game: a letter question's id ends with «-<letter>». */
+export function usedLetters(used: string[]): Set<string> {
+  const out = new Set<string>();
+  for (const u of used) {
+    const l = u.slice(u.lastIndexOf('-') + 1);
+    if (LETTERS.includes(l)) out.add(l);
+  }
+  return out;
+}
+
+const HEX = 'polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%)';
+
+/**
+ * «حروف»: the Arabic letters as hexagon cells. The letter being asked glows gold; letters already asked are dimmed,
+ * letters with nothing left are crossed out. With `onPick` the streamer chooses the next letter from it.
+ */
+export function LetterGrid({ active, used, counts, onPick, big = false, small = false }: { active?: string; used?: Set<string>; counts?: Record<string, number>; onPick?: (l: string) => void; big?: boolean; small?: boolean }) {
+  return (
+    <div dir="rtl" className={cn('mx-auto grid grid-cols-7 justify-center', big ? 'max-w-3xl gap-2' : small ? 'max-w-sm gap-1' : 'max-w-xl gap-1.5')}>
+      {LETTERS.map((l) => {
+        const on = l === active;
+        const done = used?.has(l) && !on;
+        const empty = counts ? !counts[l] : false;
+        const cls = cn(
+          'relative flex aspect-[1.15] items-center justify-center font-black transition-all',
+          big ? 'text-4xl' : small ? 'text-base' : 'text-2xl',
+          on ? 'z-10 scale-110 bg-q-gold text-black shadow-[0_0_30px_rgba(247,201,72,0.8)] motion-safe:animate-pulse' : done ? 'bg-q-panel/40 text-white/25' : empty ? 'bg-q-panel/30 text-white/15 line-through' : 'bg-q-cyan/20 text-white',
+          onPick && !empty && !on && 'cursor-pointer hover:scale-105 hover:bg-q-cyan/40',
+        );
+        const inner = (
+          <>
+            {l}
+            {counts && !on && !empty && !small && <span className="absolute bottom-0.5 text-[9px] font-bold text-white/40">{counts[l]}</span>}
+          </>
+        );
+        return onPick ? (
+          <button key={l} type="button" disabled={empty} onClick={() => onPick(l)} className={cls} style={{ clipPath: HEX }} aria-label={`حرف ${l}`}>
+            {inner}
+          </button>
+        ) : (
+          <div key={l} className={cls} style={{ clipPath: HEX }}>
+            {inner}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

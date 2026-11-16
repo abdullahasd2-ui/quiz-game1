@@ -47,7 +47,7 @@ import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
 import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
-import { ListLive, ListResult, UnknownAnswers } from './ListParts';
+import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
 import { HotBadge, usePopular } from '@/game/popular';
 
@@ -116,6 +116,8 @@ export function KickQuizPage() {
   const [status, setStatus] = useState<KickStatus>({ state: 'connecting' });
   const [now, setNow] = useState(() => Date.now());
   const [busy, setBusy] = useState(false);
+  /** «حروف»: questions left per letter, for the letter grid on the board. */
+  const [letterCounts, setLetterCounts] = useState<Record<string, number> | null>(null);
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
   // Pairing with the broadcast page: it shows the game without the streamer's secrets.
@@ -274,8 +276,26 @@ export function KickQuizPage() {
       .catch(() => setError('تعذّر تحميل فئات «عدّها»'));
   }, [variant, listCats.length]);
 
+  // «حروف»: on the board, how many questions each letter still has.
+  const boardUsed = state?.phase === 'board' && state.variant === 'list' ? state.used.join(',') : null;
+  useEffect(() => {
+    if (boardUsed === null || !listChosen.includes('letters')) return;
+    let gone = false;
+    void fetch(`${SERVER_URL}/api/kick/lists/letters`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ levels: listLevels, exclude: boardUsed ? boardUsed.split(',').map((u) => u.replace(/^list:/, '')) : [] }),
+    })
+      .then((r) => r.json())
+      .then((rows: { letter: string; count: number }[]) => !gone && setLetterCounts(Object.fromEntries(rows.map((x) => [x.letter, x.count]))))
+      .catch(() => !gone && setError('تعذّر تحميل الحروف'));
+    return () => {
+      gone = true;
+    };
+  }, [boardUsed, listChosen, listLevels]);
+
   /** «عدّها»: the next question from the server, never one already played this game. */
-  async function dealList() {
+  async function dealList(letter?: string) {
     const cur = ref.current;
     if (!cur || busy || cur.phase !== 'board') return;
     if (cur.used.length >= cur.totalCells) return set(finish(cur));
@@ -284,9 +304,9 @@ export function KickQuizPage() {
       const res = await fetch(`${SERVER_URL}/api/kick/lists/next`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ cats: listChosen, levels: listLevels, exclude: cur.used.map((u) => u.replace(/^list:/, '')) }),
+        body: JSON.stringify({ cats: listChosen, levels: listLevels, exclude: cur.used.map((u) => u.replace(/^list:/, '')), ...(letter ? { letter } : {}) }),
       });
-      if (!res.ok) throw new Error('خلصت الأسئلة في هذي الفئات');
+      if (!res.ok) throw new Error(letter ? `خلصت أسئلة حرف «${letter}»` : 'خلصت الأسئلة في هذي الفئات');
       const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[]; letter?: string };
       const cat = listCats.find((c) => c.id === q.cat);
       if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, listLetter: q.letter, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
@@ -659,9 +679,30 @@ export function KickQuizPage() {
                 عدّها — السؤال {state.used.length + 1} من {state.totalCells}
               </div>
               <div className="mb-4 text-sm text-white/60">يطلع السؤال ويبدأ الوقت على طول ({Math.round((state.answerMs ?? 30000) / 1000)} ثانية)</div>
-              <button type="button" className="q-btn-gold" disabled={busy} onClick={() => void dealList()}>
-                {busy ? 'جاري جلب السؤال...' : '▶️ السؤال التالي'}
-              </button>
+              {listChosen.includes('letters') && (
+                <div className="mb-4">
+                  <div className="mb-2 text-sm font-black">🔤 اختر حرف — يتلوّن ويطلع سؤال يبدأ فيه</div>
+                  <LetterGrid used={usedLetters(state.used)} counts={letterCounts ?? undefined} onPick={(l) => !busy && void dealList(l)} />
+                  <button
+                    type="button"
+                    className="q-btn-gold mt-3"
+                    disabled={busy || !letterCounts}
+                    onClick={() => {
+                      const left = Object.entries(letterCounts ?? {}).filter(([l, n]) => n > 0 && !usedLetters(state.used).has(l)).map(([l]) => l);
+                      const all = Object.entries(letterCounts ?? {}).filter(([, n]) => n > 0).map(([l]) => l);
+                      const pickFrom = left.length ? left : all;
+                      if (pickFrom.length) void dealList(pickFrom[Math.floor(Math.random() * pickFrom.length)]);
+                    }}
+                  >
+                    {busy ? 'جاري جلب السؤال...' : '🎲 حرف عشوائي'}
+                  </button>
+                </div>
+              )}
+              {listChosen.some((c) => c !== 'letters') && (
+                <button type="button" className="q-btn-gold" disabled={busy} onClick={() => void dealList()}>
+                  {busy ? 'جاري جلب السؤال...' : listChosen.includes('letters') ? '▶️ سؤال من الفئات الثانية' : '▶️ السؤال التالي'}
+                </button>
+              )}
               <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
             </div>
           )}
@@ -788,6 +829,11 @@ export function KickQuizPage() {
               </div>
               {state.variant === 'list' ? (
                 <div>
+                  {q.listLetter && (
+                    <div className="mb-3">
+                      <LetterGrid active={q.listLetter} used={usedLetters(state.used)} small />
+                    </div>
+                  )}
                   <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
                   {state.phase === 'answer' ? <ListLive state={state} /> : <ListResult state={state} />}
                   <UnknownAnswers state={state} onJudge={(key, accept) => ref.current && set(judgeUnknown(ref.current, key, accept))} />
