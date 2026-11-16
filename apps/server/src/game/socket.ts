@@ -28,7 +28,7 @@ import { z } from 'zod';
 import { env } from '../env';
 import { drawQuestion as drawFromDb, listPublicCategories } from './catalog';
 import { GameError, GameRoom, type DealtQuestion } from './room';
-import { LIST_CATEGORIES, listBank } from '../kick/lists/bank';
+import { LIST_CATEGORIES, listBank, weightedPick } from '../kick/lists/bank';
 import { UsageLog } from './usage';
 
 type SocketData = { deviceId: string; code: string | null };
@@ -289,7 +289,8 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         const pool = listBank().filter(
           (q) => q.level !== 'hard' && !room.listUsed.has(q.id) && (category === 'letters' ? Boolean(q.letter) : q.cat === category),
         );
-        const q = pool[randomInt(pool.length || 1)];
+        // Saudi, Gulf and Arab topics (and easy questions) come up more often.
+        const q = weightedPick(pool);
         if (!q) throw new GameError('خلصت أسئلة هذي الفئة — اختر فئة ثانية');
         const name = LIST_CATEGORIES.find((c) => c.id === category);
         room.beginList({ id: q.id, text: q.text, answers: q.answers, letter: q.letter, category: name ? `${name.icon} ${name.name}` : category });

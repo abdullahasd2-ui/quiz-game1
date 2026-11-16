@@ -2,7 +2,7 @@ import { POINTS, type QuestionPack } from '@quiz/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { drawQuestion, listPublicCategories } from '../game/catalog';
-import { LIST_CATEGORIES, LIST_LETTERS, LIST_LEVELS, listBank } from './lists/bank';
+import { LIST_CATEGORIES, LIST_LETTERS, LIST_LEVELS, listBank, weightedPick } from './lists/bank';
 
 /** Team packs by their code (given to the team; anyone with it can open the pack, answers included). */
 const PACKS: QuestionPack[] = [];
@@ -70,7 +70,8 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
     const left = [...new Set(pool.map(group))];
     const cat = left[Math.floor(Math.random() * left.length)];
     const inCat = pool.filter((q) => group(q) === cat);
-    const q = inCat[Math.floor(Math.random() * inCat.length)]!;
+    // Saudi, Gulf and Arab topics (and easy questions) come up more often.
+    const q = weightedPick(inCat)!;
     return group(q) === 'letters' ? { ...q, cat: 'letters' } : q;
   });
 };
