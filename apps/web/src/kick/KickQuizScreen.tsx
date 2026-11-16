@@ -10,7 +10,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { outcomeLabel } from './KickQuizPage';
-import { ListLive, ListResult } from './ListParts';
+import { LetterGrid, ListLive, ListResult, usedLetters } from './ListParts';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
 import { ShuffleBoxes } from './ShuffleBoxes';
@@ -139,6 +139,11 @@ export function KickQuizScreen() {
               <div className="mt-2 text-xl">
                 السؤال {state.used.length + 1} من {state.totalCells} — جهّزوا أصابعكم!
               </div>
+              {usedLetters(state.used).size > 0 && (
+                <div className="mt-4">
+                  <LetterGrid used={usedLetters(state.used)} big />
+                </div>
+              )}
               <div className="mx-auto mt-4 max-w-xl rounded-xl bg-q-panel p-4 text-lg">
                 يطلع سؤال، واكتبوا أكبر عدد من الأجوبة في {Math.round((state.answerMs ?? 30000) / 1000)} ثانية
                 <div className="mt-1 text-base text-white/70">كل جواب صح نقطة · وآخر الوقت: الأول ياخذ 5 نقاط زيادة، والثاني 3، والثالث نقطتين</div>
@@ -260,6 +265,11 @@ export function KickQuizScreen() {
               </div>
               {state.variant === 'list' ? (
                 <div>
+                  {q.listLetter && (
+                    <div className="mb-4">
+                      <LetterGrid active={q.listLetter} used={usedLetters(state.used)} />
+                    </div>
+                  )}
                   <div className="mb-4 text-center text-4xl font-black leading-snug">{q.text}</div>
                   {state.phase === 'answer' ? <ListLive state={state} big /> : <ListResult state={state} big />}
                   {state.phase === 'answer' && <div className="mt-3 text-center text-base text-white/70">اكتبوا الأجوبة في الشات — تقدر تكتب أكثر من جواب بينها فاصلة «،»</div>}

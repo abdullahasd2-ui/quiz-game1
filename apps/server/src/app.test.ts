@@ -353,6 +353,12 @@ describe('«عدّها» lists', () => {
     expect(none.statusCode).toBe(404);
     const hard = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['geo'], levels: ['hard'], exclude: [] } });
     expect((hard.json() as { level: string }).level).toBe('hard');
+    // «حروف»: counts per letter, and a question for the letter asked.
+    const letters = (await app.inject({ method: 'POST', url: '/api/kick/lists/letters', payload: {} })).json() as { letter: string; count: number }[];
+    expect(letters).toHaveLength(28);
+    expect(letters.find((l) => l.letter === 'م')!.count).toBeGreaterThan(20);
+    const mim = (await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['letters'], letter: 'م', exclude: [] } })).json() as { cat: string; letter: string };
+    expect(mim).toMatchObject({ cat: 'letters', letter: 'م' });
   });
 });
 

@@ -2,7 +2,7 @@ import { POINTS, type QuestionPack } from '@quiz/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { drawQuestion, listPublicCategories } from '../game/catalog';
-import { LIST_CATEGORIES, LIST_LEVELS, listBank } from './lists/bank';
+import { LIST_CATEGORIES, LIST_LETTERS, LIST_LEVELS, listBank } from './lists/bank';
 
 /** Team packs by their code (given to the team; anyone with it can open the pack, answers included). */
 const PACKS: QuestionPack[] = [];
@@ -31,22 +31,46 @@ export const kickQuestionRoutes: FastifyPluginAsync = async (app) => {
   // «عدّها»: the categories, then one random question at a time (skipping the ones already played this stream).
   app.get('/api/kick/lists/categories', async () => {
     const bank = listBank();
-    return LIST_CATEGORIES.map((c) => ({ ...c, count: bank.filter((q) => q.cat === c.id).length }));
+    return LIST_CATEGORIES.map((c) => ({ ...c, count: bank.filter((q) => (c.id === 'letters' ? !!q.letter : q.cat === c.id)).length }));
   });
   app.get('/api/kick/lists/levels', async () => {
     const bank = listBank();
     return LIST_LEVELS.map((l) => ({ ...l, count: bank.filter((q) => q.level === l.id).length }));
   });
-  app.post<{ Body: { cats?: unknown; levels?: unknown; exclude?: unknown } }>('/api/kick/lists/next', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
+  // «حروف»: how many questions each letter has (in the chosen levels), for the letter grid.
+  app.post<{ Body: { levels?: unknown; exclude?: unknown } }>('/api/kick/lists/letters', async (req) => {
+    const levels = Array.isArray(req.body?.levels) ? req.body.levels.map(String) : [];
+    const exclude = new Set(Array.isArray(req.body?.exclude) ? req.body.exclude.map(String).slice(0, 2000) : []);
+    const pool = listBank().filter((q) => q.letter && (levels.length === 0 || levels.includes(q.level)) && !exclude.has(q.id));
+    return LIST_LETTERS.map((l) => ({ letter: l, count: pool.filter((q) => q.letter === l).length }));
+  });
+  app.post<{ Body: { cats?: unknown; levels?: unknown; exclude?: unknown; letter?: unknown } }>('/api/kick/lists/next', { config: { rateLimit: { max: 60, timeWindow: '1 minute' } } }, async (req, reply) => {
     const cats = Array.isArray(req.body?.cats) ? req.body.cats.map(String) : [];
     const exclude = new Set(Array.isArray(req.body?.exclude) ? req.body.exclude.map(String).slice(0, 2000) : []);
     const levels = Array.isArray(req.body?.levels) ? req.body.levels.map(String) : [];
-    const pool = listBank().filter((q) => (cats.length === 0 || cats.includes(q.cat)) && (levels.length === 0 || levels.includes(q.level)) && !exclude.has(q.id));
-    if (!pool.length) return reply.code(404).send({ error: 'خلصت الأسئلة' });
+    const letter = typeof req.body?.letter === 'string' ? req.body.letter : '';
+    // A question's group: its category, or «حروف» for a letter question when «حروف» is chosen (and always when a letter is asked for).
+    const group = (q: { cat: string; letter?: string }) => (q.letter && (letter || cats.includes('letters')) ? 'letters' : q.cat);
+    const pool = listBank().filter(
+      (q) =>
+        (letter ? q.letter === letter : cats.length === 0 || cats.includes(q.cat) || (cats.includes('letters') && !!q.letter)) &&
+        (levels.length === 0 || levels.includes(q.level)) &&
+        !exclude.has(q.id),
+    );
+    if (!pool.length) return reply.code(404).send({ error: letter ? `خلصت أسئلة حرف «${letter}»` : 'خلصت الأسئلة' });
+    if (letter) {
+      // A chosen letter: rather a list people can name a lot from («لاعبين كورة», «دول»…) than a narrow one.
+      const easier = pool.filter((q) => q.level !== 'hard');
+      const from = easier.length ? easier : pool;
+      let r = Math.random() * from.reduce((n, q) => n + q.answers.length, 0);
+      const q = from.find((x) => (r -= x.answers.length) < 0) ?? from[0]!;
+      return { ...q, cat: 'letters' };
+    }
     // Each chosen category gets an equal chance, however many questions it has (football alone has the most).
-    const left = [...new Set(pool.map((q) => q.cat))];
+    const left = [...new Set(pool.map(group))];
     const cat = left[Math.floor(Math.random() * left.length)];
-    const inCat = pool.filter((q) => q.cat === cat);
-    return inCat[Math.floor(Math.random() * inCat.length)];
+    const inCat = pool.filter((q) => group(q) === cat);
+    const q = inCat[Math.floor(Math.random() * inCat.length)]!;
+    return group(q) === 'letters' ? { ...q, cat: 'letters' } : q;
   });
 };
