@@ -1,0 +1,365 @@
+[
+{
+"a": "ذهب|gold"
+},
+{
+"a": "حديد|iron"
+},
+{
+"a": "فضة|silver"
+},
+{
+"a": "هيدروجين|hydrogen"
+},
+{
+"a": "أكسجين|oxygen"
+},
+{
+"a": "نحاس|copper"
+},
+{
+"a": "كربون|carbon"
+},
+{
+"a": "ألومنيوم|aluminium"
+},
+{
+"a": "هيليوم|helium"
+},
+{
+"a": "نيتروجين|nitrogen"
+},
+{
+"a": "كبريت|sulfur"
+},
+{
+"a": "ليثيوم|lithium"
+},
+{
+"a": "رصاص|lead"
+},
+{
+"a": "قصدير|tin"
+},
+{
+"a": "صوديوم|sodium"
+},
+{
+"a": "زئبق|mercury"
+},
+{
+"a": "كالسيوم|calcium"
+},
+{
+"a": "بيريليوم|beryllium"
+},
+{
+"a": "نيون|neon"
+},
+{
+"a": "زنك|zinc"
+},
+{
+"a": "مغنسيوم|magnesium"
+},
+{
+"a": "سيليكون|silicon"
+},
+{
+"a": "بوتاسيوم|potassium"
+},
+{
+"a": "فلور|fluorine"
+},
+{
+"a": "فسفور|phosphorus"
+},
+{
+"a": "يورانيوم|uranium"
+},
+{
+"a": "كلور|chlorine"
+},
+{
+"a": "بورون|boron"
+},
+{
+"a": "أرغون|argon"
+},
+{
+"a": "تيتانيوم|titanium"
+},
+{
+"a": "كروم|chromium"
+},
+{
+"a": "يود|iodine"
+},
+{
+"a": "كوبالت|cobalt"
+},
+{
+"a": "زرنيخ|arsenic"
+},
+{
+"a": "بلاتين|platinum"
+},
+{
+"a": "منغنيز|manganese"
+},
+{
+"a": "نيكل|nickel"
+},
+{
+"a": "كريبتون|krypton"
+},
+{
+"a": "فاناديوم|vanadium"
+},
+{
+"a": "غاليوم|gallium"
+},
+{
+"a": "باريوم|barium"
+},
+{
+"a": "راديوم|radium"
+},
+{
+"a": "فرانسيوم|francium"
+},
+{
+"a": "بروم|bromine"
+},
+{
+"a": "سيلينيوم|selenium"
+},
+{
+"a": "رادون|radon"
+},
+{
+"a": "سكانديوم|scandium"
+},
+{
+"a": "سترونتيوم|strontium"
+},
+{
+"a": "كادميوم|cadmium"
+},
+{
+"a": "جرمانيوم|germanium"
+},
+{
+"a": "روبيديوم|rubidium"
+},
+{
+"a": "إثمد|antimony"
+},
+{
+"a": "زينون|xenon"
+},
+{
+"a": "سيزيوم|caesium"
+},
+{
+"a": "بزموت|bismuth"
+},
+{
+"a": "تنجستن|tungsten"
+},
+{
+"a": "إريديوم|iridium"
+},
+{
+"a": "بولونيوم|polonium"
+},
+{
+"a": "نيوبيوم|niobium"
+},
+{
+"a": "بلوتونيوم|plutonium"
+},
+{
+"a": "بلاديوم|palladium"
+},
+{
+"a": "أوزميوم|osmium"
+},
+{
+"a": "موليبدنوم|molybdenum"
+},
+{
+"a": "إتريوم|yttrium"
+},
+{
+"a": "تيلوريوم|tellurium"
+},
+{
+"a": "هافنيوم|hafnium"
+},
+{
+"a": "تانتالوم|tantalum"
+},
+{
+"a": "أستاتين|astatine"
+},
+{
+"a": "تكنيشيوم|technetium"
+},
+{
+"a": "زركونيوم|zirconium"
+},
+{
+"a": "روثينيوم|ruthenium"
+},
+{
+"a": "روديوم|rhodium"
+},
+{
+"a": "إنديوم|indium"
+},
+{
+"a": "ثوريوم|thorium"
+},
+{
+"a": "نبتونيوم|neptunium"
+},
+{
+"a": "أكتينيوم|actinium"
+},
+{
+"a": "لانثانوم|lanthanum"
+},
+{
+"a": "رينيوم|rhenium"
+},
+{
+"a": "ثاليوم|thallium"
+},
+{
+"a": "يوروبيوم|europium"
+},
+{
+"a": "رذرفورديوم|rutherfordium"
+},
+{
+"a": "هاسيوم|hassium"
+},
+{
+"a": "سيريوم|cerium"
+},
+{
+"a": "ساماريوم|samarium"
+},
+{
+"a": "سيبورغيوم|seaborgium"
+},
+{
+"a": "لوتيشيوم|lutetium"
+},
+{
+"a": "كاليفورنيوم|californium"
+},
+{
+"a": "أينشتاينيوم|einsteinium"
+},
+{
+"a": "دوبنيوم|dubnium"
+},
+{
+"a": "بروميثيوم|promethium"
+},
+{
+"a": "غادولينيوم|gadolinium"
+},
+{
+"a": "أمريسيوم|americium"
+},
+{
+"a": "بروتكتينيوم|protactinium"
+},
+{
+"a": "بوريوم|bohrium"
+},
+{
+"a": "مايتنريوم|meitnerium"
+},
+{
+"a": "ديسبروسيوم|dysprosium"
+},
+{
+"a": "كوريوم|curium"
+},
+{
+"a": "فيرميوم|fermium"
+},
+{
+"a": "نوبليوم|nobelium"
+},
+{
+"a": "أوغانيسون|oganesson"
+},
+{
+"a": "براسوديميوم|praseodymium"
+},
+{
+"a": "نيوديميوم|neodymium"
+},
+{
+"a": "تربيوم|terbium"
+},
+{
+"a": "بركيليوم|berkelium"
+},
+{
+"a": "دارمشتاتيوم|darmstadtium"
+},
+{
+"a": "إربيوم|erbium"
+},
+{
+"a": "مندليفيوم|mendelevium"
+},
+{
+"a": "لورنسيوم|lawrencium"
+},
+{
+"a": "رونتجينيوم|roentgenium"
+},
+{
+"a": "هولميوم|holmium"
+},
+{
+"a": "إتيربيوم|ytterbium"
+},
+{
+"a": "نيهونيوم|nihonium"
+},
+{
+"a": "كوبرنيسيوم|copernicium"
+},
+{
+"a": "موسكوفيوم|moscovium"
+},
+{
+"a": "ثوليوم|thulium"
+},
+{
+"a": "ليفرموريوم|livermorium"
+},
+{
+"a": "فليروفيوم|flerovium"
+},
+{
+"a": "تينيسين|tennessine"
+},
+{
+"a": "أنونينيوم|ununennium"
+},
+{
+"a": "أنبنيليوم|unbinilium"
+},
+{
+"a": "أونبيونيوم|unbiunium"
+}
+]
