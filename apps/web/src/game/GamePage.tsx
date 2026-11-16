@@ -15,11 +15,26 @@ import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
 import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
+import { CornerTools, HotkeysHelp, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
+
+const GAME_KEYS: HotkeyRow[] = [
+  ['A', 'جاوب (قرارك في السؤال)'],
+  ['S', 'بادل أو اقلب'],
+  ['D', 'اعكس (في «جاوب أو بادل أو اعكس»)'],
+  ['1 / 2 / 3 / 4', 'اختيار الجواب'],
+  ['1 … 9 / 0', 'اختيار الصندوق في «خبّي أو اكشف» (0 = الصندوق العاشر)'],
+  ['H', 'طلب التلميح في «خبّي أو اكشف»'],
+  ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، التالي، العب مرة ثانية'],
+  ['M', 'كتم الأصوات أو تشغيلها'],
+];
 
 export function GamePage() {
   const { view, deadline, connected, resuming, leave } = useRoom();
   const [params] = useSearchParams();
   useGameFx(view);
+  const { help, setHelp } = useHotkeys();
+  // The screen stays on from the lobby to the final result.
+  useWakeLock(Boolean(view && view.status !== 'done'));
   // iOS suspends audio while the app is in the background.
   useEffect(() => {
     const wake = () => document.visibilityState === 'visible' && resumeAudioIfNeeded();
@@ -73,6 +88,8 @@ export function GamePage() {
       <Intro />
       <Background3D />
       <SoundToggle />
+      <CornerTools onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
+      <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} />
       {!view && <StreamerLink />}
       {view && view.status !== 'done' && (
         <button

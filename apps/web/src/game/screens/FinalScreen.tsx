@@ -1,4 +1,5 @@
 import type { RoomView } from '@quiz/shared';
+import { Kbd } from '@/lib/hotkeys';
 import { cn } from '@/lib/utils';
 import { Confetti } from '../fx/Confetti';
 import { TEAM_TEXT, teamName } from '../ui';
@@ -20,8 +21,9 @@ export function FinalScreen({ view, onPlayAgain }: { view: RoomView; onPlayAgain
           </div>
         ))}
       </div>
-      <button type="button" className="q-btn-gold" onClick={onPlayAgain}>
+      <button type="button" data-hotkey="go" className="q-btn-gold" onClick={onPlayAgain}>
         🔄 العب مرة ثانية
+        <Kbd k="Enter" />
       </button>
     </div>
   );

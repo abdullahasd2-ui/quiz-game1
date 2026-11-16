@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/native';
 import { serverUrl } from '@/lib/server';
+import { Kbd } from '@/lib/hotkeys';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { Confetti } from '../fx/Confetti';
@@ -91,8 +92,9 @@ export function ResultOverlay({ view }: { view: RoomView }) {
         })}
       </div>
       {mayAdvance ? (
-        <button type="button" className="q-btn-gold" onClick={next} disabled={busy}>
+        <button type="button" data-hotkey="go" className="q-btn-gold" onClick={next} disabled={busy}>
           {lastRound ? 'النتيجة النهائية 🏆' : 'التالي ←'}
+          <Kbd k="Enter" />
         </button>
       ) : (
         <div className="text-xs text-white/50">

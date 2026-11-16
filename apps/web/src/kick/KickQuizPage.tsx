@@ -50,6 +50,16 @@ import { Podium } from './Podium';
 import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
 import { HotBadge, usePopular } from '@/game/popular';
+import { CornerTools, HotkeysHelp, Kbd, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
+
+const STREAM_KEYS: HotkeyRow[] = [
+  ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، السؤال التالي، اعرض الخيارات، أنهِ السؤال، التالي'],
+  ['1 / 2 / 3 / 4', 'جوابك على السؤال، أو اختيار فئة السؤال في «عدّها»'],
+  ['1 … 9 / 0', 'اختيار الصندوق في «خبّي أو اكشف» (0 = الصندوق العاشر)'],
+  ['ا … ي', 'اختيار الحرف في فئة «حروف» (اكتب الحرف على لوحة المفاتيح العربية)'],
+  ['R', 'حرف عشوائي في فئة «حروف»'],
+  ['Esc', 'الرجوع من شبكة الحروف إلى الفئات'],
+];
 
 type KickSocket = Socket<KickServerToClientEvents, KickClientToServerEvents>;
 const MAX_CATEGORIES = 6;
@@ -120,6 +130,9 @@ export function KickQuizPage() {
   const [letterCounts, setLetterCounts] = useState<Record<string, number> | null>(null);
   /** «عدّها» board: the streamer picked «حروف» and is now choosing a letter. */
   const [pickingLetter, setPickingLetter] = useState(false);
+  const { help, setHelp } = useHotkeys();
+  // The streamer's laptop must not sleep in the middle of a game.
+  useWakeLock(Boolean(state && state.phase !== 'lobby' && state.phase !== 'over'));
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
   // Pairing with the broadcast page: it shows the game without the streamer's secrets.
@@ -432,8 +445,9 @@ export function KickQuizPage() {
   return (
     <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
       <Background3D />
+      <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={STREAM_KEYS} title="اختصارات الستريمر" />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
@@ -637,8 +651,8 @@ export function KickQuizPage() {
                 </div>
               </div>
 
-              <button type="button" className="q-btn-gold" onClick={beginGame}>
-                ▶️ ابدأ اللعبة
+              <button type="button" data-hotkey="go" className="q-btn-gold" onClick={beginGame}>
+                ▶️ ابدأ اللعبة <Kbd k="Enter" />
               </button>
             </div>
           )}
@@ -650,8 +664,8 @@ export function KickQuizPage() {
                 {state.pack.name} — السؤال {state.used.length + 1} من {state.pack.total}
               </div>
               <div className="mb-4 text-sm text-white/60">الأسئلة بالترتيب، وكل الفريق ياخذ دوره</div>
-              <button type="button" className="q-btn-gold" onClick={dealPack}>
-                ▶️ السؤال التالي
+              <button type="button" data-hotkey="go" className="q-btn-gold" onClick={dealPack}>
+                ▶️ السؤال التالي <Kbd k="Enter" />
               </button>
               <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
             </div>
@@ -667,9 +681,10 @@ export function KickQuizPage() {
               <button
                 type="button"
                 className="q-btn-gold"
+                data-hotkey="go"
                 onClick={() => ref.current && set(deal(ref.current, `h:${ref.current.used.length + 1}`, hideQuestion(randomHidePoints()), Date.now()))}
               >
-                🔑 ابدأ الجولة وخبّي المفتاح
+                🔑 ابدأ الجولة وخبّي المفتاح <Kbd k="Enter" />
               </button>
               <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
             </div>
@@ -688,15 +703,17 @@ export function KickQuizPage() {
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {listCats
                       .filter((c) => listChosen.includes(c.id))
-                      .map((c) => (
+                      .map((c, i) => (
                         <button
                           key={c.id}
                           type="button"
+                          data-hotkey={String(i + 1)}
                           disabled={busy}
                           onClick={() => (c.id === 'letters' ? setPickingLetter(true) : void dealList(undefined, c.id))}
                           className="rounded-xl border-2 border-q-line bg-q-panel px-2 py-3 text-base font-black transition-all hover:border-q-gold hover:bg-q-gold/8 disabled:opacity-50"
                         >
                           {c.icon} {c.name}
+                          <Kbd k={String(i + 1)} />
                         </button>
                       ))}
                   </div>
@@ -709,6 +726,7 @@ export function KickQuizPage() {
                   <button
                     type="button"
                     className="q-btn-gold mt-3"
+                    data-hotkey="random"
                     disabled={busy || !letterCounts}
                     onClick={() => {
                       const ok = Object.entries(letterCounts ?? {}).filter(([, n]) => n > 0).map(([l]) => l);
@@ -717,10 +735,10 @@ export function KickQuizPage() {
                       if (from.length) void dealList(from[Math.floor(Math.random() * from.length)]);
                     }}
                   >
-                    {busy ? 'جاري جلب السؤال...' : '🎲 حرف عشوائي'}
+                    {busy ? 'جاري جلب السؤال...' : '🎲 حرف عشوائي'} <Kbd k="R" />
                   </button>
-                  <button type="button" className="mt-2 w-full text-sm text-white/60 underline" onClick={() => setPickingLetter(false)}>
-                    ↩️ رجوع للفئات
+                  <button type="button" data-hotkey="back" className="mt-2 w-full text-sm text-white/60 underline" onClick={() => setPickingLetter(false)}>
+                    ↩️ رجوع للفئات <Kbd k="Esc" />
                   </button>
                 </div>
               )}
@@ -770,7 +788,7 @@ export function KickQuizPage() {
               ) : (
               <div className="grid gap-2 sm:grid-cols-2">
                 {q.options.map((o, i) => (
-                  <button key={i} type="button" onClick={() => act({ type: 'answer', index: i })} className="flex items-center gap-2 rounded-xl border-2 border-q-line bg-q-panel p-3 text-start text-lg font-black hover:border-q-gold">
+                  <button key={i} type="button" data-hotkey={String(i + 1)} onClick={() => act({ type: 'answer', index: i })} className="flex items-center gap-2 rounded-xl border-2 border-q-line bg-q-panel p-3 text-start text-lg font-black hover:border-q-gold">
                     <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
                     {o}
                   </button>
@@ -815,7 +833,7 @@ export function KickQuizPage() {
               <div className="mb-2 text-xs text-white/60">🔒 اختيار الستريمر مخفي — لازم تكتبون «دخول» عشان تلعبون</div>
               <div className="mb-2 text-sm text-white/70">✅ جاوب: {answerers} · {L.icon} {L.verb}: {swappers}</div>
               {left !== null && <div className="mb-3 text-3xl font-black tabular-nums text-q-cyan">⏱ {left}</div>}
-              <button type="button" className="q-btn-gold" onClick={() => act({ type: 'show' })}>اعرض الخيارات الآن</button>
+              <button type="button" data-hotkey="go" className="q-btn-gold" onClick={() => act({ type: 'show' })}>اعرض الخيارات الآن <Kbd k="Enter" /></button>
             </div>
           )}
 
@@ -900,7 +918,7 @@ export function KickQuizPage() {
                   ) : (
                     <>اكتبوا رقم {q.faces ? 'الشخص (1-8)' : 'الخيار (1-4)'} أو <b>جاوب</b> + الجواب · أجاب {answered} · {L.verb} {swappers} · 🔒 اختيار الستريمر مخفي</>
                   )}
-                  <div><button type="button" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب</button></div>
+                  <div><button type="button" data-hotkey="go" className="q-btn-gold mt-3" onClick={() => act({ type: 'finish' })}>أنهِ السؤال وأظهر الجواب <Kbd k="Enter" /></button></div>
                 </div>
               )}
             </div>
@@ -939,7 +957,7 @@ export function KickQuizPage() {
                 )}
               </div>
               )}
-              <button type="button" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>{state.variant === 'hide' ? 'الجولة التالية ◀' : state.variant === 'list' ? 'التالي ◀' : 'اللوحة ◀'}</button>
+              <button type="button" data-hotkey="go" className="q-btn-gold mt-2" onClick={() => set(toBoard(state))}>{state.variant === 'hide' ? 'الجولة التالية ◀' : state.variant === 'list' ? 'التالي ◀' : 'اللوحة ◀'} <Kbd k="Enter" /></button>
             </div>
           )}
 
