@@ -315,30 +315,11 @@
 }
 
 @layer components {
-  /* The page backdrop: deep gradient + two drifting colour pools. Sits behind the 3D background. */
+  /* The page backdrop: a still, deep gradient (the moving colour light comes from Background3D; a second, blurred
+     moving layer here made the first seconds stutter). */
   .q-aurora {
     @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
     background: radial-gradient(120% 80% at 50% -10%, #1a1240 0%, transparent 60%), radial-gradient(90% 70% at 50% 120%, #071a33 0%, transparent 60%), var(--color-q-bg);
-  }
-  .q-aurora::before,
-  .q-aurora::after {
-    content: '';
-    @apply absolute rounded-full motion-safe:animate-aurora;
-    width: 70vmax;
-    height: 70vmax;
-    filter: blur(80px);
-    opacity: 0.32;
-  }
-  .q-aurora::before {
-    top: -30vmax;
-    right: -20vmax;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.9), transparent 65%);
-  }
-  .q-aurora::after {
-    bottom: -35vmax;
-    left: -25vmax;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.75), transparent 65%);
-    animation-delay: -13s;
   }
   /* Glass panel with a lit gradient edge (the edge is a masked ::before, so the inside stays see-through). */
   .q-glass {
