@@ -150,7 +150,8 @@ export function QuickAccess({
   }, [open, close, show]);
 
   useEffect(() => {
-    if (open) requestAnimationFrame(() => input.current?.focus());
+    // On a touch screen focusing the search would pop the keyboard over the panel: only with a mouse/keyboard.
+    if (open && !matchMedia('(pointer: coarse)').matches) requestAnimationFrame(() => input.current?.focus());
   }, [open]);
   useEffect(() => setActive(0), [q]);
   // Keep the highlighted row in view while moving with the arrows.

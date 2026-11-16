@@ -36,7 +36,8 @@ export function GamePage() {
   const { view, deadline, connected, resuming, leave } = useRoom();
   const [params] = useSearchParams();
   useGameFx(view);
-  const { help, setHelp } = useHotkeys();
+  // No fullscreen in the main game (phones and the app); the stream pages keep it.
+  const { help, setHelp } = useHotkeys(undefined, { fullscreen: false });
   // The screen stays on from the lobby to the final result.
   useWakeLock(Boolean(view && view.status !== 'done'));
   // The player's own record (on this device) when a game reaches its final screen.
@@ -97,8 +98,8 @@ export function GamePage() {
       <div className="q-aurora" aria-hidden />
       <Background3D />
       <SoundToggle />
-      <CornerTools onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
-      <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} />
+      <CornerTools fullscreen={false} onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
+      <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} fullscreen={false} />
       <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />
       <GameStart status={view?.status ?? null} />
       {!view && <StreamerLink />}
