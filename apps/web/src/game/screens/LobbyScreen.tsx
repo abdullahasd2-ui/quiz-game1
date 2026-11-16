@@ -9,6 +9,7 @@ import { Kbd } from '@/lib/hotkeys';
 import { QrCode } from '@/lib/QrCode';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
+import { takePreselected, useBus } from '@/quick/bus';
 import { teamName } from '../ui';
 import { isSelf, kickPlayer } from './PlayersPanel';
 import { HotBadge, usePopular } from '../popular';
@@ -77,6 +78,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
   const isHost = view.you === host && !isMember;
   const ready = Boolean(view.teams[0] && view.teams[1]);
 
+  useBus('lobby:invite', () => void copyLink());
   async function copyLink() {
     const link = `${PUBLIC_URL}/?code=${view.code}`;
     if (await shareInvite(link, `تعال العب معي جاوب أو بادل! كود الغرفة: ${view.code}`)) return;
@@ -145,7 +147,12 @@ export function LobbyScreen({ view }: { view: RoomView }) {
 
 function CategoryPicker({ tv }: { tv: boolean }) {
   const { data: categories, isLoading, isError } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories });
-  const [selected, setSelected] = useState<number[]>([]);
+  // Categories the player picked from the shortcuts before making the room start selected.
+  const [selected, setSelected] = useState<number[]>(() => takePreselected().slice(0, MAX_BOARD_CATEGORIES));
+  useBus('lobby:toggleCategory', (id) => {
+    const c = categories?.find((x) => x.id === id);
+    if (c?.playable) toggle(id);
+  });
   const hotCats = usePopular()?.categories ?? [];
   const [starting, setStarting] = useState(false);
 

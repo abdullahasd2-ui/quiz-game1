@@ -128,6 +128,7 @@
     }
   html {
     @apply font-sans;
+    background-color: #07071a;
     }
 }
 /* ── Game screens: the dark arcade palette of the original "جاوب أو بادل" page ── */
@@ -142,6 +143,15 @@
     --color-q-green: #27ae60;
     --color-q-purple: #a855f7;
     --color-q-cyan: #38bdf8;
+    --color-q-pink: #f472b6;
+    --color-q-ink: #04040f;
+    --font-display: 'Lalezar', 'Tajawal', system-ui, sans-serif;
+    --animate-aurora: aurora 26s ease-in-out infinite alternate;
+    --animate-shine: shine 2.8s ease-in-out infinite;
+    --animate-float-y: float-y 5s ease-in-out infinite;
+    --animate-orbit: orbit 14s linear infinite;
+    --animate-sheet-in: sheet-in 0.32s cubic-bezier(0.2, 0.9, 0.3, 1);
+    --animate-launch: launch 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
     --animate-float-word: float-word linear infinite;
     --animate-spin-3d: spin-3d linear infinite;
     --animate-screen-in: screen-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
@@ -167,6 +177,33 @@
     --animate-fx-win: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-glow 1.4s ease-in-out 0.35s infinite alternate;
     --animate-fx-lose: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fx-shake 0.45s ease-in-out 0.35s;
 
+    /* Ambient light: two soft colour pools that drift slowly behind everything (transform only, cheap). */
+    @keyframes aurora {
+        from { transform: translate3d(-6%, -4%, 0) rotate(0deg) scale(1); }
+        to { transform: translate3d(6%, 5%, 0) rotate(12deg) scale(1.12); }
+    }
+    @keyframes shine {
+        0%, 55% { transform: translateX(120%) skewX(-18deg); }
+        100% { transform: translateX(-220%) skewX(-18deg); }
+    }
+    @keyframes float-y {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    @keyframes orbit {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    @keyframes sheet-in {
+        from { opacity: 0; transform: translateX(-24px); }
+        to { opacity: 1; transform: none; }
+    }
+    /* Start of a game: a burst of light that fills the screen and fades. */
+    @keyframes launch {
+        0% { opacity: 0; transform: scale(0.6); }
+        35% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(1.6); }
+    }
     /* Screens slide up out of a soft blur, like a card dealt onto the table. */
     @keyframes screen-in {
         from { opacity: 0; transform: translateY(18px) scale(0.985); filter: blur(6px); }
@@ -278,6 +315,63 @@
 }
 
 @layer components {
+  /* The page backdrop: deep gradient + two drifting colour pools. Sits behind the 3D background. */
+  .q-aurora {
+    @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
+    background: radial-gradient(120% 80% at 50% -10%, #1a1240 0%, transparent 60%), radial-gradient(90% 70% at 50% 120%, #071a33 0%, transparent 60%), var(--color-q-bg);
+  }
+  .q-aurora::before,
+  .q-aurora::after {
+    content: '';
+    @apply absolute rounded-full motion-safe:animate-aurora;
+    width: 70vmax;
+    height: 70vmax;
+    filter: blur(80px);
+    opacity: 0.32;
+  }
+  .q-aurora::before {
+    top: -30vmax;
+    right: -20vmax;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.9), transparent 65%);
+  }
+  .q-aurora::after {
+    bottom: -35vmax;
+    left: -25vmax;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.75), transparent 65%);
+    animation-delay: -13s;
+  }
+  /* Glass panel with a lit gradient edge (the edge is a masked ::before, so the inside stays see-through). */
+  .q-glass {
+    @apply relative rounded-3xl backdrop-blur-xl;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015) 45%), color-mix(in oklab, var(--color-q-panel) 72%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 60px -28px rgba(0, 0, 0, 0.85);
+  }
+  .q-glass::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 rounded-[inherit];
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(247, 201, 72, 0.45), rgba(168, 85, 247, 0.25) 40%, rgba(56, 189, 248, 0.35));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  /* A light sweep across a button or card (decorative; off when the device asks for less motion). */
+  .q-shine {
+    @apply relative overflow-hidden;
+  }
+  .q-shine::before {
+    content: '';
+    @apply pointer-events-none absolute inset-y-0 w-1/3 motion-safe:animate-shine;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  }
+  .q-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/80 transition-all hover:border-q-gold/50 hover:bg-q-gold/10 hover:text-white;
+  }
+  .q-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
   /* Cards: dark glass with a faint top light and a soft drop shadow, so they float over the moving background. */
   .q-card {
     @apply relative rounded-2xl border border-white/8 p-5 backdrop-blur-md;
@@ -313,4 +407,19 @@
   }
   .q-wait-dots > span:nth-child(2) { animation-delay: 0.2s; }
   .q-wait-dots > span:nth-child(3) { animation-delay: 0.4s; }
+}
+
+/* Less motion when the device asks for it: no drifting, no sweeps, screens just appear. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Keyboard focus is always visible (the dark theme hides the browser default). */
+:where(button, a, input, select, textarea, [role='button']):focus-visible {
+  outline: 2px solid var(--color-q-gold);
+  outline-offset: 2px;
 }
