@@ -6,6 +6,17 @@ import { toggleFullscreen } from '@/lib/hotkeys';
 import { QuickAccess, spotlight, type QaItem, type QaSection } from './QuickAccess';
 
 const VARIANT_ICON: Record<StreamVariant, string> = { swap: '🔄', flip: '🔀', triple: '↩️', hide: '📦', list: '⏱️' };
+const PHASE_LABEL: Record<StreamState['phase'], string> = {
+  lobby: 'تجهيز اللعبة',
+  board: 'اختيار السؤال',
+  streamer: 'دورك تجاوب',
+  choose: 'الشات يختار',
+  shuffle: 'خلط الصناديق',
+  answer: 'وقت الإجابة',
+  steal: 'خذ نقاط مشارك',
+  result: 'النتيجة',
+  over: 'انتهت اللعبة',
+};
 
 export type StreamQuickProps = {
   state: StreamState | null;
@@ -142,5 +153,21 @@ export function StreamQuick(p: StreamQuickProps) {
     ],
   });
 
-  return <QuickAccess site="stream" sections={sections} />;
+  const all = new Map(sections.flatMap((x) => x.items).map((it) => [it.id, it]));
+  const pick = (...ids: string[]) => ids.map((id) => all.get(id)).filter((x): x is QaItem => Boolean(x));
+  const goBtn = () => document.querySelector<HTMLButtonElement>('[data-hotkey="go"]');
+  const context = !s
+    ? { icon: '🔴', label: 'قبل بداية البث' }
+    : { icon: VARIANT_ICON[s.variant ?? p.variant] ?? '🎮', label: PHASE_LABEL[s.phase], detail: s.phase === 'lobby' ? `${s.joined.length} مشارك` : `${Math.min(s.used.length + (s.phase === 'board' ? 1 : 0), s.totalCells)} من ${s.totalCells} · ${s.joined.length} مشارك` };
+  const tiles: QaItem[] = !s
+    ? pick('live', 'test', 'howto')
+    : lobby
+      ? pick('begin', 'copy-screen', 'pack', 'joined')
+      : [
+          // The page's main button for this phase (start the question, show the options, end it, next…).
+          ...(playing && s.phase !== 'board' ? [{ id: 'go', icon: '▶️', title: 'الخطوة التالية', run: () => goBtn()?.click() }] : []),
+          ...pick('top', 'players', 'finish', 'copy-screen'),
+        ].slice(0, 4);
+
+  return <QuickAccess site="stream" sections={sections} context={context} tiles={tiles} compact={playing} />;
 }

@@ -51,6 +51,7 @@ import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from '.
 import { QuizHowToButton } from './QuizHowTo';
 import { HotBadge, usePopular } from '@/game/popular';
 import { StreamQuick } from '@/quick/StreamQuick';
+import { useCardSpotlight } from '@/lib/spotlight';
 import { CornerTools, HotkeysHelp, Kbd, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
 
 /** Each stream mode's own colours on the setup screen (same family as the home page's mode cards). */
@@ -61,6 +62,47 @@ const STREAM_MODE_BG: Record<StreamVariant, string> = {
   hide: 'from-[#0c5e3b] to-[#08281a]',
   list: 'from-[#5e0c3b] to-[#2a0818]',
 };
+
+const PHASE_NAME: Record<StreamState['phase'], string> = {
+  lobby: 'تجهيز اللعبة',
+  board: 'اختيار السؤال',
+  streamer: 'دورك تجاوب',
+  choose: 'الشات يختار',
+  shuffle: 'خلط الصناديق',
+  answer: 'وقت الإجابة',
+  steal: 'خذ نقاط مشارك',
+  result: 'النتيجة',
+  over: 'انتهت اللعبة',
+};
+
+/**
+ * The streamer's control bar during a game, stuck to the top: phase, question count, players, answers so far, time
+ * left, and the phase's main action (it presses the page's own button, the same one Enter presses).
+ */
+function ControlDock({ phase, counter, joined, answered, left, go }: { phase: string; counter: string; joined: number; answered: number | null; left: number | null; go: string | null }) {
+  const stat = 'flex items-center gap-1 rounded-lg bg-black/25 px-2 py-1 text-xs font-bold whitespace-nowrap';
+  return (
+    <div className="q-glass sticky top-2 z-30 flex flex-wrap items-center gap-2 px-3 py-2 lg:col-span-2" role="region" aria-label="لوحة التحكم">
+      <span className="flex items-center gap-1.5 text-sm font-black">
+        <span className="size-2 rounded-full bg-q-green motion-safe:animate-pulse" aria-hidden />
+        {phase}
+      </span>
+      <span className={stat}>🎯 {counter}</span>
+      <span className={stat}>👥 {joined}</span>
+      {answered !== null && <span className={cn(stat, 'text-q-cyan')}>✍️ {answered} جاوبوا</span>}
+      {left !== null && <span className={cn(stat, 'q-display text-base tabular-nums', left <= 5 ? 'text-q-red' : 'text-q-gold')}>⏱ {left}</span>}
+      {go && (
+        <button
+          type="button"
+          onClick={() => document.querySelector<HTMLButtonElement>('main [data-hotkey="go"], [data-hotkey="go"]')?.click()}
+          className="ms-auto flex items-center gap-1.5 rounded-xl bg-linear-to-l from-q-orange to-q-gold px-3.5 py-1.5 text-sm font-black text-black shadow-[0_6px_18px_-8px_rgba(255,107,53,0.8)] hover:-translate-y-0.5"
+        >
+          {go} ◀<Kbd k="Enter" className="border-black/20 bg-black/10 text-black/60" />
+        </button>
+      )}
+    </div>
+  );
+}
 
 const STREAM_KEYS: HotkeyRow[] = [
   ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، السؤال التالي، اعرض الخيارات، أنهِ السؤال، التالي'],
@@ -141,6 +183,7 @@ export function KickQuizPage() {
   /** «عدّها» board: the streamer picked «حروف» and is now choosing a letter. */
   const [pickingLetter, setPickingLetter] = useState(false);
   const { help, setHelp } = useHotkeys();
+  useCardSpotlight();
   // The streamer's laptop must not sleep in the middle of a game.
   useWakeLock(Boolean(state && state.phase !== 'lobby' && state.phase !== 'over'));
   const [fake, setFake] = useState('');
@@ -481,7 +524,7 @@ export function KickQuizPage() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-3 pb-20 font-sans text-white relative isolate" dir="rtl">
+    <div className="min-h-dvh bg-q-bg p-3 pb-28 font-sans text-white relative isolate" dir="rtl">
       <div className="q-aurora" aria-hidden />
       <Background3D />
       {quick}
@@ -508,7 +551,27 @@ export function KickQuizPage() {
         </span>
         <span className="block text-[11px] text-white/50">هذي الصفحة لك إنت بس (تشوف فيها السؤال وتجاوب) — لا تبثها.</span>
       </div>
-      <div className={cn('mx-auto grid max-w-5xl gap-3', state.phase === 'lobby' && !test ? 'max-w-2xl' : 'md:grid-cols-[1fr_17rem]')}>
+      <div className={cn('mx-auto grid max-w-5xl gap-3', state.phase === 'lobby' && !test ? 'max-w-2xl' : 'lg:grid-cols-[1fr_17rem]')}>
+        {state.phase !== 'lobby' && state.phase !== 'over' && (
+          <ControlDock
+            phase={PHASE_NAME[state.phase]}
+            counter={`${state.variant === 'hide' ? 'الجولة' : 'السؤال'} ${Math.min(state.used.length + (state.phase === 'board' ? 1 : 0), state.totalCells)} من ${state.totalCells}`}
+            joined={state.joined.length}
+            answered={state.phase === 'answer' ? (state.variant === 'list' ? Object.keys(r?.list?.found ?? {}).length : answered) : null}
+            left={left}
+            go={
+              state.phase === 'choose'
+                ? 'اعرض الخيارات'
+                : state.phase === 'answer'
+                  ? 'أنهِ السؤال'
+                  : state.phase === 'result'
+                    ? 'التالي'
+                    : state.phase === 'board' && (state.pack || state.variant === 'hide')
+                      ? state.variant === 'hide' ? 'ابدأ الجولة' : 'السؤال التالي'
+                      : null
+            }
+          />
+        )}
         <div className="q-card">
           {state.phase === 'lobby' && (
             <div className="space-y-5">
@@ -575,7 +638,7 @@ export function KickQuizPage() {
                         onClick={() => setVariant(v)}
                         aria-pressed={variant === v}
                         className={cn(
-                          'relative overflow-hidden rounded-2xl bg-linear-to-br p-3 text-center transition-all',
+                          'q-spot relative overflow-hidden rounded-2xl bg-linear-to-br p-3 text-center transition-all',
                           STREAM_MODE_BG[v],
                           variant === v ? 'scale-[1.02] ring-2 ring-q-gold ring-offset-2 ring-offset-q-bg' : 'opacity-75 ring-1 ring-white/10 hover:-translate-y-0.5 hover:opacity-100',
                         )}
