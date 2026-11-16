@@ -21,10 +21,47 @@ export type ListQuestion = { id: string; cat: ListCategory; text: string; answer
 export const LIST_LEVELS: { id: ListLevel; name: string; icon: string }[] = [
   { id: 'easy', name: 'سهل', icon: '🟢' },
   { id: 'medium', name: 'متوسط', icon: '🟡' },
-  { id: 'hard', name: 'صعب', icon: '🔴' },
 ];
 
 /** Lists that are long but that few people can name much from (lakes, volcanoes…): never «سهل». */
+const ARABS = 'sa|ae|kw|qa|bh|om|ye|iq|sy|jo|lb|ps|eg|sd|ly|tn|dz|ma|mr';
+/**
+ * The game is for Saudi, Gulf and Arab players: lists few of them could name much from are left out of «عدّها»
+ * (far-away cities, lakes and volcanoes, foreign actors and singers…). Arab countries, Turkey (its series) and the
+ * big football and entertainment names stay.
+ */
+const OFF_AUDIENCE = new RegExp(
+  '^(' +
+    [
+      `geo-cities-(?!(${ARABS}|us|uk|fr|tr|es|it|de)(-|$))`,
+      'ex-(lakes|volcanoes|islands|deserts|airlines|watches|scientists|painters|writers|elements|dogs|languages|battles|wars|waterfalls)',
+      'geo-(mountains|rivers|sights|us-states|lang-|sea-(carib|black|caspian))',
+      `ex-p(actors|singers|series|writers)-(?!(${ARABS}|tr|us)(-|$))`,
+      `ex-pfilms-(?!(${ARABS}|tr|us|in)(-|$))`,
+      `ex-pmosques-(?!(${ARABS}|tr)(-|$))`,
+      `fb-nat-(?!(${ARABS}|br|ar|fr|es|pt|de|it|en|nl|be|hr|uy|sn|ci|ng|cm)(-|$))`,
+      'gm-co-(bandai|konami|square|capcom)',
+      'gm-genre-(moba|sandbox|survival|puzzle)',
+      'gm-chars-(tekken|mk)',
+    ].join('|') +
+    ')',
+);
+/** Nothing about Iran. */
+const IRAN = /(^|-)ir(-|$)|إيران|ايران|طهران/;
+/** Saudi, Gulf and Arab questions come up more often (see listWeight). */
+const HOME = new RegExp(`(^|-)(${ARABS})(-|$)|arab|gcc|gulf|saTeams|saudi|geo-sa-|fb-league-sa|fb-clubs-arab|is-|pv-`);
+
+/** How likely a question is to be picked: Saudi / Gulf / Arab topics three times, easy ones twice. */
+export function listWeight(q: { id: string; level: ListLevel }): number {
+  return (HOME.test(q.id) ? 3 : 1) * (q.level === 'easy' ? 2 : 1);
+}
+/** A random question from `pool`, by listWeight. */
+export function weightedPick<T extends { id: string; level: ListLevel }>(pool: T[]): T | undefined {
+  let r = Math.random() * pool.reduce((n, q) => n + listWeight(q), 0);
+  for (const q of pool) if ((r -= listWeight(q)) < 0) return q;
+  return pool[pool.length - 1];
+}
+
 const NICHE = /^(geo-cities-(cn|in|br|ru|mx|ca|au|ar|ir|pk|id|ly|sd|sy|iq|dz|jo|tn|lb|om|bh|kw|qa|jp|be|ch|at|pl|gr|se|no|ua|ro|kr|th|vn|ph|my|af|ng|za|ke|et|co|pe|cl|ve|ps|mr)|ex-lakes|ex-volcanoes|ex-islands|geo-mountains|geo-rivers|ex-deserts|gm-co-|gm-all|is-mosques|is-imams|is-readers|ex-airlines|ex-watches|ex-famousArabs|ex-scientists|ex-actors|ex-(medications|minerals|constellations|moons|horses|cats|tribes|jurists|dynasties|arpapers|caves|waterfalls|bridges|palaces|castles|histcountries|composers|philosophers|battles|wuni|aruni))/;
 /** Lists everyone can name a lot from: always «سهل» when long enough. */
 const EVERYDAY = /^(gn-(animals|fruits|vegetables|fruitveg|colors|jobs|foods|desserts|drinks|bodyParts|clothes|home|kitchen|boys|girls|sports|carBrands|apps|months)|geo-(countries|capitals|arab|cities-sa)|ex-(supermarket|school|emotions|shapes|weather)|fb-all|fb-pos-|fb-league-(es|en|sa)$|fb-club-(rma|bar|hil|nas)$|is-(names|pillars|prayers|hijriMonths|zikr)|pv-all|gn-surahs$|gn-prophets$)/;
@@ -307,7 +344,8 @@ export function buildBank(): ListQuestion[] {
       had.clubs = [...new Set([...had.clubs, ...cl])];
     } else byName.set(head, { name, nat, pos, clubs: cl });
   }
-  const P = [...byName.values()];
+  // No Iranian players (nothing about Iran in the game).
+  const P = [...byName.values()].filter((p) => p.nat !== 'ir');
   const clubName = (id: string) => CLUBS[id]![0].split('|')[0]!;
   const leagueOf = (id: string) => CLUBS[id]?.[1];
   const POS: Record<string, string> = { G: 'حراس مرمى', D: 'مدافعين', M: 'لاعبي وسط', F: 'مهاجمين وأجنحة' };
@@ -355,7 +393,7 @@ export function buildBank(): ListQuestion[] {
   const arabNat = new Set(['sa', 'eg', 'ma', 'dz', 'tn', 'iq', 'qa', 'ae', 'kw', 'jo', 'sy', 'lb', 'om', 'bh', 'ly', 'sd', 'ps', 'ye']);
   add('fb-arab', 'football', 'اذكر لاعبين عرب', P.filter((p) => arabNat.has(p.nat)).map((p) => p.name));
   add('fb-african', 'football', 'اذكر لاعبين أفارقة', P.filter((p) => ['eg', 'ma', 'dz', 'tn', 'sn', 'ci', 'ng', 'cm', 'gh', 'ga', 'gn', 'ml', 'lr'].includes(p.nat)).map((p) => p.name));
-  add('fb-asian', 'football', 'اذكر لاعبين آسيويين', P.filter((p) => ['sa', 'jp', 'kr', 'ir', 'au'].includes(p.nat)).map((p) => p.name), 5);
+  add('fb-asian', 'football', 'اذكر لاعبين آسيويين', P.filter((p) => ['sa', 'qa', 'ae', 'kw', 'bh', 'om', 'iq', 'jo', 'sy', 'jp', 'kr', 'au'].includes(p.nat)).map((p) => p.name), 5);
   add('fb-arab-europe', 'football', 'اذكر لاعبين عرب لعبوا في أوروبا', P.filter((p) => arabNat.has(p.nat) && p.clubs.some((c) => ['es', 'en', 'it', 'de', 'fr', 'pt', 'nl', 'tr'].includes(leagueOf(c) ?? ''))).map((p) => p.name));
   add('fb-clubs-arab', 'football', 'اذكر أندية عربية', Object.values(CLUBS).filter((c) => ['sa', 'eg', 'qa', 'ae', 'ma', 'tn'].includes(c[1])).map((c) => c[0]));
   add('fb-clubs-europe', 'football', 'اذكر أندية أوروبية', Object.values(CLUBS).filter((c) => ['es', 'en', 'it', 'de', 'fr', 'pt', 'nl', 'tr', 'sc', 'gr'].includes(c[1])).map((c) => c[0]));
@@ -447,7 +485,8 @@ export function buildBank(): ListQuestion[] {
   byLetter('gn-any', 'general', 'أي شيء (حيوان، أكل، دولة، اسم، مهنة…)', everything, 10);
 
   // Very hard ones out: a specialist list with few answers, or a letter with almost nothing to name.
-  return qs.map((q) => ({ ...q, level: levelOf(q) })).filter((q) => !(q.level === 'hard' && (NICHE.test(q.id) || (q.letter && q.answers.length < 6))));
+  // Only questions most players in the region can answer: easy and medium, no specialist lists, nothing about Iran.
+  return qs.map((q) => ({ ...q, level: levelOf(q) })).filter((q) => q.level !== 'hard' && !OFF_AUDIENCE.test(q.id) && !IRAN.test(q.id + q.text));
 }
 
 let cached: ListQuestion[] | null = null;

@@ -169,7 +169,7 @@ export function KickQuizPage() {
   const [listCats, setListCats] = useState<{ id: string; name: string; icon: string; count: number }[]>([]);
   const hotStream = usePopular()?.streamVariants[0];
   /** «عدّها» difficulty: any of سهل/متوسط/صعب (at least one). */
-  const [listLevels, setListLevels] = useState<string[]>(['easy', 'medium', 'hard']);
+  const [listLevels, setListLevels] = useState<string[]>(['easy', 'medium']);
   const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games', 'islamic', 'proverbs']);
   const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
@@ -677,8 +677,8 @@ export function KickQuizPage() {
                   </div>
                   <div>
                     <div className="mb-2 text-sm font-black">🎯 مستوى الصعوبة <span className="text-[11px] font-bold text-white/50">(اختر واحد أو أكثر)</span></div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {([['easy', '🟢', 'سهل', 'أجوبة كثيرة يعرفها الكل'], ['medium', '🟡', 'متوسط', 'تحتاج معرفة أكثر'], ['hard', '🔴', 'صعب', 'أجوبة قليلة أو موضوع متخصص']] as const).map(([id, icon, name, hint]) => {
+                    <div className="grid grid-cols-2 gap-2">
+                      {([['easy', '🟢', 'سهل', 'أجوبة كثيرة يعرفها الكل'], ['medium', '🟡', 'متوسط', 'تحتاج معرفة أكثر']] as const).map(([id, icon, name, hint]) => {
                         const on = listLevels.includes(id);
                         return (
                           <button

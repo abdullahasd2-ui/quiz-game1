@@ -351,8 +351,12 @@ describe('«عدّها» lists', () => {
     const all = listBank().filter((x) => x.cat === 'football').map((x) => x.id);
     const none = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['football'], exclude: all } });
     expect(none.statusCode).toBe(404);
+    // Only easy and medium questions, nothing about Iran (the game is for Saudi, Gulf and Arab players).
     const hard = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['geo'], levels: ['hard'], exclude: [] } });
-    expect((hard.json() as { level: string }).level).toBe('hard');
+    expect(hard.statusCode).toBe(404);
+    const medium = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['geo'], levels: ['medium'], exclude: [] } });
+    expect((medium.json() as { level: string }).level).toBe('medium');
+    expect(listBank().some((q) => q.level === 'hard' || /إيران|ايران|طهران/.test(q.text) || /-ir(-|$)/.test(q.id))).toBe(false);
     // «حروف»: counts per letter, and a question for the letter asked.
     const letters = (await app.inject({ method: 'POST', url: '/api/kick/lists/letters', payload: {} })).json() as { letter: string; count: number }[];
     expect(letters).toHaveLength(28);
