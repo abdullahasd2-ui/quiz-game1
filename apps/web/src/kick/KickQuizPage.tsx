@@ -580,8 +580,8 @@ export function KickQuizPage() {
                           variant === v ? 'scale-[1.02] ring-2 ring-q-gold ring-offset-2 ring-offset-q-bg' : 'opacity-75 ring-1 ring-white/10 hover:-translate-y-0.5 hover:opacity-100',
                         )}
                       >
-                        {hotStream === v && <HotBadge />}
-                        <div className={cn('text-3xl', variant === v && 'motion-safe:animate-float-y')}>{l.icon}</div>
+                        {hotStream === v && <HotBadge className="top-1.5 inset-x-0 mx-auto w-fit px-2.5 py-0.5 text-[11px] ring-2 ring-white/50 motion-safe:animate-none" />}
+                        <div className={cn('text-3xl', hotStream === v && 'mt-5', variant === v && 'motion-safe:animate-float-y')}>{l.icon}</div>
                         <div className="q-display text-xl text-white">{l.title}</div>
                         <div className="mt-0.5 text-[11px] text-white/60">
                           {v === 'swap' ? 'تبادل مع الستريمر: إذا جواب الستريمر صح تاخذ دبل النقاط، وإذا جواب الستريمر غلط تنقص نقاطك' : v === 'flip' ? 'تقلب على الستريمر: إذا جواب الستريمر صح تنقص نقاطه، وإذا جواب الستريمر غلط تزيد نقاطه' : v === 'triple' ? 'بادل: إذا جواب الستريمر صح تاخذ دبل، وإذا جواب الستريمر غلط تنقص نقاطك · اعكس: إذا جواب الستريمر صح تنقص نقاطك، وإذا جواب الستريمر غلط تزيد نقاطك' : v === 'list' ? 'سؤال واحد والشات يكتب أكثر عدد أجوبة: كل جواب صح نقطة، والأول +5 والثاني +3 والثالث +2' : 'تخبّي المفتاح في صندوق والشات يخمّن رقم الصندوق من 1 إلى 10'}
