@@ -1,4 +1,4 @@
-import { MAX_BOARD_CATEGORIES, MAX_TEAM_SIZE, MIN_BOARD_CATEGORIES, type MemberView, type RoomView, type Seat } from '@quiz/shared';
+import { ACTION_CHOICES, ACTION_SECONDS, ANSWER_SECONDS, MAX_BOARD_CATEGORIES, MAX_TEAM_SIZE, MIN_BOARD_CATEGORIES, type MemberView, type RoomView, type Seat, type Variant } from '@quiz/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -139,7 +139,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
         </div>
       )}
       {isHost && ready ? (
-        <CategoryPicker tv={isTv} />
+        <CategoryPicker tv={isTv} variant={view.variant} />
       ) : (
         <div className="p-4 text-center text-sm text-white/50">
           {!ready ? '⏳ في انتظار انضمام الفريق الثاني...' : `⏳ في انتظار ${isTv ? 'المضيف (التلفاز)' : 'المضيف'} لبدء اللعبة...`}
@@ -149,7 +149,9 @@ export function LobbyScreen({ view }: { view: RoomView }) {
   );
 }
 
-function CategoryPicker({ tv }: { tv: boolean }) {
+const actionWord = (v: Variant) => (v === 'flip' ? 'جاوب أو اقلب' : v === 'triple' ? 'جاوب أو بادل أو اعكس' : 'جاوب أو بادل');
+
+function CategoryPicker({ tv, variant }: { tv: boolean; variant: Variant }) {
   const { data: categories, isLoading, isError } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories });
   // Categories the player picked from the shortcuts before making the room start selected.
   const [selected, setSelected] = useState<number[]>(() => takePreselected().slice(0, MAX_BOARD_CATEGORIES));
@@ -159,6 +161,8 @@ function CategoryPicker({ tv }: { tv: boolean }) {
   });
   const hotCats = usePopular()?.categories ?? [];
   const [starting, setStarting] = useState(false);
+  // Time to decide جاوب / بادل each question (the answer itself stays 30 s). «خبّي أو اكشف» has its own times.
+  const [actionSeconds, setActionSeconds] = useState<number>(ACTION_SECONDS);
 
   const toggle = (id: number) =>
     setSelected((s) => {
@@ -173,7 +177,7 @@ function CategoryPicker({ tv }: { tv: boolean }) {
   async function start() {
     if (selected.length < MIN_BOARD_CATEGORIES) return toast.error(`اختر ${MIN_BOARD_CATEGORIES} فئات على الأقل!`);
     setStarting(true);
-    const res = await send('game:start', { categoryIds: selected });
+    const res = await send('game:start', { categoryIds: selected, ...(variant === 'hide' ? {} : { actionSeconds }) });
     setStarting(false);
     if (!res.ok) toast.error(res.error);
   }
@@ -211,6 +215,27 @@ function CategoryPicker({ tv }: { tv: boolean }) {
           );
         })}
       </div>
+      {variant !== 'hide' && (
+        <div className="mt-4">
+          <div className="mb-1.5 text-center text-xs text-white/60">
+            ⏱️ وقت اختيار {actionWord(variant)} — وبعدها {ANSWER_SECONDS} ثانية للإجابة
+          </div>
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="وقت الاختيار">
+            {ACTION_CHOICES.map((sec) => (
+              <button
+                key={sec}
+                type="button"
+                role="radio"
+                aria-checked={actionSeconds === sec}
+                onClick={() => setActionSeconds(sec)}
+                className={cn('rounded-xl border-2 py-2.5 text-sm font-black transition-all', actionSeconds === sec ? 'border-q-gold bg-q-gold/10' : 'border-q-line bg-q-panel hover:border-q-gold/50')}
+              >
+                {sec} ثانية
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <button type="button" data-hotkey="go" className={cn('mt-3', tv ? 'q-btn-tv' : 'q-btn-gold')} onClick={start} disabled={starting}>
         {starting ? 'جاري البدء...' : '🚀 ابدأ اللعبة!'}
         <Kbd k="Enter" />

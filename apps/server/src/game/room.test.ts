@@ -518,3 +518,24 @@ describe('triple variant', () => {
     expect(() => room.act(0, 'reverse')).toThrow('خيار غير صالح');
   });
 });
+
+describe('time to decide', () => {
+  it('uses the time the host picked (30 s here), then the usual 30 s to answer', () => {
+    const room = new GameRoom('ABCDEF', 'mobile', 'swap');
+    room.seatHost('dev-host', 'النمور');
+    room.join('dev-guest', 'الصقور');
+    room.start(0, CATS, 30);
+    expect(room.view(0).actionSeconds).toBe(30);
+    room.beginRound(1, 100, question());
+    expect(room.view(0).remainingMs).toBe(30_000);
+    vi.advanceTimersByTime(30_001);
+    // Nobody decided in time: the round moved on from the decision phase.
+    expect(room.view(0).phase).not.toBe('action');
+  });
+
+  it('defaults to 60 s when the host picks nothing', () => {
+    const { room } = mobileRoom();
+    room.beginRound(1, 100, question());
+    expect(room.view(0).remainingMs).toBe(60_000);
+  });
+});
