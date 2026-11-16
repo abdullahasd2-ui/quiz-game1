@@ -139,11 +139,6 @@ export function KickQuizScreen() {
               <div className="mt-2 text-xl">
                 السؤال {state.used.length + 1} من {state.totalCells} — جهّزوا أصابعكم!
               </div>
-              {usedLetters(state.used).size > 0 && (
-                <div className="mt-4">
-                  <LetterGrid used={usedLetters(state.used)} big />
-                </div>
-              )}
               <div className="mx-auto mt-4 max-w-xl rounded-xl bg-q-panel p-4 text-lg">
                 يطلع سؤال، واكتبوا أكبر عدد من الأجوبة في {Math.round((state.answerMs ?? 30000) / 1000)} ثانية
                 <div className="mt-1 text-base text-white/70">كل جواب صح نقطة · وآخر الوقت: الأول ياخذ 5 نقاط زيادة، والثاني 3، والثالث نقطتين</div>

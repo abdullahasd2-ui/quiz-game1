@@ -118,6 +118,8 @@ export function KickQuizPage() {
   const [busy, setBusy] = useState(false);
   /** «حروف»: questions left per letter, for the letter grid on the board. */
   const [letterCounts, setLetterCounts] = useState<Record<string, number> | null>(null);
+  /** «عدّها» board: the streamer picked «حروف» and is now choosing a letter. */
+  const [pickingLetter, setPickingLetter] = useState(false);
   const [fake, setFake] = useState('');
   const ref = useRef<StreamState | null>(null);
   // Pairing with the broadcast page: it shows the game without the streamer's secrets.
@@ -279,7 +281,7 @@ export function KickQuizPage() {
   // «حروف»: on the board, how many questions each letter still has.
   const boardUsed = state?.phase === 'board' && state.variant === 'list' ? state.used.join(',') : null;
   useEffect(() => {
-    if (boardUsed === null || !listChosen.includes('letters')) return;
+    if (boardUsed === null || !pickingLetter) return;
     let gone = false;
     void fetch(`${SERVER_URL}/api/kick/lists/letters`, {
       method: 'POST',
@@ -292,10 +294,10 @@ export function KickQuizPage() {
     return () => {
       gone = true;
     };
-  }, [boardUsed, listChosen, listLevels]);
+  }, [boardUsed, pickingLetter, listLevels]);
 
   /** «عدّها»: the next question from the server, never one already played this game. */
-  async function dealList(letter?: string) {
+  async function dealList(letter?: string, only?: string) {
     const cur = ref.current;
     if (!cur || busy || cur.phase !== 'board') return;
     if (cur.used.length >= cur.totalCells) return set(finish(cur));
@@ -304,11 +306,12 @@ export function KickQuizPage() {
       const res = await fetch(`${SERVER_URL}/api/kick/lists/next`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ cats: listChosen, levels: listLevels, exclude: cur.used.map((u) => u.replace(/^list:/, '')), ...(letter ? { letter } : {}) }),
+        body: JSON.stringify({ cats: only ? [only] : listChosen, levels: listLevels, exclude: cur.used.map((u) => u.replace(/^list:/, '')), ...(letter ? { letter } : {}) }),
       });
       if (!res.ok) throw new Error(letter ? `خلصت أسئلة حرف «${letter}»` : 'خلصت الأسئلة في هذي الفئات');
       const q = (await res.json()) as { id: string; cat: string; text: string; answers: string[]; letter?: string };
       const cat = listCats.find((c) => c.id === q.cat);
+      setPickingLetter(false);
       if (ref.current) set(deal(ref.current, `list:${q.id}`, { text: q.text, options: [], correctIndex: -1, points: 1, imageUrl: null, listAnswers: q.answers, listLetter: q.letter, categoryName: cat ? `${cat.icon} ${cat.name}` : undefined }, Date.now()));
       setError('');
     } catch (e) {
@@ -679,8 +682,28 @@ export function KickQuizPage() {
                 عدّها — السؤال {state.used.length + 1} من {state.totalCells}
               </div>
               <div className="mb-4 text-sm text-white/60">يطلع السؤال ويبدأ الوقت على طول ({Math.round((state.answerMs ?? 30000) / 1000)} ثانية)</div>
-              {listChosen.includes('letters') && (
-                <div className="mb-4">
+              {!pickingLetter ? (
+                <div className="mb-2">
+                  <div className="mb-2 text-sm font-black">🗂️ اختر فئة السؤال</div>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {listCats
+                      .filter((c) => listChosen.includes(c.id))
+                      .map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          disabled={busy}
+                          onClick={() => (c.id === 'letters' ? setPickingLetter(true) : void dealList(undefined, c.id))}
+                          className="rounded-xl border-2 border-q-line bg-q-panel px-2 py-3 text-base font-black transition-all hover:border-q-gold hover:bg-q-gold/8 disabled:opacity-50"
+                        >
+                          {c.icon} {c.name}
+                        </button>
+                      ))}
+                  </div>
+                  {busy && <div className="mt-2 text-sm text-white/60">جاري جلب السؤال...</div>}
+                </div>
+              ) : (
+                <div className="mb-2">
                   <div className="mb-2 text-sm font-black">🔤 اختر حرف — يتلوّن ويطلع سؤال يبدأ فيه</div>
                   <LetterGrid used={usedLetters(state.used)} counts={letterCounts ?? undefined} onPick={(l) => !busy && void dealList(l)} />
                   <button
@@ -688,20 +711,18 @@ export function KickQuizPage() {
                     className="q-btn-gold mt-3"
                     disabled={busy || !letterCounts}
                     onClick={() => {
-                      const left = Object.entries(letterCounts ?? {}).filter(([l, n]) => n > 0 && !usedLetters(state.used).has(l)).map(([l]) => l);
-                      const all = Object.entries(letterCounts ?? {}).filter(([, n]) => n > 0).map(([l]) => l);
-                      const pickFrom = left.length ? left : all;
-                      if (pickFrom.length) void dealList(pickFrom[Math.floor(Math.random() * pickFrom.length)]);
+                      const ok = Object.entries(letterCounts ?? {}).filter(([, n]) => n > 0).map(([l]) => l);
+                      const fresh = ok.filter((l) => !usedLetters(state.used).has(l));
+                      const from = fresh.length ? fresh : ok;
+                      if (from.length) void dealList(from[Math.floor(Math.random() * from.length)]);
                     }}
                   >
                     {busy ? 'جاري جلب السؤال...' : '🎲 حرف عشوائي'}
                   </button>
+                  <button type="button" className="mt-2 w-full text-sm text-white/60 underline" onClick={() => setPickingLetter(false)}>
+                    ↩️ رجوع للفئات
+                  </button>
                 </div>
-              )}
-              {listChosen.some((c) => c !== 'letters') && (
-                <button type="button" className="q-btn-gold" disabled={busy} onClick={() => void dealList()}>
-                  {busy ? 'جاري جلب السؤال...' : listChosen.includes('letters') ? '▶️ سؤال من الفئات الثانية' : '▶️ السؤال التالي'}
-                </button>
               )}
               <button type="button" className="mt-3 w-full text-xs text-white/50 underline" onClick={() => set(finish(state))}>إنهاء اللعبة وعرض الفائز</button>
             </div>
