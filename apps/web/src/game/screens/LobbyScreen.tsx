@@ -1,10 +1,10 @@
 import { ACTION_CHOICES, ACTION_SECONDS, ANSWER_SECONDS, MAX_BOARD_CATEGORIES, MAX_TEAM_SIZE, MIN_BOARD_CATEGORIES, type MemberView, type RoomView, type Seat, type Variant } from '@quiz/shared';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { shareInvite } from '@/lib/native';
-import { PUBLIC_URL } from '@/lib/server';
+import { PUBLIC_URL, serverUrl } from '@/lib/server';
 import { Kbd } from '@/lib/hotkeys';
 import { QrCode } from '@/lib/QrCode';
 import { cn } from '@/lib/utils';
@@ -139,7 +139,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
         </div>
       )}
       {isHost && ready ? (
-        <CategoryPicker tv={isTv} variant={view.variant} />
+        view.variant === 'list' ? <ListPicker tv={isTv} /> : <CategoryPicker tv={isTv} variant={view.variant} />
       ) : (
         <div className="p-4 text-center text-sm text-white/50">
           {!ready ? '⏳ في انتظار انضمام الفريق الثاني...' : `⏳ في انتظار ${isTv ? 'المضيف (التلفاز)' : 'المضيف'} لبدء اللعبة...`}
@@ -236,6 +236,79 @@ function CategoryPicker({ tv, variant }: { tv: boolean; variant: Variant }) {
           </div>
         </div>
       )}
+      <button type="button" data-hotkey="go" className={cn('mt-3', tv ? 'q-btn-tv' : 'q-btn-gold')} onClick={start} disabled={starting}>
+        {starting ? 'جاري البدء...' : '🚀 ابدأ اللعبة!'}
+        <Kbd k="Enter" />
+      </button>
+    </div>
+  );
+}
+
+/** «عدّها»: the list categories (the same as the stream's, «حروف» included) and the time to answer. */
+function ListPicker({ tv }: { tv: boolean }) {
+  const { data: cats, isError } = useQuery({
+    queryKey: ['list-categories'],
+    queryFn: async () => (await (await fetch(serverUrl('/api/kick/lists/categories'))).json()) as { id: string; name: string; icon: string }[],
+    staleTime: 60_000,
+  });
+  const [selected, setSelected] = useState<string[]>([]);
+  const [seconds, setSeconds] = useState<number>(30);
+  const [starting, setStarting] = useState(false);
+  // Everything picked by default once the categories arrive.
+  useEffect(() => {
+    if (cats && !selected.length) setSelected(cats.map((c) => c.id));
+  }, [cats]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function start() {
+    if (!selected.length) return toast.error('اختر فئة وحدة على الأقل');
+    setStarting(true);
+    const res = await send('game:start', { categoryIds: [], listCategories: selected, actionSeconds: seconds });
+    setStarting(false);
+    if (!res.ok) toast.error(res.error);
+  }
+
+  return (
+    <div>
+      <div className="mb-2.5 text-center text-xs text-white/50">
+        فئات «عدّها» — الفريق اللي دوره يختار منها كل جولة · مختار {selected.length}
+      </div>
+      {isError && <div className="mb-2 text-center text-sm text-q-red">تعذر تحميل الفئات</div>}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {!cats && !isError && Array.from({ length: 7 }, (_, i) => <div key={i} className="h-[74px] animate-pulse rounded-xl bg-q-panel" />)}
+        {cats?.map((c) => {
+          const on = selected.includes(c.id);
+          return (
+            <button
+              key={c.id}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setSelected((cur) => (on ? cur.filter((x) => x !== c.id) : [...cur, c.id]))}
+              className={cn('q-spot rounded-xl border-2 px-1.5 py-3 text-center transition-all hover:-translate-y-0.5', on ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel hover:border-q-gold/50')}
+            >
+              <div className="mb-1 text-2xl">{c.icon}</div>
+              <div className="text-[12px] font-bold">{c.name}</div>
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-2 text-center text-[11px] text-white/50">الأسئلة من السهلة للمتوسطة · كل جواب صح نقطة، والفريق اللي يلقى أكثر ياخذ +5</p>
+      <div className="mt-4">
+        <div className="mb-1.5 text-center text-xs text-white/60">⏱️ وقت الكتابة لكل سؤال</div>
+        <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="وقت الكتابة">
+          {ACTION_CHOICES.map((sec) => (
+            <button
+              key={sec}
+              type="button"
+              role="radio"
+              aria-checked={seconds === sec}
+              onClick={() => setSeconds(sec)}
+              className={cn('rounded-xl border-2 py-2.5 text-sm font-black transition-all', seconds === sec ? 'border-q-gold bg-q-gold/10' : 'border-q-line bg-q-panel hover:border-q-gold/50')}
+            >
+              {sec} ثانية
+            </button>
+          ))}
+        </div>
+      </div>
       <button type="button" data-hotkey="go" className={cn('mt-3', tv ? 'q-btn-tv' : 'q-btn-gold')} onClick={start} disabled={starting}>
         {starting ? 'جاري البدء...' : '🚀 ابدأ اللعبة!'}
         <Kbd k="Enter" />

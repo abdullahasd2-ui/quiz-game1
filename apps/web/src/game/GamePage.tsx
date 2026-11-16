@@ -8,6 +8,7 @@ import { useGameFx } from './fx/useGameFx';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
 import { FinalScreen } from './screens/FinalScreen';
 import { HideScreen } from './screens/HideScreen';
+import { ListGameScreen } from './screens/ListGameScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
@@ -69,6 +70,8 @@ export function GamePage() {
     screen = <LobbyScreen view={view} />;
   } else if (view.status === 'done') {
     screen = <FinalScreen view={view} onPlayAgain={leave} />;
+  } else if (view.variant === 'list' && view.list) {
+    screen = <ListGameScreen view={view} deadline={deadline} />;
   } else if (view.variant === 'hide' && view.hide) {
     screen = <HideScreen view={view} deadline={deadline} />;
   } else if (view.phase === 'board') {
@@ -82,7 +85,9 @@ export function GamePage() {
     ? 'home'
     : view.status !== 'playing'
       ? view.status
-      : view.variant === 'hide' && view.hide
+      : view.variant === 'list' && view.list
+        ? `list-${view.list.round}-${view.phase === 'board' ? 'pick' : 'q'}`
+        : view.variant === 'hide' && view.hide
         ? `hide-${view.hide.round}`
         : `${view.phase === 'board' ? 'board' : 'q'}-${view.used.length}`;
 

@@ -539,3 +539,61 @@ describe('time to decide', () => {
     expect(room.view(0).remainingMs).toBe(60_000);
   });
 });
+
+describe('عدّها (list variant)', () => {
+  const LIST_CATS = [{ id: 'geo', name: 'جغرافيا', icon: '🌍' }];
+  const q = (id = 'q1') => ({ id, text: 'اذكر دول الخليج', answers: ['السعودية|Saudi', 'الكويت', 'قطر', 'عمان|عُمان'], category: '🌍 جغرافيا' });
+  let onChange = vi.fn();
+  function listRoom() {
+    onChange = vi.fn();
+    const room = new GameRoom('ABCDEF', 'mobile', 'list', onChange);
+    room.seatHost('dev-host', 'النمور');
+    room.join('dev-guest', 'الصقور');
+    room.start(0, [], 30, LIST_CATS);
+    return room;
+  }
+
+  it('the team in turn picks; both teams type; a point per answer and +5 for the team that found more', () => {
+    const room = listRoom();
+    expect(room.view(0).list).toMatchObject({ round: 1, totalRounds: 10, categories: LIST_CATS });
+    expect(() => room.assertCanListPick(1, 'geo')).toThrow('ليس دور فريقك!');
+    expect(() => room.assertCanListPick(0, 'football')).toThrow('مو في اللعبة');
+    room.assertCanListPick(0, 'geo');
+    room.beginList(q());
+    expect(room.view(0).phase).toBe('list');
+    expect(room.view(0).remainingMs).toBe(30_000);
+    expect(room.listAnswer(0, 'السعوديه، قطر')).toEqual(['السعودية', 'قطر']);
+    expect(room.listAnswer(0, 'قطر')).toEqual([]); // already found
+    expect(room.listAnswer(1, 'الكويت')).toEqual(['الكويت']);
+    // Each team sees its own answers, and only a count of the other's.
+    expect(room.view(0).list).toMatchObject({ found: [2, 1], mine: ['قطر', 'السعودية'] });
+    expect(room.view(1).list?.mine).toEqual(['الكويت']);
+    expect(() => room.listAnswer('tv', 'عمان')).toThrow();
+    vi.advanceTimersByTime(30_001);
+    // The end of the time reaches the devices on its own.
+    expect(onChange).toHaveBeenCalled();
+    const v = room.view(0);
+    expect(v.phase).toBe('result');
+    expect(v.list?.result?.deltas).toEqual([2 + 5, 1]);
+    expect(v.teams[0]?.score).toBe(7);
+    expect(v.list?.result?.answers).toEqual(['السعودية', 'الكويت', 'قطر', 'عمان']);
+    expect(() => room.listAnswer(0, 'عمان')).toThrow('انتهى الوقت');
+  });
+
+  it('ten rounds, the teams take turns picking, then the game ends', () => {
+    const room = listRoom();
+    for (let i = 0; i < 10; i++) {
+      expect(room.view(0).turn).toBe((i % 2) as 0 | 1);
+      room.beginList(q(`q${i}`));
+      vi.advanceTimersByTime(30_001);
+      room.next(0);
+    }
+    expect(room.view(0).status).toBe('done');
+    expect(room.listUsed.size).toBe(10);
+  });
+
+  it('members can not vote: everyone types for themselves', () => {
+    const room = listRoom();
+    expect(() => room.vote('dev-guest', 'geo')).toThrow();
+  });
+});

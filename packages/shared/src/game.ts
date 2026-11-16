@@ -25,6 +25,13 @@ export const HIDE_POINTS = 300;
 export const HINT_QUESTION_POINTS = 300;
 export const HIDE_SECONDS = 30;
 export const GUESS_SECONDS = 30;
+// ── عدّها (variant "list"): both teams type as many answers as they can ──
+/** Rounds each team picks the category for; the teams alternate, team 1 first. */
+export const LIST_ROUNDS_PER_TEAM = 5;
+/** A point per right answer; the team that found more gets this bonus on top. */
+export const LIST_TEAM_BONUS = 5;
+/** Answers a device may send in one message (several, separated by commas or new lines). */
+export const LIST_MAX_TEXT = 300;
 export const TEAM_NAME_MAX = 18;
 /** Captain + members. A game can start with any number of players per team (at least the captain). */
 export const MAX_TEAM_SIZE = 10;
@@ -37,8 +44,9 @@ export type RoomStatus = 'lobby' | 'playing' | 'done';
 /**
  * board → action (secret answer/steal) → answer → result → board …
  * hide variant: hide (the hider picks a box) → guess (⇄ hint question) → result → hide …
+ * list variant: board (the team in turn picks a category) → list (both teams type answers) → result → board …
  */
-export type GamePhase = 'board' | 'action' | 'answer' | 'result' | 'hide' | 'guess' | 'hint';
+export type GamePhase = 'board' | 'action' | 'answer' | 'result' | 'hide' | 'guess' | 'hint' | 'list';
 
 /** `id` is a public handle for the host's kick button — never the device id, which is the player's secret. */
 export type MemberView = { id: string; name: string; connected: boolean; captain: boolean };
@@ -100,6 +108,25 @@ export type HideView = {
   result: HideResult | null;
 };
 
+/** A «عدّها» category the team in turn can pick (football, geography… or «حروف»). */
+export type ListCategoryView = { id: string; name: string; icon: string };
+/** State of the list variant. Each team sees its own answers; the other team's only as a count until the result. */
+export type ListView = {
+  /** 1-based round number and the total. The team picking the category is `RoomView.turn`. */
+  round: number;
+  totalRounds: number;
+  categories: ListCategoryView[];
+  /** The question in play (from the result too), without its answers. */
+  question: { text: string; letter?: string; category: string } | null;
+  /** Right answers found so far by each team. */
+  found: [number, number];
+  /** Your team's answers so far (names as written in the list), newest first. Empty for the TV. */
+  mine: string[];
+  /** Seconds to answer each question in this room. */
+  seconds: number;
+  result: { answers: string[]; found: [number[], number[]]; deltas: [number, number] } | null;
+};
+
 /** Everything one device needs to render the room; the other team's secrets are hidden until the result. */
 export type RoomView = {
   code: string;
@@ -132,6 +159,8 @@ export type RoomView = {
   streaks?: [number, number];
   /** Only in the hide variant. */
   hide: HideView | null;
+  /** Only in the list variant. */
+  list?: ListView | null;
 };
 
 export const cellKey = (categoryId: number, points: number) => `${categoryId}:${points}`;
@@ -158,7 +187,7 @@ const playerName = z.string().trim().max(TEAM_NAME_MAX, `الاسم أطول م�
 
 export const createRoomInput = z.object({
   mode: z.enum(['mobile', 'tv']),
-  variant: z.enum(['swap', 'flip', 'triple', 'hide']),
+  variant: z.enum(['swap', 'flip', 'triple', 'hide', 'list']),
   teamName: teamName.optional(),
   playerName: playerName.optional(),
 });
@@ -171,11 +200,13 @@ export const joinRoomInput = z.object({
   playerName: playerName.optional(),
 });
 export const startGameInput = z.object({
+  /** Board categories (MIN_BOARD_CATEGORIES..MAX_BOARD_CATEGORIES; checked by the server, «عدّها» has none). */
   categoryIds: z
     .array(z.number().int().positive())
-    .min(MIN_BOARD_CATEGORIES, `اختر ${MIN_BOARD_CATEGORIES} فئات على الأقل`)
     .max(MAX_BOARD_CATEGORIES, `اختر ${MAX_BOARD_CATEGORIES} فئات كحد أقصى`)
     .refine((ids) => new Set(ids).size === ids.length, 'فئة مكررة'),
+  /** «عدّها»: the list categories to play (football, geo… letters). */
+  listCategories: z.array(z.string().trim().min(1).max(20)).max(12).optional(),
   actionSeconds: z
     .number()
     .refine((n) => (ACTION_CHOICES as readonly number[]).includes(n), 'وقت غير متاح')
@@ -190,6 +221,8 @@ export const hideInput = z.object({ box: z.number().int().min(0).max(HIDE_BOXES 
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
 export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
 export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
+export const listPickInput = z.object({ category: z.string().trim().min(1).max(20) });
+export const listAnswerInput = z.object({ text: z.string().trim().min(1).max(LIST_MAX_TEXT) });
 
 export type HideInput = z.infer<typeof hideInput>;
 export type CreateRoomInput = z.infer<typeof createRoomInput>;
@@ -210,6 +243,9 @@ export interface ClientToServerEvents {
   'game:hide': (input: HideInput, reply: Reply) => void;
   'game:guess': (input: HideInput, reply: Reply) => void;
   'game:hint': (reply: Reply) => void;
+  /** List variant: the team in turn picks the category; any player of either team sends answers. */
+  'game:listPick': (input: z.infer<typeof listPickInput>, reply: Reply) => void;
+  'game:listAnswer': (input: z.infer<typeof listAnswerInput>, reply: Reply<{ added: string[] }>) => void;
   'room:kick': (input: z.infer<typeof kickInput>, reply: Reply) => void;
   'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;

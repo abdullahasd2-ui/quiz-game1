@@ -8,6 +8,14 @@ import {
   HIDE_SECONDS,
   HINT_QUESTION_POINTS,
   MIN_SCORE,
+  LIST_ROUNDS_PER_TEAM,
+  LIST_TEAM_BONUS,
+  answerName,
+  buildListIndex,
+  matchList,
+  type ListCategoryView,
+  type ListIndex,
+  type ListView,
   canAdvance,
   canPick,
   cellKey,
@@ -87,6 +95,9 @@ export function shuffleQuestion(q: DealtQuestion, random = Math.random): DealtQu
  * Authoritative state of one game room. The server owns every rule, timer and score;
  * devices only send intents and render the per-seat `view()`.
  */
+/** A «عدّها» question dealt to a room: every accepted answer (forms joined by «|»), and the letter for letter questions. */
+export type ListQuestion = { id: string; text: string; answers: string[]; letter?: string; category: string };
+
 export class GameRoom {
   status: RoomStatus = 'lobby';
   readonly teams: [Player | null, Player | null] = [null, null];
@@ -102,6 +113,18 @@ export class GameRoom {
   categories: BoardCategory[] = [];
   /** Seconds to decide جاوب / بادل (the host picks 30, 45 or 60 in the lobby). */
   actionSeconds: number = ACTION_SECONDS;
+  // ── عدّها (variant "list") ──
+  listCategories: ListCategoryView[] = [];
+  /** Question ids already played in this room (never twice). */
+  readonly listUsed = new Set<string>();
+  private listRound = 0;
+  private list: {
+    question: ListQuestion;
+    index: ListIndex;
+    /** Answer indexes each team found, in the order found. */
+    found: [number[], number[]];
+    result: { found: [number[], number[]]; deltas: [number, number] } | null;
+  } | null = null;
   readonly used = new Set<string>();
   turn: TeamIndex = 0;
   phase: GamePhase = 'board';
@@ -270,7 +293,7 @@ export class GameRoom {
 
   // ── Game flow ────────────────────────────────────────────────────────────
 
-  start(seat: Seat, categories: BoardCategory[], actionSeconds: number = ACTION_SECONDS) {
+  start(seat: Seat, categories: BoardCategory[], actionSeconds: number = ACTION_SECONDS, listCategories: ListCategoryView[] = []) {
     const host: Seat = this.mode === 'tv' ? 'tv' : 0;
     if (seat !== host) throw new GameError('المضيف فقط يبدأ اللعبة');
     if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
@@ -280,6 +303,11 @@ export class GameRoom {
     this.status = 'playing';
     this.turn = 0;
     this.clearVotes();
+    if (this.variant === 'list') {
+      if (!listCategories.length) throw new GameError('اختر فئة وحدة على الأقل');
+      this.listCategories = listCategories;
+      this.listRound = 0;
+    }
     if (this.variant === 'hide') this.beginHideRound();
     else this.phase = 'board';
     this.touch();
@@ -330,7 +358,15 @@ export class GameRoom {
     if (this.status !== 'playing' || this.phase !== 'result') throw new GameError('الجولة لم تنتهِ بعد');
     if (!canAdvance(this.mode, seat)) throw new GameError('التلفاز فقط ينتقل للسؤال التالي');
     this.round = null;
-    if (this.variant === 'hide') {
+    if (this.variant === 'list') {
+      this.list = null;
+      if (this.listRound + 1 >= this.totalRounds) this.status = 'done';
+      else {
+        this.listRound++;
+        this.turn = this.turn === 0 ? 1 : 0;
+        this.phase = 'board';
+      }
+    } else if (this.variant === 'hide') {
       if (this.hideRound + 1 >= this.totalRounds) {
         this.hide = null;
         this.status = 'done';
@@ -408,6 +444,8 @@ export class GameRoom {
   /** Why `key` can't be voted on right now by `team` (null when it can). */
   private voteError(team: TeamIndex, key: string): string | null {
     if (this.variant === 'hide') return this.hideVoteError(team, key);
+    // «عدّها»: everyone types answers themselves; the captain picks the category.
+    if (this.variant === 'list') return 'في عدّها كل لاعب يكتب أجوبته بنفسه';
     const round = this.round;
     if (this.phase === 'board') {
       if (this.picking) return 'ليس وقت التصويت';
@@ -439,6 +477,7 @@ export class GameRoom {
   private votingOpen(team: TeamIndex): boolean {
     if (this.status !== 'playing') return false;
     if (this.variant === 'hide') return this.hideVotingOpen(team);
+    if (this.variant === 'list') return false;
     const round = this.round;
     if (this.phase === 'board') return team === this.turn && !this.picking;
     if (this.phase === 'action') return Boolean(round && !round.actions[team]);
@@ -463,13 +502,79 @@ export class GameRoom {
     return best;
   }
 
+  // ── عدّها ────────────────────────────────────────────────────────────────
+
+  /** Validates the category pick of the team in turn before the question is drawn. */
+  assertCanListPick(seat: Seat, category: string) {
+    if (this.variant !== 'list' || this.status !== 'playing' || this.phase !== 'board' || this.picking) throw new GameError('ليس وقت اختيار الفئة');
+    if (!canPick(this.mode, seat, this.turn)) throw new GameError('ليس دور فريقك!');
+    if (!this.listCategories.some((c) => c.id === category)) throw new GameError('هذي الفئة مو في اللعبة');
+  }
+
+  /** Both teams start typing: the round lasts the room's time, then the result. */
+  beginList(question: ListQuestion) {
+    this.listUsed.add(question.id);
+    this.list = { question, index: buildListIndex(question.answers, question.letter), found: [[], []], result: null };
+    this.phase = 'list';
+    this.arm(this.actionSeconds, () => this.finishList());
+    this.touch();
+  }
+
+  /** A player's message: every new right answer counts for their team (returns the names found). */
+  listAnswer(seat: Seat, text: string): string[] {
+    const list = this.list;
+    if (this.variant !== 'list' || this.status !== 'playing' || this.phase !== 'list' || !list) throw new GameError('انتهى الوقت');
+    const team = this.requireTeam(seat);
+    const added = matchList(list.index, text).filter((i) => !list.found[team].includes(i));
+    if (!added.length) return [];
+    list.found[team].push(...added);
+    this.touch();
+    return added.map((i) => answerName(list.question.answers[i]!));
+  }
+
+  /** Time's up: a point per answer, and the team that found more gets the bonus. */
+  private finishList() {
+    const list = this.list;
+    if (this.variant !== 'list' || this.phase !== 'list' || !list) return;
+    this.disarm();
+    const n = [list.found[0].length, list.found[1].length] as const;
+    const deltas: [number, number] = [n[0] + (n[0] > n[1] ? LIST_TEAM_BONUS : 0), n[1] + (n[1] > n[0] ? LIST_TEAM_BONUS : 0)];
+    for (const t of [0, 1] as const) {
+      const team = this.teams[t];
+      if (team) team.score = Math.max(MIN_SCORE, team.score + deltas[t]);
+    }
+    list.result = { found: [[...list.found[0]], [...list.found[1]]], deltas };
+    this.phase = 'result';
+    this.touch();
+    // Called by the timer: the devices must hear about it (socket handlers broadcast after their own changes).
+    this.onChange();
+  }
+
+  private listView(seat: Seat): ListView | null {
+    if (this.variant !== 'list') return null;
+    const list = this.list;
+    const team = seat === 'tv' ? null : seat;
+    return {
+      round: Math.min(this.listRound + 1, this.totalRounds),
+      totalRounds: this.totalRounds,
+      categories: this.listCategories,
+      question: list ? { text: list.question.text, letter: list.question.letter, category: list.question.category } : null,
+      found: list ? [list.found[0].length, list.found[1].length] : [0, 0],
+      mine: list && team !== null ? list.found[team].map((i) => answerName(list.question.answers[i]!)).reverse() : [],
+      seconds: this.actionSeconds,
+      result: list?.result ? { answers: list.question.answers.map(answerName), found: list.result.found, deltas: list.result.deltas } : null,
+    };
+  }
+
   // ── خبّي أو اكشف ─────────────────────────────────────────────────────────
 
   get totalRounds(): number {
+    if (this.variant === 'list') return LIST_ROUNDS_PER_TEAM * 2;
     return this.variant === 'hide' ? HIDE_ROUNDS_PER_TEAM * 2 : this.categories.length * POINTS.length;
   }
 
   get roundsPlayed(): number {
+    if (this.variant === 'list') return this.status === 'done' ? this.totalRounds : this.listRound + (this.phase === 'result' ? 1 : 0);
     if (this.variant !== 'hide') return this.used.size;
     return this.status === 'done' ? this.totalRounds : this.hideRound + (this.phase === 'result' ? 1 : 0);
   }
@@ -825,6 +930,7 @@ export class GameRoom {
             ? { counts: this.tally(this.turn), mine: null }
             : null,
       hide: this.hideView(seat),
+      list: this.listView(seat),
       result: reveal
         ? {
             correctIndex: round.question.correctIndex,

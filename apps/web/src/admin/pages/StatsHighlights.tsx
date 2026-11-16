@@ -11,6 +11,7 @@ const VARIANT: Record<Variant, { label: string; icon: string; color: string }> =
   flip: { label: 'جاوب أو اقلب', icon: '🔀', color: '#a855f7' },
   triple: { label: 'جاوب أو بادل أو اعكس', icon: '↩️', color: '#f7c948' },
   hide: { label: 'خبّي أو اكشف', icon: '📦', color: '#22c55e' },
+  list: { label: 'عدّها', icon: '⏱️', color: '#f472b6' },
 };
 const MODE: Record<RoomMode, { label: string; icon: string }> = { mobile: { label: 'جوال', icon: '📱' }, tv: { label: 'تلفاز', icon: '📺' } };
 const MEDAL = ['🥇', '🥈', '🥉'];
