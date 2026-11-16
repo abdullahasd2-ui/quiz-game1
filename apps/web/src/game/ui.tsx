@@ -58,36 +58,64 @@ export function FloatingWords() {
   );
 }
 
+const TEAM_LOOK = [
+  { avatar: '🦁', glow: 'shadow-[0_0_30px_-10px_#3498db]', bg: 'from-q-blue/25 to-q-blue/5', edge: 'border-q-blue/40', bar: 'bg-q-blue' },
+  { avatar: '🐯', glow: 'shadow-[0_0_30px_-10px_#e74c3c]', bg: 'from-q-red/25 to-q-red/5', edge: 'border-q-red/40', bar: 'bg-q-red' },
+] as const;
+
+/** The two teams face to face: avatar, name, big score (bumps when it changes), whose turn it is and the 🔥 streak. */
 export function Scorebar({ view, highlightTurn = false }: { view: RoomView; highlightTurn?: boolean }) {
+  const a = Math.max(0, view.teams[0]?.score ?? 0);
+  const b = Math.max(0, view.teams[1]?.score ?? 0);
+  const lead = a + b > 0 ? (a / (a + b)) * 100 : 50;
   return (
-    <div className="mb-3 grid grid-cols-[1fr_36px_1fr] items-center gap-2">
-      {([0, 1] as const).map((t) => (
-        <div
-          key={t}
-          className={cn(
-            'rounded-xl border border-q-line bg-q-panel p-2.5 text-center',
-            highlightTurn && view.turn === t && 'ring-2 ring-q-gold',
-            t === 1 && 'order-3',
-          )}
-        >
-          <div className="flex items-center justify-center gap-1 truncate text-[11px] text-white/50">
-            {view.teams[t] && !view.teams[t].connected && <span title="غير متصل">📵</span>}
-            <span className="truncate">{teamName(view, t)}</span>
-          </div>
-          {/* Keyed by the score so a change replays the bump. */}
-          <div key={view.teams[t]?.score ?? 0} className={cn('text-2xl font-black tabular-nums motion-safe:animate-fx-bump', TEAM_TEXT[t])}>
-            {view.teams[t]?.score ?? 0}
-          </div>
-          {/* Streak: one 🔥 per right answer in a row; at two the next right answer is doubled. */}
-          {(view.streaks?.[t] ?? 0) > 0 && (
-            <div className={cn('mt-0.5 text-[11px] font-black', view.streaks![t] >= 2 ? 'text-q-orange motion-safe:animate-streak' : 'text-white/60')} title="إجابات صحيحة ورا بعض">
-              {'🔥'.repeat(view.streaks![t])}
-              {view.streaks![t] >= 2 && ' الجاية دبل!'}
+    <div className="mb-3">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+        {([0, 1] as const).map((t) => {
+          const look = TEAM_LOOK[t];
+          const turn = highlightTurn && view.turn === t;
+          return (
+            <div
+              key={t}
+              className={cn(
+                'relative overflow-hidden rounded-2xl border bg-linear-to-b p-2.5 text-center backdrop-blur transition-all',
+                look.bg,
+                look.edge,
+                turn && cn('ring-2 ring-q-gold', look.glow),
+                t === 1 && 'order-3',
+              )}
+            >
+              {turn && <div className="absolute inset-x-0 top-0 bg-q-gold py-px text-[10px] font-black text-black">🎯 دوره يختار</div>}
+              <div className={cn('flex items-center justify-center gap-1.5 truncate text-[12px] font-bold text-white/75', turn && 'mt-3')}>
+                <span className="text-base" aria-hidden>
+                  {look.avatar}
+                </span>
+                {view.teams[t] && !view.teams[t].connected && <span title="غير متصل">📵</span>}
+                <span className="truncate">{teamName(view, t)}</span>
+              </div>
+              {/* Keyed by the score so a change replays the bump. */}
+              <div key={view.teams[t]?.score ?? 0} className={cn('q-display text-4xl leading-tight tabular-nums motion-safe:animate-fx-bump', TEAM_TEXT[t])}>
+                {view.teams[t]?.score ?? 0}
+              </div>
+              {/* Streak: one 🔥 per right answer in a row; at two the next right answer is doubled. */}
+              {(view.streaks?.[t] ?? 0) > 0 && (
+                <div className={cn('text-[11px] font-black', view.streaks![t] >= 2 ? 'text-q-orange motion-safe:animate-streak' : 'text-white/60')} title="إجابات صحيحة ورا بعض">
+                  {'🔥'.repeat(view.streaks![t])}
+                  {view.streaks![t] >= 2 && ' الجاية دبل!'}
+                </div>
+              )}
             </div>
-          )}
+          );
+        })}
+        <div className="order-2 grid place-items-center">
+          <span className="q-display grid size-10 place-items-center rounded-full border border-white/15 bg-black/40 text-sm text-white/60 shadow-inner">VS</span>
         </div>
-      ))}
-      <div className="order-2 text-center text-sm font-black text-white/25">VS</div>
+      </div>
+      {/* Tug of war: who is ahead, at a glance (and from across the room on a TV). */}
+      <div className="mt-1.5 flex h-1.5 overflow-hidden rounded-full bg-white/5" role="img" aria-label="الفرق بين الفريقين">
+        <div className="bg-q-blue transition-[width] duration-700" style={{ width: `${lead}%` }} />
+        <div className="flex-1 bg-q-red" />
+      </div>
     </div>
   );
 }
@@ -107,19 +135,34 @@ export function Countdown({ deadline, total }: { deadline: number | null; total:
   }, [left]);
   if (deadline === null || left === null) return null;
   const pct = Math.min(100, (left / total) * 100);
+  const urgent = left <= 10;
   return (
-    <div className="mb-3">
-      <div className="mb-1.5 text-center text-[13px] text-white/50">
-        ⏱ <b className="text-q-gold tabular-nums">{left}</b> ثانية
+    <div className="mb-3 flex items-center gap-3" role="timer" aria-live="off" aria-label={`باقي ${left} ثانية`}>
+      <div className={cn('relative grid size-12 shrink-0 place-items-center', urgent && left <= 3 && 'motion-safe:animate-fx-shake')}>
+        <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+          <circle
+            cx="18"
+            cy="18"
+            r="15.9"
+            fill="none"
+            stroke={urgent ? '#e74c3c' : '#f7c948'}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray={`${pct} 100`}
+            className="transition-[stroke-dasharray] duration-1000 ease-linear"
+          />
+        </svg>
+        <b className={cn('q-display relative text-xl tabular-nums', urgent ? 'text-q-red' : 'text-q-gold')}>{left}</b>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-[#1a1a30]">
-        <div
-          className={cn(
-            'h-full rounded-full bg-linear-to-l transition-[width] duration-1000 ease-linear',
-            left <= 10 ? 'from-[#c0392b] to-q-red' : 'from-q-gold to-q-green',
-          )}
-          style={{ width: `${pct}%` }}
-        />
+      <div className="flex-1">
+        <div className="mb-1 text-[12px] text-white/55">{urgent ? '⚠️ الوقت يخلص!' : '⏱ الوقت المتبقي'}</div>
+        <div className="h-2 overflow-hidden rounded-full bg-[#1a1a30]">
+          <div
+            className={cn('h-full rounded-full bg-linear-to-l transition-[width] duration-1000 ease-linear', urgent ? 'from-[#c0392b] to-q-red' : 'from-q-gold to-q-green')}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
       </div>
     </div>
   );

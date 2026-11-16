@@ -16,6 +16,7 @@ import { ResultOverlay } from './screens/ResultOverlay';
 import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
 import { GameQuick } from '@/quick/GameQuick';
+import { GameStart } from './fx/GameStart';
 import { recordGame } from '@/quick/stats';
 import { CornerTools, HotkeysHelp, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
 
@@ -99,6 +100,7 @@ export function GamePage() {
       <CornerTools onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} />
       <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />
+      <GameStart status={view?.status ?? null} />
       {!view && <StreamerLink />}
       {view && view.status !== 'done' && (
         <button
