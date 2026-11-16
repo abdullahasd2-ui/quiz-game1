@@ -74,6 +74,27 @@ export function QuickAccess({
   const input = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
+  // First visit: a small bubble introduces the center (once per device, gone as soon as it is opened).
+  const [tip, setTip] = useState(() => {
+    try {
+      return !localStorage.getItem('jab:qa:seen');
+    } catch {
+      return false;
+    }
+  });
+  const seen = useCallback(() => {
+    setTip(false);
+    try {
+      localStorage.setItem('jab:qa:seen', '1');
+    } catch {
+      // Private mode: the tip may show again next visit.
+    }
+  }, []);
+  useEffect(() => {
+    if (!tip) return;
+    const t = setTimeout(seen, 12_000);
+    return () => clearTimeout(t);
+  }, [tip, seen]);
 
   const all = useMemo(() => sections.flatMap((s) => s.items.map((it) => ({ ...it, section: s.title }))), [sections]);
   const byId = useMemo(() => new Map(all.map((it) => [it.id, it])), [all]);
@@ -107,7 +128,8 @@ export function QuickAccess({
     opener.current = document.activeElement as HTMLElement | null;
     setActive(0);
     setOpen(true);
-  }, []);
+    seen();
+  }, [seen]);
 
   // Ctrl/⌘+K anywhere, or «/» when not typing, opens the panel.
   useEffect(() => {
@@ -200,6 +222,17 @@ export function QuickAccess({
         </span>
         <span className="max-sm:sr-only">الاختصارات</span>
       </button>
+      {tip && !open && (
+        <div role="status" className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-40 w-64 rounded-2xl border border-q-gold/40 bg-q-panel/95 p-3 text-start text-xs leading-relaxed shadow-2xl backdrop-blur motion-safe:animate-pop-in">
+          <b className="mb-0.5 block text-sm text-q-gold">⚡ جديد: مركز الاختصارات</b>
+          كل أقسام {site === 'stream' ? 'البث' : 'اللعبة'} في مكان واحد: ابحث، وثبّت اللي تستخدمه بـ ⭐.
+          <span className="pointer-coarse:hidden"> افتحه من أي مكان بـ Ctrl+K.</span>
+          <button type="button" onClick={seen} className="mt-1.5 block text-[11px] font-bold text-white/60 underline-offset-4 hover:text-white hover:underline">
+            فهمت
+          </button>
+          <span aria-hidden className="absolute -bottom-1.5 right-8 size-3 rotate-45 border-r border-b border-q-gold/40 bg-q-panel" />
+        </div>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-[90]" role="dialog" aria-modal aria-label="مركز الاختصارات" dir="rtl">
