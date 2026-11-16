@@ -14,6 +14,8 @@
    classes are missing in the app and the center has no position or layout. */
 @source "../../web/src/quick";
 @source "../../web/src/lib";
+/* «عدّها» in the main game shows the stream's letter grid. */
+@source "../../web/src/kick/ListParts.tsx";
 /* Words in the native code would add stray classes, and the server's OTA build (without them) would differ. */
 @source not "../ios";
 @source not "../android";

@@ -25,6 +25,7 @@ const VARIANT_LABEL: Record<Variant, string> = {
   flip: 'جاوب أو اقلب',
   triple: 'جاوب أو بادل أو اعكس',
   hide: 'خبّي أو اكشف',
+  list: 'عدّها',
 };
 
 export function StatsPage() {

@@ -1,5 +1,5 @@
 /** swap / flip: the board game. triple: answer / swap / reverse, only one team per round may use swap or reverse. hide: "خبّي أو اكشف" — hide a key in one of the boxes, the other team guesses. */
-export type Variant = 'swap' | 'flip' | 'triple' | 'hide';
+export type Variant = 'swap' | 'flip' | 'triple' | 'hide' | 'list';
 /** `steal` is the swap (or flip) action; `reverse` exists only in the triple variant. */
 export type Action = 'answer' | 'steal' | 'reverse';
 /** Swap, flip and reverse all act on the opponent's answer instead of answering. */

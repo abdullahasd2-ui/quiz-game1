@@ -57,6 +57,25 @@ const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text:
       </span>
     ),
   },
+  list: {
+    from: 'from-[#5e0c3b]',
+    to: 'to-[#2a0818]',
+    ring: 'ring-q-pink',
+    text: 'text-q-pink',
+    tag: 'كتابة سريعة',
+    emblem: (
+      <span className="inline-flex h-12 items-center gap-1.5">
+        <span className="q-display text-3xl text-q-pink motion-safe:animate-[float-y_1.8s_ease-in-out_infinite]">⏱️</span>
+        <span className="flex flex-col gap-1">
+          {['دول', 'لاعبين', 'أكلات'].map((w, i) => (
+            <span key={w} className="rounded-md bg-white/10 px-1.5 text-[10px] font-black text-white/80 motion-safe:animate-[fade-up_0.6s_ease_both]" style={{ animationDelay: `${i * 0.25}s` }}>
+              ✅ {w}
+            </span>
+          ))}
+        </span>
+      </span>
+    ),
+  },
   hide: {
     from: 'from-[#0c5e3b]',
     to: 'to-[#08281a]',
@@ -75,12 +94,16 @@ const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text:
   },
 };
 
-const MODE_ICON: Record<Variant, string> = { swap: '🔄', flip: '🔀', triple: '↩️', hide: '📦' };
+const MODE_ICON: Record<Variant, string> = { swap: '🔄', flip: '🔀', triple: '↩️', hide: '📦', list: '⏱️' };
 
 const MODES: { id: Variant; title: string; desc: string }[] = [
   { id: 'swap', title: 'جاوب أو بادل', desc: 'بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك' },
   { id: 'flip', title: 'جاوب أو اقلب', desc: 'اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه' },
   { id: 'triple', title: 'جاوب أو بادل أو اعكس', desc: 'جاوب أو بادل أو اعكس — وبادل أو اعكس يختارها فريق واحد بس في الجولة' },
+  { id: 'list', title: 'عدّها', desc: 'سؤال واحد والفريقين يكتبون أكثر عدد أجوبة: كل جواب صح نقطة، والفريق الأكثر ياخذ +5' },
+];
+/** Modes kept behind «أطوار إضافية». */
+const EXTRA_MODES: { id: Variant; title: string; desc: string }[] = [
   { id: 'hide', title: 'خبّي أو اكشف', desc: '10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡' },
 ];
 
@@ -150,7 +173,10 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [pre, setPre] = useState<number[]>(() => takePreselected(false));
 
   // The shortcuts center drives this screen.
-  useBus('home:variant', setVariant);
+  useBus('home:variant', (v) => {
+    setVariant(v);
+    if (EXTRA_MODES.some((m) => m.id === v)) setExtra(true);
+  });
   useBus('home:mode', setMode);
   useBus('home:tab', setTab);
   useBus('home:how', () => setHowOpen(true));
@@ -186,7 +212,8 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   }
 
   const goPlay = () => document.getElementById('modes')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  const chosen = MODES.find((m) => m.id === variant)!;
+  const chosen = [...MODES, ...EXTRA_MODES].find((m) => m.id === variant)!;
+  const [extra, setExtra] = useState(() => EXTRA_MODES.some((m) => m.id === variant));
 
   const joinForm = (
     <form onSubmit={join}>
@@ -287,6 +314,22 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           {MODES.map((m) => (
             <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
           ))}
+          {extra &&
+            EXTRA_MODES.map((m) => (
+              <div key={m.id} className="motion-safe:animate-pop-in max-sm:shrink-0 sm:col-span-2 sm:mx-auto sm:w-1/2">
+                <ModeCard {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+              </div>
+            ))}
+        </div>
+        <div className="mb-2 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setExtra((x) => !x)}
+            aria-expanded={extra}
+            className="q-chip"
+          >
+            {extra ? '▲ إخفاء الأطوار الإضافية' : '🎁 أطوار إضافية'}
+          </button>
         </div>
         <div className="mb-3 flex justify-center">
           <button
@@ -303,7 +346,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         >
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#53fc18]/15 text-xl">⏱️</span>
           <span className="flex-1">
-            <span className="block text-sm font-black">عدّها — وأطوار البث</span>
+            <span className="block text-sm font-black">أطوار البث مع شات Kick</span>
             <span className="block text-[11px] text-white/60">في صفحة الستريمر: الشات يلعب معك، ومنها «عدّها» و«خبّي أو اكشف» والحزم الخاصة</span>
           </span>
           <span className="text-white/40" aria-hidden>
@@ -580,6 +623,13 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
               ['↩️ اعكس', 'جواب الخصم غلط', [['أنت', '+200', 'good'], ['الخصم', '0', 'dim']]],
             ]}
           />
+        </HowSection>
+        <HowSection tone="border-q-pink/30 bg-q-pink/10 [&>div:first-child]:text-q-pink" title="⏱️ عدّها">
+          <div>• في كل جولة الفريق اللي دوره يختار فئة، مثل كورة أو جغرافيا أو حروف، ويطلع سؤال واحد للفريقين مثل «اذكر دول عربية».</div>
+          <div>• كل لاعب في الفريقين، الرئيس والأعضاء، يكتب أكبر عدد من الأجوبة قبل ما يخلص الوقت، ويقدر يكتب أكثر من جواب بينها فاصلة.</div>
+          <div>• كل جواب صح ينحسب لفريقك مرة وحدة بس، حتى لو كتبه أكثر من لاعب، وأجوبة الفريق الثاني ما تبان لكم إلا في النتيجة.</div>
+          <div>• كل جواب صح بنقطة، والفريق اللي يلقى أجوبة أكثر ياخذ 5 نقاط زيادة، وإذا تعادلوا ما أحد ياخذ الزيادة.</div>
+          <div>• الأسئلة من السهلة إلى المتوسطة، واللعبة 10 جولات والفريقين يتبادلون اختيار الفئة.</div>
         </HowSection>
         <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
           <div>• فيه 10 صناديق. الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق، والفريق الثاني ما يشوف وين خبّاه.</div>

@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { io as connect, type Socket } from 'socket.io-client';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { buildApp } from '../app';
+import { listBank } from '../kick/lists/bank';
 import { db, sqlClient } from '../db/client';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
@@ -115,6 +116,35 @@ describe('live game over sockets', () => {
       error: 'فئة «ناقصة» ليس فيها أسئلة كافية',
     });
     expect(await call(guest.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: false, error: 'المضيف فقط يبدأ اللعبة' });
+  });
+
+  it('عدّها: the team in turn picks, and members type their own answers', async () => {
+    const host = await device('device-host-l');
+    const created = await call<{ code: string }>(host.socket, 'room:create', { mode: 'mobile', variant: 'list', teamName: 'النمور' });
+    if (!created.ok) throw new Error(created.error);
+    const code = created.data.code;
+    const captain = await device('device-cap-l');
+    const member = await device('device-mem-l');
+    await call(captain.socket, 'room:join', { code, team: 1, teamName: 'الصقور' });
+    await call(member.socket, 'room:join', { code, team: 1, playerName: 'سعد' });
+    await until(() => member.view?.teams[1]?.members.length === 2);
+    expect(await call(host.socket, 'game:start', { categoryIds: [], listCategories: [] })).toEqual({ ok: false, error: 'اختر فئة وحدة على الأقل' });
+    expect(await call(host.socket, 'game:start', { categoryIds: [], listCategories: ['geo'], actionSeconds: 45 })).toEqual({ ok: true, data: null });
+    await until(() => member.view?.list?.categories.length === 1);
+    expect(await call(member.socket, 'game:listPick', { category: 'geo' })).toEqual({ ok: false, error: 'رئيس الفريق هو اللي يقرر — صوّت له!' });
+    expect(await call(captain.socket, 'game:listPick', { category: 'geo' })).toEqual({ ok: false, error: 'ليس دور فريقك!' });
+    expect(await call(host.socket, 'game:listPick', { category: 'geo' })).toEqual({ ok: true, data: null });
+    await until(() => member.view?.phase === 'list');
+    expect(member.view!.remainingMs).toBeGreaterThan(40_000);
+    // A question from the easy or medium level, never «صعب».
+    const q = listBank().find((x) => x.text === member.view!.list!.question!.text && (x.cat === 'geo' || x.letter));
+    expect(q && q.level !== 'hard').toBe(true);
+    const first = q!.answers[0]!.split('|')[0]!;
+    const res = await call<{ added: string[] }>(member.socket, 'game:listAnswer', { text: first });
+    expect(res).toEqual({ ok: true, data: { added: [first] } });
+    await until(() => captain.view?.list?.found[1] === 1);
+    expect(captain.view!.list!.mine).toEqual([first]);
+    expect(host.view!.list!.mine).toEqual([]);
   });
 
   it('team members join by choosing a team, vote, and only the captain decides', async () => {

@@ -8,6 +8,10 @@ import {
   HINT_QUESTION_POINTS,
   joinRoomInput,
   kickInput,
+  listAnswerInput,
+  listPickInput,
+  MAX_BOARD_CATEGORIES,
+  MIN_BOARD_CATEGORIES,
   pickCellInput,
   ROOM_CODE_ALPHABET,
   ROOM_CODE_LENGTH,
@@ -24,6 +28,7 @@ import { z } from 'zod';
 import { env } from '../env';
 import { drawQuestion as drawFromDb, listPublicCategories } from './catalog';
 import { GameError, GameRoom, type DealtQuestion } from './room';
+import { LIST_CATEGORIES, listBank } from '../kick/lists/bank';
 import { UsageLog } from './usage';
 
 type SocketData = { deviceId: string; code: string | null };
@@ -198,8 +203,18 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
 
     socket.on(
       'game:start',
-      handle(startGameInput, async ({ categoryIds, actionSeconds }) => {
+      handle(startGameInput, async ({ categoryIds, actionSeconds, listCategories }) => {
         const { room, seat } = currentRoom(socket);
+        if (room.variant === 'list') {
+          // «عدّها»: the list categories (football, geo… «حروف»), no board.
+          const cats = LIST_CATEGORIES.filter((c) => listCategories?.includes(c.id)).map(({ id, name, icon }) => ({ id, name, icon }));
+          if (!cats.length) throw new GameError('اختر فئة وحدة على الأقل');
+          room.start(seat, [], actionSeconds, cats);
+          usage.started(room);
+          return { data: null, room };
+        }
+        if (categoryIds.length < MIN_BOARD_CATEGORIES) throw new GameError(`اختر ${MIN_BOARD_CATEGORIES} فئات على الأقل`);
+        if (categoryIds.length > MAX_BOARD_CATEGORIES) throw new GameError(`اختر ${MAX_BOARD_CATEGORIES} فئات كحد أقصى`);
         const found = await listPublicCategories(categoryIds);
         if (found.length !== categoryIds.length) throw new GameError('فئة غير موجودة');
         const notReady = found.find((c) => !c.playable);
@@ -262,6 +277,37 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         const { room, seat } = currentRoom(socket);
         room.guess(seat, box);
         return { data: null, room };
+      }),
+    );
+
+    // «عدّها»: the team in turn picks a category; a random easy or medium question from it that this room has not played.
+    socket.on(
+      'game:listPick',
+      handle(listPickInput, async ({ category }) => {
+        const { room, seat } = currentRoom(socket);
+        room.assertCanListPick(seat, category);
+        const pool = listBank().filter(
+          (q) => q.level !== 'hard' && !room.listUsed.has(q.id) && (category === 'letters' ? Boolean(q.letter) : q.cat === category),
+        );
+        const q = pool[randomInt(pool.length || 1)];
+        if (!q) throw new GameError('خلصت أسئلة هذي الفئة — اختر فئة ثانية');
+        const name = LIST_CATEGORIES.find((c) => c.id === category);
+        room.beginList({ id: q.id, text: q.text, answers: q.answers, letter: q.letter, category: name ? `${name.icon} ${name.name}` : category });
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:listAnswer',
+      handle(listAnswerInput, async ({ text }) => {
+        // Unlike every other step, members type their own answers here: their team is their seat.
+        const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+        if (!room) throw new GameError('الغرفة غير موجودة!');
+        const seat = room.seatOf(socket.data.deviceId) ?? room.memberOf(socket.data.deviceId);
+        if (seat === null) throw new GameError('لست في هذه الغرفة');
+        const added = room.listAnswer(seat, text);
+        // Only a new right answer changes what the room shows.
+        return { data: { added }, room: added.length ? room : undefined };
       }),
     );
 

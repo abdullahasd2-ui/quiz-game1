@@ -14,7 +14,8 @@ export const VARIANTS: { id: Variant; icon: string; title: string; hint: string;
   { id: 'swap', icon: '🔄', title: 'جاوب أو بادل', hint: 'بادل جواب الخصم: صح = دبل، غلط = تنقص', keywords: 'swap بادل' },
   { id: 'flip', icon: '🔀', title: 'جاوب أو اقلب', hint: 'اقلب نتيجة الخصم عليه', keywords: 'flip اقلب' },
   { id: 'triple', icon: '↩️', title: 'جاوب أو بادل أو اعكس', hint: 'ثلاث خيارات، وبادل أو اعكس لفريق واحد', keywords: 'triple اعكس reverse' },
-  { id: 'hide', icon: '📦', title: 'خبّي أو اكشف', hint: '10 صناديق ومفتاح وزر تلميح', keywords: 'hide صناديق مفتاح' },
+  { id: 'list', icon: '⏱️', title: 'عدّها', hint: 'الفريقين يكتبون أكثر عدد أجوبة', keywords: 'list count عدها' },
+  { id: 'hide', icon: '📦', title: 'خبّي أو اكشف', hint: 'طور إضافي: 10 صناديق ومفتاح وزر تلميح', keywords: 'hide صناديق مفتاح' },
 ];
 const VARIANT_NAME: Record<string, string> = Object.fromEntries(VARIANTS.map((v) => [v.id, v.title]));
 
@@ -103,7 +104,7 @@ export function GameQuick({ view, leave, onKeys }: { view: RoomView | null; leav
       title: '🎲 أطوار اللعب',
       items: [
         ...VARIANTS.map<QaItem>((v) => ({ id: `v-${v.id}`, icon: v.icon, title: v.title, hint: v.hint, keywords: v.keywords, run: () => (emit('home:variant', v.id), spotlight('modes')) })),
-        { id: 'v-list', icon: '⏱️', title: 'عدّها', hint: 'طور البث: الشات يعدّ أكثر عدد أجوبة', badge: 'في البث', keywords: 'list count عدها', run: openStream },
+        // «عدّها» is a main-game mode now; the stream page has its own version for the chat.
       ],
     });
   }
@@ -162,7 +163,7 @@ export function GameQuick({ view, leave, onKeys }: { view: RoomView | null; leav
       ? { icon: '🛋️', label: 'اللوبي', detail: `غرفة ${view.code}` }
       : view.status === 'done'
         ? { icon: '🏆', label: 'النتيجة النهائية', detail: `غرفة ${view.code}` }
-        : { icon: VARIANTS.find((v) => v.id === view.variant)?.icon ?? '🎮', label: VARIANT_NAME[view.variant] ?? 'اللعب', detail: view.variant === 'hide' ? `غرفة ${view.code}` : `السؤال ${Math.min(view.used.length + 1, total || 1)} من ${total}` };
+        : { icon: VARIANTS.find((v) => v.id === view.variant)?.icon ?? '🎮', label: VARIANT_NAME[view.variant] ?? 'اللعب', detail: view.variant === 'list' && view.list ? `الجولة ${view.list.round} من ${view.list.totalRounds}` : view.variant === 'hide' ? `غرفة ${view.code}` : `السؤال ${Math.min(view.used.length + 1, total || 1)} من ${total}` };
   // Starting the game is the lobby's own button (only there for the host once both teams are in).
   const startTile: QaItem[] = inLobby && isHost && view?.teams[0] && view.teams[1] ? [{ id: 'start', icon: '🚀', title: 'ابدأ اللعبة', run: () => document.querySelector<HTMLButtonElement>('[data-hotkey="go"]')?.click() }] : [];
   const tiles = !view ? pick('create', 'join', 'tv', 'how') : inLobby ? [...startTile, ...pick('invite', 'sound', 'leave')] : pick('sound', 'keys', 'leave');
