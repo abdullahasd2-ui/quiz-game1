@@ -198,7 +198,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
 
     socket.on(
       'game:start',
-      handle(startGameInput, async ({ categoryIds }) => {
+      handle(startGameInput, async ({ categoryIds, actionSeconds }) => {
         const { room, seat } = currentRoom(socket);
         const found = await listPublicCategories(categoryIds);
         if (found.length !== categoryIds.length) throw new GameError('فئة غير موجودة');
@@ -206,7 +206,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         if (notReady) throw new GameError(`فئة «${notReady.name}» ليس فيها أسئلة كافية`);
         // Keep the order the host picked them in.
         const byId = new Map(found.map((c) => [c.id, { id: c.id, name: c.name, icon: c.icon }]));
-        room.start(seat, categoryIds.map((id) => byId.get(id)!));
+        room.start(seat, categoryIds.map((id) => byId.get(id)!), actionSeconds);
         usage.started(room);
         return { data: null, room };
       }),

@@ -9,6 +9,8 @@ export const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const MIN_BOARD_CATEGORIES = 3;
 export const MAX_BOARD_CATEGORIES = 9;
 export const ACTION_SECONDS = 60;
+/** The host picks the time to decide (جاوب / بادل…) in the lobby; the answer time stays ANSWER_SECONDS. */
+export const ACTION_CHOICES = [30, 45, 60] as const;
 export const ANSWER_SECONDS = 30;
 /** A team's score can go negative, but never below this. */
 export const MIN_SCORE = -1000;
@@ -116,6 +118,8 @@ export type RoomView = {
   turn: TeamIndex;
   phase: GamePhase;
   question: QuestionView | null;
+  /** Seconds to decide جاوب / بادل in this room (picked by the host in the lobby). */
+  actionSeconds?: number;
   /** Time left in the current action/answer phase when this view was sent. */
   remainingMs: number | null;
   /** Whether each team has locked its secret choice (never which one, until the result). */
@@ -172,6 +176,10 @@ export const startGameInput = z.object({
     .min(MIN_BOARD_CATEGORIES, `اختر ${MIN_BOARD_CATEGORIES} فئات على الأقل`)
     .max(MAX_BOARD_CATEGORIES, `اختر ${MAX_BOARD_CATEGORIES} فئات كحد أقصى`)
     .refine((ids) => new Set(ids).size === ids.length, 'فئة مكررة'),
+  actionSeconds: z
+    .number()
+    .refine((n) => (ACTION_CHOICES as readonly number[]).includes(n), 'وقت غير متاح')
+    .optional(),
 });
 export const pickCellInput = z.object({
   categoryId: z.number().int().positive(),

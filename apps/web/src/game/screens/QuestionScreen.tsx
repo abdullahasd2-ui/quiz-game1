@@ -68,7 +68,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
   return (
     <div className="motion-safe:animate-fx-zoom">
       <Scorebar view={view} />
-      <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : ACTION_SECONDS} />
+      <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : (view.actionSeconds ?? ACTION_SECONDS)} />
 
       <div className="mb-2.5 rounded-2xl border border-q-line bg-q-panel p-4">
         <div className="mb-1.5 text-[11px] font-bold tracking-widest text-q-gold">
@@ -211,7 +211,7 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
   return (
     <div className="motion-safe:animate-fx-zoom">
       <Scorebar view={view} />
-      <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : ACTION_SECONDS} />
+      <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : (view.actionSeconds ?? ACTION_SECONDS)} />
       <div className="q-glass mb-4 p-6 text-center sm:p-10">
         <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
           <span className="rounded-full bg-q-gold/15 px-4 py-1 text-base font-black text-q-gold sm:text-lg">

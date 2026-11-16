@@ -100,6 +100,8 @@ export class GameRoom {
   /** Right answers in a row per team, for the streak double. */
   private streaks: [number, number] = [0, 0];
   categories: BoardCategory[] = [];
+  /** Seconds to decide جاوب / بادل (the host picks 30, 45 or 60 in the lobby). */
+  actionSeconds: number = ACTION_SECONDS;
   readonly used = new Set<string>();
   turn: TeamIndex = 0;
   phase: GamePhase = 'board';
@@ -268,12 +270,13 @@ export class GameRoom {
 
   // ── Game flow ────────────────────────────────────────────────────────────
 
-  start(seat: Seat, categories: BoardCategory[]) {
+  start(seat: Seat, categories: BoardCategory[], actionSeconds: number = ACTION_SECONDS) {
     const host: Seat = this.mode === 'tv' ? 'tv' : 0;
     if (seat !== host) throw new GameError('المضيف فقط يبدأ اللعبة');
     if (this.status !== 'lobby') throw new GameError('اللعبة بدأت بالفعل!');
     if (!this.teams[0] || !this.teams[1]) throw new GameError('في انتظار الفريق الثاني');
     this.categories = categories;
+    this.actionSeconds = actionSeconds;
     this.status = 'playing';
     this.turn = 0;
     this.clearVotes();
@@ -297,7 +300,7 @@ export class GameRoom {
     this.round = { categoryId, points, question, actions: [null, null], answers: [null, null], deltas: null };
     this.phase = 'action';
     this.clearVotes();
-    this.arm(ACTION_SECONDS, () => this.timeoutActions());
+    this.arm(this.actionSeconds, () => this.timeoutActions());
     this.touch();
   }
 
@@ -796,6 +799,7 @@ export class GameRoom {
       teams: [this.teamView(0), this.teamView(1)],
       tvConnected: Boolean(this.tv?.connected),
       categories: this.categories,
+      actionSeconds: this.actionSeconds,
       used: [...this.used],
       turn: this.turn,
       phase: this.phase,
