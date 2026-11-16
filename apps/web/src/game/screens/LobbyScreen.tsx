@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { shareInvite } from '@/lib/native';
 import { PUBLIC_URL } from '@/lib/server';
+import { Kbd } from '@/lib/hotkeys';
+import { QrCode } from '@/lib/QrCode';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { teamName } from '../ui';
@@ -103,6 +105,8 @@ export function LobbyScreen({ view }: { view: RoomView }) {
             🔗 نسخ رابط الدعوة
           </button>
         </div>
+        {/* Scan to join: the camera opens the invite link with the code filled in. */}
+        <QrCode text={`${PUBLIC_URL}/?code=${view.code}`} label="📷 امسح بكاميرا الجوال وادخل الغرفة" className={cn('mt-3', isTv ? 'w-48' : 'w-32')} />
       </div>
 
       <div className={cn('my-2.5 grid gap-2.5', isTv ? 'grid-cols-3' : 'grid-cols-2')}>
@@ -196,8 +200,9 @@ function CategoryPicker({ tv }: { tv: boolean }) {
           );
         })}
       </div>
-      <button type="button" className={cn('mt-3', tv ? 'q-btn-tv' : 'q-btn-gold')} onClick={start} disabled={starting}>
+      <button type="button" data-hotkey="go" className={cn('mt-3', tv ? 'q-btn-tv' : 'q-btn-gold')} onClick={start} disabled={starting}>
         {starting ? 'جاري البدء...' : '🚀 ابدأ اللعبة!'}
+        <Kbd k="Enter" />
       </button>
     </div>
   );

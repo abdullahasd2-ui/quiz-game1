@@ -15,6 +15,7 @@ export function HideBoxes({ keyAt = null, revealed = false, onPick, big = false 
             key={i}
             type="button"
             disabled={!onPick}
+            data-hotkey={onPick ? String((i + 1) % 10) : undefined}
             onClick={() => onPick?.(i)}
             className={cn(
               'relative flex aspect-square flex-col items-center justify-center rounded-2xl border-2 font-black transition-all',

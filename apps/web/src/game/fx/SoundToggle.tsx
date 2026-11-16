@@ -9,6 +9,8 @@ export function SoundToggle() {
       aria-label={on ? 'كتم الأصوات' : 'تشغيل الأصوات'}
       aria-pressed={!on}
       data-silent
+      data-hotkey="mute"
+      title={on ? 'كتم الأصوات (M)' : 'تشغيل الأصوات (M)'}
       onClick={() => {
         setSoundEnabled(!on);
         if (!on) play('pop');

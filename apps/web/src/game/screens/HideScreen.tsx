@@ -2,6 +2,7 @@ import { ANSWER_SECONDS, canAdvance, GUESS_SECONDS, HIDE_SECONDS, type HideOutco
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/native';
+import { Kbd } from '@/lib/hotkeys';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { Confetti } from '../fx/Confetti';
@@ -122,6 +123,7 @@ export function HideScreen({ view, deadline }: { view: RoomView; deadline: numbe
                   key={i}
                   type="button"
                   disabled={!canTap}
+                  data-hotkey={canTap ? String((i + 1) % 10) : undefined}
                   onClick={() => pickBox(i)}
                   aria-label={`صندوق ${i + 1}`}
                   className={cn(
@@ -145,6 +147,7 @@ export function HideScreen({ view, deadline }: { view: RoomView; deadline: numbe
             <button
               type="button"
               disabled={hide.hintUsed || busy}
+              data-hotkey="hint"
               onClick={askHint}
               className={cn(
                 'mb-2 w-full rounded-xl border-[1.5px] border-q-cyan/50 bg-q-cyan/10 px-3 py-3 text-sm font-black text-q-cyan transition-colors',
@@ -227,8 +230,9 @@ function HideResultModal({ view, guesserName, hiderName }: { view: RoomView; gue
         ))}
       </div>
       {mayAdvance ? (
-        <button type="button" className="q-btn-gold" onClick={next} disabled={busy}>
+        <button type="button" data-hotkey="go" className="q-btn-gold" onClick={next} disabled={busy}>
           {lastRound ? 'النتيجة النهائية 🏆' : 'التالي ←'}
+          <Kbd k="Enter" />
         </button>
       ) : (
         <div className="text-xs text-white/50">

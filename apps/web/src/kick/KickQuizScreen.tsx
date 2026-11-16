@@ -10,6 +10,7 @@ import { SERVER_URL } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { outcomeLabel } from './KickQuizPage';
+import { CornerTools, useHotkeys, useWakeLock } from '@/lib/hotkeys';
 import { LetterGrid, ListLive, ListResult, usedLetters } from './ListParts';
 import { BoardGrid } from './BoardGrid';
 import { HideBoxes } from './HideBoxes';
@@ -30,6 +31,16 @@ export function KickQuizScreen() {
   const [hosted, setHosted] = useState(true);
   const sockRef = useRef<Socket<SyncServerToClientEvents, SyncClientToServerEvents> | null>(null);
   const [picking, setPicking] = useState(false);
+  // F = fullscreen (useful on a TV or a second screen); the screen stays on while it is open.
+  useHotkeys();
+  useWakeLock(true);
+  // The fullscreen button only shows while the mouse moves, so an OBS capture never shows it.
+  const [mouse, setMouse] = useState(false);
+  useEffect(() => {
+    if (!mouse) return;
+    const t = setTimeout(() => setMouse(false), 2500);
+    return () => clearTimeout(t);
+  }, [mouse]);
 
   useEffect(() => {
     if (!SYNC_CODE_RE.test(code)) return setError('الرابط ناقص الكود — انسخه من صفحة التحكم');
@@ -88,8 +99,9 @@ export function KickQuizScreen() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl" onPointerDown={unlockAudio}>
+    <div className="min-h-dvh bg-q-bg p-4 font-sans text-white relative isolate" dir="rtl" onPointerDown={unlockAudio} onPointerMove={() => !mouse && setMouse(true)}>
       <Background3D />
+      <CornerTools className={cn('fixed top-3 left-3 z-40 transition-opacity duration-500', mouse ? 'opacity-100' : 'pointer-events-none opacity-0')} />
       <SoundToggle />
       {/* Fastest right answer of the round flies across the screen. */}
       {state.phase === 'result' && state.result?.fastest && (

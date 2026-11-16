@@ -1,6 +1,7 @@
 import { ACTION_SECONDS, ANSWER_SECONDS, isSpecial, type Action, type RoomView, type TeamIndex } from '@quiz/shared';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Kbd } from '@/lib/hotkeys';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { actionInfo, actionLabel, Countdown, QuestionImage, Scorebar, TEAM_TINT, teamName, WaitDots } from '../ui';
@@ -96,6 +97,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
             <div className={cn('mb-2.5 grid gap-2.5', triple ? 'grid-cols-3' : 'grid-cols-2')}>
               <button
                 type="button"
+                data-hotkey="swap"
                 onClick={() => act('steal')}
                 className={cn(
                   'rounded-xl bg-linear-to-br from-q-red to-[#c0392b] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5 motion-safe:animate-fx-ring',
@@ -103,11 +105,13 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 )}
               >
                 {lbl.icon} {lbl.short}
+                <Kbd k="S" />
                 {count('steal') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('steal')}</span>}
                 <small className="block text-[10px] opacity-80">{lbl.desc}</small>
               </button>
               <button
                 type="button"
+                data-hotkey="answer"
                 onClick={() => act('answer')}
                 className={cn(
                   'rounded-xl bg-linear-to-br from-q-green to-[#1e8449] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5 motion-safe:animate-fx-ring',
@@ -115,12 +119,14 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 )}
               >
                 ✅ جاوب
+                <Kbd k="A" />
                 {count('answer') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('answer')}</span>}
                 <small className="block text-[10px] opacity-80">أجاوب بنفسي</small>
               </button>
               {triple && (
                 <button
                   type="button"
+                  data-hotkey="reverse"
                   onClick={() => act('reverse')}
                   className={cn(
                     'rounded-xl bg-linear-to-br from-q-purple to-[#6c3483] px-3 py-4 text-sm leading-normal font-black transition-transform hover:-translate-y-0.5',
@@ -128,6 +134,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                   )}
                 >
                   ↩️ اعكس
+                  <Kbd k="D" />
                   {count('reverse') > 0 && <span className="ms-1.5 rounded-full bg-black/30 px-2 py-0.5 text-[11px]">🗳️ {count('reverse')}</span>}
                   <small className="block text-[10px] opacity-80">صح = ينقص منك، غلط = يزيد لك</small>
                 </button>
@@ -168,6 +175,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 key={i}
                 type="button"
                 disabled={!canAnswer}
+                data-hotkey={canAnswer ? String(i + 1) : undefined}
                 onClick={() => answer(i)}
                 className={cn(
                   'rounded-xl border-[1.5px] bg-q-bg px-3 py-3.5 text-sm font-bold transition-colors',
@@ -178,6 +186,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
                 )}
               >
                 {opt}
+                {canAnswer && <Kbd k={String(i + 1)} />}
                 {canAnswer && count(String(i)) > 0 && <span className="ms-1.5 text-[11px] font-bold text-q-cyan">🗳️ {count(String(i))}</span>}
               </button>
             ))}

@@ -161,7 +161,7 @@ export function LetterGrid({ active, used, counts, onPick, big = false, small = 
           </>
         );
         return onPick ? (
-          <button key={l} type="button" disabled={empty} onClick={() => onPick(l)} className={cls} style={{ clipPath: HEX }} aria-label={`حرف ${l}`}>
+          <button key={l} type="button" disabled={empty} data-hotkey={`letter:${l}`} onClick={() => onPick(l)} className={cls} style={{ clipPath: HEX }} aria-label={`حرف ${l}`}>
             {inner}
           </button>
         ) : (
