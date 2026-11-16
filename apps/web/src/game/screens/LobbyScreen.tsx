@@ -92,23 +92,26 @@ export function LobbyScreen({ view }: { view: RoomView }) {
 
   return (
     <div className="animate-fade-up">
-      <div className="pt-4 pb-2.5 text-center">
-        {isTv && <div className="mb-1.5 text-[13px] font-bold text-q-purple">📺 وضع التلفاز</div>}
-        <div className="mb-1.5 text-xs text-white/50">كود الغرفة — شاركه مع {isTv ? 'الفريقين' : 'صديقك'}</div>
-        <div
-          className="my-1.5 inline-block rounded-2xl bg-linear-to-l from-q-orange to-q-gold px-6 py-3 text-[32px] font-black tracking-[0.3em] text-black"
-          dir="ltr"
-          data-testid="room-code"
-        >
-          {view.code}
-        </div>
+      {/* Code and QR side by side, so the QR is on screen without scrolling. */}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-4 pb-2.5 text-center">
         <div>
-          <button type="button" onClick={copyLink} className="text-xs text-white/50 underline-offset-4 hover:text-q-gold hover:underline">
-            🔗 نسخ رابط الدعوة
-          </button>
+          {isTv && <div className="mb-1.5 text-[13px] font-bold text-q-purple">📺 وضع التلفاز</div>}
+          <div className="mb-1.5 text-xs text-white/50">كود الغرفة — شاركه مع {isTv ? 'الفريقين' : 'صديقك'}</div>
+          <div
+            className="my-1.5 inline-block rounded-2xl bg-linear-to-l from-q-orange to-q-gold px-6 py-3 text-[32px] font-black tracking-[0.3em] text-black"
+            dir="ltr"
+            data-testid="room-code"
+          >
+            {view.code}
+          </div>
+          <div>
+            <button type="button" onClick={copyLink} className="text-xs text-white/50 underline-offset-4 hover:text-q-gold hover:underline">
+              🔗 نسخ رابط الدعوة
+            </button>
+          </div>
         </div>
         {/* Scan to join: the camera opens the invite link with the code filled in. */}
-        <QrCode text={`${PUBLIC_URL}/?code=${view.code}`} label="📷 امسح بكاميرا الجوال وادخل الغرفة" className={cn('mt-3', isTv ? 'w-48' : 'w-32')} />
+        <QrCode text={`${PUBLIC_URL}/?code=${view.code}`} label="📷 امسح وادخل" className={isTv ? 'w-40' : 'w-28'} />
       </div>
 
       <div className={cn('my-2.5 grid gap-2.5', isTv ? 'grid-cols-3' : 'grid-cols-2')}>

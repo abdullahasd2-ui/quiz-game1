@@ -100,7 +100,7 @@ function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; ti
     >
       {/* The mode's own light, brighter when chosen. */}
       <span aria-hidden className={cn('pointer-events-none absolute -top-16 -left-10 size-48 rounded-full bg-white/10 blur-3xl transition-opacity', selected ? 'opacity-100' : 'opacity-40')} />
-      {hot && <HotBadge />}
+      {hot && <HotBadge className="top-3 inset-x-0 mx-auto w-fit px-3 py-1 text-xs ring-2 ring-white/50 motion-safe:animate-none" />}
       <div className="flex items-start justify-between gap-2">
         <span className={cn('rounded-full bg-black/25 px-2.5 py-0.5 text-[10px] font-black', look.text)}>{look.tag}</span>
         <span className={cn('grid size-6 place-items-center rounded-full border text-xs transition-all', selected ? 'border-transparent bg-white text-black' : 'border-white/30 text-transparent')} aria-hidden>
