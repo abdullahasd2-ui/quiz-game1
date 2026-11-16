@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 
 const WORDS = ['جاوب', 'بادل', '🔄', '✅', 'نقاط', 'صح', 'غلط', 'دبل'];
 // Each cube shows the game on its faces; gold for «جاوب», cyan for «بادل», like the title.
@@ -54,11 +54,27 @@ export function Background3D() {
 
   // The turning is driven from JS: Safari/WebKit (the iOS app) showed the cubes in 3D but never ran the CSS spin.
   const inners = useRef<(HTMLDivElement | null)[]>([]);
+  // The cubes join once the page has settled (its first render, fonts and intro), then fade in: started at once
+  // they fought the page load for frames and jumped. Time only advances by at most one smooth frame per frame, so a
+  // busy moment slows them down for an instant instead of making them skip.
+  const [ready, setReady] = useState(false);
   useEffect(() => {
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(() => setReady(true), { timeout: 1200 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const t = setTimeout(() => setReady(true), 700);
+    return () => clearTimeout(t);
+  }, []);
+  useEffect(() => {
+    if (!ready) return;
     let frame = 0;
-    const start = performance.now();
+    let last = performance.now();
+    let sec = 0;
     const step = (t: number) => {
-      const sec = (t - start) / 1000;
+      sec += Math.min(t - last, 34) / 1000;
+      last = t;
       cubes.forEach((c, i) => {
         const el = inners.current[i];
         if (!el) return;
@@ -71,7 +87,7 @@ export function Background3D() {
     };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
-  }, [cubes]);
+  }, [cubes, ready]);
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -89,10 +105,11 @@ export function Background3D() {
       </div>
       {/* Safari/WebKit (the iOS app too) flattens 3D under any ancestor with opacity, and needs the perspective on the cube's
           direct parent, so: no opacity wrapper (the faces are see-through themselves), perspective on each moving holder. */}
+      {ready && (
       <div className="absolute inset-0">
         {cubes.map((c) => (
-          <div key={c.id} className="absolute animate-float-word" style={{ ...c.outer, perspective: 700, WebkitPerspective: 700 }}>
-            <div ref={(el) => void (inners.current[c.id] = el)} className="relative" style={{ ...c.inner, transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}>
+          <div key={c.id} className="absolute animate-float-word" style={{ ...c.outer, perspective: 700, WebkitPerspective: 700, willChange: 'transform' }}>
+            <div ref={(el) => void (inners.current[c.id] = el)} className="relative" style={{ ...c.inner, transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d', willChange: 'transform' }}>
               {FACES.map((f, i) => (
                 <span
                   key={i}
@@ -116,6 +133,7 @@ export function Background3D() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }
