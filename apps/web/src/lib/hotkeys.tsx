@@ -57,7 +57,7 @@ export async function toggleFullscreen() {
 }
 
 /** Shortcuts for the whole page. `extra` handles page-specific keys first (return true when handled). */
-export function useHotkeys(extra?: (e: KeyboardEvent) => boolean) {
+export function useHotkeys(extra?: (e: KeyboardEvent) => boolean, { fullscreen = true }: { fullscreen?: boolean } = {}) {
   const [help, setHelp] = useState(false);
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -74,7 +74,7 @@ export function useHotkeys(extra?: (e: KeyboardEvent) => boolean) {
       if (extra?.(e)) return e.preventDefault();
       // An Arabic letter picks that letter where a letter grid is shown.
       if (AR_LETTER.test(e.key) && press(`letter:${e.key}`)) return e.preventDefault();
-      if (e.code === 'KeyF') {
+      if (fullscreen && e.code === 'KeyF') {
         e.preventDefault();
         void toggleFullscreen();
         return;
@@ -87,7 +87,7 @@ export function useHotkeys(extra?: (e: KeyboardEvent) => boolean) {
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [extra]);
+  }, [extra, fullscreen]);
   return { help, setHelp };
 }
 
@@ -109,9 +109,9 @@ export function Kbd({ k, className }: { k: string; className?: string }) {
 export type HotkeyRow = [keys: string, what: string];
 
 /** The «⌨️ الاختصارات» window: opened with «؟» (or the button), closed with Esc or a click outside. */
-export function HotkeysHelp({ open, onClose, rows, title = 'اختصارات لوحة المفاتيح' }: { open: boolean; onClose: () => void; rows: HotkeyRow[]; title?: string }) {
+export function HotkeysHelp({ open, onClose, rows, title = 'اختصارات لوحة المفاتيح', fullscreen = true }: { open: boolean; onClose: () => void; rows: HotkeyRow[]; title?: string; fullscreen?: boolean }) {
   if (!open) return null;
-  const all: HotkeyRow[] = [...rows, ['F', 'ملء الشاشة أو الخروج منه'], ['؟', 'فتح هذي النافذة أو إغلاقها']];
+  const all: HotkeyRow[] = [...rows, ...(fullscreen ? [['F', 'ملء الشاشة أو الخروج منه'] as HotkeyRow] : []), ['؟', 'فتح هذي النافذة أو إغلاقها']];
   return (
     <div data-hotkeys-help className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal aria-label={title}>
       <div className="w-full max-w-md rounded-2xl border border-q-gold/40 bg-q-panel p-5 shadow-2xl motion-safe:animate-pop-in" onClick={(e) => e.stopPropagation()} dir="rtl">
@@ -142,7 +142,7 @@ export function HotkeysHelp({ open, onClose, rows, title = 'اختصارات ل�
 }
 
 /** Small round buttons for the corner of a page: shortcuts help (keyboard users only) and fullscreen. */
-export function CornerTools({ onHelp, className, children }: { onHelp?: () => void; className?: string; children?: ReactNode }) {
+export function CornerTools({ onHelp, className, children, fullscreen = true }: { onHelp?: () => void; className?: string; children?: ReactNode; fullscreen?: boolean }) {
   const [full, setFull] = useState(() => typeof document !== 'undefined' && !!document.fullscreenElement);
   useEffect(() => {
     const on = () => setFull(!!document.fullscreenElement);
@@ -159,7 +159,7 @@ export function CornerTools({ onHelp, className, children }: { onHelp?: () => vo
           ⌨️
         </button>
       )}
-      {canFull && (
+      {fullscreen && canFull && (
         <button type="button" className={btn} onClick={() => void toggleFullscreen()} title={full ? 'الخروج من ملء الشاشة (F)' : 'ملء الشاشة (F)'} aria-label={full ? 'الخروج من ملء الشاشة' : 'ملء الشاشة'}>
           {full ? '🗗' : '⛶'}
         </button>

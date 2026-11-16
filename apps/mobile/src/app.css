@@ -3,10 +3,17 @@
 @import "@fontsource/tajawal/500.css";
 @import "@fontsource/tajawal/700.css";
 @import "@fontsource/tajawal/900.css";
+/* Titles (the website loads it from Google Fonts; the app must work offline). */
+@import "@fontsource/lalezar/arabic-400.css";
+@import "@fontsource/lalezar/latin-400.css";
 
 /* The screens live in the web app; Tailwind only scans this project by default. */
 @source "../../web/src/game";
 @source "../../web/src/components";
+/* The shortcuts center and the shared helpers (keys, QR, links) live here too: without them their
+   classes are missing in the app and the center has no position or layout. */
+@source "../../web/src/quick";
+@source "../../web/src/lib";
 /* Words in the native code would add stray classes, and the server's OTA build (without them) would differ. */
 @source not "../ios";
 @source not "../android";

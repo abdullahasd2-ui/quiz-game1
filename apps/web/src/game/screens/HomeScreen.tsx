@@ -9,6 +9,7 @@ import { HotBadge, usePopular } from '../popular';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
+import { streamLink } from '@/lib/links';
 
 /** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
 const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text: string; emblem: ReactNode; tag: string }> = {
@@ -273,7 +274,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           <button type="button" className="q-chip" onClick={() => (setMode('tv'), setTab('create'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             📺 العب على التلفاز
           </button>
-          <a className="q-chip" href="/kick/quiz">
+          <a className="q-chip" {...streamLink()}>
             🟢 العب مع شات Kick
           </a>
         </div>
@@ -288,7 +289,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           ))}
         </div>
         <a
-          href="/kick/quiz"
+          {...streamLink()}
           className="mt-1 flex items-center gap-3 rounded-2xl border border-[#53fc18]/25 bg-[#53fc18]/5 p-3 text-start transition-colors hover:border-[#53fc18]/60"
         >
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#53fc18]/15 text-xl">⏱️</span>
