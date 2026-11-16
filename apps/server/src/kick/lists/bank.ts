@@ -129,19 +129,11 @@ const wdItems = (name: string) => wd(name).map((r) => r.a);
 /** More Wikidata lists (wd/<key>.json), each a question of its own plus its letter questions. */
 const WD_EXTRA: Record<string, [Exclude<ListCategory, 'proverbs'>, string]> = {
   elements: ['general', 'اذكر عناصر كيميائية'],
-  diseases: ['general', 'اذكر أمراض'],
-  medications: ['general', 'اذكر أدوية'],
   dogs: ['general', 'اذكر سلالات كلاب'],
-  horses: ['general', 'اذكر سلالات خيول'],
-  cats: ['general', 'اذكر سلالات قطط'],
-  minerals: ['general', 'اذكر معادن وأحجار كريمة'],
-  constellations: ['general', 'اذكر كوكبات (مجموعات نجمية)'],
   painters: ['general', 'اذكر رسامين مشهورين'],
   wactors: ['general', 'اذكر ممثلين وممثلات عالميين'],
   wsingers: ['general', 'اذكر مغنين ومغنيات عالميين'],
-  composers: ['general', 'اذكر موسيقيين وملحنين عالميين'],
   writers: ['general', 'اذكر كتّاب وأدباء مشهورين'],
-  philosophers: ['general', 'اذكر فلاسفة'],
   uspres: ['general', 'اذكر رؤساء الولايات المتحدة'],
   films: ['general', 'اذكر أفلام عالمية مشهورة'],
   egfilms: ['general', 'اذكر أفلام مصرية'],
@@ -149,26 +141,12 @@ const WD_EXTRA: Record<string, [Exclude<ListCategory, 'proverbs'>, string]> = {
   wseries: ['general', 'اذكر مسلسلات أجنبية'],
   carmodels: ['general', 'اذكر موديلات سيارات (أي ماركة)'],
   companies: ['general', 'اذكر شركات عالمية'],
-  arpapers: ['general', 'اذكر صحف عربية'],
   wars: ['general', 'اذكر حروبًا مشهورة'],
   battles: ['general', 'اذكر معارك تاريخية'],
-  empires: ['general', 'اذكر إمبراطوريات'],
-  tribes: ['general', 'اذكر قبائل وشعوب'],
   aruni: ['geo', 'اذكر جامعات عربية'],
-  wuni: ['geo', 'اذكر جامعات عالمية'],
-  histcountries: ['geo', 'اذكر دولًا تاريخية لم تعد موجودة'],
-  airports: ['geo', 'اذكر مطارات'],
-  castles: ['geo', 'اذكر قلاعًا وحصونًا'],
-  palaces: ['geo', 'اذكر قصورًا مشهورة'],
-  museums: ['geo', 'اذكر متاحف'],
-  bridges: ['geo', 'اذكر جسورًا مشهورة'],
   skyscrapers: ['geo', 'اذكر أبراجًا وناطحات سحاب'],
   waterfalls: ['geo', 'اذكر شلالات'],
-  caves: ['geo', 'اذكر كهوفًا ومغارات'],
-  stadiums: ['football', 'اذكر ملاعب كرة قدم'],
-  dynasties: ['general', 'اذكر سلالات وأسرًا حاكمة في التاريخ'],
   gseries: ['games', 'اذكر سلاسل ألعاب فيديو'],
-  gchars: ['games', 'اذكر شخصيات ظهرت في ألعاب فيديو'],
 };
 const ADJ_M: Record<string, string> = {
   sa: 'سعوديين', eg: 'مصريين', ma: 'مغاربة', dz: 'جزائريين', tn: 'تونسيين', iq: 'عراقيين', qa: 'قطريين', ae: 'إماراتيين', kw: 'كويتيين', jo: 'أردنيين', sy: 'سوريين', lb: 'لبنانيين',
@@ -184,9 +162,8 @@ const MOSQUE_IN: Record<string, string> = {
   tr: 'تركيا', ir: 'إيران', in: 'الهند', pk: 'باكستان', id: 'إندونيسيا', my: 'ماليزيا', es: 'إسبانيا (الأندلس)', uz: 'أوزبكستان', af: 'أفغانستان',
 };
 const GENRE: Record<string, string> = {
-  'g-adv': 'أكشن ومغامرات', 'g-platform': 'منصات (بلاتفورمر)', 'g-fps': 'تصويب منظور الشخص الأول (FPS)', 'g-action': 'أكشن', 'g-rpg': 'تقمص أدوار (RPG)', 'g-racing': 'سباقات',
-  'g-arpg': 'أكشن تقمص أدوار', 'g-tps': 'تصويب منظور الشخص الثالث', 'g-puzzle': 'ألغاز', 'g-fighting': 'قتال', 'g-horror': 'رعب', 'g-football': 'كرة قدم', 'g-strategy': 'استراتيجية',
-  'g-stealth': 'تسلل', 'g-sim': 'محاكاة', 'g-sports': 'رياضية', 'g-survival': 'نجاة', 'g-mmo': 'أونلاين جماعية (MMO)', 'g-scifi': 'خيال علمي', 'g-shmup': 'إطلاق نار (شوت إم أب)',
+  'g-platform': 'منصات (بلاتفورمر)', 'g-fps': 'تصويب منظور الشخص الأول (FPS)', 'g-rpg': 'تقمص أدوار (RPG)', 'g-racing': 'سباقات',
+  'g-puzzle': 'ألغاز', 'g-fighting': 'قتال', 'g-horror': 'رعب', 'g-football': 'كرة قدم', 'g-sports': 'رياضية',
 };
 /** Wikidata lists split by country (wd/<key>.json rows carry the country in `g`): one question per country. */
 const WD_GROUPED: Record<string, [Exclude<ListCategory, 'proverbs'>, (g: string) => string | undefined]> = {
@@ -211,8 +188,6 @@ function wdPlayers(): [string, string, string, string][] {
 const CITY_LABELS: Record<string, string> = {
   cn: 'الصين', in: 'الهند', br: 'البرازيل', ru: 'روسيا', iq: 'العراق', dz: 'الجزائر', mx: 'المكسيك', ca: 'كندا', au: 'أستراليا', ar: 'الأرجنتين',
   sy: 'سوريا', ir: 'إيران', pk: 'باكستان', jo: 'الأردن', ly: 'ليبيا', sd: 'السودان', lb: 'لبنان', om: 'عمان', bh: 'البحرين', tn: 'تونس', kw: 'الكويت', qa: 'قطر', id: 'إندونيسيا', ye: 'اليمن',
-  be: 'بلجيكا', ch: 'سويسرا', at: 'النمسا', pl: 'بولندا', gr: 'اليونان', se: 'السويد', no: 'النرويج', ua: 'أوكرانيا', ro: 'رومانيا', kr: 'كوريا الجنوبية', th: 'تايلاند', vn: 'فيتنام',
-  ph: 'الفلبين', my: 'ماليزيا', af: 'أفغانستان', ng: 'نيجيريا', za: 'جنوب أفريقيا', ke: 'كينيا', et: 'إثيوبيا', co: 'كولومبيا', pe: 'بيرو', cl: 'تشيلي', ve: 'فنزويلا', ps: 'فلسطين', mr: 'موريتانيا',
 };
 /** Game publishers as named on Wikidata → our company keys. */
 const PUBLISHER: Record<string, string> = {
@@ -248,9 +223,6 @@ function augment() {
   EXTRA.singers = { cat: 'general', text: 'اذكر مطربين ومطربات عرب', items: wdItems('singers') };
   EXTRA.actors = { cat: 'general', text: 'اذكر ممثلين وممثلات عرب', items: wdItems('actors') };
   EXTRA.scientists!.items.push(...wdItems('scientists'));
-  ISLAMIC.sahaba!.items.push(...wdItems('sahaba'));
-  ISLAMIC.battles!.items.push(...wdItems('ghazawat'));
-  ISLAMIC.imams!.items.push(...wdItems('jurists'));
   for (const [k, [cat, text]] of Object.entries(WD_EXTRA)) {
     const items = wdItems(k);
     if (items.length) EXTRA[k] = { cat, text, items };
@@ -423,7 +395,7 @@ export function buildBank(): ListQuestion[] {
   add('gn-cars-all', 'general', 'اذكر أسماء سيارات (ماركات أو موديلات)', ['toyota', 'hyundai', 'nissan', 'kia', 'benz', 'ford', 'chevy', 'carBrands'].flatMap((k) => LISTS[k]!.items));
   for (const [k, v] of Object.entries(EXTRA)) {
     add(`ex-${k}`, v.cat, v.text, v.items);
-    byLetter(`ex-${k}`, v.cat, v.text.replace(/^اذكر /, ''), v.items, 4);
+    byLetter(`ex-${k}`, v.cat, v.text.replace(/^اذكر /, ''), v.items, 5);
   }
   for (const [k, v] of Object.entries(CITIES)) byLetter(`geo-cities-${k}`, 'geo', `مدن في ${v.label}`, v.items, 4);
   byLetter('geo-landmarks', 'geo', 'معالم سياحية', LANDMARKS, 4);
@@ -450,18 +422,15 @@ export function buildBank(): ListQuestion[] {
   byLetter('fb-letter', 'football', 'لاعبين كورة', P.map((p) => p.name), 6);
   // «Anyone famous / any place / any film» by letter: several Wikidata lists together.
   const many = (keys: string[]) => keys.flatMap((k) => EXTRA[k]?.items ?? []);
-  const people = many(['painters', 'wactors', 'wsingers', 'composers', 'writers', 'philosophers', 'scientists', 'uspres', 'singers', 'actors', 'famousArabs']);
+  const people = many(['painters', 'wactors', 'wsingers', 'writers', 'scientists', 'uspres', 'singers', 'actors', 'famousArabs']);
   add('gn-people', 'general', 'اذكر أشخاصًا مشهورين (فنانين، علماء، كتّاب، رؤساء…)', people);
   byLetter('gn-people', 'general', 'أشخاصًا مشهورين (أي مجال)', people, 8);
   const screen = many(['films', 'egfilms', 'wseries', 'arseries', ...Object.keys(EXTRA).filter((k) => /^p(films|series)-/.test(k))]);
   add('gn-screen', 'general', 'اذكر أفلامًا أو مسلسلات', screen);
   byLetter('gn-screen', 'general', 'أفلامًا أو مسلسلات', screen, 6);
-  const sights = many(['airports', 'castles', 'palaces', 'museums', 'bridges', 'skyscrapers', 'waterfalls', 'caves', 'islands', 'lakes', 'volcanoes']).concat(LANDMARKS);
+  const sights = many(['skyscrapers', 'waterfalls']).concat(LANDMARKS);
   byLetter('geo-sights', 'geo', 'معالم وأماكن (قلاع، متاحف، أبراج، شلالات، جزر…)', sights, 8);
-  const breeds = many(['dogs', 'cats', 'horses']);
-  add('gn-breeds', 'general', 'اذكر سلالات حيوانات (كلاب، قطط، خيول)', breeds);
-  byLetter('gn-breeds', 'general', 'سلالات حيوانات', breeds, 5);
-  const history = many(['wars', 'battles', 'empires', 'dynasties', 'histcountries']);
+    const history = many(['wars', 'battles']);
   byLetter('gn-history', 'general', 'شيئًا من التاريخ (حرب، معركة، إمبراطورية، دولة قديمة)', history, 6);
   byLetter('gn-names', 'general', 'أسماء (ولد أو بنت)', [...LISTS.boys!.items, ...LISTS.girls!.items], 8);
   byLetter('gn-food', 'general', 'أكلات أو حلويات أو مشروبات', [...LISTS.foods!.items, ...LISTS.desserts!.items, ...LISTS.drinks!.items], 6);
@@ -472,7 +441,8 @@ export function buildBank(): ListQuestion[] {
   const everything = [...A.map((a) => a.name), ...COUNTRIES.map((c) => c[0]), ...COUNTRIES.map((c) => c[1]), ...Object.values(LISTS).filter((l) => l.cat === 'general').flatMap((l) => l.items)];
   byLetter('gn-any', 'general', 'أي شيء (حيوان، أكل، دولة، اسم، مهنة…)', everything, 10);
 
-  return qs.map((q) => ({ ...q, level: levelOf(q) }));
+  // Very hard ones out: a specialist list with few answers, or a letter with almost nothing to name.
+  return qs.map((q) => ({ ...q, level: levelOf(q) })).filter((q) => !(q.level === 'hard' && (NICHE.test(q.id) || (q.letter && q.answers.length < 6))));
 }
 
 let cached: ListQuestion[] | null = null;
