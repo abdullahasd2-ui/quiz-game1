@@ -140,7 +140,7 @@ const HEX = 'polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%)';
 
 /**
  * «حروف»: the Arabic letters as hexagon cells. The letter being asked glows gold; letters already asked are dimmed,
- * letters with nothing left are crossed out. With `onPick` the streamer chooses the next letter from it.
+ * letters with nothing left are crossed out (no counts shown). With `onPick` the streamer chooses the next letter from it.
  */
 export function LetterGrid({ active, used, counts, onPick, big = false, small = false }: { active?: string; used?: Set<string>; counts?: Record<string, number>; onPick?: (l: string) => void; big?: boolean; small?: boolean }) {
   return (
@@ -158,7 +158,6 @@ export function LetterGrid({ active, used, counts, onPick, big = false, small = 
         const inner = (
           <>
             {l}
-            {counts && !on && !empty && !small && <span className="absolute bottom-0.5 text-[9px] font-bold text-white/40">{counts[l]}</span>}
           </>
         );
         return onPick ? (
