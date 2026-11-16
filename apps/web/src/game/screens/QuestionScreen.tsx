@@ -212,16 +212,19 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
     <div className="motion-safe:animate-fx-zoom">
       <Scorebar view={view} />
       <Countdown deadline={deadline} total={view.phase === 'answer' ? ANSWER_SECONDS : ACTION_SECONDS} />
-      <div className="mb-4 rounded-3xl border-2 border-q-gold bg-q-panel p-6 text-center sm:p-8">
-        <div className="mb-2.5 text-[13px] font-bold tracking-widest text-q-gold">
-          {cat?.icon} {cat?.name}
+      <div className="q-glass mb-4 p-6 text-center sm:p-10">
+        <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+          <span className="rounded-full bg-q-gold/15 px-4 py-1 text-base font-black text-q-gold sm:text-lg">
+            {cat?.icon} {cat?.name}
+          </span>
+          <span className="rounded-full bg-q-cyan/15 px-4 py-1 text-base font-black text-q-cyan sm:text-lg">{q.points} نقطة</span>
         </div>
-        <div className="mb-3.5 text-xl font-black text-q-cyan">{q.points} نقطة</div>
-        <div className="text-2xl leading-normal font-bold">{q.text}</div>
+        <div className="text-2xl leading-normal font-black sm:text-4xl lg:text-5xl">{q.text}</div>
         <QuestionImage url={q.imageUrl} type={q.type} revealed={view.phase === 'result'} large />
         <div className="mt-4 grid grid-cols-2 gap-2.5">
           {q.options.map((opt, i) => (
-            <div key={i} className={cn('rounded-xl border-2 bg-q-bg p-3.5 text-base font-bold transition-all', optionTone(view, i, null))}>
+            <div key={i} className={cn('flex items-center gap-3 rounded-2xl border-2 bg-q-bg/80 p-3.5 text-start text-lg font-black transition-all sm:p-5 sm:text-2xl', optionTone(view, i, null))}>
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/10 text-base sm:size-11 sm:text-xl">{i + 1}</span>
               {opt}
             </div>
           ))}
@@ -239,9 +242,9 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
                 : ['⏳', 'في انتظار القرار...'];
           return (
             <div key={t} className={cn('rounded-xl border p-3 text-center', TEAM_TINT[t])}>
-              <div className="mb-1 text-[11px] text-white/50">{teamName(view, t)}</div>
-              <div className="mb-0.5 text-xl">{icon}</div>
-              <div className="text-xs text-white/80">{txt}</div>
+              <div className="mb-1 text-sm font-bold text-white/60 sm:text-base">{teamName(view, t)}</div>
+              <div className="mb-0.5 text-3xl">{icon}</div>
+              <div className="text-sm text-white/85 sm:text-lg">{txt}</div>
             </div>
           );
         })}

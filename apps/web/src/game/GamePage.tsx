@@ -15,6 +15,9 @@ import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
 import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
+import { GameQuick } from '@/quick/GameQuick';
+import { GameStart } from './fx/GameStart';
+import { recordGame } from '@/quick/stats';
 import { CornerTools, HotkeysHelp, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
 
 const GAME_KEYS: HotkeyRow[] = [
@@ -26,6 +29,7 @@ const GAME_KEYS: HotkeyRow[] = [
   ['H', 'طلب التلميح في «خبّي أو اكشف»'],
   ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، التالي، العب مرة ثانية'],
   ['M', 'كتم الأصوات أو تشغيلها'],
+  ['Ctrl+K / /', 'فتح مركز الاختصارات'],
 ];
 
 export function GamePage() {
@@ -35,6 +39,10 @@ export function GamePage() {
   const { help, setHelp } = useHotkeys();
   // The screen stays on from the lobby to the final result.
   useWakeLock(Boolean(view && view.status !== 'done'));
+  // The player's own record (on this device) when a game reaches its final screen.
+  useEffect(() => {
+    if (view?.status === 'done') recordGame(view);
+  }, [view]);
   // iOS suspends audio while the app is in the background.
   useEffect(() => {
     const wake = () => document.visibilityState === 'visible' && resumeAudioIfNeeded();
@@ -86,10 +94,13 @@ export function GamePage() {
       }}
     >
       <Intro />
+      <div className="q-aurora" aria-hidden />
       <Background3D />
       <SoundToggle />
       <CornerTools onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} />
+      <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />
+      <GameStart status={view?.status ?? null} />
       {!view && <StreamerLink />}
       {view && view.status !== 'done' && (
         <button

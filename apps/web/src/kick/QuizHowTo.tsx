@@ -207,6 +207,7 @@ export function QuizHowToButton({ forStreamer = false, variant, pack = false, cl
     <>
       <button
         type="button"
+        data-qa="howto"
         onClick={() => setOpen(true)}
         className={cn('rounded-full border-[1.5px] border-white/20 px-4 py-1 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple', className)}
       >

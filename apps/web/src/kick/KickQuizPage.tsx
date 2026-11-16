@@ -50,7 +50,17 @@ import { Podium } from './Podium';
 import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
 import { HotBadge, usePopular } from '@/game/popular';
+import { StreamQuick } from '@/quick/StreamQuick';
 import { CornerTools, HotkeysHelp, Kbd, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
+
+/** Each stream mode's own colours on the setup screen (same family as the home page's mode cards). */
+const STREAM_MODE_BG: Record<StreamVariant, string> = {
+  swap: 'from-[#0c3b5e] to-[#0a1a3a]',
+  flip: 'from-[#3b0f5e] to-[#1a0a3a]',
+  triple: 'from-[#5e3b0c] to-[#2a1a08]',
+  hide: 'from-[#0c5e3b] to-[#08281a]',
+  list: 'from-[#5e0c3b] to-[#2a0818]',
+};
 
 const STREAM_KEYS: HotkeyRow[] = [
   ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، السؤال التالي، اعرض الخيارات، أنهِ السؤال، التالي'],
@@ -378,16 +388,44 @@ export function KickQuizPage() {
     }
   }
 
+  const toggleCat = (id: number) => setChosen((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : cur.length < MAX_CATEGORIES ? [...cur, id] : cur));
+  const toggleList = (id: string) => setListChosen((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
+  const quick = (
+    <StreamQuick
+      state={state}
+      start={start}
+      variant={variant}
+      setVariant={setVariant}
+      hasPack={Boolean(pack)}
+      cats={cats}
+      chosen={chosen}
+      toggleCat={toggleCat}
+      listCats={listCats}
+      listChosen={listChosen}
+      toggleList={toggleList}
+      answerSec={answerSec}
+      setAnswerSec={setAnswerSec}
+      rounds={hideRounds}
+      setRounds={setHideRounds}
+      beginGame={beginGame}
+      finishGame={() => ref.current && set(finish(ref.current))}
+      screenUrl={state ? `${location.origin}/kick/quiz/screen?code=${syncCode}` : null}
+      onKeys={() => setHelp(true)}
+    />
+  );
+
   if (!state) {
     return (
       <div className="min-h-dvh bg-q-bg px-4 py-8 font-sans text-white relative isolate" dir="rtl">
+        <div className="q-aurora" aria-hidden />
         <Background3D />
+        {quick}
         <div className="mx-auto max-w-md">
-          <h1 className="flex items-center justify-center gap-2.5 text-[40px] font-black">
+          <h1 className="q-display flex items-center justify-center gap-2.5 text-6xl leading-tight">
             <Logo />
-            <span className="text-q-purple">جاوب</span>
-            <span className="text-[28px]">أو</span>
-            <span className="text-q-cyan">بادل</span>
+            <span className="bg-linear-to-l from-q-purple to-q-pink bg-clip-text text-transparent">جاوب</span>
+            <span className="text-3xl text-white/70">أو</span>
+            <span className="bg-linear-to-l from-q-cyan to-[#7dd3fc] bg-clip-text text-transparent">بادل</span>
           </h1>
           <div className="mb-2 flex justify-center">
             <span dir="ltr" className="inline-flex items-center gap-1.5 rounded-lg bg-[#53FC18] px-3 py-0.5 text-sm font-black tracking-[0.2em] text-black shadow-[0_0_22px_-4px_#53FC18]">
@@ -443,8 +481,10 @@ export function KickQuizPage() {
   const answered = r ? Object.keys(r.picks).length : 0;
 
   return (
-    <div className="min-h-dvh bg-q-bg p-3 font-sans text-white relative isolate" dir="rtl">
+    <div className="min-h-dvh bg-q-bg p-3 pb-20 font-sans text-white relative isolate" dir="rtl">
+      <div className="q-aurora" aria-hidden />
       <Background3D />
+      {quick}
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={STREAM_KEYS} title="اختصارات الستريمر" />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
         <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
@@ -452,7 +492,7 @@ export function KickQuizPage() {
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
       </div>
-      <div className="mx-auto mb-2 max-w-5xl rounded-xl border border-q-line bg-q-panel px-3 py-2 text-xs text-white/70">
+      <div id="st-room" className="mx-auto mb-2 max-w-5xl rounded-xl border border-q-line bg-q-panel px-3 py-2 text-xs text-white/70">
         🖥️ شاشة البث (هذي اللي تبثها، بدون جوابك): <span className="font-black tracking-widest text-white/40">••••••••</span>
         <button
           type="button"
@@ -472,13 +512,15 @@ export function KickQuizPage() {
         <div className="q-card">
           {state.phase === 'lobby' && (
             <div className="space-y-5">
-              <div className="rounded-2xl border border-q-gold/30 bg-q-gold/8 p-4 text-center">
+              <div id="st-joined" className="q-glass p-5 text-center">
                 <div className="text-xl font-black">
-                  اكتبوا <b className="text-q-gold">دخول</b> في الشات للمشاركة في اللعبة
+                  اكتبوا <b className="rounded-lg bg-q-gold px-2 text-black">دخول</b> في الشات للمشاركة في اللعبة
                 </div>
-                <div className="mt-3 flex items-center justify-center gap-2 text-sm text-white/70">
-                  👥 المشاركون
-                  <span className="rounded-full bg-q-cyan/20 px-2.5 py-0.5 font-black text-q-cyan">{state.joined.length}</span>
+                <div className="mt-3 flex items-center justify-center gap-3">
+                  <span className="text-sm text-white/70">👥 المشاركون</span>
+                  <span key={state.joined.length} className="q-display min-w-14 rounded-2xl bg-q-cyan/15 px-3 py-0.5 text-4xl text-q-cyan tabular-nums motion-safe:animate-fx-bump">
+                    {state.joined.length}
+                  </span>
                 </div>
                 {state.joined.length > 0 ? (
                   <div className="mt-3 flex max-h-36 flex-wrap justify-center gap-1.5 overflow-auto">
@@ -494,7 +536,7 @@ export function KickQuizPage() {
                 )}
               </div>
 
-              <div className="rounded-xl border border-q-line bg-q-panel p-3">
+              <div id="st-pack" className="rounded-xl border border-q-line bg-q-panel p-3">
                 <div className="mb-2 text-sm font-black">🎭 حزمة فريق خاصة (اختياري)</div>
                 {pack ? (
                   <div className="flex flex-wrap items-center gap-3">
@@ -513,7 +555,7 @@ export function KickQuizPage() {
                   </div>
                 ) : (
                   <div className="flex gap-2">
-                    <input className="q-input flex-1" dir="ltr" value={packCode} onChange={(e) => setPackCode(e.target.value)} placeholder="CODE-XXXX" />
+                    <input id="st-pack-code" className="q-input flex-1" dir="ltr" value={packCode} onChange={(e) => setPackCode(e.target.value)} placeholder="CODE-XXXX" />
                     <button type="button" className="rounded-xl border-2 border-q-line px-3 text-sm font-black" onClick={() => void loadPack()}>
                       تحميل
                     </button>
@@ -531,11 +573,16 @@ export function KickQuizPage() {
                         key={v}
                         type="button"
                         onClick={() => setVariant(v)}
-                        className={cn('relative rounded-xl border-2 p-3 text-center transition-all', variant === v ? 'border-q-gold bg-q-gold/8 shadow-[0_0_18px_-6px_rgba(247,201,72,0.6)]' : 'border-q-line bg-q-panel')}
+                        aria-pressed={variant === v}
+                        className={cn(
+                          'relative overflow-hidden rounded-2xl bg-linear-to-br p-3 text-center transition-all',
+                          STREAM_MODE_BG[v],
+                          variant === v ? 'scale-[1.02] ring-2 ring-q-gold ring-offset-2 ring-offset-q-bg' : 'opacity-75 ring-1 ring-white/10 hover:-translate-y-0.5 hover:opacity-100',
+                        )}
                       >
                         {hotStream === v && <HotBadge />}
-                        <div className="text-2xl">{l.icon}</div>
-                        <div className="font-black text-q-gold">{l.title}</div>
+                        <div className={cn('text-3xl', variant === v && 'motion-safe:animate-float-y')}>{l.icon}</div>
+                        <div className="q-display text-xl text-white">{l.title}</div>
                         <div className="mt-0.5 text-[11px] text-white/60">
                           {v === 'swap' ? 'تبادل مع الستريمر: إذا جواب الستريمر صح تاخذ دبل النقاط، وإذا جواب الستريمر غلط تنقص نقاطك' : v === 'flip' ? 'تقلب على الستريمر: إذا جواب الستريمر صح تنقص نقاطه، وإذا جواب الستريمر غلط تزيد نقاطه' : v === 'triple' ? 'بادل: إذا جواب الستريمر صح تاخذ دبل، وإذا جواب الستريمر غلط تنقص نقاطك · اعكس: إذا جواب الستريمر صح تنقص نقاطك، وإذا جواب الستريمر غلط تزيد نقاطك' : v === 'list' ? 'سؤال واحد والشات يكتب أكثر عدد أجوبة: كل جواب صح نقطة، والأول +5 والثاني +3 والثالث +2' : 'تخبّي المفتاح في صندوق والشات يخمّن رقم الصندوق من 1 إلى 10'}
                         </div>
@@ -974,7 +1021,7 @@ export function KickQuizPage() {
 
         {(state.phase !== 'lobby' || test) && (
           <div className="flex flex-col gap-3">
-            <div className="q-card">
+            <div id="st-top" className="q-card">
               <div className="mb-2 text-sm font-black text-q-gold">{state.phase === 'result' ? 'أفضل 10 بعد هذا السؤال' : 'أفضل 10'}</div>
               <ol className="space-y-1.5 text-sm">
                 {top.map((row, i) => {
@@ -1015,7 +1062,7 @@ export function KickQuizPage() {
                 </form>
               )}
             </div>
-            <div className="q-card">
+            <div id="st-players" className="q-card">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-black text-q-cyan">👥 المشاركون</span>
                 <span className="rounded-full bg-q-cyan/15 px-2 py-0.5 text-xs font-black text-q-cyan">{state.joined.length}</span>

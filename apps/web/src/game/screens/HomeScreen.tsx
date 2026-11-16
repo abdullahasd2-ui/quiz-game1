@@ -6,24 +6,109 @@ import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { Modal } from '../ui';
 import { HotBadge, usePopular } from '../popular';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
+import { takePreselected, useBus } from '@/quick/bus';
 
-function Choice({ selected, onClick, icon, title, desc, hot = false }: { selected: boolean; onClick: () => void; icon: string; title: string; desc: string; hot?: boolean }) {
+/** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
+const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text: string; emblem: ReactNode; tag: string }> = {
+  swap: {
+    from: 'from-[#0c3b5e]',
+    to: 'to-[#0a1a3a]',
+    ring: 'ring-q-cyan',
+    text: 'text-q-cyan',
+    tag: 'الكلاسيكي',
+    emblem: (
+      <span className="relative inline-flex h-12 w-20 items-center justify-center">
+        <span className="absolute start-1 grid size-9 place-items-center rounded-lg bg-q-gold text-lg text-black shadow-lg motion-safe:animate-[float-y_2.4s_ease-in-out_infinite]">✅</span>
+        <span className="absolute end-1 grid size-9 place-items-center rounded-lg bg-q-cyan text-lg text-black shadow-lg motion-safe:animate-[float-y_2.4s_ease-in-out_1.2s_infinite]">؟</span>
+        <span className="relative z-10 text-xl drop-shadow">🔄</span>
+      </span>
+    ),
+  },
+  flip: {
+    from: 'from-[#3b0f5e]',
+    to: 'to-[#1a0a3a]',
+    ring: 'ring-q-purple',
+    text: 'text-q-purple',
+    tag: 'قلب النتيجة',
+    emblem: (
+      <span className="inline-flex h-12 items-center gap-1.5 text-2xl font-black">
+        <span className="text-q-green">+</span>
+        <span className="motion-safe:animate-[orbit_3s_linear_infinite]">🔀</span>
+        <span className="text-q-red">−</span>
+      </span>
+    ),
+  },
+  triple: {
+    from: 'from-[#5e3b0c]',
+    to: 'to-[#2a1a08]',
+    ring: 'ring-q-gold',
+    text: 'text-q-gold',
+    tag: 'ثلاث خيارات',
+    emblem: (
+      <span className="inline-flex h-12 items-center gap-1 text-xl">
+        {['✅', '🔄', '↩️'].map((e, i) => (
+          <span key={e} className="grid size-8 place-items-center rounded-full bg-white/10 motion-safe:animate-[float-y_2.2s_ease-in-out_infinite]" style={{ animationDelay: `${i * 0.3}s` }}>
+            {e}
+          </span>
+        ))}
+      </span>
+    ),
+  },
+  hide: {
+    from: 'from-[#0c5e3b]',
+    to: 'to-[#08281a]',
+    ring: 'ring-q-green',
+    text: 'text-q-green',
+    tag: 'تخمين',
+    emblem: (
+      <span className="inline-flex h-12 items-end gap-1">
+        {[0, 1, 2].map((i) => (
+          <span key={i} className={cn('grid size-8 place-items-center rounded-md border border-q-gold/40 bg-[#3a2810] text-base', i === 1 && 'motion-safe:animate-[float-y_1.6s_ease-in-out_infinite]')}>
+            {i === 1 ? '🔑' : '📦'}
+          </span>
+        ))}
+      </span>
+    ),
+  },
+};
+
+const MODE_ICON: Record<Variant, string> = { swap: '🔄', flip: '🔀', triple: '↩️', hide: '📦' };
+
+const MODES: { id: Variant; title: string; desc: string }[] = [
+  { id: 'swap', title: 'جاوب أو بادل', desc: 'بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك' },
+  { id: 'flip', title: 'جاوب أو اقلب', desc: 'اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه' },
+  { id: 'triple', title: 'جاوب أو بادل أو اعكس', desc: 'جاوب أو بادل أو اعكس — وبادل أو اعكس يختارها فريق واحد بس في الجولة' },
+  { id: 'hide', title: 'خبّي أو اكشف', desc: '10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡' },
+];
+
+function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; title: string; desc: string; selected: boolean; hot: boolean; onClick: () => void }) {
+  const look = MODE_LOOK[id];
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'relative rounded-2xl border-2 bg-q-panel bg-linear-to-b from-white/[0.04] to-transparent px-4 py-5 text-center transition-all hover:-translate-y-0.5 active:scale-[0.98]',
-        selected
-          ? 'border-q-gold shadow-[inset_0_0_0_999px_rgba(247,201,72,0.07),0_0_28px_-8px_rgba(247,201,72,0.55)]'
-          : 'border-q-line shadow-[0_10px_24px_-14px_rgba(0,0,0,0.8)] hover:border-white/20',
+        'group relative flex min-h-44 snap-center flex-col overflow-hidden rounded-3xl bg-linear-to-br p-4 text-start transition-all duration-300 max-sm:w-[78vw] max-sm:shrink-0',
+        look.from,
+        look.to,
+        selected ? cn('ring-2 ring-offset-2 ring-offset-q-bg', look.ring, 'scale-[1.02] shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]') : 'opacity-80 ring-1 ring-white/10 hover:-translate-y-1 hover:opacity-100',
       )}
     >
+      {/* The mode's own light, brighter when chosen. */}
+      <span aria-hidden className={cn('pointer-events-none absolute -top-16 -left-10 size-48 rounded-full bg-white/10 blur-3xl transition-opacity', selected ? 'opacity-100' : 'opacity-40')} />
       {hot && <HotBadge />}
-      <div className="mb-2 text-4xl">{icon}</div>
-      <div className="text-[15px] font-black text-q-gold">{title}</div>
-      <div className="mt-1 text-[11px] leading-relaxed text-white/50">{desc}</div>
+      <div className="flex items-start justify-between gap-2">
+        <span className={cn('rounded-full bg-black/25 px-2.5 py-0.5 text-[10px] font-black', look.text)}>{look.tag}</span>
+        <span className={cn('grid size-6 place-items-center rounded-full border text-xs transition-all', selected ? 'border-transparent bg-white text-black' : 'border-white/30 text-transparent')} aria-hidden>
+          ✓
+        </span>
+      </div>
+      <div className="my-2 flex justify-center">{look.emblem}</div>
+      <div className="q-display text-2xl leading-tight text-white">{title}</div>
+      <div className="mt-1 text-[12px] leading-relaxed text-white/70">{desc}</div>
     </button>
   );
 }
@@ -31,18 +116,28 @@ function Choice({ selected, onClick, icon, title, desc, hot = false }: { selecte
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="mb-3 block">
-      <span className="mb-1 block text-xs text-white/50">{label}</span>
+      <span className="mb-1 block text-xs font-bold text-white/60">{label}</span>
       {children}
     </label>
   );
 }
 
-const codeInputClass = 'q-input text-center text-xl font-black tracking-[0.3em] uppercase';
+const codeInputClass = 'q-input text-center text-2xl font-black tracking-[0.35em] uppercase';
+
+function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
+  return (
+    <div className="mb-3 text-center">
+      <div className="text-[11px] font-black tracking-[0.2em] text-q-gold/80">{kicker}</div>
+      <h2 className="q-display text-3xl leading-tight">{title}</h2>
+    </div>
+  );
+}
 
 export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [variant, setVariant] = useState<Variant>('swap');
   const hot = usePopular()?.variants[0];
   const [mode, setMode] = useState<RoomMode>('mobile');
+  const [tab, setTab] = useState<'create' | 'join'>(initialCode ? 'join' : 'create');
   const [createName, setCreateName] = useState('');
   const [joinName, setJoinName] = useState('');
   const [joinTeam, setJoinTeam] = useState<TeamIndex | null>(null);
@@ -50,6 +145,14 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [code, setCode] = useState(initialCode);
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
   const [howOpen, setHowOpen] = useState(false);
+  const { data: categories } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories, staleTime: 60_000 });
+  const [pre, setPre] = useState<number[]>(() => takePreselected(false));
+
+  // The shortcuts center drives this screen.
+  useBus('home:variant', setVariant);
+  useBus('home:mode', setMode);
+  useBus('home:tab', setTab);
+  useBus('home:how', () => setHowOpen(true));
 
   async function create(e?: FormEvent) {
     e?.preventDefault();
@@ -70,10 +173,23 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
     if (!res.ok) toast.error(res.error);
   }
 
+  function pickCategory(id: number, name: string) {
+    const next = pre.includes(id) ? pre.filter((x) => x !== id) : [...pre, id];
+    setPre(next);
+    try {
+      sessionStorage.setItem('jab:precategories', JSON.stringify(next));
+    } catch {
+      // Private mode: the pick just does not carry over.
+    }
+    if (!pre.includes(id)) toast.success(`«${name}» بتكون مختارة لما تنشئ الغرفة`);
+  }
+
+  const goPlay = () => document.getElementById('modes')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const chosen = MODES.find((m) => m.id === variant)!;
+
   const joinForm = (
-    <form onSubmit={join} className="q-card">
-      <h3 className="mb-3.5 text-[15px] font-bold text-q-gold">{mode === 'tv' ? '🎮 انضمام كفريق (الجوال)' : '🔗 الانضمام لغرفة'}</h3>
-      <p className="mb-1.5 text-xs text-white/50">اختر فريقك (حتى {MAX_TEAM_SIZE} لاعبين في الفريق)</p>
+    <form onSubmit={join}>
+      <p className="mb-1.5 text-xs font-bold text-white/60">اختر فريقك (حتى {MAX_TEAM_SIZE} لاعبين في الفريق)</p>
       <div className="mb-3 grid grid-cols-2 gap-2.5">
         {([0, 1] as const).map((t) => (
           <button
@@ -82,101 +198,257 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
             onClick={() => setJoinTeam(t)}
             aria-pressed={joinTeam === t}
             className={cn(
-              'rounded-xl border-2 px-3 py-3 text-sm font-black transition-all',
-              joinTeam === t ? (t === 0 ? 'border-q-blue bg-q-blue/10' : 'border-q-red bg-q-red/10') : 'border-q-line bg-q-panel',
+              'rounded-2xl border-2 px-3 py-3.5 text-sm font-black transition-all active:scale-95',
+              joinTeam === t ? (t === 0 ? 'border-q-blue bg-q-blue/15 shadow-[0_0_24px_-8px_#3498db]' : 'border-q-red bg-q-red/15 shadow-[0_0_24px_-8px_#e74c3c]') : 'border-q-line bg-q-panel/60 hover:border-white/25',
             )}
           >
-            {t === 0 ? '🦁 الفريق الأول' : '🐯 الفريق الثاني'}
+            <span className="block text-2xl">{t === 0 ? '🦁' : '🐯'}</span>
+            {t === 0 ? 'الفريق الأول' : 'الفريق الثاني'}
           </button>
         ))}
       </div>
-      <Field label="اسمك (يظهر لفريقك)">
-        <input className="q-input" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="مثال: سعد" maxLength={TEAM_NAME_MAX} />
-      </Field>
-      <Field label="اسم الفريق (فقط إذا كنت أول من يدخله)">
-        <input className="q-input" value={joinName} onChange={(e) => setJoinName(e.target.value)} placeholder="مثال: الصقور" maxLength={TEAM_NAME_MAX} />
-      </Field>
       <Field label={mode === 'tv' ? 'كود الغرفة من التلفاز' : 'كود الغرفة'}>
         <input
+          id="join-code"
           className={codeInputClass}
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          placeholder="أدخل الكود"
+          placeholder="• • • • • •"
           maxLength={ROOM_CODE_LENGTH}
           autoCapitalize="characters"
           autoComplete="off"
           dir="ltr"
         />
       </Field>
+      <div className="grid gap-x-3 sm:grid-cols-2">
+        <Field label="اسمك (يظهر لفريقك)">
+          <input className="q-input" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="مثال: سعد" maxLength={TEAM_NAME_MAX} />
+        </Field>
+        <Field label="اسم الفريق (فقط إذا كنت أول من يدخله)">
+          <input className="q-input" value={joinName} onChange={(e) => setJoinName(e.target.value)} placeholder="مثال: الصقور" maxLength={TEAM_NAME_MAX} />
+        </Field>
+      </div>
       <button className="q-btn-gold" disabled={busy !== null}>
-        {busy === 'join' ? 'جاري الانضمام...' : 'انضمام'}
+        {busy === 'join' ? 'جاري الانضمام...' : '🔗 انضمام'}
       </button>
     </form>
   );
 
   return (
     <div className="animate-fade-up">
-      <div className="pt-7 pb-4 text-center">
-        <h1 className="flex items-center justify-center gap-2.5 text-[40px] font-black">
-          <Logo />
-          <span className="text-q-purple">جاوب</span>
-          <span className="text-[28px]">أو</span>
-          <span className="text-q-cyan">بادل</span>
+      {/* ── Hero ── */}
+      <section className="relative pt-8 pb-6 text-center">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 mx-auto h-40 max-w-md rounded-full bg-q-purple/25 blur-3xl" />
+        <div className="relative mx-auto mb-3 grid size-24 place-items-center">
+          <span aria-hidden className="absolute inset-0 rounded-full border border-dashed border-q-gold/40 motion-safe:animate-orbit" />
+          <span aria-hidden className="absolute inset-3 rounded-full border border-q-cyan/30" />
+          <span className="motion-safe:animate-float-y">
+            <Logo />
+          </span>
+        </div>
+        <h1 className="q-display relative text-6xl leading-[1.15] sm:text-7xl">
+          <span className="bg-linear-to-l from-q-purple to-q-pink bg-clip-text text-transparent">جاوب</span>
+          <span className="mx-2 text-3xl text-white/70 sm:text-4xl">أو</span>
+          <span className="bg-linear-to-l from-q-cyan to-[#7dd3fc] bg-clip-text text-transparent">بادل</span>
         </h1>
-        <p className="mt-1 text-[13px] text-white/50">اختار سراً — جاوب أو بادل نقاط خصمك!</p>
-        <button
-          type="button"
-          onClick={() => setHowOpen(true)}
-          className="mt-2.5 rounded-full border-[1.5px] border-white/20 px-5 py-1.5 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple"
-        >
-          📖 طريقة اللعب
-        </button>
-      </div>
-
-      <p className="mb-2 text-center text-[13px] text-white/50">اختار نوع اللعبة</p>
-      <div className="mb-5 grid grid-cols-2 gap-3.5">
-        <Choice hot={hot === 'swap'} selected={variant === 'swap'} onClick={() => setVariant('swap')} icon="🔄" title="جاوب أو بادل" desc="بادل جواب الخصم: إذا جوابه صح تاخذ دبل، وإذا جوابه غلط تنقص نقاطك" />
-        <Choice hot={hot === 'flip'} selected={variant === 'flip'} onClick={() => setVariant('flip')} icon="🔀" title="جاوب أو اقلب" desc="اقلب على الخصم: إذا جوابه صح تنقص نقاطه، وإذا جوابه غلط تزيد نقاطه" />
-        <Choice hot={hot === 'hide'} selected={variant === 'hide'} onClick={() => setVariant('hide')} icon="📦" title="خبّي أو اكشف" desc="10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡" />
-        <Choice
-          hot={hot === 'triple'}
-          selected={variant === 'triple'}
-          onClick={() => setVariant('triple')}
-          icon="↩️"
-          title="جاوب أو بادل أو اعكس"
-          desc="جاوب أو بادل أو اعكس — وبادل أو اعكس يختارها فريق واحد بس في الجولة"
-        />
-      </div>
-
-      <p className="mb-2 text-center text-[13px] text-white/50">اختار طريقة اللعب</p>
-      <div className="mb-5 grid grid-cols-2 gap-3.5">
-        <Choice selected={mode === 'mobile'} onClick={() => setMode('mobile')} icon="📱" title="جوال" desc="جهازين — كل فريق على جهازه" />
-        <Choice selected={mode === 'tv'} onClick={() => setMode('tv')} icon="📺" title="تلفاز" desc="3 أجهزة — التلفاز يعرض والفريقين على جوالاتهم" />
-      </div>
-
-      {mode === 'mobile' ? (
-        <form onSubmit={create} className="q-card">
-          <h3 className="mb-3.5 text-[15px] font-bold text-q-gold">🎮 إنشاء غرفة جديدة</h3>
-          <Field label="اسم فريقك">
-            <input className="q-input" value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="مثال: النمور" maxLength={TEAM_NAME_MAX} />
-          </Field>
-          <button className="q-btn-gold" disabled={busy !== null}>
-            {busy === 'create' ? 'جاري الإنشاء...' : 'إنشاء غرفة'}
+        <p className="relative mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-white/70">
+          لعبة أسئلة جماعية: اختار <b className="text-q-gold">سراً</b> — تجاوب بنفسك، أو تبادل جواب خصمك وتاخذ <b className="text-q-gold">دبل</b>!
+        </p>
+        <div className="relative mx-auto mt-5 flex max-w-sm flex-col gap-2.5 sm:max-w-md sm:flex-row">
+          <button type="button" onClick={goPlay} className="q-btn-gold q-shine text-base">
+            🚀 ابدأ اللعب
           </button>
-        </form>
-      ) : (
-        <div className="q-card border-q-purple/40">
-          <h3 className="mb-1.5 text-[15px] font-bold text-q-purple">📺 تشغيل على التلفاز (المضيف)</h3>
-          <p className="mb-3 text-xs text-white/50">افتح هذا على التلفاز — يتحكم باللعبة ويعرض الأسئلة</p>
-          <button type="button" className="q-btn-tv" disabled={busy !== null} onClick={() => create()}>
-            {busy === 'create' ? 'جاري الإنشاء...' : 'إنشاء غرفة للتلفاز 📺'}
+          <button
+            type="button"
+            onClick={() => setHowOpen(true)}
+            className="w-full rounded-xl border border-white/15 bg-white/5 p-3.5 text-[15px] font-bold whitespace-nowrap text-white/85 backdrop-blur transition-all hover:border-q-purple hover:text-q-purple sm:w-auto sm:px-6"
+          >
+            📖 طريقة اللعب
           </button>
         </div>
-      )}
-      <div className="my-1.5 text-center text-white/20">—</div>
-      {joinForm}
+        <div className="relative mt-4 flex flex-wrap justify-center gap-2">
+          <button type="button" className="q-chip" onClick={() => (setTab('join'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
+            🔗 عندي كود
+          </button>
+          <button type="button" className="q-chip" onClick={() => (setMode('tv'), setTab('create'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
+            📺 العب على التلفاز
+          </button>
+          <a className="q-chip" href="/kick/quiz">
+            🟢 العب مع شات Kick
+          </a>
+        </div>
+      </section>
 
-      <nav className="mt-6 flex justify-center gap-4 text-xs text-white/40" aria-label="روابط">
+      {/* ── Modes ── */}
+      <section id="modes" className="scroll-mt-16 pb-4">
+        <SectionTitle kicker="اختر الطور" title="كل طور له لعبته" />
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-1 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0">
+          {MODES.map((m) => (
+            <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+          ))}
+        </div>
+        <a
+          href="/kick/quiz"
+          className="mt-1 flex items-center gap-3 rounded-2xl border border-[#53fc18]/25 bg-[#53fc18]/5 p-3 text-start transition-colors hover:border-[#53fc18]/60"
+        >
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#53fc18]/15 text-xl">⏱️</span>
+          <span className="flex-1">
+            <span className="block text-sm font-black">عدّها — وأطوار البث</span>
+            <span className="block text-[11px] text-white/60">في صفحة الستريمر: الشات يلعب معك، ومنها «عدّها» و«خبّي أو اكشف» والحزم الخاصة</span>
+          </span>
+          <span className="text-white/40" aria-hidden>
+            ←
+          </span>
+        </a>
+      </section>
+
+      {/* ── Play: device + create / join ── */}
+      <section id="play-panel" className="q-glass mb-6 scroll-mt-16 p-4 sm:p-5">
+        <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl bg-black/30 p-1" role="tablist" aria-label="إنشاء أو انضمام">
+          {(
+            [
+              ['create', '🎮 إنشاء غرفة'],
+              ['join', '🔗 انضمام'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={tab === id}
+              onClick={() => setTab(id)}
+              className={cn('rounded-xl py-2.5 text-sm font-black transition-all', tab === id ? 'bg-linear-to-l from-q-orange to-q-gold text-black shadow' : 'text-white/60 hover:text-white')}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mb-4">
+          <p className="mb-1.5 text-xs font-bold text-white/60">طريقة اللعب</p>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                ['mobile', '📱', 'جوال', 'جهازين — كل فريق على جهازه'],
+                ['tv', '📺', 'تلفاز', '3 أجهزة — التلفاز يعرض والفريقين على جوالاتهم'],
+              ] as const
+            ).map(([id, icon, title, desc]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setMode(id)}
+                aria-pressed={mode === id}
+                className={cn(
+                  'flex items-center gap-2.5 rounded-2xl border-2 p-2.5 text-start transition-all',
+                  mode === id ? (id === 'tv' ? 'border-q-purple bg-q-purple/12' : 'border-q-gold bg-q-gold/8') : 'border-q-line bg-q-panel/50 hover:border-white/25',
+                )}
+              >
+                <span className="text-2xl">{icon}</span>
+                <span>
+                  <span className="block text-sm font-black">{title}</span>
+                  <span className="block text-[10.5px] leading-snug text-white/55">{desc}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {tab === 'create' ? (
+          <div key="create" className="motion-safe:animate-fade-up">
+            <div className="mb-3 flex items-center gap-2 rounded-xl bg-black/25 px-3 py-2 text-xs">
+              <span className="text-lg">{MODE_ICON[variant]}</span>
+              <span className="text-white/60">الطور:</span>
+              <b className={MODE_LOOK[variant].text}>{chosen.title}</b>
+              <button type="button" className="ms-auto text-white/50 underline-offset-4 hover:text-q-gold hover:underline" onClick={goPlay}>
+                تغيير
+              </button>
+            </div>
+            {pre.length > 0 && categories && (
+              <div className="mb-3 text-[11px] text-white/60">
+                🗂️ فئات مختارة مسبقًا: {categories.filter((c) => pre.includes(c.id)).map((c) => `${c.icon} ${c.name}`).join('، ')}
+              </div>
+            )}
+            {mode === 'mobile' ? (
+              <form onSubmit={create}>
+                <Field label="اسم فريقك">
+                  <input id="create-name" className="q-input" value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="مثال: النمور" maxLength={TEAM_NAME_MAX} />
+                </Field>
+                <button className="q-btn-gold q-shine" disabled={busy !== null}>
+                  {busy === 'create' ? 'جاري الإنشاء...' : 'إنشاء غرفة'}
+                </button>
+              </form>
+            ) : (
+              <div>
+                <p className="mb-3 text-xs leading-relaxed text-white/60">📺 افتح هذا على التلفاز — يتحكم باللعبة ويعرض الأسئلة، والفريقين يدخلون بالكود من جوالاتهم.</p>
+                <button type="button" className="q-btn-tv q-shine" disabled={busy !== null} onClick={() => create()}>
+                  {busy === 'create' ? 'جاري الإنشاء...' : 'إنشاء غرفة للتلفاز 📺'}
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div key="join" className="motion-safe:animate-fade-up">
+            {joinForm}
+          </div>
+        )}
+      </section>
+
+      {/* ── Categories ── */}
+      {categories && categories.some((c) => c.playable) && (
+        <section className="mb-6">
+          <SectionTitle kicker="فئات الأسئلة" title="من التاريخ إلى الإيموجي" />
+          <p className="mb-3 text-center text-xs text-white/55">اضغط على فئة وتكون مختارة لما تنشئ الغرفة — وتقدر تغيّرها في الغرفة.</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories
+              .filter((c) => c.playable)
+              .map((c) => {
+                const on = pre.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => pickCategory(c.id, c.name)}
+                    className={cn('q-chip px-3.5 py-1.5 text-sm', on && 'border-q-gold bg-q-gold/15 text-white')}
+                  >
+                    <span className="text-base">{c.icon}</span> {c.name}
+                    {on && <span className="text-q-gold">✓</span>}
+                  </button>
+                );
+              })}
+          </div>
+        </section>
+      )}
+
+      {/* ── How it works ── */}
+      <section className="mb-6">
+        <SectionTitle kicker="بثلاث خطوات" title="كيف تلعب؟" />
+        <ol className="grid gap-3 sm:grid-cols-3">
+          {(
+            [
+              ['1', '🎮', 'أنشئ غرفة', 'اختر الطور وطريقة اللعب، وشارك الكود أو رمز QR مع الفريق الثاني.'],
+              ['2', '🤫', 'اختار سراً', 'في كل سؤال كل فريق يقرر بدون ما يشوف الثاني: يجاوب بنفسه أو يبادل أو يقلب.'],
+              ['3', '🏆', 'اجمع النقاط', 'جاوب صح ثلاث مرات ورا بعض وتاخذ دبل، والأعلى نقاط في النهاية يفوز.'],
+            ] as const
+          ).map(([n, icon, title, text]) => (
+            <li key={n} className="q-card relative overflow-hidden">
+              <span aria-hidden className="q-display absolute -top-3 -left-1 text-7xl text-white/5">
+                {n}
+              </span>
+              <div className="mb-1 text-3xl">{icon}</div>
+              <div className="mb-1 text-base font-black text-q-gold">{title}</div>
+              <p className="text-[13px] leading-relaxed text-white/70">{text}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-3 text-center">
+          <button type="button" onClick={() => setHowOpen(true)} className="q-chip">
+            📖 القواعد كاملة مع أمثلة النقاط
+          </button>
+        </div>
+      </section>
+
+      <nav className="mt-6 flex justify-center gap-4 pb-16 text-xs text-white/40" aria-label="روابط">
         <a href={serverUrl('/privacy')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
           سياسة الخصوصية
         </a>
