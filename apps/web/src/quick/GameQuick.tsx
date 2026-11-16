@@ -152,5 +152,20 @@ export function GameQuick({ view, leave, onKeys }: { view: RoomView | null; leav
     ],
   });
 
-  return <QuickAccess site="game" sections={sections} header={<StatsCard />} />;
+  // Where the player is, and the actions that matter most right there.
+  const all = new Map(sections.flatMap((x) => x.items).map((it) => [it.id, it]));
+  const pick = (...ids: string[]) => ids.map((id) => all.get(id)).filter((x): x is QaItem => Boolean(x));
+  const total = view ? view.categories.length * 5 : 0;
+  const context = !view
+    ? { icon: '🏠', label: 'الصفحة الرئيسية' }
+    : view.status === 'lobby'
+      ? { icon: '🛋️', label: 'اللوبي', detail: `غرفة ${view.code}` }
+      : view.status === 'done'
+        ? { icon: '🏆', label: 'النتيجة النهائية', detail: `غرفة ${view.code}` }
+        : { icon: VARIANTS.find((v) => v.id === view.variant)?.icon ?? '🎮', label: VARIANT_NAME[view.variant] ?? 'اللعب', detail: view.variant === 'hide' ? `غرفة ${view.code}` : `السؤال ${Math.min(view.used.length + 1, total || 1)} من ${total}` };
+  // Starting the game is the lobby's own button (only there for the host once both teams are in).
+  const startTile: QaItem[] = inLobby && isHost && view?.teams[0] && view.teams[1] ? [{ id: 'start', icon: '🚀', title: 'ابدأ اللعبة', run: () => document.querySelector<HTMLButtonElement>('[data-hotkey="go"]')?.click() }] : [];
+  const tiles = !view ? pick('create', 'join', 'tv', 'how') : inLobby ? [...startTile, ...pick('invite', 'sound', 'leave')] : pick('sound', 'keys', 'leave');
+
+  return <QuickAccess site="game" sections={sections} header={!view || view.status === 'done' ? <StatsCard /> : undefined} context={context} tiles={tiles} compact={view?.status === 'playing'} />;
 }

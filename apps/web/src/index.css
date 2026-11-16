@@ -126,6 +126,14 @@
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
     }
+  /* Every button gives a little under the finger (transform, so it never fights Tailwind's own translate/scale). */
+  :where(button, a.q-chip, [role='button']):not(:disabled) {
+    transition-property: color, background-color, border-color, box-shadow, opacity, translate, scale, transform;
+    transition-duration: 160ms;
+  }
+  :where(button, a.q-chip, [role='button']):not(:disabled):active {
+    transform: scale(0.96);
+  }
   html {
     @apply font-sans;
     background-color: #07071a;
@@ -344,6 +352,24 @@
     content: '';
     @apply pointer-events-none absolute inset-y-0 w-1/3 motion-safe:animate-shine;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  }
+  /* Interactive card: a light follows the pointer (see lib/spotlight.ts) and the edge brightens on hover. */
+  .q-spot {
+    @apply relative isolate;
+  }
+  .q-spot::after {
+    content: '';
+    @apply pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300;
+    background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.14), transparent 60%);
+  }
+  .q-spot:hover::after {
+    @apply opacity-100;
+  }
+  /* The fixed buttons at the top get a soft dark band behind them, so scrolled content never shows through them. */
+  .q-topfade {
+    @apply pointer-events-none fixed inset-x-0 top-0 z-30;
+    height: calc(env(safe-area-inset-top) + 3.5rem);
+    background: linear-gradient(180deg, rgba(7, 7, 26, 0.92), rgba(7, 7, 26, 0.6) 60%, transparent);
   }
   .q-chip {
     @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/80 transition-all hover:border-q-gold/50 hover:bg-q-gold/10 hover:text-white;

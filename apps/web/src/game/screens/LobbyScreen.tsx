@@ -10,7 +10,7 @@ import { QrCode } from '@/lib/QrCode';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
 import { takePreselected, useBus } from '@/quick/bus';
-import { teamName } from '../ui';
+import { Steps, teamName } from '../ui';
 import { isSelf, kickPlayer } from './PlayersPanel';
 import { HotBadge, usePopular } from '../popular';
 
@@ -92,6 +92,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
 
   return (
     <div className="animate-fade-up">
+      <Steps at={2} labels={['الطور', 'الغرفة', 'الفئات والبدء']} className="pt-2" />
       {/* Code and QR side by side, so the QR is on screen without scrolling. */}
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-4 pb-2.5 text-center">
         <div>
@@ -196,7 +197,7 @@ function CategoryPicker({ tv }: { tv: boolean }) {
               aria-pressed={on}
               title={c.playable ? undefined : 'ليس فيها سؤال مفعّل لكل النقاط'}
               className={cn(
-                'relative rounded-xl border-2 px-1.5 py-3 text-center transition-all',
+                'q-spot relative rounded-xl border-2 px-1.5 py-3 text-center transition-all hover:-translate-y-0.5',
                 hotCats.includes(c.id) && !on && 'border-orange-400/60',
                 on ? 'border-q-gold bg-q-gold/8' : 'border-q-line bg-q-panel hover:border-q-gold/50',
                 !c.playable && 'cursor-not-allowed opacity-35 hover:border-q-line',

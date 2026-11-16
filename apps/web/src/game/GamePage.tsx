@@ -17,6 +17,7 @@ import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
 import { GameQuick } from '@/quick/GameQuick';
 import { GameStart } from './fx/GameStart';
+import { useCardSpotlight } from '@/lib/spotlight';
 import { recordGame } from '@/quick/stats';
 import { CornerTools, HotkeysHelp, useHotkeys, useWakeLock, type HotkeyRow } from '@/lib/hotkeys';
 
@@ -36,6 +37,7 @@ export function GamePage() {
   const { view, deadline, connected, resuming, leave } = useRoom();
   const [params] = useSearchParams();
   useGameFx(view);
+  useCardSpotlight();
   // No fullscreen in the main game (phones and the app); the stream pages keep it.
   const { help, setHelp } = useHotkeys(undefined, { fullscreen: false });
   // The screen stays on from the lobby to the final result.
@@ -96,6 +98,7 @@ export function GamePage() {
     >
       <Intro />
       <div className="q-aurora" aria-hidden />
+      {view && <div className="q-topfade" aria-hidden />}
       <Background3D />
       <SoundToggle />
       <CornerTools fullscreen={false} onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
@@ -118,7 +121,7 @@ export function GamePage() {
           انقطع الاتصال — جاري إعادة الاتصال...
         </div>
       )}
-      <main className="relative z-10 mx-auto max-w-[960px] px-4 pt-12 pb-6">
+      <main className="relative z-10 mx-auto max-w-[960px] px-4 pt-14 pb-24 sm:px-6">
         <div key={screenKey} className="motion-safe:animate-screen-in">
           {screen}
         </div>

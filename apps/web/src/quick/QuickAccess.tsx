@@ -57,6 +57,9 @@ export function QuickAccess({
   site,
   sections,
   header,
+  context,
+  tiles = [],
+  compact = false,
   className,
 }: {
   /** Which site's favourites and recents (they are kept apart). */
@@ -64,6 +67,12 @@ export function QuickAccess({
   sections: QaSection[];
   /** Shown at the top of the panel (room info, personal stats…). */
   header?: ReactNode;
+  /** Where the player is right now («اللوبي · غرفة ABC123»), shown at the top. */
+  context?: { icon: string; label: string; detail?: string };
+  /** The main actions for this moment, as big tiles above the list (up to four). */
+  tiles?: QaItem[];
+  /** Just the round ⚡ (during play, so it covers less of the game). */
+  compact?: boolean;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -210,7 +219,8 @@ export function QuickAccess({
         onClick={show}
         data-silent
         className={cn(
-          'group fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-40 flex items-center gap-2 rounded-full p-1.5 pe-4 text-sm font-black text-white shadow-[0_10px_30px_-8px_rgba(168,85,247,0.7)] transition-transform hover:-translate-y-0.5 active:scale-95',
+          'group fixed right-3 bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] z-40 flex items-center gap-2 rounded-full p-1.5 text-sm font-black text-white shadow-[0_10px_30px_-8px_rgba(168,85,247,0.7)] transition-transform hover:-translate-y-0.5 active:scale-95 sm:right-4 sm:bottom-[calc(env(safe-area-inset-bottom)+1rem)]',
+          compact ? 'opacity-90 hover:opacity-100' : 'pe-4',
           'bg-linear-to-l from-q-purple via-[#7c3aed] to-q-cyan',
           className,
         )}
@@ -221,7 +231,7 @@ export function QuickAccess({
         <span className="relative grid size-9 place-items-center rounded-full bg-black/25 text-lg">
           <span className="absolute inset-0 rounded-full border border-white/30 border-t-transparent motion-safe:animate-orbit" aria-hidden />⚡
         </span>
-        <span className="max-sm:sr-only">الاختصارات</span>
+        <span className={compact ? 'sr-only' : 'max-sm:sr-only'}>الاختصارات</span>
       </button>
       {tip && !open && (
         <div role="status" className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-40 w-64 rounded-2xl border border-q-gold/40 bg-q-panel/95 p-3 text-start text-xs leading-relaxed shadow-2xl backdrop-blur motion-safe:animate-pop-in">
@@ -247,8 +257,18 @@ export function QuickAccess({
                 ⚡
               </span>
               <div className="flex-1">
-                <div className="q-display text-xl leading-none text-q-gold">مركز الاختصارات</div>
-                <div className="text-[11px] text-white/50">ابحث أو اختر — ⭐ تضيف للمفضلة</div>
+                <div className="q-display text-xl leading-none text-q-gold">مركز التحكم</div>
+                {context ? (
+                  <div className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full bg-white/8 px-2 py-0.5 text-[11px] font-bold text-white/80">
+                    <span className="size-1.5 shrink-0 rounded-full bg-q-green motion-safe:animate-pulse" aria-hidden />
+                    <span className="truncate">
+                      {context.icon} {context.label}
+                      {context.detail && <span className="text-white/50"> · {context.detail}</span>}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-white/50">ابحث أو اختر — ⭐ تضيف للمفضلة</div>
+                )}
               </div>
               <button type="button" onClick={close} className="grid size-8 place-items-center rounded-full text-white/60 hover:bg-white/10 hover:text-white" aria-label="إغلاق">
                 ✕
@@ -271,8 +291,25 @@ export function QuickAccess({
                 />
               </label>
             </div>
-            {header && !q && <div className="px-3 pt-2">{header}</div>}
-            <div ref={list} id="qa-list" role="listbox" className="flex-1 space-y-3 overflow-y-auto p-3 pt-2">
+            <div ref={list} id="qa-list" role="listbox" className="flex-1 space-y-3 overflow-y-auto overscroll-contain p-3 pt-2">
+              {!q && tiles.length > 0 && (
+                <div className={cn('grid gap-2', tiles.length >= 4 ? 'grid-cols-4' : tiles.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
+                  {tiles.slice(0, 4).map((it) => (
+                    <button
+                      key={it.id}
+                      type="button"
+                      onClick={() => run(it)}
+                      className="q-spot flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/5 px-1 py-2.5 text-center transition-all hover:-translate-y-0.5 hover:border-q-gold/50 hover:bg-q-gold/10"
+                    >
+                      <span className="text-2xl" aria-hidden>
+                        {it.icon}
+                      </span>
+                      <span className="text-[11px] leading-tight font-black">{it.title}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {header && !q && <div>{header}</div>}
               {shown.map((g) => (
                 <div key={g.title}>
                   <div className="mb-1 px-1 text-[11px] font-black tracking-wide text-white/45">{g.title}</div>

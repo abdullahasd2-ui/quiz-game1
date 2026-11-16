@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
-import { Modal } from '../ui';
+import { Modal, Steps } from '../ui';
 import { HotBadge, usePopular } from '../popular';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -92,7 +92,7 @@ function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; ti
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'group relative flex min-h-44 snap-center flex-col overflow-hidden rounded-3xl bg-linear-to-br p-4 text-start transition-all duration-300 max-sm:w-[78vw] max-sm:shrink-0',
+        'q-spot group relative flex min-h-44 snap-center flex-col overflow-hidden rounded-3xl bg-linear-to-br p-4 text-start transition-all duration-300 max-sm:w-[78vw] max-sm:shrink-0',
         look.from,
         look.to,
         selected ? cn('ring-2 ring-offset-2 ring-offset-q-bg', look.ring, 'scale-[1.02] shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]') : 'opacity-80 ring-1 ring-white/10 hover:-translate-y-1 hover:opacity-100',
@@ -288,6 +288,15 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
             <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
           ))}
         </div>
+        <div className="mb-3 flex justify-center">
+          <button
+            type="button"
+            onClick={() => document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="q-btn-gold q-shine flex w-auto items-center gap-2 px-6 py-2.5 text-sm"
+          >
+            {MODE_ICON[variant]} التالي: جهّز الغرفة لـ «{chosen.title}» ↓
+          </button>
+        </div>
         <a
           {...streamLink()}
           className="mt-1 flex items-center gap-3 rounded-2xl border border-[#53fc18]/25 bg-[#53fc18]/5 p-3 text-start transition-colors hover:border-[#53fc18]/60"
@@ -305,6 +314,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
 
       {/* ── Play: device + create / join ── */}
       <section id="play-panel" className="q-glass mb-6 scroll-mt-16 p-4 sm:p-5">
+        <Steps at={1} className="mb-4" />
         <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl bg-black/30 p-1" role="tablist" aria-label="إنشاء أو انضمام">
           {(
             [

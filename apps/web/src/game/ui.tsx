@@ -213,3 +213,25 @@ export function Modal({
     </div>
   );
 }
+
+/** The way into a game: mode → room → play. `at` is the current step (0-based); earlier steps show as done. */
+export function Steps({ at, labels = ['الطور', 'الغرفة', 'اللعب'], className }: { at: number; labels?: string[]; className?: string }) {
+  return (
+    <ol className={cn('flex items-center justify-center gap-1.5 text-[11px] font-black', className)} aria-label="خطوات بدء اللعبة">
+      {labels.map((l, i) => (
+        <li key={l} className="flex items-center gap-1.5" aria-current={i === at ? 'step' : undefined}>
+          <span
+            className={cn(
+              'grid size-5 place-items-center rounded-full text-[10px] transition-all',
+              i < at ? 'bg-q-green text-black' : i === at ? 'bg-q-gold text-black ring-4 ring-q-gold/25' : 'bg-white/10 text-white/50',
+            )}
+          >
+            {i < at ? '✓' : i + 1}
+          </span>
+          <span className={i === at ? 'text-white' : 'text-white/50'}>{l}</span>
+          {i < labels.length - 1 && <span className={cn('h-px w-6 sm:w-10', i < at ? 'bg-q-green' : 'bg-white/15')} aria-hidden />}
+        </li>
+      ))}
+    </ol>
+  );
+}
