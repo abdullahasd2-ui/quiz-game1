@@ -367,6 +367,13 @@ describe('«عدّها» lists', () => {
   });
 });
 
+describe('kick chatroom lookup', () => {
+  it('refuses a name that can not be a Kick channel (before asking Kick)', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/kick/chatroom/${encodeURIComponent('اسم عربي')}` });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
 describe('popular', () => {
   it('lists modes, categories and stream modes by use, without numbers', async () => {
     const res = await app.inject({ method: 'GET', url: '/api/popular' });

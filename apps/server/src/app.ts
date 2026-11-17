@@ -18,7 +18,8 @@ import { env } from './env';
 import { errorHandler } from './lib/errors';
 import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
-import { KickChatHub } from './kick/chat';
+import { KickChatHub, resolveChatroomFromKick } from './kick/chat';
+import { kickSlugs } from '@quiz/shared';
 import { attachKickSync } from './kick/sync';
 import { createStreamRecorder } from './kick/streamStats';
 import { db } from './db/client';
@@ -51,6 +52,23 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   const kickSync = attachKickSync(game.io, { onState: (st) => void recordStream(st) });
   app.addHook('onClose', async () => kickHub.closeAll());
   await app.register(kickQuestionRoutes);
+  // The chat room id of a Kick channel, for the stream page: Kick lets the server look a channel up but often refuses
+  // its chat socket, while the streamer's browser can open the chat but not read Kick's API. Cached for 10 minutes.
+  const chatrooms = new Map<string, { id: number; at: number }>();
+  app.get<{ Params: { channel: string } }>('/api/kick/chatroom/:channel', { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (req, reply) => {
+    const channel = req.params.channel.toLowerCase();
+    if (!kickSlugs(channel).length) return reply.code(400).send({ error: 'اسم القناة غير صالح' });
+    const hit = chatrooms.get(channel);
+    if (hit && Date.now() - hit.at < 600_000) return { id: hit.id };
+    try {
+      const id = await resolveChatroomFromKick(channel);
+      chatrooms.set(channel, { id, at: Date.now() });
+      return { id };
+    } catch (err) {
+      app.log.warn({ err, channel }, 'kick chatroom lookup failed');
+      return reply.code(404).send({ error: `ما لقيت قناة «${channel}» في Kick` });
+    }
+  });
   await app.register(kickOAuthRoutes, {
     hub: kickHub,
     clientId: env.KICK_CLIENT_ID || undefined,

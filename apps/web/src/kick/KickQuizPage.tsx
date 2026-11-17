@@ -115,8 +115,20 @@ async function findChatroom(slugs: string[]): Promise<{ slug: string; id: number
         const id = ((await res.json()) as { chatroom?: { id?: number } }).chatroom?.id;
         if (Number.isInteger(id)) return { slug, id: id! };
       } catch {
-        // Blocked, offline or not found: try the next spelling, then let the server look it up.
+        // Blocked (Kick's API does not answer other sites), offline or not found: try the next way.
       }
+    }
+  }
+  // Kick's API refuses other websites in a browser, but answers our server: it only looks the number up, and the
+  // browser still opens the chat itself.
+  for (const slug of slugs) {
+    try {
+      const res = await fetch(`${SERVER_URL}/api/kick/chatroom/${encodeURIComponent(slug)}`, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) continue;
+      const { id } = (await res.json()) as { id?: number };
+      if (Number.isInteger(id)) return { slug, id: id! };
+    } catch {
+      // Try the next spelling.
     }
   }
   return null;
