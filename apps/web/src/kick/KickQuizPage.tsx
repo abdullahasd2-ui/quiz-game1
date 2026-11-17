@@ -23,6 +23,7 @@ import {
   type StreamVariant,
   streamLabels,
   kickSlugs,
+  connectKickChat,
   hideQuestion,
   packDeck,
   packQuestion,
@@ -297,24 +298,57 @@ export function KickQuizPage() {
 
   useEffect(() => {
     if (!playing || test) return;
-    const socket: KickSocket = io(`${SERVER_URL}/kick`);
-    // Kick often refuses lookups from servers but not from a browser: the chat room is found here first and
-    // handed to the server (which still looks it up itself when this fails). No Kick login is needed.
+    let gone = false;
+    let stopBrowser: (() => void) | null = null;
+    let socket: KickSocket | null = null;
     const slugs = kickSlugs(channel);
-    const found = linked ? Promise.resolve(null) : findChatroom(slugs);
-    if (!linked) setStatus({ state: 'connecting', detail: 'جاري البحث عن القناة...' });
-    socket.on('connect', () =>
-      void found.then((hit) =>
-        socket.emit('kick:watch', { channel: hit?.slug ?? slugs[0] ?? channel.trim(), chatroomId: hit?.id, official: Boolean(linked) || undefined }, (res) => {
+
+    // Through our server: a linked account (Kick's webhook), or when the browser could not read the chat itself.
+    const viaServer = (hit: { slug: string; id: number } | null) => {
+      if (gone || socket) return;
+      socket = io(`${SERVER_URL}/kick`);
+      socket.on('connect', () =>
+        socket!.emit('kick:watch', { channel: hit?.slug ?? slugs[0] ?? channel.trim(), chatroomId: hit?.id, official: Boolean(linked) || undefined }, (res) => {
           if (!res.ok) setStatus({ state: 'error', detail: res.error });
         }),
-      ),
-    );
-    socket.on('kick:status', setStatus);
-    socket.on('kick:message', (m) => onChat(m.user, m.text));
-    socket.on('connect_error', () => setStatus({ state: 'error', detail: 'تعذّر الاتصال بالسيرفر' }));
+      );
+      socket.on('kick:status', setStatus);
+      socket.on('kick:message', (m) => onChat(m.user, m.text));
+      socket.on('connect_error', () => setStatus({ state: 'error', detail: 'تعذّر الاتصال بالسيرفر' }));
+    };
+
+    if (linked) viaServer(null);
+    else {
+      // By name only (no Kick login): Kick often blocks servers, but not a viewer's browser. So the browser finds
+      // the channel and reads its chat itself, like kick.com does; the server is only the fallback.
+      setStatus({ state: 'connecting', detail: 'جاري البحث عن القناة...' });
+      void findChatroom(slugs).then((hit) => {
+        if (gone) return;
+        if (!hit) return viaServer(null);
+        let live = false;
+        stopBrowser = connectKickChat({
+          chatroomId: hit.id,
+          handshakeMs: 10000,
+          maxRetries: 3,
+          onMessage: (m) => onChat(m.user, m.text),
+          onStatus: (st) => {
+            if (gone) return;
+            if (st.state === 'live') live = true;
+            if (st.state === 'error' && !live) {
+              // The browser could not read it either: let the server try.
+              stopBrowser?.();
+              stopBrowser = null;
+              return viaServer(hit);
+            }
+            setStatus(st);
+          },
+        });
+      });
+    }
     return () => {
-      socket.disconnect();
+      gone = true;
+      stopBrowser?.();
+      socket?.disconnect();
     };
   }, [playing, test, channel, linked, onChat]);
 
