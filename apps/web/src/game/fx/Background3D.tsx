@@ -72,6 +72,8 @@ export function Background3D() {
     let frame = 0;
     let last = performance.now();
     let sec = 0;
+    // Less motion asked for: the cubes are drawn once at their starting angle and do not turn.
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const step = (t: number) => {
       sec += Math.min(t - last, 34) / 1000;
       last = t;
@@ -83,7 +85,7 @@ export function Background3D() {
         el.style.transform = tr;
         el.style.webkitTransform = tr;
       });
-      frame = requestAnimationFrame(step);
+      if (!still) frame = requestAnimationFrame(step);
     };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);

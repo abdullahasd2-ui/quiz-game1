@@ -418,11 +418,16 @@
 
 /* Less motion when the device asks for it: no drifting, no sweeps, screens just appear. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *:not(.animate-float-word), *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* The floating background (cubes and words) would all jump to the end of their path — the top of the screen —
+     if their animation were cut short: it is paused instead, so they stay spread over the page, still. */
+  .animate-float-word {
+    animation-play-state: paused !important;
   }
 }
 /* Keyboard focus is always visible (the dark theme hides the browser default). */
