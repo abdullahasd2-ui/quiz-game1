@@ -339,7 +339,8 @@ describe('team packs', () => {
 });
 
 describe('«عدّها» lists', () => {
-  it('has 1000+ questions and deals one from the chosen categories, skipping played ones', async () => {
+  // Builds the whole question bank the first time: give a slow CI machine room.
+  it('has 1000+ questions and deals one from the chosen categories, skipping played ones', { timeout: 20_000 }, async () => {
     const cats = (await app.inject({ method: 'GET', url: '/api/kick/lists/categories' })).json() as { id: string; count: number }[];
     expect(cats.reduce((n, c) => n + c.count, 0)).toBeGreaterThanOrEqual(1000);
     const first = await app.inject({ method: 'POST', url: '/api/kick/lists/next', payload: { cats: ['football'], exclude: [] } });

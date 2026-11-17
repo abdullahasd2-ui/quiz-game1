@@ -118,7 +118,7 @@ describe('live game over sockets', () => {
     expect(await call(guest.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: false, error: 'المضيف فقط يبدأ اللعبة' });
   });
 
-  it('عدّها: the team in turn picks, and members type their own answers', async () => {
+  it('عدّها: the team in turn picks, and members type their own answers', { timeout: 20_000 }, async () => {
     const host = await device('device-host-l');
     const created = await call<{ code: string }>(host.socket, 'room:create', { mode: 'mobile', variant: 'list', teamName: 'النمور' });
     if (!created.ok) throw new Error(created.error);

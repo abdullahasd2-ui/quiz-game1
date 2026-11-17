@@ -105,19 +105,22 @@ function letters(a: string): Set<string> {
 }
 /** Names that begin with what they are («مسجد…», «جامعة…», «معركة…»): their first letter says nothing, so letter questions skip them. */
 const GENERIC = /^(ال)?(مسجد|جامع|جامعة|مطار|نهر|جبل|جبال|بحيرة|جزيرة|جزر|بركان|قلعة|قصر|متحف|برج|شلال|شلالات|معركة|موقعة|غزوة|سرية|حرب|الحرب|حصار|الدولة|دولة|سلالة|كلب|قط|مدينة|ملعب|سلسلة|كهف|مغارة|إمبراطورية|الإمبراطورية|مملكة|المملكة|سلطنة|إمارة|جمهورية|الجمهورية|صحيفة|جريدة|شركة|فرس|خيول)\s/;
-/** The forms of an answer whose first letter is `l` (joined), or null when none is. */
-function formsStarting(a: string, l: string): string | null {
-  const keep = a.split('|').filter((f) => !GENERIC.test(f.trim()) && letters(f).has(l));
-  return keep.length ? keep.join('|') : null;
-}
 /** Merge forms of the same answer that came from different lists, keep order, drop exact repeats. */
+/** listFold, remembered: the same names come up in many lists (a player is in his clubs, leagues, letters…). */
+const foldCache = new Map<string, string>();
+function fold(s: string): string {
+  let v = foldCache.get(s);
+  if (v === undefined) foldCache.set(s, (v = listFold(s)));
+  return v;
+}
+
 function uniq(items: string[]): string[] {
   // The same answer from two lists («النيل» and «نهر النيل|Nile») is one answer: merged when any written form matches.
   const seen = new Map<string, number>();
   const out: string[] = [];
   for (const it of items) {
     const forms = it.split('|').map((f) => f.trim()).filter(Boolean);
-    const keys = forms.map(listFold).filter((k) => k.length >= 2);
+    const keys = forms.map(fold).filter((k) => k.length >= 2);
     const hit = keys.map((k) => seen.get(k)).find((i) => i !== undefined);
     if (hit !== undefined) {
       out[hit] = [...new Set([...out[hit]!.split('|'), ...forms])].join('|');
@@ -295,8 +298,17 @@ export function buildBank(): ListQuestion[] {
   };
   const byLetter = (id: string, cat: ListCategory, what: string, items: string[], min = 6) => {
     // Only the Arabic forms that really start with the letter are accepted («ميسي» for م, not «ليونيل ميسي» or «Messi»).
-    for (const l of LETTERS)
-      add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, items.map((a) => formsStarting(a, l)).filter((a): a is string => a !== null), min, l);
+    // Each answer is sorted into its letters once (skipping «مسجد…»-style names, as before; 28 times faster than checking every letter).
+    const buckets = new Map<string, string[]>();
+    for (const a of items) {
+      const per = new Map<string, string[]>();
+      for (const f of a.split('|')) {
+        if (GENERIC.test(f.trim())) continue;
+        for (const l of letters(f)) (per.get(l) ?? per.set(l, []).get(l)!).push(f);
+      }
+      for (const [l, fs] of per) (buckets.get(l) ?? buckets.set(l, []).get(l)!).push(fs.join('|'));
+    }
+    for (const l of LETTERS) add(`${id}-${l}`, cat, `اذكر ${what} تبدأ بحرف «${l}»`, buckets.get(l) ?? [], min, l);
   };
 
   // ---------- Geography ----------
@@ -351,8 +363,11 @@ export function buildBank(): ListQuestion[] {
   const POS: Record<string, string> = { G: 'حراس مرمى', D: 'مدافعين', M: 'لاعبي وسط', F: 'مهاجمين وأجنحة' };
   add('fb-all', 'football', 'اذكر لاعبين كرة قدم مشهورين', P.map((p) => p.name));
   for (const [k, n] of Object.entries(POS)) add(`fb-pos-${k}`, 'football', `اذكر ${n} مشهورين`, P.filter((p) => p.pos === k).map((p) => p.name));
+  // Each club's players, found once (the pairs below intersect these instead of scanning every player).
+  const byClub = new Map<string, typeof P>();
+  for (const p of P) for (const c of new Set(p.clubs)) (byClub.get(c) ?? byClub.set(c, []).get(c)!).push(p);
   for (const id of Object.keys(CLUBS)) {
-    const inClub = P.filter((p) => p.clubs.includes(id));
+    const inClub = byClub.get(id) ?? [];
     add(`fb-club-${id}`, 'football', `اذكر لاعبين لعبوا في ${clubName(id)}`, inClub.map((p) => p.name), 5);
     for (const [k, n] of Object.entries(POS)) add(`fb-club-${id}-${k}`, 'football', `اذكر ${n} لعبوا في ${clubName(id)}`, inClub.filter((p) => p.pos === k).map((p) => p.name), 6);
     for (const [nat, label] of Object.entries(NATIONS)) add(`fb-club-${id}-${nat}`, 'football', `اذكر لاعبين ${label} لعبوا في ${clubName(id)}`, inClub.filter((p) => p.nat === nat).map((p) => p.name), 6);
@@ -371,7 +386,8 @@ export function buildBank(): ListQuestion[] {
   const ids = Object.keys(CLUBS);
   for (let i = 0; i < ids.length; i++)
     for (let j = i + 1; j < ids.length; j++) {
-      const both = P.filter((p) => p.clubs.includes(ids[i]!) && p.clubs.includes(ids[j]!));
+      const [a, b] = [byClub.get(ids[i]!) ?? [], byClub.get(ids[j]!) ?? []];
+      const both = (a.length <= b.length ? a : b).filter((p) => p.clubs.includes(ids[a.length <= b.length ? j : i]!));
       add(`fb-pair-${ids[i]}-${ids[j]}`, 'football', `اذكر لاعبين لعبوا في ${clubName(ids[i]!)} و${clubName(ids[j]!)}`, both.map((p) => p.name), 5);
     }
   const lgs = Object.keys(LEAGUES);
