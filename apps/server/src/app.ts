@@ -19,6 +19,7 @@ import { errorHandler } from './lib/errors';
 import { adminAccountRoutes } from './api/admin/admins';
 import { attachGameServer, type GameServerOptions } from './game/socket';
 import { KickChatHub, resolveChatroomFromKick } from './kick/chat';
+import { kickPusher } from './kick/pusher';
 import { kickSlugs } from '@quiz/shared';
 import { attachKickSync } from './kick/sync';
 import { createStreamRecorder } from './kick/streamStats';
@@ -54,6 +55,8 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   await app.register(kickQuestionRoutes);
   // The chat room id of a Kick channel, for the stream page: Kick lets the server look a channel up but often refuses
   // its chat socket, while the streamer's browser can open the chat but not read Kick's API. Cached for 10 minutes.
+  // The current key of Kick's chat feed, for the stream page (Kick rotates it; see kick/pusher.ts).
+  app.get('/api/kick/pusher', async () => kickPusher());
   const chatrooms = new Map<string, { id: number; at: number }>();
   app.get<{ Params: { channel: string } }>('/api/kick/chatroom/:channel', { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (req, reply) => {
     const channel = req.params.channel.toLowerCase();

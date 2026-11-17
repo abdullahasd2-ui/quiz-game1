@@ -31,8 +31,13 @@ export interface KickServerToClientEvents {
   'kick:status': (s: KickStatus) => void;
 }
 
-/** Kick's own site reads chat through this public Pusher app; the same read-only feed works for us. */
-export const KICK_PUSHER_URL = 'wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0&flash=false';
+/** Kick's chat feed (its public Pusher app): key and cluster. Kick rotates them (the old 32cbd69e… key was retired in
+ *  Oct 2026 with error 4001 «not in this cluster»), so the server asks Kick for the current ones; this is the fallback. */
+export type KickPusher = { key: string; cluster: string };
+export const KICK_PUSHER_FALLBACK: KickPusher = { key: '34bf7a0ff419a2a775b9', cluster: 'us2' };
+export const kickPusherUrl = (p: KickPusher = KICK_PUSHER_FALLBACK) =>
+  `wss://ws-${p.cluster}.pusher.com/app/${p.key}?protocol=7&client=js&version=8.4.0&flash=false`;
+export const KICK_PUSHER_URL = kickPusherUrl();
 
 /** One Pusher frame → the chat message inside it, or null for anything else (pings, joins, emotes-only…). */
 export function parseKickFrame(raw: string): KickMessage | null {
