@@ -24,6 +24,8 @@ import {
   streamLabels,
   kickSlugs,
   connectKickChat,
+  kickPusherUrl,
+  type KickPusher,
   hideQuestion,
   packDeck,
   packQuestion,
@@ -335,12 +337,18 @@ export function KickQuizPage() {
       // By name only (no Kick login): Kick often blocks servers, but not a viewer's browser. So the browser finds
       // the channel and reads its chat itself, like kick.com does; the server is only the fallback.
       setStatus({ state: 'connecting', detail: 'جاري البحث عن القناة...' });
-      void findChatroom(slugs).then((hit) => {
+      void findChatroom(slugs).then(async (hit) => {
         if (gone) return;
         if (!hit) return viaServer(null);
         let live = false;
+        // Kick's current chat-feed key, from our server (Kick rotates it); the built-in one if that fails.
+        const pusher = await fetch(`${SERVER_URL}/api/kick/pusher`, { signal: AbortSignal.timeout(8000) })
+          .then((r) => (r.ok ? (r.json() as Promise<KickPusher>) : undefined))
+          .catch(() => undefined);
+        if (gone) return;
         stopBrowser = connectKickChat({
           chatroomId: hit.id,
+          url: kickPusherUrl(pusher),
           handshakeMs: 10000,
           maxRetries: 3,
           onMessage: (m) => onChat(m.user, m.text),

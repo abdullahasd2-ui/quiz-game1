@@ -1,4 +1,5 @@
-import { handleKickFrame, KICK_PUSHER_URL, kickSlugs, type KickMessage, type KickStatus } from '@quiz/shared';
+import { handleKickFrame, kickPusherUrl, kickSlugs, type KickMessage, type KickStatus } from '@quiz/shared';
+import { kickPusher } from './pusher';
 
 // Kick has no official "read chat" socket for third parties; its own site uses a Pusher channel
 // per chat room. This reads that channel (public, read-only). If Kick changes it, only this file breaks.
@@ -39,7 +40,22 @@ export const resolveChatroomFromKick: ResolveChatroom = async (channel) => {
 };
 
 export const connectPusher: Connect = (chatroomId, h) => {
-  const ws = new WebSocket(KICK_PUSHER_URL);
+  // Kick's current feed key (looked up and cached by kickPusher); until it arrives the socket below is a stand-in.
+  let closed = false;
+  let real: Upstream | null = null;
+  void kickPusher().then((p) => {
+    if (!closed) real = openPusher(kickPusherUrl(p), chatroomId, h);
+  });
+  return {
+    close: () => {
+      closed = true;
+      real?.close();
+    },
+  };
+};
+
+function openPusher(url: string, chatroomId: number, h: Parameters<Connect>[1]): Upstream {
+  const ws = new WebSocket(url);
   ws.onmessage = (ev) => {
     const r = handleKickFrame(String(ev.data), chatroomId);
     if (r.send) ws.send(r.send);
@@ -61,7 +77,7 @@ export const connectPusher: Connect = (chatroomId, h) => {
   ws.onclose = end;
   ws.onerror = end;
   return { close: () => ws.close() };
-};
+}
 
 type Listener = { onMessage(m: KickMessage): void; onStatus(s: KickStatus): void };
 type Channel = {
