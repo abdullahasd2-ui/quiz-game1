@@ -136,6 +136,20 @@ async function findChatroom(slugs: string[]): Promise<{ slug: string; id: number
   return null;
 }
 
+const LINK_KEY = 'jab:kick:linked';
+/** The linked Kick channel: the one Kick's login just returned (kept for next time), or the one kept last time. */
+function rememberedLink(fresh: string | null): string {
+  try {
+    if (fresh) {
+      localStorage.setItem(LINK_KEY, fresh);
+      return fresh;
+    }
+    return localStorage.getItem(LINK_KEY) ?? '';
+  } catch {
+    return fresh ?? '';
+  }
+}
+
 const STREAM_KEYS: HotkeyRow[] = [
   ['Enter / Space', 'الزر الرئيسي: ابدأ اللعبة، السؤال التالي، اعرض الخيارات، أنهِ السؤال، التالي'],
   ['1 / 2 / 3 / 4', 'جوابك على السؤال، أو اختيار فئة السؤال في «عدّها»'],
@@ -186,9 +200,10 @@ export function outcomeLabel(variant: StreamVariant | undefined, outcome: Stream
 /** «جاوب أو بادل» on a Kick stream: the streamer picks the cell, then the streamer and the whole chat play it. */
 export function KickQuizPage() {
   const params = new URLSearchParams(window.location.search);
-  const [linked, setLinked] = useState(params.get('linked') ?? '');
+  // A linked Kick account is remembered on this device (fresh from Kick's login, or from last time) until «تسجيل خروج».
+  const [linked, setLinked] = useState(() => rememberedLink(params.get('linked')));
   const [canLink, setCanLink] = useState(false);
-  const [channel, setChannel] = useState(params.get('linked') ?? '');
+  const [channel, setChannel] = useState(linked);
   const [cats, setCats] = useState<PublicCategory[]>([]);
   const [chosen, setChosen] = useState<number[]>([]);
   const [test, setTest] = useState(false);
@@ -381,6 +396,11 @@ export function KickQuizPage() {
   function unlink() {
     setLinked('');
     setChannel('');
+    try {
+      localStorage.removeItem(LINK_KEY);
+    } catch {
+      // Private mode: nothing was kept.
+    }
     setError('');
     const url = new URL(window.location.href);
     url.searchParams.delete('linked');
