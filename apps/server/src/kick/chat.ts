@@ -1,4 +1,4 @@
-import { handleKickFrame, KICK_PUSHER_URL, type KickMessage, type KickStatus } from '@quiz/shared';
+import { handleKickFrame, KICK_PUSHER_URL, kickSlugs, type KickMessage, type KickStatus } from '@quiz/shared';
 
 // Kick has no official "read chat" socket for third parties; its own site uses a Pusher channel
 // per chat room. This reads that channel (public, read-only). If Kick changes it, only this file breaks.
@@ -16,10 +16,11 @@ export type ResolveChatroom = (channel: string) => Promise<number>;
 
 export const resolveChatroomFromKick: ResolveChatroom = async (channel) => {
   let last = 'no response';
-  // Kick has two public channel endpoints; either one carries the chat room id.
+  // Kick has two public channel endpoints; either one carries the chat room id. Each spelling of the name is tried.
+  for (const slug of kickSlugs(channel).length ? kickSlugs(channel) : [channel])
   for (const path of ['api/v2/channels', 'api/v1/channels']) {
     try {
-      const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(channel)}`, {
+      const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(slug)}`, {
         headers: { 'user-agent': USER_AGENT, accept: 'application/json', 'accept-language': 'en-US,en;q=0.9' },
         signal: AbortSignal.timeout(8000),
       });
@@ -73,7 +74,12 @@ type Channel = {
   timer: ReturnType<typeof setTimeout> | null;
   /** Fires when Kick's socket opened but never confirmed the chat subscription. */
   handshake: ReturnType<typeof setTimeout> | null;
+  /** Recent messages (user + text → when), so one that arrives both ways is delivered once. */
+  seen: Map<string, number>;
 };
+
+/** A message seen again within this time, from either source, is the same message. */
+const SAME_MESSAGE_MS = 8000;
 
 /** One upstream connection per channel, shared by every page watching it, closed when the last one leaves. */
 export class KickChatHub {
@@ -92,11 +98,13 @@ export class KickChatHub {
     let ch = this.channels.get(key);
     if (!ch) {
       if (this.channels.size >= MAX_CHANNELS) throw new Error('كثير قنوات شغّالة حالياً — جرّب بعد شوي');
-      ch = { listeners: new Set(), chatroomId, status: official ? { state: 'live' } : { state: 'connecting' }, official, upstream: null, retries: 0, timer: null, handshake: null };
+      ch = { listeners: new Set(), chatroomId, status: official ? { state: 'live' } : { state: 'connecting' }, official, upstream: null, retries: 0, timer: null, handshake: null, seen: new Map() };
       this.channels.set(key, ch);
       ch.listeners.add(listener);
       listener.onStatus(ch.status);
-      if (!official) void this.start(key, ch);
+      // A linked (official) channel gets its chat from Kick's webhook, but that depends on Kick delivering it for
+      // this account; the public chat is read too, so a linked streamer never ends up with no chat at all.
+      void this.start(key, ch);
     } else {
       ch.chatroomId ??= chatroomId;
       ch.listeners.add(listener);
@@ -113,10 +121,23 @@ export class KickChatHub {
   /** A chat message delivered by Kick's webhook: goes to whoever watches that channel. */
   ingest(channel: string, m: KickMessage) {
     const ch = this.channels.get(channel.toLowerCase());
-    if (ch) for (const l of ch.listeners) l.onMessage(m);
+    if (ch) this.deliver(ch, m);
+  }
+
+  /** Hands a message to the channel's pages once, whichever way (webhook or public chat) it came first. */
+  private deliver(ch: Channel, m: KickMessage) {
+    const key = `${m.user.toLowerCase()}\n${m.text}`;
+    const now = Date.now();
+    const at = ch.seen.get(key);
+    if (at !== undefined && now - at < SAME_MESSAGE_MS) return;
+    ch.seen.set(key, now);
+    if (ch.seen.size > 500) for (const [k, t] of ch.seen) if (now - t >= SAME_MESSAGE_MS) ch.seen.delete(k);
+    for (const l of ch.listeners) l.onMessage(m);
   }
 
   private setStatus(ch: Channel, status: KickStatus) {
+    // A linked channel stays «live» through its webhook: the public chat failing is not shown as an error.
+    if (ch.official && status.state !== 'live') return;
     ch.status = status;
     for (const l of ch.listeners) l.onStatus(status);
   }
@@ -130,7 +151,7 @@ export class KickChatHub {
         this.opts.onError?.(err);
         const why = err instanceof Error ? err.message : String(err);
         if (this.channels.get(key) === ch) {
-          this.setStatus(ch, { state: 'error', detail: `تعذّر الوصول لقناة «${key}» (${why}) — تأكد من الاسم، أو اكتب رقم الشات يدوياً من "متقدم"` });
+          this.setStatus(ch, { state: 'error', detail: `تعذّر الوصول لقناة «${key}» (${why}) — اكتب اسم القناة مثل ما يطلع في رابطها: kick.com/الاسم` });
         }
         return;
       }
@@ -151,9 +172,7 @@ export class KickChatHub {
         ch.retries = 0;
         this.setStatus(ch, { state: 'live' });
       },
-      onMessage: (m) => {
-        for (const l of ch.listeners) l.onMessage(m);
-      },
+      onMessage: (m) => this.deliver(ch, m),
       onClose: () => {
         if (ch.handshake) clearTimeout(ch.handshake);
         ch.upstream = null;
