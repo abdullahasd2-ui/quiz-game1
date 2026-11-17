@@ -186,7 +186,7 @@ export function outcomeLabel(variant: StreamVariant | undefined, outcome: Stream
 /** «جاوب أو بادل» on a Kick stream: the streamer picks the cell, then the streamer and the whole chat play it. */
 export function KickQuizPage() {
   const params = new URLSearchParams(window.location.search);
-  const [linked] = useState(params.get('linked') ?? '');
+  const [linked, setLinked] = useState(params.get('linked') ?? '');
   const [canLink, setCanLink] = useState(false);
   const [channel, setChannel] = useState(params.get('linked') ?? '');
   const [cats, setCats] = useState<PublicCategory[]>([]);
@@ -372,6 +372,20 @@ export function KickQuizPage() {
       socket?.disconnect();
     };
   }, [playing, test, channel, linked, onChat]);
+
+  /**
+   * Logs the linked Kick account out of this page: the link only lives in the address (?linked=…, set after Kick's
+   * login), so it is dropped from there too and a refresh does not bring it back. The streamer can link again or type
+   * a channel name. (Kick keeps the app's access until it is removed in Kick's own settings.)
+   */
+  function unlink() {
+    setLinked('');
+    setChannel('');
+    setError('');
+    const url = new URL(window.location.href);
+    url.searchParams.delete('linked');
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+  }
 
   function start(testMode: boolean) {
     // «@name», a kick.com link or the name itself; the shown name drops the link and the @.
@@ -572,6 +586,13 @@ export function KickQuizPage() {
                 <span className="grid size-7 place-items-center rounded-full bg-q-green/20 text-sm">🔗</span>
                 <bdi dir="ltr" className="font-black text-white">{linked}</bdi>
                 <span className="text-q-green">✓</span>
+                <button
+                  type="button"
+                  onClick={unlink}
+                  className="ms-2 rounded-lg border border-white/15 px-2.5 py-1 text-xs font-bold text-white/70 transition-colors hover:border-q-red/60 hover:bg-q-red/10 hover:text-q-red"
+                >
+                  🚪 تسجيل خروج
+                </button>
               </div>
             ) : (
               <>
