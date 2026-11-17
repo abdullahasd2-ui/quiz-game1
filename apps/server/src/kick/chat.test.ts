@@ -58,6 +58,35 @@ describe('KickChatHub', () => {
     expect(closed).toHaveBeenCalled();
   });
 
+  it('a linked channel also reads the public chat, and a message that comes both ways is delivered once', async () => {
+    const { hub, handlers, connect } = fakeHub();
+    const a = listener();
+    hub.watch('Streamer', undefined, a, true);
+    expect(a.onStatus).toHaveBeenLastCalledWith({ state: 'live' });
+    await tick();
+    expect(connect).toHaveBeenCalledTimes(1);
+    // Kick's webhook never delivers for this account: the public chat still brings the messages.
+    handlers[0]!.onMessage({ user: 'Ali', text: 'دخول' });
+    expect(a.onMessage).toHaveBeenCalledTimes(1);
+    // The same message from the webhook a moment later is not counted twice; a new one is.
+    hub.ingest('streamer', { user: 'ali', text: 'دخول' });
+    expect(a.onMessage).toHaveBeenCalledTimes(1);
+    hub.ingest('streamer', { user: 'ali', text: '2' });
+    expect(a.onMessage).toHaveBeenCalledTimes(2);
+    hub.closeAll();
+  });
+
+  it('a linked channel stays live when the public chat can not be read (the webhook still works)', async () => {
+    const { hub } = fakeHub({ fail: true });
+    const a = listener();
+    hub.watch('blocked', undefined, a, true);
+    await tick();
+    expect(a.onStatus).not.toHaveBeenCalledWith(expect.objectContaining({ state: 'error' }));
+    hub.ingest('blocked', { user: 'x', text: 'دخول' });
+    expect(a.onMessage).toHaveBeenCalledWith({ user: 'x', text: 'دخول' });
+    hub.closeAll();
+  });
+
   it('uses a given chatroom id without looking it up', async () => {
     const { hub, connect, resolve } = fakeHub();
     hub.watch('s', 77, listener());
