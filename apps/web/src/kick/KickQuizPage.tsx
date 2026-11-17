@@ -316,7 +316,7 @@ export function KickQuizPage() {
     const slugs = kickSlugs(channel);
 
     // Through our server: a linked account (Kick's webhook), or when the browser could not read the chat itself.
-    const viaServer = (hit: { slug: string; id: number } | null) => {
+    const viaServer = (hit: { slug: string; id: number } | null, browserWhy?: string) => {
       if (gone || socket) return;
       socket = io(`${SERVER_URL}/kick`);
       socket.on('connect', () =>
@@ -324,7 +324,8 @@ export function KickQuizPage() {
           if (!res.ok) setStatus({ state: 'error', detail: res.error });
         }),
       );
-      socket.on('kick:status', setStatus);
+      // Keep what the browser's own attempt ran into next to the server's status (to see why a channel fails).
+      socket.on('kick:status', (st) => setStatus(browserWhy && st.state !== 'live' ? { ...st, detail: `${st.detail ?? ''} · محاولة المتصفح: ${browserWhy}` } : st));
       socket.on('kick:message', (m) => onChat(m.user, m.text));
       socket.on('connect_error', () => setStatus({ state: 'error', detail: 'تعذّر الاتصال بالسيرفر' }));
     };
@@ -350,7 +351,7 @@ export function KickQuizPage() {
               // The browser could not read it either: let the server try.
               stopBrowser?.();
               stopBrowser = null;
-              return viaServer(hit);
+              return viaServer(hit, st.detail);
             }
             setStatus(st);
           },

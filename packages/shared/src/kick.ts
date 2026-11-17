@@ -51,12 +51,18 @@ export function parseKickFrame(raw: string): KickMessage | null {
 }
 
 /** What to do with one incoming Pusher frame: a reply to send, "the chat is live", or a chat message. */
-export function handleKickFrame(raw: string, chatroomId: number): { send?: string; live?: true; message?: KickMessage } {
+export function handleKickFrame(raw: string, chatroomId: number): { send?: string; live?: true; message?: KickMessage; error?: string } {
   let event: string | undefined;
+  let data: unknown;
   try {
-    event = (JSON.parse(raw) as { event?: string }).event;
+    ({ event, data } = JSON.parse(raw) as { event?: string; data?: unknown });
   } catch {
     return {};
+  }
+  // Kick's chat service refused something: keep its own words, they say why (shown to the streamer).
+  if (event === 'pusher:error' || event === 'pusher:subscription_error') {
+    const d = (typeof data === 'string' ? (() => { try { return JSON.parse(data) as unknown; } catch { return data; } })() : data) as { code?: unknown; message?: unknown; error?: unknown } | string;
+    return { error: typeof d === 'string' ? d : [d?.code, d?.message ?? d?.error].filter((x) => x !== undefined && x !== null).join(' ') || event };
   }
   if (event === 'pusher:connection_established') {
     return { send: JSON.stringify({ event: 'pusher:subscribe', data: { auth: '', channel: `chatrooms.${chatroomId}.v2` } }) };
