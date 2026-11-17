@@ -26,14 +26,16 @@ export function connectKickChat(o: KickChatOptions): () => void {
     handshake = null;
   };
 
+  // Why Kick's chat service ended the last connection (its error, or the close code), shown to the streamer.
+  let why = '';
   const open = () => {
-    o.onStatus({ state: 'connecting', detail: retries ? 'إعادة الاتصال...' : 'جاري الاتصال بالشات...' });
+    o.onStatus({ state: 'connecting', detail: retries ? `إعادة الاتصال... (${why || 'انقطع'} · شات رقم ${o.chatroomId})` : `جاري الاتصال بالشات (رقم ${o.chatroomId})...` });
     let live = false;
     const sock = new WebSocket(o.url ?? KICK_PUSHER_URL);
     ws = sock;
     handshake = setTimeout(() => {
       if (live || stopped) return;
-      o.onStatus({ state: 'error', detail: 'ما رد شات Kick — تأكد من رقم الشات' });
+      o.onStatus({ state: 'error', detail: `ما رد شات Kick${why ? ` (${why})` : ''} — شات رقم ${o.chatroomId}` });
       stopped = true;
       sock.close();
     }, o.handshakeMs ?? 12000);
@@ -47,11 +49,14 @@ export function connectKickChat(o: KickChatOptions): () => void {
         o.onStatus({ state: 'live' });
       }
       if (r.message) o.onMessage(r.message);
+      if (r.error) why = r.error;
     };
     // Browsers send "error" then "close"; Node's WebSocket sends only "error" when the connection fails,
     // so both lead to the same one-shot handler (and close() inside it can't loop).
     let ended = false;
-    const end = () => {
+    const end = (ev?: Event) => {
+      const code = (ev as CloseEvent | undefined)?.code;
+      if (!why && code && code !== 1000 && code !== 1005) why = `رمز ${code}${(ev as CloseEvent).reason ? ` ${(ev as CloseEvent).reason}` : ''}`;
       if (ended) return;
       ended = true;
       clear();
@@ -62,7 +67,7 @@ export function connectKickChat(o: KickChatOptions): () => void {
       }
       if (stopped) return;
       if (retries >= (o.maxRetries ?? 5)) {
-        o.onStatus({ state: 'error', detail: 'انقطع الاتصال بشات القناة' });
+        o.onStatus({ state: 'error', detail: `انقطع الاتصال بشات القناة${why ? ` (${why})` : ''} — شات رقم ${o.chatroomId}` });
         return;
       }
       timer = setTimeout(open, (o.retryMs ?? 2000) * 2 ** retries++);

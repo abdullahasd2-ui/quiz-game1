@@ -115,8 +115,20 @@ async function findChatroom(slugs: string[]): Promise<{ slug: string; id: number
         const id = ((await res.json()) as { chatroom?: { id?: number } }).chatroom?.id;
         if (Number.isInteger(id)) return { slug, id: id! };
       } catch {
-        // Blocked, offline or not found: try the next spelling, then let the server look it up.
+        // Blocked (Kick's API does not answer other sites), offline or not found: try the next way.
       }
+    }
+  }
+  // Kick's API refuses other websites in a browser, but answers our server: it only looks the number up, and the
+  // browser still opens the chat itself.
+  for (const slug of slugs) {
+    try {
+      const res = await fetch(`${SERVER_URL}/api/kick/chatroom/${encodeURIComponent(slug)}`, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) continue;
+      const { id } = (await res.json()) as { id?: number };
+      if (Number.isInteger(id)) return { slug, id: id! };
+    } catch {
+      // Try the next spelling.
     }
   }
   return null;
@@ -304,7 +316,7 @@ export function KickQuizPage() {
     const slugs = kickSlugs(channel);
 
     // Through our server: a linked account (Kick's webhook), or when the browser could not read the chat itself.
-    const viaServer = (hit: { slug: string; id: number } | null) => {
+    const viaServer = (hit: { slug: string; id: number } | null, browserWhy?: string) => {
       if (gone || socket) return;
       socket = io(`${SERVER_URL}/kick`);
       socket.on('connect', () =>
@@ -312,7 +324,8 @@ export function KickQuizPage() {
           if (!res.ok) setStatus({ state: 'error', detail: res.error });
         }),
       );
-      socket.on('kick:status', setStatus);
+      // Keep what the browser's own attempt ran into next to the server's status (to see why a channel fails).
+      socket.on('kick:status', (st) => setStatus(browserWhy && st.state !== 'live' ? { ...st, detail: `${st.detail ?? ''} · محاولة المتصفح: ${browserWhy}` } : st));
       socket.on('kick:message', (m) => onChat(m.user, m.text));
       socket.on('connect_error', () => setStatus({ state: 'error', detail: 'تعذّر الاتصال بالسيرفر' }));
     };
@@ -338,7 +351,7 @@ export function KickQuizPage() {
               // The browser could not read it either: let the server try.
               stopBrowser?.();
               stopBrowser = null;
-              return viaServer(hit);
+              return viaServer(hit, st.detail);
             }
             setStatus(st);
           },
