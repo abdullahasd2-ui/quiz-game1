@@ -1,4 +1,4 @@
-import { handleKickFrame, KICK_PUSHER_URL, type KickMessage, type KickStatus } from '@quiz/shared';
+import { handleKickFrame, KICK_PUSHER_URL, kickSlugs, type KickMessage, type KickStatus } from '@quiz/shared';
 
 // Kick has no official "read chat" socket for third parties; its own site uses a Pusher channel
 // per chat room. This reads that channel (public, read-only). If Kick changes it, only this file breaks.
@@ -16,10 +16,11 @@ export type ResolveChatroom = (channel: string) => Promise<number>;
 
 export const resolveChatroomFromKick: ResolveChatroom = async (channel) => {
   let last = 'no response';
-  // Kick has two public channel endpoints; either one carries the chat room id.
+  // Kick has two public channel endpoints; either one carries the chat room id. Each spelling of the name is tried.
+  for (const slug of kickSlugs(channel).length ? kickSlugs(channel) : [channel])
   for (const path of ['api/v2/channels', 'api/v1/channels']) {
     try {
-      const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(channel)}`, {
+      const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(slug)}`, {
         headers: { 'user-agent': USER_AGENT, accept: 'application/json', 'accept-language': 'en-US,en;q=0.9' },
         signal: AbortSignal.timeout(8000),
       });
@@ -150,7 +151,7 @@ export class KickChatHub {
         this.opts.onError?.(err);
         const why = err instanceof Error ? err.message : String(err);
         if (this.channels.get(key) === ch) {
-          this.setStatus(ch, { state: 'error', detail: `تعذّر الوصول لقناة «${key}» (${why}) — تأكد من الاسم، أو اكتب رقم الشات يدوياً من "متقدم"` });
+          this.setStatus(ch, { state: 'error', detail: `تعذّر الوصول لقناة «${key}» (${why}) — اكتب اسم القناة مثل ما يطلع في رابطها: kick.com/الاسم` });
         }
         return;
       }

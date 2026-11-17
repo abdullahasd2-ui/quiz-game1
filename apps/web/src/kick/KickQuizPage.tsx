@@ -4,7 +4,6 @@ import {
   judgeUnknown,
   deal,
   finish,
-  KICK_CHANNEL_RE,
   newStream,
   publicView,
   POINTS,
@@ -23,6 +22,7 @@ import {
   type StreamerAct,
   type StreamVariant,
   streamLabels,
+  kickSlugs,
   hideQuestion,
   packDeck,
   packQuestion,
@@ -102,6 +102,23 @@ function ControlDock({ phase, counter, joined, answered, left, go }: { phase: st
       )}
     </div>
   );
+}
+
+/** The channel's chat room, looked up from the streamer's browser (each spelling of the name, both Kick endpoints). */
+async function findChatroom(slugs: string[]): Promise<{ slug: string; id: number } | null> {
+  for (const slug of slugs) {
+    for (const path of ['api/v2/channels', 'api/v1/channels']) {
+      try {
+        const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(slug)}`, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(6000) });
+        if (!res.ok) continue;
+        const id = ((await res.json()) as { chatroom?: { id?: number } }).chatroom?.id;
+        if (Number.isInteger(id)) return { slug, id: id! };
+      } catch {
+        // Blocked, offline or not found: try the next spelling, then let the server look it up.
+      }
+    }
+  }
+  return null;
 }
 
 const STREAM_KEYS: HotkeyRow[] = [
@@ -281,10 +298,17 @@ export function KickQuizPage() {
   useEffect(() => {
     if (!playing || test) return;
     const socket: KickSocket = io(`${SERVER_URL}/kick`);
+    // Kick often refuses lookups from servers but not from a browser: the chat room is found here first and
+    // handed to the server (which still looks it up itself when this fails). No Kick login is needed.
+    const slugs = kickSlugs(channel);
+    const found = linked ? Promise.resolve(null) : findChatroom(slugs);
+    if (!linked) setStatus({ state: 'connecting', detail: 'جاري البحث عن القناة...' });
     socket.on('connect', () =>
-      socket.emit('kick:watch', { channel: channel.trim(), official: Boolean(linked) || undefined }, (res) => {
-        if (!res.ok) setStatus({ state: 'error', detail: res.error });
-      }),
+      void found.then((hit) =>
+        socket.emit('kick:watch', { channel: hit?.slug ?? slugs[0] ?? channel.trim(), chatroomId: hit?.id, official: Boolean(linked) || undefined }, (res) => {
+          if (!res.ok) setStatus({ state: 'error', detail: res.error });
+        }),
+      ),
     );
     socket.on('kick:status', setStatus);
     socket.on('kick:message', (m) => onChat(m.user, m.text));
@@ -295,8 +319,10 @@ export function KickQuizPage() {
   }, [playing, test, channel, linked, onChat]);
 
   function start(testMode: boolean) {
-    const name = channel.trim() || 'الستريمر';
-    if (!testMode && !KICK_CHANNEL_RE.test(name)) return setError('اكتب اسم قناتك في Kick (حروف إنجليزية وأرقام)');
+    // «@name», a kick.com link or the name itself; the shown name drops the link and the @.
+    const typed = channel.trim().replace(/^https?:\/\/(www\.)?kick\.com\//i, '').replace(/^(www\.)?kick\.com\//i, '').replace(/^@/, '').split(/[/?#\s]/)[0] ?? '';
+    const name = typed || 'الستريمر';
+    if (!testMode && !kickSlugs(channel).length) return setError('اكتب اسم قناتك في Kick مثل ما يطلع في رابطها (حروف إنجليزية وأرقام)');
     setTest(testMode);
     setStatus({ state: 'connecting' });
     setError('');

@@ -3,6 +3,21 @@ import type { Ack } from './game';
 /** Kick channel slugs: letters, digits, `_` and `-`. */
 export const KICK_CHANNEL_RE = /^[A-Za-z0-9_-]{1,25}$/;
 
+/**
+ * The channel addresses to try for what the streamer typed: a full link, «@name» or the name itself all work,
+ * and an underscore is also tried as a hyphen (Kick turns «abo_ali» into kick.com/abo-ali).
+ */
+export function kickSlugs(input: string): string[] {
+  const name = input
+    .trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/^(www\.)?kick\.com\//i, '')
+    .replace(/^@/, '')
+    .split(/[/?#\s]/)[0]!
+    .toLowerCase();
+  return [...new Set([name.replace(/_/g, '-'), name])].filter((s) => KICK_CHANNEL_RE.test(s));
+}
+
 export type KickWatchInput = { channel: string; /** Skip the lookup when the server can't resolve the chat room by itself. */ chatroomId?: number; /** Chat arrives through the linked Kick app (webhook), not by reading Kick's site. */ official?: boolean };
 export type KickStatus = { state: 'connecting' | 'live' | 'error'; detail?: string };
 export type KickMessage = { user: string; text: string };
