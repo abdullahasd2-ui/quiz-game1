@@ -594,8 +594,8 @@ export function KickQuizPage() {
           </div>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
+            <QuizHowToButton forStreamer fancy />
             <VideoGuideButton />
-            <QuizHowToButton forStreamer />
           </div>
           <div className="q-card">
             {canLink && !linked && (
