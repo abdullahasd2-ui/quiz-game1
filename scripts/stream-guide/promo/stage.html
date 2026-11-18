@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{--bg:#07071a;--panel:#0f0f28;--line:#2a2a4a;--gold:#f7c948;--orange:#ff6b35;--cyan:#38bdf8;--purple:#a855f7;--pink:#f472b6;--green:#27ae60;--red:#e74c3c}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Tajawal,sans-serif;color:#fff}
+  #stage{position:absolute;inset:0;overflow:hidden}
+  .abs{position:absolute}
+  .layer{position:absolute;inset:0;will-change:transform,opacity,filter}
+  #bg{background:radial-gradient(70% 60% at 70% 0%,#2a1460 0%,transparent 60%),radial-gradient(60% 60% at 10% 100%,#06284a 0%,transparent 60%),var(--bg)}
+  .dot{position:absolute;border-radius:50%}
+  .glyph{position:absolute;font-family:Lalezar;color:#fff;opacity:.05}
+  /* browser window around a real screenshot */
+  .win{position:absolute;left:0;top:0;border-radius:18px;overflow:hidden;background:#0b0b20;box-shadow:0 60px 120px -30px rgba(0,0,0,.9),0 0 0 1.5px rgba(255,255,255,.12),0 0 90px -20px rgba(168,85,247,.45)}
+  .win .bar{height:34px;display:flex;align-items:center;gap:8px;padding:0 14px;background:linear-gradient(#1a1a38,#121230);direction:ltr;border-bottom:1px solid rgba(255,255,255,.08)}
+  .win .bar i{width:12px;height:12px;border-radius:50%;display:block}
+  .win .bar .url{margin-left:14px;flex:1;max-width:520px;height:22px;border-radius:11px;background:rgba(255,255,255,.07);font:600 13px Tajawal;color:#ffffffb0;display:flex;align-items:center;padding:0 12px}
+  .win .bar .live{margin-left:auto;font:900 13px Tajawal;background:#e11d48;color:#fff;border-radius:6px;padding:2px 8px;letter-spacing:.5px}
+  .win img{display:block}
+  .ring{position:absolute;border-radius:14px;border:4px solid var(--gold);box-shadow:0 0 0 6px rgba(247,201,72,.18),0 0 40px rgba(247,201,72,.6)}
+  .ripple{position:absolute;border-radius:50%;border:5px solid #fff;transform:translate(-50%,-50%)}
+  /* titles */
+  .chap{position:absolute;right:90px;top:70px;display:flex;align-items:center;gap:22px;direction:rtl;padding:18px 30px 18px 40px;border-radius:32px;background:linear-gradient(90deg,rgba(7,7,26,.55),rgba(7,7,26,.92));border:1.5px solid rgba(255,255,255,.12);box-shadow:0 30px 80px -20px rgba(0,0,0,.9);backdrop-filter:blur(14px)}
+  .chap .num{font:400 44px Lalezar;width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,var(--orange),var(--gold));color:#111;box-shadow:0 12px 40px -8px rgba(255,107,53,.7)}
+  .chap .t{font:400 76px/1.15 Lalezar;white-space:nowrap;background:linear-gradient(90deg,#fff,#ffe9a8);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(0,0,0,.7))}
+  .chap .s{font:800 30px Tajawal;color:#ffffffd0;margin-top:2px;white-space:nowrap}
+  .chip{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:999px;font:800 30px Tajawal;background:rgba(15,15,40,.86);border:2px solid rgba(255,255,255,.14);box-shadow:0 20px 50px -15px rgba(0,0,0,.8);white-space:nowrap}
+  .chip b{font-weight:900}
+  .big{font:400 150px/1 Lalezar;text-align:center;white-space:nowrap}
+  .grad{background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));-webkit-background-clip:text;color:transparent}
+  .gold{background:linear-gradient(90deg,var(--orange),var(--gold));-webkit-background-clip:text;color:transparent}
+  /* chat */
+  .chat{position:absolute;left:70px;top:250px;width:470px;border-radius:24px;background:rgba(10,10,30,.92);border:2px solid rgba(255,255,255,.12);box-shadow:0 40px 90px -20px rgba(0,0,0,.95);overflow:hidden}
+  .chat .h{padding:16px 22px;font:900 26px Tajawal;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+  .chat .h span{width:12px;height:12px;border-radius:50%;background:#53fc18;box-shadow:0 0 12px #53fc18}
+  .chat .body{padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px;min-height:120px}
+  .msg{font:800 30px Tajawal;padding:10px 16px;border-radius:16px;background:rgba(255,255,255,.06);transform-origin:right center;white-space:nowrap}
+  .msg b{font-weight:900}
+  /* cards for 1 / 2 */
+  .card{position:absolute;width:560px;height:520px;border-radius:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;box-shadow:0 60px 120px -30px rgba(0,0,0,.95)}
+  .card .n{font:400 260px/0.9 Lalezar}
+  .card .w{font:400 92px/1 Lalezar}
+  .card .d{font:800 30px Tajawal;opacity:.9;text-align:center;line-height:1.35;padding:0 30px}
+  .stamp{position:absolute;padding:18px 34px;border-radius:26px;font:900 42px Tajawal;white-space:nowrap;box-shadow:0 30px 80px -20px rgba(0,0,0,.9)}
+  .flash{position:absolute;inset:0;background:#fff;pointer-events:none}
+  .sweep{position:absolute;top:-30%;height:160%;width:520px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.85),rgba(168,85,247,.95),rgba(244,114,182,.85),transparent);transform:skewX(-18deg);filter:blur(6px);mix-blend-mode:screen}
+  .vignette{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.65));pointer-events:none}
+  .logo{position:absolute}
+  .conf{position:absolute;width:16px;height:26px;border-radius:4px}
+  .lock{position:absolute;width:260px;height:260px;border-radius:70px;display:grid;place-items:center;background:linear-gradient(135deg,#1e1b4b,#3b0764);border:3px solid rgba(168,85,247,.7);box-shadow:0 0 120px rgba(168,85,247,.6)}
+</style>
+</head>
+<body>
+<script src="data.js"></script>
+<div id="stage">
+  <div id="bg" class="layer"></div>
+  <div id="particles" class="layer"></div>
+  <div id="scenes" class="layer"></div>
+  <div id="fx" class="layer"></div>
+  <div class="vignette"></div>
+</div>
+<script>
+// ---------- helpers ----------
+const W = 1920, H = 1080;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = {
+  io: (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
+  out: (k) => 1 - Math.pow(1 - k, 3),
+  out5: (k) => 1 - Math.pow(1 - k, 5),
+  in: (k) => k * k * k,
+  back: (k) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+  elastic: (k) => (k === 0 || k === 1 ? k : Math.pow(2, -10 * k) * Math.sin((k * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1),
+};
+// progress of t through [a, a+d], eased
+const P = (t, a, d, e = ease.out) => e(clamp((t - a) / d));
+function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; (parent || document.body).appendChild(e); return e; };
+const css = (e, o) => { for (const k in o) e.style[k] = o[k]; };
+
+const SHOTS = window.SHOTS; // shots.json
+const DUR = window.DUR;     // voice line lengths
+
+// ---------- timeline ----------
+const EVENTS = []; // sound cues for the mix: {t, s}
+const VOICE = [];  // {t, key}
+const scenes = [];
+let cursor = 0;
+function scene(key, voice, opts, build) {
+  const lead = opts.lead ?? 0.45, tail = opts.tail ?? 0.4;
+  const start = opts.start ?? cursor;
+  const vAt = start + lead;
+  const end = opts.len ? start + opts.len : vAt + (voice ? DUR[voice] : 0) + tail;
+  if (voice) VOICE.push({ t: +vAt.toFixed(3), key: voice });
+  const root = el('div', 'layer', document.getElementById('scenes'));
+  const s = { key, start, end, vAt, root, len: end - start };
+  s.update = build(s, root);
+  scenes.push(s);
+  cursor = end;
+  return s;
+}
+const cue = (t, s, v = 1) => EVENTS.push({ t: +t.toFixed(3), s, v });
+
+// a real screenshot inside a browser window, moved by a camera
+function shotWindow(root, name, { url = 'jawabbadel.com/kick/quiz', live = false } = {}) {
+  const m = SHOTS[name];
+  const world = el('div', 'abs', root);
+  css(world, { left: '0', top: '0', transformOrigin: '0 0' });
+  const win = el('div', 'win', world);
+  const barH = 34;
+  css(win, { width: m.w + 'px', height: (m.h + barH) + 'px' });
+  win.innerHTML = `<div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><div class="url">🔒 ${url}</div>${live ? '<div class="live">● LIVE · شاشة البث</div>' : ''}</div>`;
+  const img = el('img', null, win);
+  img.src = `shots/${name}.jpg`;
+  css(img, { width: m.w + 'px', height: m.h + 'px' });
+  const over = el('div', 'abs', world); // overlays in screenshot coordinates
+  css(over, { left: '0', top: barH + 'px', width: m.w + 'px', height: m.h + 'px' });
+  const box = (k) => (typeof k === 'string' ? m.boxes[k] : k);
+  // camera: keys [{t, b: box|name, fit: fraction of screen, z?}], world coords incl. bar
+  const camAt = (keys, lt) => {
+    const resolve = (k) => {
+      if (k.full) return { cx: m.w / 2, cy: (m.h + barH) / 2 + (k.dy || 0), z: k.z ?? (W * 0.84) / m.w };
+      const b = box(k.b);
+      const fitZ = Math.min((W * (k.fit ?? 0.5)) / b.w, (H * (k.fitH ?? 0.55)) / b.h);
+      return { cx: b.x + b.w / 2 + (k.dx || 0), cy: b.y + b.h / 2 + barH + (k.dy || 0), z: k.z ?? Math.min(fitZ, k.zMax ?? 2.5) };
+    };
+    // each key starts a move at its time t, lasting d; moves chain from wherever the camera is
+    let st = resolve(keys[0]);
+    for (let i = 1; i < keys.length; i++) {
+      const k = keys[i];
+      if (lt < k.t) break;
+      const e = ease.io(clamp((lt - k.t) / (k.d ?? 0.8)));
+      const r = resolve(k);
+      st = { cx: lerp(st.cx, r.cx, e), cy: lerp(st.cy, r.cy, e), z: Math.exp(lerp(Math.log(st.z), Math.log(r.z), e)) };
+    }
+    return st;
+  };
+  const apply = (c, extra = {}) => {
+    const drift = extra.drift ?? 1;
+    const z = c.z * drift;
+    world.style.transform = `translate(${W / 2 - c.cx * z + (extra.x || 0)}px, ${H / 2 - c.cy * z + (extra.y || 0)}px) scale(${z})`;
+  };
+  return { world, win, over, img, m, camAt, apply, box, barH };
+}
+// a gold ring that draws itself around a box (screenshot coords)
+function ringOn(over, b, pad = 10) {
+  const r = el('div', 'ring', over);
+  css(r, { left: b.x - pad + 'px', top: b.y - pad + 'px', width: b.w + pad * 2 + 'px', height: b.h + pad * 2 + 'px', opacity: 0 });
+  return (k) => { r.style.opacity = k; r.style.transform = `scale(${lerp(1.25, 1, ease.back(clamp(k)))})`; };
+}
+function rippleOn(over, b) {
+  const r = el('div', 'ripple', over);
+  css(r, { left: b.x + b.w / 2 + 'px', top: b.y + b.h / 2 + 'px', opacity: 0 });
+  return (k) => { // k 0..1 over the click
+    if (k <= 0 || k >= 1) { r.style.opacity = 0; return; }
+    const s = lerp(20, 160, ease.out(k));
+    css(r, { width: s + 'px', height: s + 'px', opacity: 1 - k });
+  };
+}
+function chapter(root, num, title, sub) {
+  const c = el('div', 'chap', root, `<div class="num">${num}</div><div><div class="t">${title}</div>${sub ? `<div class="s">${sub}</div>` : ''}</div>`);
+  const n = c.querySelector('.num'), t = c.querySelector('.t'), s = c.querySelector('.s');
+  return (lt, out) => {
+    const a = P(lt, 0.05, 0.5, ease.back), b = P(lt, 0.15, 0.55, ease.out5), d = P(lt, 0.35, 0.5);
+    n.style.transform = `scale(${a}) rotate(${(1 - a) * -90}deg)`;
+    t.style.clipPath = `inset(0 0 0 ${(1 - b) * 100}%)`;
+    t.style.transform = `translateX(${(1 - b) * 60}px)`;
+    if (s) { s.style.opacity = d; s.style.transform = `translateY(${(1 - d) * 20}px)`; }
+    c.style.opacity = 1 - out;
+  };
+}
+function chatBox(root, msgs, { x = 70, y = 250 } = {}) {
+  const c = el('div', 'chat', root, `<div class="h"><span></span> الشات</div><div class="body"></div>`);
+  css(c, { left: x + 'px', top: y + 'px' });
+  const body = c.querySelector('.body');
+  const colors = ['#53fc18', '#38bdf8', '#f472b6', '#f7c948', '#a855f7'];
+  const items = msgs.map(([who, text, at], i) => {
+    const m = el('div', 'msg', body, `<b style="color:${colors[i % colors.length]}">${who}:</b> ${text}`);
+    return { m, at };
+  });
+  return (lt, inK) => {
+    c.style.opacity = inK;
+    c.style.transform = `translateX(${(1 - inK) * -140}px)`;
+    for (const { m, at } of items) {
+      const k = P(lt, at, 0.35, ease.back);
+      m.style.display = lt >= at ? 'block' : 'none';
+      m.style.transform = `scale(${k})`;
+      m.style.opacity = clamp((lt - at) / 0.12);
+    }
+  };
+}
+const chip = (root, html, style) => { const c = el('div', 'chip abs', root, html); css(c, style || {}); return c; };
+const pop = (e, lt, at, d = 0.4) => { const k = P(lt, at, d, ease.back); e.style.transform = `${e.dataset.base || ''} scale(${k})`; e.style.opacity = clamp((lt - at) / 0.15); return k; };
+
+// ---------- background ----------
+const parts = [];
+(() => {
+  const r = rng(7), root = document.getElementById('particles');
+  for (let i = 0; i < 46; i++) {
+    const d = el('div', 'dot', root);
+    const s = 3 + r() * 9, hue = [195, 270, 320, 45][i % 4];
+    css(d, { width: s + 'px', height: s + 'px', background: `hsla(${hue},90%,70%,${0.25 + r() * 0.4})`, boxShadow: `0 0 ${s * 3}px hsla(${hue},90%,65%,.8)` });
+    parts.push({ d, x: r() * W, y: r() * H, vx: (r() - 0.5) * 20, vy: -10 - r() * 30, ph: r() * 6 });
+  }
+  for (let i = 0; i < 10; i++) {
+    const g = el('div', 'glyph', root, ['؟', 'جاوب', 'بادل', '؟', '100', '×2'][i % 6]);
+    css(g, { fontSize: 80 + r() * 120 + 'px' });
+    parts.push({ d: g, x: r() * W, y: r() * H, vx: (r() - 0.5) * 12, vy: -8 - r() * 10, ph: r() * 6, rot: (r() - 0.5) * 40 });
+  }
+})();
+function drawBg(t) {
+  for (const p of parts) {
+    const x = ((p.x + p.vx * t) % (W + 200) + W + 200) % (W + 200) - 100;
+    const y = ((p.y + p.vy * t) % (H + 300) + H + 300) % (H + 300) - 150;
+    p.d.style.transform = `translate(${x}px,${y}px) rotate(${(p.rot || 0) + Math.sin(t * 0.6 + p.ph) * 8}deg)`;
+  }
+  document.getElementById('bg').style.backgroundPosition = `${Math.sin(t * 0.2) * 40}px ${Math.cos(t * 0.15) * 30}px`;
+}
+
+// ---------- scenes ----------
+const fx = document.getElementById('fx');
+
+// 0. cold open: words slam in, the spinning arrows, flash, the logo
+scene('intro', null, { start: 0, len: 4.4 }, (s, root) => {
+  const w1 = el('div', 'big abs', root, 'جاوب'), w2 = el('div', 'big abs grad', root, 'أو'), w3 = el('div', 'big abs gold', root, 'بادل؟');
+  [w1, w2, w3].forEach((w) => css(w, { left: '0', right: '0', top: '420px', fontSize: '210px' }));
+  const icon = el('img', 'logo', root); icon.src = 'assets/app-icon-t.png'; css(icon, { width: '560px', left: (W - 560) / 2 + 'px', top: (H - 560) / 2 + 'px' });
+  const logo = el('img', 'logo', root); logo.src = 'assets/app-icon-action-v2-t.png'; css(logo, { width: '760px', left: (W - 760) / 2 + 'px', top: (H - 760) / 2 - 10 + 'px' });
+  const fl = el('div', 'flash', root);
+  cue(0.0, 'riser'); cue(0.25, 'hit', 0.8); cue(0.85, 'hit', 0.8); cue(1.45, 'hit', 1); cue(2.0, 'whoosh'); cue(2.75, 'impact');
+  return (lt) => {
+    // three words, each slams then gets pushed out
+    const slam = (w, a, b) => {
+      const k = P(lt, a, 0.22, ease.out5), o = P(lt, b, 0.18, ease.in);
+      w.style.opacity = lt < a ? 0 : 1 - o;
+      w.style.transform = `scale(${lerp(2.6, 1, k) * lerp(1, 0.7, o)}) translateY(${o * -30}px)`;
+      w.style.filter = `blur(${(1 - k) * 14 + o * 10}px)`;
+    };
+    slam(w1, 0.2, 0.75); slam(w2, 0.8, 1.35); slam(w3, 1.4, 2.0);
+    const ik = P(lt, 1.95, 0.7, ease.out5), io = P(lt, 2.65, 0.15);
+    icon.style.opacity = lt < 1.95 ? 0 : 1 - io;
+    icon.style.transform = `scale(${lerp(0.3, 1, ik)}) rotate(${(1 - ik) * -540}deg)`;
+    const lk = P(lt, 2.72, 0.9, ease.elastic);
+    logo.style.opacity = lt < 2.72 ? 0 : 1;
+    logo.style.transform = `scale(${lerp(0.6, 1, lk) * (1 + Math.sin(lt * 3) * 0.012)})`;
+    logo.style.filter = `drop-shadow(0 0 ${40 + Math.sin(lt * 4) * 15}px rgba(168,85,247,.7))`;
+    fl.style.opacity = lt < 2.72 ? 0 : clamp(1 - (lt - 2.72) / 0.45) * 0.95;
+  };
+});
+
+// 1. title: logo up top, the promise, the real game floating in 3D
+scene('title', 'title', { start: 4.4, lead: 0.15, tail: 0.5 }, (s, root) => {
+  const logo = el('img', 'logo', root); logo.src = 'assets/app-icon-action-v2-t.png';
+  const tag = el('div', 'abs', root, `<div style="font:400 74px Lalezar;text-align:center">العب مع شات <span style="color:#53fc18">Kick</span> مباشرة</div><div style="font:800 34px Tajawal;text-align:center;opacity:.85;margin-top:6px">المتابعين يدخلون ويجاوبون من الشات</div>`);
+  css(tag, { left: '0', right: '0', top: '600px' });
+  const cards = ['board', 'options', 'podium'].map((n, i) => {
+    const c = el('div', 'win abs', root); c.innerHTML = `<img src="shots/${n}.jpg" style="width:640px;height:360px;display:block">`;
+    css(c, { width: '640px', height: '360px', top: '640px', left: [120, 640, 1160][i] + 'px' });
+    return c;
+  });
+  cue(s.start + 0.1, 'whoosh', 0.6);
+  return (lt) => {
+    const up = P(lt, 0.2, 0.9, ease.io);
+    css(logo, { width: '520px', left: (W - 520) / 2 + 'px', top: lerp(150, 40, up) + 'px', transform: `scale(${lerp(1.46, 1, up)})` });
+    const tk = P(lt, 0.7, 0.6, ease.out5), tout = P(lt, 2.9, 0.4);
+    tag.style.opacity = tk * (1 - tout);
+    tag.style.transform = `translateY(${(1 - tk) * 40 - tout * 40}px)`;
+    tag.style.top = '600px';
+    cards.forEach((c, i) => {
+      const k = P(lt, 3.0 + i * 0.18, 0.8, ease.out5);
+      const y = lerp(1180, 560, k) + Math.sin(lt * 1.3 + i) * 10;
+      const rot = [-14, 0, 14][i];
+      c.style.opacity = k;
+      c.style.transform = `translateY(${y - 640}px) perspective(1400px) rotateY(${rot * (1 - 0.3 * k)}deg) rotateZ(${[-4, 0, 4][i]}deg) scale(${i === 1 ? 1.12 : 0.98})`;
+      c.style.zIndex = i === 1 ? 2 : 1;
+    });
+  };
+});
+
+// 2. start the stream: type the channel name, press «ابدأ البث»
+scene('s1', 's1', { lead: 0.5, tail: 0.55 }, (s, root) => {
+  const A = shotWindow(root, 'start');
+  const typed = el('img', 'abs', A.over); typed.src = 'shots/start-typed.jpg';
+  const b = A.m.boxes.input;
+  // the typed name, revealed letter by letter (a crop of the typed screenshot over the empty field)
+  const crop = el('div', 'abs', A.over);
+  css(crop, { left: b.x + 'px', top: b.y + 'px', width: b.w + 'px', height: b.h + 'px', overflow: 'hidden' });
+  crop.appendChild(typed); css(typed, { left: -b.x + 'px', top: -b.y + 'px', width: A.m.w + 'px', height: A.m.h + 'px' });
+  const ring = ringOn(A.over, b), rip = rippleOn(A.over, A.m.boxes.go);
+  const ch = chapter(root, '1', 'ابدأ البث', 'اكتب اسم قناتك في Kick');
+  const keys = [{ t: 0, full: true, z: 1.05 }, { t: 0.5, b: 'input', fit: 0.62, dy: 40, d: 0.9 }, { t: 2.6, b: 'go', fit: 0.6, dy: -10, d: 0.6 }];
+  const T0 = 1.3; // typing starts
+  for (let i = 0; i < 13; i++) cue(s.start + T0 + i * 0.08, 'tick', 0.35);
+  cue(s.start + 3.2, 'click');
+  return (lt) => {
+    A.apply(A.camAt(keys, lt), { drift: 1 + lt * 0.006 });
+    const k = clamp((lt - T0) / 1.05);
+    crop.style.clipPath = `inset(0 ${(1 - k) * 100}% 0 0)`;
+    ring(P(lt, 0.9, 0.4));
+    rip(clamp((lt - 3.2) / 0.6));
+    const press = lt > 3.15 && lt < 3.4 ? 0.96 : 1;
+    ch(lt, 0);
+  };
+});
+
+// 3. the broadcast screen link → OBS browser source, and what viewers see
+scene('s2', 's2', { lead: 0.5, tail: 0.5 }, (s, root) => {
+  const A = shotWindow(root, 'control');
+  const B = shotWindow(root, 'screen-lobby', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const ring = ringOn(A.over, A.m.boxes.link, 8), rip = rippleOn(A.over, A.m.boxes.link);
+  const ch = chapter(root, '2', 'شاشة البث في OBS', 'انسخ الرابط ← مصدر متصفح');
+  const flow = el('div', 'abs', root, `
+    <div class="chip" style="border-color:rgba(247,201,72,.6)">🔗 <b>رابط شاشة البث</b></div>
+    <div style="font:400 70px Lalezar;color:var(--gold)">←</div>
+    <div class="chip" style="border-color:rgba(56,189,248,.6)">🎥 <b>OBS</b> · مصدر متصفح</div>`);
+  css(flow, { left: '0', right: '0', top: '860px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '28px', direction: 'rtl' });
+  const keysA = [{ t: 0, full: true, z: 1.0, dy: -250 }, { t: 0.6, b: 'link', fit: 0.22, fitH: 0.2, dy: 60, d: 0.9 }];
+  cue(s.start + 1.7, 'click'); cue(s.start + 2.3, 'pop'); cue(s.start + 2.6, 'pop'); cue(s.start + 3.3, 'whoosh', 0.7);
+  return (lt) => {
+    A.apply(A.camAt(keysA, lt), { drift: 1 + lt * 0.01 });
+    ring(P(lt, 1.3, 0.4)); rip(clamp((lt - 1.7) / 0.6));
+    const fk = P(lt, 2.1, 0.5, ease.back);
+    flow.style.opacity = clamp((lt - 2.1) / 0.2); flow.style.transform = `scale(${fk})`;
+    // the broadcast screen slides in as the "live" view
+    const bk = P(lt, 3.3, 0.8, ease.out5);
+    B.world.style.opacity = lt < 3.3 ? 0 : 1;
+    const c = { cx: B.m.w / 2, cy: (B.m.h + 34) / 2, z: 1.12 };
+    B.apply(c, { x: (1 - bk) * -1500, drift: 1 + (lt - 3.3) * 0.01 });
+    B.world.style.filter = `blur(${(1 - bk) * 12}px)`;
+    A.world.style.opacity = 1 - P(lt, 3.6, 0.4);
+    flow.style.opacity = Math.min(flow.style.opacity, 1 - P(lt, 3.3, 0.3));
+    ch(lt, 0);
+  };
+});
+
+// 4. viewers type «دخول» and join
+scene('s3', 's3', { lead: 0.45, tail: 0.5 }, (s, root) => {
+  const A = shotWindow(root, 'screen-lobby', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const J = shotWindow(root, 'screen-joined', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const msgs = [['فهد', 'دخول', 0.7], ['سارة', 'دخول', 1.1], ['نواف', 'دخول', 1.5], ['ريم', 'دخول', 1.9]];
+  msgs.forEach(([, , at]) => cue(s.start + at, 'pop'));
+  const chat = chatBox(root, msgs, { x: 80, y: 300 });
+  const ch = chapter(root, '3', 'الشات يدخل اللعبة', 'كل واحد يكتب «دخول»');
+  const ring = ringOn(J.over, J.m.boxes.players, 10);
+  const cnt = chip(root, '👥 <b>4</b> لاعبين · لكل واحد نقاطه', { left: '760px', top: '900px', borderColor: 'rgba(83,252,24,.5)' });
+  cue(s.start + 2.4, 'ding', 0.6);
+  return (lt) => {
+    const c = { cx: A.m.w / 2 - 130, cy: (A.m.h + 34) / 2, z: 1.05 };
+    A.apply(c, { drift: 1 + lt * 0.008, x: 120 });
+    const sw = P(lt, 2.3, 0.35);
+    J.world.style.opacity = sw;
+    J.apply(J.camAt([{ t: 0, full: true, z: 1.05, }, { t: 2.6, b: 'players', fit: 0.62, dy: -60, d: 0.9 }], lt), { drift: 1 + lt * 0.008, x: 120 * (1 - P(lt, 2.6, 0.9, ease.io)) });
+    ring(P(lt, 3.3, 0.4));
+    chat(lt, P(lt, 0.3, 0.5, ease.out5) * (1 - P(lt, 3.4, 0.4)));
+    pop(cnt, lt, 3.6);
+    ch(lt, 0);
+  };
+});
+
+// 5. setup: «جاوب أو بادل», categories, answer time, start
+scene('s4', 's4', { lead: 0.45, tail: 0.6 }, (s, root) => {
+  const A = shotWindow(root, 'setup');
+  const bx = A.m.boxes;
+  const r1 = ringOn(A.over, bx.mode, 8);
+  const cats = [bx.cat1, bx.cats, bx.cat3].map((b) => ringOn(A.over, b, 5));
+  const r3 = ringOn(A.over, bx.time, 6), rip = rippleOn(A.over, bx.start);
+  const ch = chapter(root, '4', 'جهّز الجولة', 'الطور · الفئات · وقت الإجابة');
+  const keys = [
+    { t: 0, b: 'mode', fit: 0.42, fitH: 0.5, dx: -120, dy: 30 },
+    { t: 1.5, b: 'cats', fit: 0.55, fitH: 0.4, dx: 0, d: 0.7 },
+    { t: 3.0, b: 'time', fit: 0.4, fitH: 0.35, d: 0.6 },
+    { t: 4.2, b: 'start', fit: 0.6, d: 0.6 },
+  ];
+  cue(s.start + 0.7, 'click'); [2.0, 2.3, 2.6].forEach((t) => cue(s.start + t, 'tick', 0.8)); cue(s.start + 3.5, 'tick', 0.8); cue(s.start + 5.0, 'click');
+  return (lt) => {
+    A.apply(A.camAt(keys, lt), { drift: 1 + lt * 0.005 });
+    r1(P(lt, 0.6, 0.35));
+    cats.forEach((r, i) => r(P(lt, 2.0 + i * 0.3, 0.3)));
+    r3(P(lt, 3.5, 0.3));
+    rip(clamp((lt - 5.0) / 0.6));
+    ch(lt, 0);
+  };
+});
+
+// 6. pick a question on the board
+scene('s5', 's5', { lead: 0.45, tail: 0.5 }, (s, root) => {
+  const A = shotWindow(root, 'board', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const ring = ringOn(A.over, A.m.boxes.cell, 6), rip = rippleOn(A.over, A.m.boxes.cell);
+  const ch = chapter(root, '5', 'اختر سؤالك', 'من اللوحة في شاشة البث');
+  const pts = el('div', 'abs', root, `<div class="chip" style="font-size:40px;border-color:rgba(247,201,72,.6)">⭐ <b class="gold" style="font:400 56px Lalezar" id="pts">100</b> نقطة</div>`);
+  css(pts, { left: '0', right: '0', top: '880px', display: 'flex', justifyContent: 'center' });
+  const num = pts.querySelector('#pts');
+  const keys = [{ t: 0, full: true, z: 1.12, dy: 30 }, { t: 2.2, b: 'cell', fit: 0.42, d: 0.9 }];
+  cue(s.start + 3.2, 'click');
+  [1.0, 1.4, 1.8, 2.2].forEach((t) => cue(s.start + t, 'tick', 0.6));
+  return (lt) => {
+    A.apply(A.camAt(keys, lt), { drift: 1 + lt * 0.008 });
+    pop(pts, lt, 0.6);
+    const v = [100, 200, 300, 400, 500][Math.min(4, Math.max(0, Math.floor((lt - 0.6) / 0.4)))];
+    num.textContent = lt < 3.0 ? v : 200;
+    ring(P(lt, 2.8, 0.35)); rip(clamp((lt - 3.2) / 0.6));
+    ch(lt, 0);
+  };
+});
+
+// 7. the streamer answers first, in secret
+scene('s6', 's6', { lead: 0.4, tail: 0.6 }, (s, root) => {
+  const A = shotWindow(root, 'secret');
+  const B = shotWindow(root, 'screen-wait', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const lab = (t, x) => chip(root, t, { left: x + 'px', top: '900px' });
+  const la = lab('🎙️ صفحتك', 1370), lb = lab('📺 شاشة البث', 380);
+  const lock = el('div', 'lock', root, '<div style="font-size:150px">🔒</div>');
+  css(lock, { left: (W - 260) / 2 + 'px', top: (H - 260) / 2 - 20 + 'px' });
+  const ch = chapter(root, '6', 'جوابك سرّي', 'محد يشوف اختيارك');
+  cue(s.start + 0.9, 'impact', 0.6);
+  return (lt) => {
+    // split screen: your page on the right, the broadcast on the left
+    A.apply({ cx: A.m.w / 2, cy: A.m.h / 2, z: 0.72 }, { x: 480, y: 60, drift: 1 + lt * 0.01 });
+    B.apply({ cx: B.m.w / 2, cy: B.m.h / 2, z: 0.72 }, { x: -480, y: 60, drift: 1 + lt * 0.01 });
+    const k = P(lt, 0, 0.6, ease.out5);
+    A.world.style.opacity = k; B.world.style.opacity = P(lt, 0.15, 0.6);
+    pop(la, lt, 0.5); pop(lb, lt, 0.6);
+    const lk = P(lt, 0.9, 0.5, ease.back);
+    lock.style.opacity = clamp((lt - 0.9) / 0.15) * (1 - P(lt, 3.4, 0.4));
+    lock.style.transform = `scale(${lerp(2.2, 1, lk)}) rotate(${Math.sin(lt * 3) * 3}deg)`;
+    ch(lt, 0);
+  };
+});
+
+// 8. every viewer chooses: 1 = answer yourself, 2 = swap with the streamer
+scene('s7', 's7', { lead: 0.4, tail: 0.6 }, (s, root) => {
+  const c1 = el('div', 'card', root, `<div class="n">1</div><div class="w">جاوب</div><div class="d">تجاوب بنفسك</div>`);
+  const c2 = el('div', 'card', root, `<div class="n">2</div><div class="w">بادل</div><div class="d">تاخذ جواب الستريمر</div>`);
+  css(c1, { background: 'linear-gradient(160deg,#0c4a6e,#0e7490)', border: '3px solid rgba(56,189,248,.7)', top: '300px', left: (W / 2 + 40) + 'px' });
+  css(c2, { background: 'linear-gradient(160deg,#4c1d95,#9d174d)', border: '3px solid rgba(244,114,182,.7)', top: '300px', left: (W / 2 - 600) + 'px' });
+  const vs = el('div', 'abs', root, '<div style="font:400 90px Lalezar;color:var(--gold);text-shadow:0 0 40px rgba(247,201,72,.8)">أو</div>');
+  css(vs, { left: W / 2 - 50 + 'px', top: '470px', width: '100px', textAlign: 'center' });
+  const msgs = [['فهد', '1', 2.6], ['سارة', '2', 3.0], ['نواف', '1', 3.4], ['ريم', '2', 3.8]];
+  msgs.forEach(([, , at]) => cue(s.start + at, 'pop'));
+  const chat = chatBox(root, msgs, { x: 70, y: 260 });
+  const A = shotWindow(root, 'choose');
+  const ch = chapter(root, '7', 'جاوب أو بادل؟', 'كل متابع يختار من الشات');
+  cue(s.start + 0.5, 'impact', 0.8); cue(s.start + 0.8, 'impact', 0.8); cue(s.start + 4.6, 'whoosh', 0.7);
+  return (lt) => {
+    const k1 = P(lt, 0.4, 0.5, ease.back), k2 = P(lt, 0.7, 0.5, ease.back);
+    const out = P(lt, 4.6, 0.5, ease.in);
+    const shift = P(lt, 2.3, 0.6, ease.io) * 260; // make room for the chat
+    c1.style.transform = `translateX(${(1 - k1) * 900 + shift + out * 400}px) rotate(${(1 - k1) * 12 + 3}deg) scale(${lerp(1, 0.8, P(lt, 2.3, 0.6, ease.io))})`;
+    c2.style.transform = `translateX(${(1 - k2) * -900 + shift - out * 400}px) rotate(${(1 - k2) * -12 - 3}deg) scale(${lerp(1, 0.8, P(lt, 2.3, 0.6, ease.io))})`;
+    c1.style.opacity = c2.style.opacity = 1 - out;
+    const vk = P(lt, 1.0, 0.4, ease.back);
+    vs.style.transform = `translateX(${shift}px) scale(${vk})`; vs.style.opacity = clamp((lt - 1.0) / 0.1) * (1 - out);
+    chat(lt, P(lt, 2.3, 0.5, ease.out5) * (1 - out));
+    // then the real control page with the rule
+    A.world.style.opacity = P(lt, 4.8, 0.4);
+    A.apply(A.camAt([{ t: 4.8, b: 'rule', fit: 0.5, z: 1.5 }, { t: 5.2, b: 'rule', fit: 0.55, d: 2 }], lt), {});
+    ch(lt, 0);
+  };
+});
+
+// 9. answers: the number 1-4 or the answer itself; the question ends when everyone answered
+scene('s8', 's8', { lead: 0.4, tail: 0.6 }, (s, root) => {
+  const A = shotWindow(root, 'options', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const msgs = [['فهد', 'أبوظبي', 2.4], ['نواف', 'دبي', 2.9]];
+  msgs.forEach(([, , at]) => cue(s.start + at, 'pop'));
+  const chat = chatBox(root, msgs, { x: 70, y: 420 });
+  const ch = chapter(root, '8', 'جاوب بسرعة', 'رقم من 1 إلى 4 · أو الجواب نفسه');
+  const fast = chip(root, '⚡ السؤال يخلص أول ما يجاوب الكل', { left: '620px', top: '900px', borderColor: 'rgba(247,201,72,.6)', fontSize: '36px' });
+  const nums = [1, 2, 3, 4].map((n, i) => { const c = el('div', 'abs', root, `<div style="width:96px;height:96px;border-radius:26px;display:grid;place-items:center;font:400 64px Lalezar;background:linear-gradient(135deg,var(--orange),var(--gold));color:#111;box-shadow:0 20px 50px -10px rgba(255,107,53,.7)">${n}</div>`); css(c, { left: 760 + i * 120 + 'px', top: '860px' }); return c; });
+  const keys = [{ t: 0, full: true, z: 1.1 }, { t: 0.4, b: 'q', fit: 0.62, dy: 110, zMax: 1.75, d: 1.2 }];
+  [0.9, 1.05, 1.2, 1.35].forEach((t) => cue(s.start + t, 'tick', 0.7)); cue(s.start + 5.4, 'ding', 0.7);
+  return (lt) => {
+    A.apply(A.camAt(keys, lt), { drift: 1 + lt * 0.006, x: 260 * P(lt, 2.0, 0.6, ease.io) });
+    nums.forEach((c, i) => { pop(c, lt, 0.9 + i * 0.15); c.style.opacity = Math.min(+c.style.opacity, 1 - P(lt, 4.6, 0.3)); });
+    chat(lt, P(lt, 2.0, 0.5, ease.out5));
+    pop(fast, lt, 5.2);
+    ch(lt, 0);
+  };
+});
+
+// 10. the result: right answer = points, swap & streamer right = ×2, swap & streamer wrong = minus
+scene('s9', 's9', { lead: 0.4, tail: 0.8 }, (s, root) => {
+  const A = shotWindow(root, 'result', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const ring = ringOn(A.over, A.m.boxes.right, 8);
+  const ch = chapter(root, '9', 'النتيجة', 'مين كسب ومين خسر');
+  const st1 = el('div', 'stamp', root, '✅ جاوب صح = <b style="color:var(--gold)">النقاط</b>');
+  const st2 = el('div', 'stamp', root, '🔄 بادل + جواب الستريمر صح = <b style="color:var(--gold)">دبل</b>');
+  const st3 = el('div', 'stamp', root, '❌ بادل + جواب الستريمر غلط = <b style="color:#ff8a80">تنقص نقاطه</b>');
+  css(st1, { background: 'rgba(22,101,52,.95)', border: '3px solid #4ade80', right: '90px', top: '330px' });
+  css(st2, { background: 'rgba(76,29,149,.95)', border: '3px solid #c084fc', right: '90px', top: '460px' });
+  css(st3, { background: 'rgba(127,29,29,.95)', border: '3px solid #f87171', right: '90px', top: '590px' });
+  const x2 = el('div', 'abs', root, '<div style="font:400 230px/1 Lalezar;direction:ltr" class="gold">×2</div>');
+  css(x2, { right: '360px', top: '700px' });
+  const keys = [{ t: 0, full: true, z: 1.1 }, { t: 0.5, b: 'right', fit: 0.42, dy: 30, d: 1 }, { t: 2.4, full: true, z: 0.9, dy: 130, d: 0.8 }];
+  cue(s.start + 0.9, 'ding'); cue(s.start + 2.5, 'stamp'); cue(s.start + 3.6, 'stamp'); cue(s.start + 4.0, 'impact', 0.9); cue(s.start + 5.6, 'stamp');
+  return (lt) => {
+    A.apply(A.camAt(keys, lt), { drift: 1 + lt * 0.004, x: -330 * P(lt, 2.4, 0.8, ease.io), y: -40 * P(lt, 2.4, 0.8, ease.io) });
+    ring(P(lt, 0.9, 0.4));
+    const stp = (e, at) => { const k = P(lt, at, 0.35, ease.back); e.style.opacity = clamp((lt - at) / 0.1); e.style.transform = `scale(${lerp(1.8, 1, k)}) rotate(${(1 - k) * -6}deg)`; };
+    stp(st1, 2.5); stp(st2, 3.6); stp(st3, 5.6);
+    const xk = P(lt, 4.0, 0.5, ease.elastic);
+    x2.style.opacity = clamp((lt - 4.0) / 0.1) * (1 - P(lt, 5.4, 0.3));
+    x2.style.transform = `scale(${lerp(3, 1, xk)}) rotate(${-8 + Math.sin(lt * 5) * 2}deg)`;
+    ch(lt, 0);
+  };
+});
+
+// 11. the podium
+scene('s10', 's10', { lead: 0.4, tail: 0.9 }, (s, root) => {
+  const A = shotWindow(root, 'podium', { url: 'jawabbadel.com/kick/quiz/screen', live: true });
+  const ch = chapter(root, '🏆', 'منصة التتويج', 'الفايزين في آخر اللعبة');
+  const r = rng(42), conf = [];
+  for (let i = 0; i < 90; i++) {
+    const c = el('div', 'conf', root);
+    css(c, { background: ['#f7c948', '#38bdf8', '#a855f7', '#f472b6', '#53fc18', '#ff6b35'][i % 6] });
+    conf.push({ c, x: r() * W, vy: 380 + r() * 420, vx: (r() - 0.5) * 300, rot: r() * 720, d: r() * 0.6, s: 0.6 + r() * 0.8 });
+  }
+  cue(s.start + 0.5, 'impact', 0.7); cue(s.start + 0.6, 'sparkle');
+  return (lt) => {
+    A.apply(A.camAt([{ t: 0, full: true, z: 1.2, dy: 20 }, { t: 0.2, b: 'winner', fit: 0.5, z: 1.55, dy: 200, d: 3 }], lt), {});
+    for (const p of conf) {
+      const tt = lt - 0.5 - p.d;
+      if (tt < 0) { p.c.style.opacity = 0; continue; }
+      p.c.style.opacity = 1 - clamp((tt - 2.6) / 0.6);
+      p.c.style.transform = `translate(${p.x + p.vx * tt}px, ${-60 + p.vy * tt + 120 * tt * tt}px) rotate(${p.rot * tt}deg) scale(${p.s})`;
+    }
+    ch(lt, 0);
+  };
+});
+
+// 12. end: logo, call to action, where to play
+scene('end', 'end', { lead: 0.35, tail: 1.6 }, (s, root) => {
+  const logo = el('img', 'logo', root); logo.src = 'assets/app-icon-action-v2-t.png';
+  css(logo, { width: '560px', left: (W - 560) / 2 + 'px', top: '70px' });
+  const cta = el('div', 'abs', root, `<div style="display:inline-block;font:400 82px Lalezar;color:#111;padding:20px 70px;border-radius:30px;background:linear-gradient(90deg,var(--orange),var(--gold));box-shadow:0 30px 80px -20px rgba(255,107,53,.9)">يلا ابدأ البث! 🔴</div>`);
+  css(cta, { left: '0', right: '0', top: '640px', textAlign: 'center' });
+  const url = el('div', 'abs', root, `<div style="font:900 50px Tajawal;direction:ltr;letter-spacing:1px">jawabbadel.com</div><div style="font:800 32px Tajawal;opacity:.8;margin-top:8px">📖 التفاصيل كلها في «طريقة اللعب»</div>`);
+  css(url, { left: '0', right: '0', top: '840px', textAlign: 'center' });
+  cue(s.start + 0.2, 'impact'); cue(s.start + 1.0, 'pop'); cue(s.start + 1.4, 'pop');
+  return (lt) => {
+    const lk = P(lt, 0, 0.8, ease.elastic);
+    logo.style.transform = `scale(${lerp(0.4, 1, lk) * (1 + Math.sin(lt * 2.5) * 0.015)})`;
+    logo.style.filter = `drop-shadow(0 0 ${40 + Math.sin(lt * 4) * 15}px rgba(56,189,248,.6))`;
+    const ck = P(lt, 0.9, 0.5, ease.back);
+    cta.style.opacity = clamp((lt - 0.9) / 0.1);
+    cta.style.transform = `scale(${ck * (1 + Math.max(0, Math.sin((lt - 1.4) * 5)) * 0.03)})`;
+    const uk = P(lt, 1.3, 0.5, ease.out5);
+    url.style.opacity = uk; url.style.transform = `translateY(${(1 - uk) * 30}px)`;
+  };
+});
+
+const TOTAL = cursor;
+
+// ---------- transitions between scenes ----------
+const sweep = el('div', 'sweep', fx);
+const flash = el('div', 'flash', fx);
+const TR = 0.5; // transition length
+for (let i = 1; i < scenes.length; i++) if (i > 1) cue(scenes[i].start - 0.3, 'whoosh', 0.75);
+
+function render(t) {
+  drawBg(t);
+  let sw = -1;
+  scenes.forEach((s, i) => {
+    const a = i === 0 ? -1 : s.start - TR / 2;
+    const b = i === scenes.length - 1 ? TOTAL + 1 : s.end + TR / 2;
+    if (t < a || t > b) { s.root.style.display = 'none'; return; }
+    s.root.style.display = 'block';
+    const inK = i === 0 ? 1 : ease.out(clamp((t - a) / TR));
+    const outK = i === scenes.length - 1 ? 0 : ease.in(clamp((t - (s.end - TR / 2)) / TR));
+    // zoom-through: incoming grows from slightly small, outgoing pushes into the camera
+    const sc = lerp(0.88, 1, inK) * lerp(1, 1.25, outK);
+    s.root.style.transform = `scale(${sc}) rotate(${(1 - inK) * -1.5 + outK * 1.5}deg)`;
+    s.root.style.opacity = Math.min(inK, 1 - outK);
+    s.root.style.filter = (inK < 1 || outK > 0) ? `blur(${(1 - inK) * 14 + outK * 18}px)` : 'none';
+    s.update(t - s.start);
+    if (i > 1 && Math.abs(t - s.start) < TR) sw = (t - s.start + TR) / (2 * TR);
+  });
+  // the colored light sweep at each cut
+  sweep.style.display = sw < 0 ? 'none' : 'block';
+  if (sw >= 0) sweep.style.transform = `translateX(${lerp(W + 300, -900, ease.io(sw))}px) skewX(-18deg)`;
+  flash.style.opacity = 0;
+}
+window.render = render;
+window.TIMELINE = { total: TOTAL, events: EVENTS.sort((a, b) => a.t - b.t), voice: VOICE, scenes: scenes.map((s) => ({ key: s.key, start: s.start, end: s.end })) };
+</script>
+</body>
+</html>

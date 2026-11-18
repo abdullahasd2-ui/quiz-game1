@@ -51,7 +51,9 @@ import { ShuffleBoxes } from './ShuffleBoxes';
 import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from './ListParts';
-import { QuizHowToButton } from './QuizHowTo';
+import { QuizHowToButton, QuizHowToModal } from './QuizHowTo';
+import { ModeHowPill } from '@/game/screens/HomeScreen';
+import { VideoGuideButton } from './VideoGuide';
 import { HotBadge, usePopular } from '@/game/popular';
 import { StreamQuick } from '@/quick/StreamQuick';
 import { useCardSpotlight } from '@/lib/spotlight';
@@ -220,6 +222,7 @@ export function KickQuizPage() {
   const [listChosen, setListChosen] = useState<string[]>(['football', 'geo', 'general', 'games', 'islamic', 'proverbs']);
   const deck = useRef<PackQuestion[]>([]);
   const [variant, setVariant] = useState<StreamVariant>('swap');
+  const [modeHow, setModeHow] = useState(false);
   const [error, setError] = useState(params.get('kick_error') ?? '');
   const [state, setState] = useState<StreamState | null>(null);
   const [status, setStatus] = useState<KickStatus>({ state: 'connecting' });
@@ -593,7 +596,8 @@ export function KickQuizPage() {
           </div>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
-            <QuizHowToButton forStreamer />
+            <QuizHowToButton forStreamer fancy />
+            <VideoGuideButton />
           </div>
           <div className="q-card">
             {canLink && !linked && (
@@ -652,7 +656,7 @@ export function KickQuizPage() {
       {quick}
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={STREAM_KEYS} title="اختصارات الستريمر" />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <VideoGuideButton label="🎬 الشرح" className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
@@ -768,6 +772,11 @@ export function KickQuizPage() {
                         {hotStream === v && <HotBadge className="top-1.5 inset-x-0 mx-auto w-fit px-2.5 py-0.5 text-[11px] ring-2 ring-white/50 motion-safe:animate-none" />}
                         <div className={cn('text-3xl', hotStream === v && 'mt-5', variant === v && 'motion-safe:animate-float-y')}>{l.icon}</div>
                         <div className="q-display text-xl text-white">{l.title}</div>
+                        {variant === v && (
+                          <div className="my-1.5 flex justify-center">
+                            <ModeHowPill onOpen={() => setModeHow(true)} />
+                          </div>
+                        )}
                         <div className="mt-0.5 text-[11px] text-white/60">
                           {v === 'swap' ? 'تبادل مع الستريمر: إذا جواب الستريمر صح تاخذ دبل النقاط، وإذا جواب الستريمر غلط تنقص نقاطك' : v === 'flip' ? 'تقلب على الستريمر: إذا جواب الستريمر صح تنقص نقاطه، وإذا جواب الستريمر غلط تزيد نقاطه' : v === 'triple' ? 'بادل: إذا جواب الستريمر صح تاخذ دبل، وإذا جواب الستريمر غلط تنقص نقاطك · اعكس: إذا جواب الستريمر صح تنقص نقاطك، وإذا جواب الستريمر غلط تزيد نقاطك' : v === 'list' ? 'سؤال واحد والشات يكتب أكثر عدد أجوبة: كل جواب صح نقطة، والأول +5 والثاني +3 والثالث +2' : 'تخبّي المفتاح في صندوق والشات يخمّن رقم الصندوق من 1 إلى 10'}
                         </div>
@@ -775,6 +784,7 @@ export function KickQuizPage() {
                     );
                   })}
                 </div>
+                <QuizHowToModal open={modeHow} onClose={() => setModeHow(false)} forStreamer variant={variant} pack={Boolean(pack)} title={`📖 طريقة لعب «${streamLabels(variant).title}»`} />
               </div>
 
               {pack ? null : variant === 'list' ? (

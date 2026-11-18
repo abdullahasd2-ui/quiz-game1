@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
 import { streamLink } from '@/lib/links';
+import { GAME_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
 
 /** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
 const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text: string; emblem: ReactNode; tag: string }> = {
@@ -107,7 +108,16 @@ const EXTRA_MODES: { id: Variant; title: string; desc: string }[] = [
   { id: 'hide', title: 'خبّي أو اكشف', desc: '10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡' },
 ];
 
-function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; title: string; desc: string; selected: boolean; hot: boolean; onClick: () => void }) {
+export function ModeHowPill({ onOpen }: { onOpen: () => void }) {
+  const open = (e: { stopPropagation: () => void; preventDefault: () => void }) => (e.stopPropagation(), e.preventDefault(), onOpen());
+  return (
+    <span role="button" tabIndex={0} className="q-mode-how" onClick={open} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && open(e)}>
+      📖 طريقة اللعب
+    </span>
+  );
+}
+
+function ModeCard({ id, title, desc, selected, hot, onClick, onHow }: { id: Variant; title: string; desc: string; selected: boolean; hot: boolean; onClick: () => void; onHow: () => void }) {
   const look = MODE_LOOK[id];
   return (
     <button
@@ -131,7 +141,10 @@ function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; ti
         </span>
       </div>
       <div className="my-2 flex justify-center">{look.emblem}</div>
-      <div className="q-display text-2xl leading-tight text-white">{title}</div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="q-display text-2xl leading-tight text-white">{title}</div>
+        {selected && <ModeHowPill onOpen={onHow} />}
+      </div>
       <div className="mt-1 text-[12px] leading-relaxed text-white/70">{desc}</div>
     </button>
   );
@@ -171,6 +184,7 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
   const [code, setCode] = useState(initialCode);
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
   const [howOpen, setHowOpen] = useState(false);
+  const [howMode, setHowMode] = useState<Variant | undefined>();
   const { data: categories } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories, staleTime: 60_000 });
   const [pre, setPre] = useState<number[]>(() => takePreselected(false));
 
@@ -181,7 +195,7 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
   });
   useBus('home:mode', setMode);
   useBus('home:tab', setTab);
-  useBus('home:how', () => setHowOpen(true));
+  useBus('home:how', () => (setHowMode(undefined), setHowOpen(true)));
 
   async function create(e?: FormEvent) {
     e?.preventDefault();
@@ -302,15 +316,30 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
           <button type="button" onClick={goPlay} className="q-btn-gold q-shine text-base">
             🚀 ابدأ اللعب
           </button>
-          <button
-            type="button"
-            onClick={() => setHowOpen(true)}
-            className="w-full rounded-xl border border-white/15 bg-white/5 p-3.5 text-[15px] font-bold whitespace-nowrap text-white/85 backdrop-blur transition-all hover:border-q-purple hover:text-q-purple sm:w-auto sm:px-6"
-          >
-            📖 طريقة اللعب
+          <button type="button" onClick={() => (setHowMode(undefined), setHowOpen(true))} className="q-how w-full sm:w-auto" aria-label="طريقة اللعب — افهم اللعبة في دقيقة">
+            <span className="q-how-in">
+              <span className="q-how-icon" aria-hidden>
+                📖
+              </span>
+              <span className="text-start leading-tight">
+                <span className="block text-[16px] font-black text-white">طريقة اللعب</span>
+                <span className="block text-[11px] font-bold text-white/65">افهم اللعبة في دقيقة</span>
+              </span>
+              <span className="q-how-new" aria-hidden>
+                جديد؟ ابدأ هنا
+              </span>
+            </span>
           </button>
         </div>
         <div className="relative mt-4 flex flex-wrap justify-center gap-2">
+          <VideoGuideButton
+            className="q-chip border-q-gold/40 bg-q-gold/10 text-q-gold"
+            label="🎬 شاهد اللعبة في 90 ثانية"
+            src={GAME_VIDEO}
+            title="🎬 جاوب أو بادل في 90 ثانية"
+            caption="كيف تنشئ غرفة، وتختار الفئات، وتجاوب أو تبادل مع خصمك. والتفاصيل كاملة في «طريقة اللعب»."
+            appQr
+          />
           <button type="button" className="q-chip" onClick={() => (setTab('join'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             🔗 عندي كود
           </button>
@@ -328,12 +357,12 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
         <SectionTitle kicker="اختر الطور" title="كل طور له لعبته" />
         <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-1 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0">
           {MODES.map((m) => (
-            <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+            <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} onHow={() => (setHowMode(m.id), setHowOpen(true))} />
           ))}
           {extra &&
             EXTRA_MODES.map((m) => (
               <div key={m.id} className="motion-safe:animate-pop-in max-sm:shrink-0 sm:col-span-2 sm:mx-auto sm:w-1/2">
-                <ModeCard {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+                <ModeCard {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} onHow={() => (setHowMode(m.id), setHowOpen(true))} />
               </div>
             ))}
         </div>
@@ -542,8 +571,8 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
           ))}
         </ol>
         <div className="mt-3 text-center">
-          <button type="button" onClick={() => setHowOpen(true)} className="q-chip">
-            📖 القواعد كاملة مع أمثلة النقاط
+          <button type="button" onClick={() => (setHowMode(undefined), setHowOpen(true))} className="q-chip">
+            📖 طريقة اللعب
           </button>
         </div>
       </section>
@@ -552,12 +581,15 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
         <a href={serverUrl('/privacy')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
           سياسة الخصوصية
         </a>
+        <a href={serverUrl('/terms')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
+          شروط الاستخدام
+        </a>
         <a href={serverUrl('/support')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
           الدعم
         </a>
       </nav>
 
-      <HowToPlay open={howOpen} onClose={() => setHowOpen(false)} />
+      <HowToPlay open={howOpen} variant={howMode} onClose={() => setHowOpen(false)} />
     </div>
   );
 }
@@ -609,16 +641,121 @@ function HowSection({ tone, title, children }: { tone: string; title: string; ch
   );
 }
 
-function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+/** Each mode's own rules (with examples), shown only for the mode picked. */
+const MODE_HOW: Record<Variant, ReactNode> = {
+  swap: (
+    <>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
+        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🔄 جاوب أو بادل">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
+          <div>🔄🔄 إذا الفريقين اختاروا بادل، ما أحد ياخذ نقاط.</div>
+          <Scenarios
+            rows={[
+              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
+              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
+              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
+              ['🔄 بادل', 'الخصم بادل بعد', [['الاثنين', '0', 'dim']]],
+            ]}
+          />
+        </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  flip: (
+    <>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
+        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="🔀 جاوب أو اقلب">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔀 <b>اقلب على الخصم:</b> أنت ما تجاوب، ونتيجة الخصم تنقلب عليه. إذا جواب الخصم صح تنقص نقاطه، وإذا جواب الخصم غلط تزيد نقاطه.</div>
+          <div>🔀🔀 إذا الفريقين اختاروا اقلب، ما أحد ياخذ نقاط.</div>
+          <Scenarios
+            rows={[
+              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
+              ['🔀 اقلب', 'جواب الخصم صح', [['الخصم', '−200', 'bad'], ['أنت', '0', 'dim']]],
+              ['🔀 اقلب', 'جواب الخصم غلط', [['الخصم', '+200', 'good'], ['أنت', '0', 'dim']]],
+            ]}
+          />
+        </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  triple: (
+    <>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
+        <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="↩️ جاوب أو بادل أو اعكس">
+          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
+          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
+          <div>↩️ <b>اعكس على الخصم:</b> أنت ما تجاوب، ونتيجتك عكس نتيجة الخصم. إذا جواب الخصم صح تنقص من نقاطك، وإذا جواب الخصم غلط تزيد نقاطك. والخصم ما ياخذ نقاط السؤال.</div>
+          <div>🚫 في الجولة الوحدة فريق واحد بس يقدر يختار بادل أو اعكس. إذا اختارها فريق، الفريق الثاني لازم يجاوب.</div>
+          <Scenarios
+            rows={[
+              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
+              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
+              ['↩️ اعكس', 'جواب الخصم صح', [['أنت', '−200', 'bad'], ['الخصم', '0', 'dim']]],
+              ['↩️ اعكس', 'جواب الخصم غلط', [['أنت', '+200', 'good'], ['الخصم', '0', 'dim']]],
+            ]}
+          />
+        </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  list: (
+    <>
+        <HowSection tone="border-q-pink/30 bg-q-pink/10 [&>div:first-child]:text-q-pink" title="⏱️ عدّها">
+          <div>• في كل جولة الفريق اللي دوره يختار فئة، مثل كورة أو جغرافيا أو حروف، ويطلع سؤال واحد للفريقين مثل «اذكر دول عربية».</div>
+          <div>• كل لاعب في الفريقين، الرئيس والأعضاء، يكتب أكبر عدد من الأجوبة قبل ما يخلص الوقت، ويقدر يكتب أكثر من جواب بينها فاصلة.</div>
+          <div>• كل جواب صح ينحسب لفريقك مرة وحدة بس، حتى لو كتبه أكثر من لاعب، وأجوبة الفريق الثاني ما تبان لكم إلا في النتيجة.</div>
+          <div>• كل جواب صح بنقطة، والفريق اللي يلقى أجوبة أكثر ياخذ 5 نقاط زيادة، وإذا تعادلوا ما أحد ياخذ الزيادة.</div>
+          <div>• الأسئلة من السهلة إلى المتوسطة، واللعبة 10 جولات والفريقين يتبادلون اختيار الفئة.</div>
+        </HowSection>
+      </>
+  ),
+  hide: (
+    <>
+        <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
+          <div>• فيه 10 صناديق. الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق، والفريق الثاني ما يشوف وين خبّاه.</div>
+          <div>• الفريق الثاني يخمّن رقم الصندوق. إذا لقى المفتاح ياخذ النقاط، وإذا ما لقاه تروح النقاط للفريق اللي خبّى.</div>
+          <div>• زر 💡 التلميح (مرة وحدة بالجولة): يطلع سؤال متوسط. إذا جاوبته صح ينشال نص الصناديق، وإذا جاوبته غلط تروح النقاط للخصم على طول.</div>
+          <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات.</div>
+        </HowSection>
+      </>
+  ),
+};
+
+/** «طريقة اللعب»: the basics only; with `variant`, that mode's rules. */
+function HowToPlay({ open, onClose, variant }: { open: boolean; onClose: () => void; variant?: Variant }) {
+  const mode = variant && [...MODES, ...EXTRA_MODES].find((m) => m.id === variant);
   return (
     <Modal open={open} onClose={onClose}>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-[17px] font-black text-q-purple">📖 طريقة اللعب</h2>
+        <h2 className="text-[17px] font-black text-q-purple">📖 {mode ? `طريقة لعب «${mode.title}»` : 'طريقة اللعب'}</h2>
         <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
           ✕
         </button>
       </div>
       <div className="grid gap-2.5 text-start text-[13px] leading-loose text-white/80">
+        {mode ? (
+          MODE_HOW[mode.id]
+        ) : (
+          <>
+            <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="🎯 فكرة اللعبة">
+              <div>• فريقين يتنافسون على أسئلة من فئات مختلفة، والفريق اللي يجمع نقاط أكثر في النهاية يفوز.</div>
+              <div>• أول شي تختارون الطور، وكل طور له طريقة لعب ونقاط خاصة فيه.</div>
+              <div>• بعدها تختارون الفئات، والفريقين يتبادلون الدور.</div>
+            </HowSection>
         <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="📱 وضع الجوال (جهازين)">
           <div>• جهاز ينشئ غرفة والباقي ينضمون بالكود ويختارون فريقهم</div>
           <div>• أول من يدخل الفريق هو الرئيس، والبقية أعضاء (حتى 10 لكل فريق)</div>
@@ -639,64 +776,9 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>• إذا اللاعب اللي اخترته ما جاوب بنفسه، لأنه هو بعد اختار بادل أو اقلب أو اعكس، فما تاخذ شي. وإذا اثنين اختاروا بعض فالاثنين ياخذون صفر.</div>
           <div>• كل الأطوار موجودة في اللعب الفردي ما عدا «خبّي أو اكشف» لأنه يحتاج فريقين. وفي «عدّها» كل لاعب يكتب أجوبته لحاله، وأكثر ثلاثة لاعبين ياخذون 5 و3 و2 نقاط زيادة.</div>
         </HowSection>
-        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
-        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🔄 جاوب أو بادل">
-          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
-          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
-          <div>🔄🔄 إذا الفريقين اختاروا بادل، ما أحد ياخذ نقاط.</div>
-          <Scenarios
-            rows={[
-              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
-              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
-              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
-              ['🔄 بادل', 'الخصم بادل بعد', [['الاثنين', '0', 'dim']]],
-            ]}
-          />
-        </HowSection>
-        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="🔀 جاوب أو اقلب">
-          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
-          <div>🔀 <b>اقلب على الخصم:</b> أنت ما تجاوب، ونتيجة الخصم تنقلب عليه. إذا جواب الخصم صح تنقص نقاطه، وإذا جواب الخصم غلط تزيد نقاطه.</div>
-          <div>🔀🔀 إذا الفريقين اختاروا اقلب، ما أحد ياخذ نقاط.</div>
-          <Scenarios
-            rows={[
-              ['✅ جاوب', 'جوابك صح', [['أنت', '+200', 'good']]],
-              ['🔀 اقلب', 'جواب الخصم صح', [['الخصم', '−200', 'bad'], ['أنت', '0', 'dim']]],
-              ['🔀 اقلب', 'جواب الخصم غلط', [['الخصم', '+200', 'good'], ['أنت', '0', 'dim']]],
-            ]}
-          />
-        </HowSection>
-        <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="↩️ جاوب أو بادل أو اعكس">
-          <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
-          <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
-          <div>↩️ <b>اعكس على الخصم:</b> أنت ما تجاوب، ونتيجتك عكس نتيجة الخصم. إذا جواب الخصم صح تنقص من نقاطك، وإذا جواب الخصم غلط تزيد نقاطك. والخصم ما ياخذ نقاط السؤال.</div>
-          <div>🚫 في الجولة الوحدة فريق واحد بس يقدر يختار بادل أو اعكس. إذا اختارها فريق، الفريق الثاني لازم يجاوب.</div>
-          <Scenarios
-            rows={[
-              ['🔄 بادل', 'جواب الخصم صح', [['أنت', '+400', 'gold'], ['الخصم', '0', 'dim']]],
-              ['🔄 بادل', 'جواب الخصم غلط', [['أنت', '−200', 'bad']]],
-              ['↩️ اعكس', 'جواب الخصم صح', [['أنت', '−200', 'bad'], ['الخصم', '0', 'dim']]],
-              ['↩️ اعكس', 'جواب الخصم غلط', [['أنت', '+200', 'good'], ['الخصم', '0', 'dim']]],
-            ]}
-          />
-        </HowSection>
-        <HowSection tone="border-q-pink/30 bg-q-pink/10 [&>div:first-child]:text-q-pink" title="⏱️ عدّها">
-          <div>• في كل جولة الفريق اللي دوره يختار فئة، مثل كورة أو جغرافيا أو حروف، ويطلع سؤال واحد للفريقين مثل «اذكر دول عربية».</div>
-          <div>• كل لاعب في الفريقين، الرئيس والأعضاء، يكتب أكبر عدد من الأجوبة قبل ما يخلص الوقت، ويقدر يكتب أكثر من جواب بينها فاصلة.</div>
-          <div>• كل جواب صح ينحسب لفريقك مرة وحدة بس، حتى لو كتبه أكثر من لاعب، وأجوبة الفريق الثاني ما تبان لكم إلا في النتيجة.</div>
-          <div>• كل جواب صح بنقطة، والفريق اللي يلقى أجوبة أكثر ياخذ 5 نقاط زيادة، وإذا تعادلوا ما أحد ياخذ الزيادة.</div>
-          <div>• الأسئلة من السهلة إلى المتوسطة، واللعبة 10 جولات والفريقين يتبادلون اختيار الفئة.</div>
-        </HowSection>
-        <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
-          <div>• فيه 10 صناديق. الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق، والفريق الثاني ما يشوف وين خبّاه.</div>
-          <div>• الفريق الثاني يخمّن رقم الصندوق. إذا لقى المفتاح ياخذ النقاط، وإذا ما لقاه تروح النقاط للفريق اللي خبّى.</div>
-          <div>• زر 💡 التلميح (مرة وحدة بالجولة): يطلع سؤال متوسط. إذا جاوبته صح ينشال نص الصناديق، وإذا جاوبته غلط تروح النقاط للخصم على طول.</div>
-          <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات.</div>
-        </HowSection>
-        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
-          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
-          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
-          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
-        </HowSection>
+            <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط «📖 طريقة اللعب» اللي يطلع في بطاقته.</p>
+          </>
+        )}
       </div>
       <button type="button" onClick={onClose} className="q-btn-tv mt-3.5">
         فهمت! 🚀
