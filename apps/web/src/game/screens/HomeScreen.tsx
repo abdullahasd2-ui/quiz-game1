@@ -108,7 +108,16 @@ const EXTRA_MODES: { id: Variant; title: string; desc: string }[] = [
   { id: 'hide', title: 'خبّي أو اكشف', desc: '10 صناديق — فريق يخبّي المفتاح والثاني يخمّن، ومعك زر تلميح 💡' },
 ];
 
-function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; title: string; desc: string; selected: boolean; hot: boolean; onClick: () => void }) {
+export function ModeHowPill({ onOpen }: { onOpen: () => void }) {
+  const open = (e: { stopPropagation: () => void; preventDefault: () => void }) => (e.stopPropagation(), e.preventDefault(), onOpen());
+  return (
+    <span role="button" tabIndex={0} className="q-mode-how" onClick={open} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && open(e)}>
+      📖 طريقة اللعب
+    </span>
+  );
+}
+
+function ModeCard({ id, title, desc, selected, hot, onClick, onHow }: { id: Variant; title: string; desc: string; selected: boolean; hot: boolean; onClick: () => void; onHow: () => void }) {
   const look = MODE_LOOK[id];
   return (
     <button
@@ -132,7 +141,10 @@ function ModeCard({ id, title, desc, selected, hot, onClick }: { id: Variant; ti
         </span>
       </div>
       <div className="my-2 flex justify-center">{look.emblem}</div>
-      <div className="q-display text-2xl leading-tight text-white">{title}</div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="q-display text-2xl leading-tight text-white">{title}</div>
+        {selected && <ModeHowPill onOpen={onHow} />}
+      </div>
       <div className="mt-1 text-[12px] leading-relaxed text-white/70">{desc}</div>
     </button>
   );
@@ -329,12 +341,12 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         <SectionTitle kicker="اختر الطور" title="كل طور له لعبته" />
         <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-1 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0">
           {MODES.map((m) => (
-            <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+            <ModeCard key={m.id} {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} onHow={() => (setHowMode(m.id), setHowOpen(true))} />
           ))}
           {extra &&
             EXTRA_MODES.map((m) => (
               <div key={m.id} className="motion-safe:animate-pop-in max-sm:shrink-0 sm:col-span-2 sm:mx-auto sm:w-1/2">
-                <ModeCard {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} />
+                <ModeCard {...m} hot={hot === m.id} selected={variant === m.id} onClick={() => setVariant(m.id)} onHow={() => (setHowMode(m.id), setHowOpen(true))} />
               </div>
             ))}
         </div>
@@ -346,16 +358,6 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
             className="q-chip"
           >
             {extra ? '▲ إخفاء الأطوار الإضافية' : '🎁 أطوار إضافية'}
-          </button>
-        </div>
-        <div className="mb-3 flex justify-center">
-          <button
-            key={variant}
-            type="button"
-            onClick={() => (setHowMode(variant), setHowOpen(true))}
-            className="flex items-center gap-2 rounded-full border-2 border-q-cyan/60 bg-q-cyan/10 px-5 py-2 text-sm font-black text-white shadow-[0_8px_24px_-8px_rgba(56,189,248,0.7)] transition-transform hover:-translate-y-0.5 motion-safe:animate-pop-in"
-          >
-            📖 طريقة لعب «{chosen.title}»
           </button>
         </div>
         <div className="mb-3 flex justify-center">
@@ -716,7 +718,7 @@ function HowToPlay({ open, onClose, variant }: { open: boolean; onClose: () => v
           <div>• التلفاز: ينشئ الغرفة ويختار الأسئلة ويعرض النتائج</div>
           <div>• الفريق 1 و2: ينضمون بالكود ويجاوبون على جوالاتهم</div>
         </HowSection>
-            <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط زر «طريقة لعب» اللي تحت الأطوار.</p>
+            <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط «📖 طريقة اللعب» اللي يطلع في بطاقته.</p>
           </>
         )}
       </div>
