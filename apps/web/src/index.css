@@ -345,6 +345,82 @@
     mask-composite: exclude;
   }
   /* A light sweep across a button or card (decorative; off when the device asks for less motion). */
+  /* «طريقة اللعب» on the home page: a turning rainbow edge, a glowing icon and a «جديد؟» tag so newcomers find it. */
+  .q-how {
+    display: block;
+    flex: none;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    padding: 2px;
+    box-shadow: 0 10px 34px -10px rgba(168, 85, 247, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .q-how:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px -10px rgba(56, 189, 248, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .q-how:active {
+    transform: scale(0.98);
+  }
+  .q-how::before {
+    content: '';
+    position: absolute;
+    inset: -160%;
+    z-index: -1;
+    background: conic-gradient(from 0deg, #38bdf8, #a855f7, #f472b6, #f7c948, #38bdf8);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .q-how::before {
+      animation: q-how-turn 4s linear infinite;
+    }
+    .q-how-icon {
+      animation: q-how-pulse 2s ease-in-out infinite;
+    }
+  }
+  .q-how-in {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    height: 100%;
+    border-radius: calc(0.9rem - 2px);
+    padding: 0.55rem 1rem 0.55rem 0.8rem;
+    white-space: nowrap;
+    min-height: 3.1rem;
+    background: linear-gradient(135deg, rgba(42, 20, 96, 0.96), rgba(10, 18, 48, 0.96));
+  }
+  .q-how-icon {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: none;
+    border-radius: 0.7rem;
+    font-size: 1.15rem;
+    background: linear-gradient(135deg, #38bdf8, #a855f7);
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.7);
+  }
+  .q-how-new {
+    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    background: linear-gradient(90deg, var(--color-q-orange), var(--color-q-gold));
+  }
+  @keyframes q-how-turn {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes q-how-pulse {
+    50% {
+      transform: scale(1.08);
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.9);
+    }
+  }
   .q-shine {
     @apply relative overflow-hidden;
   }

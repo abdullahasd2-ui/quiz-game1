@@ -287,12 +287,19 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           <button type="button" onClick={goPlay} className="q-btn-gold q-shine text-base">
             🚀 ابدأ اللعب
           </button>
-          <button
-            type="button"
-            onClick={() => setHowOpen(true)}
-            className="w-full rounded-xl border border-white/15 bg-white/5 p-3.5 text-[15px] font-bold whitespace-nowrap text-white/85 backdrop-blur transition-all hover:border-q-purple hover:text-q-purple sm:w-auto sm:px-6"
-          >
-            📖 طريقة اللعب
+          <button type="button" onClick={() => setHowOpen(true)} className="q-how w-full sm:w-auto" aria-label="طريقة اللعب — افهم اللعبة في دقيقة">
+            <span className="q-how-in">
+              <span className="q-how-icon" aria-hidden>
+                📖
+              </span>
+              <span className="text-start leading-tight">
+                <span className="block text-[16px] font-black text-white">طريقة اللعب</span>
+                <span className="block text-[11px] font-bold text-white/65">افهم اللعبة في دقيقة</span>
+              </span>
+              <span className="q-how-new" aria-hidden>
+                جديد؟ ابدأ هنا
+              </span>
+            </span>
           </button>
         </div>
         <div className="relative mt-4 flex flex-wrap justify-center gap-2">
