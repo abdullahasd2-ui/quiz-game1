@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
 import { streamLink } from '@/lib/links';
+import { GAME_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
 
 /** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
 const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text: string; emblem: ReactNode; tag: string }> = {
@@ -295,6 +296,14 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           </button>
         </div>
         <div className="relative mt-4 flex flex-wrap justify-center gap-2">
+          <VideoGuideButton
+            className="q-chip border-q-gold/40 bg-q-gold/10 text-q-gold"
+            label="🎬 شاهد اللعبة في 90 ثانية"
+            src={GAME_VIDEO}
+            title="🎬 جاوب أو بادل في 90 ثانية"
+            caption="كيف تنشئ غرفة، وتختار الفئات، وتجاوب أو تبادل مع خصمك. والتفاصيل كاملة في «طريقة اللعب»."
+            appQr
+          />
           <button type="button" className="q-chip" onClick={() => (setTab('join'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             🔗 عندي كود
           </button>

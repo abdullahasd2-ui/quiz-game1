@@ -1,11 +1,30 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-/** The stream guide video (recorded from the real site in test mode, with captions; no sound needed). */
+/** The stream guide video (the real site in test mode, with captions and a voice). */
 export const GUIDE_VIDEO = '/videos/stream-guide.mp4';
+/** The main game's 90-second promo (the real site on a laptop and two phones playing a room). */
+export const GAME_VIDEO = '/videos/game-promo.mp4';
 
-/** «🎬 شاهد الشرح»: opens the guide video in a window over the page (Esc or a tap outside closes it). */
-export function VideoGuideButton({ className, label = '🎬 شاهد الشرح' }: { className?: string; label?: string }) {
+type Props = {
+  className?: string;
+  label?: string;
+  src?: string;
+  title?: string;
+  caption?: string;
+  /** Show the App Store QR under the video. */
+  appQr?: boolean;
+};
+
+/** «🎬 شاهد الشرح»: opens a video in a window over the page (Esc or a tap outside closes it). */
+export function VideoGuideButton({
+  className,
+  label = '🎬 شاهد الشرح',
+  src = GUIDE_VIDEO,
+  title = '🎬 شرح اللعب في البث',
+  caption = 'كيف تبدأ البث وتلعب «جاوب أو بادل» مع الشات. والتفاصيل كاملة في «طريقة اللعب».',
+  appQr = false,
+}: Props) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
@@ -24,17 +43,17 @@ export function VideoGuideButton({ className, label = '🎬 شاهد الشرح'
         {label}
       </button>
       {open && (
-        <div className="fixed inset-0 z-[95] grid place-items-center bg-black/80 p-3 backdrop-blur-sm" onClick={() => setOpen(false)} role="dialog" aria-modal aria-label="فيديو شرح البث">
+        <div className="fixed inset-0 z-[95] grid place-items-center bg-black/80 p-3 backdrop-blur-sm" onClick={() => setOpen(false)} role="dialog" aria-modal aria-label={title}>
           <div className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="font-black text-q-gold">🎬 شرح اللعب في البث</span>
+              <span className="font-black text-q-gold">{title}</span>
               <button type="button" onClick={() => setOpen(false)} className="rounded-full px-3 py-1 text-white/70 hover:bg-white/10 hover:text-white" aria-label="إغلاق">
                 ✕ إغلاق
               </button>
             </div>
             <video
-              src={GUIDE_VIDEO}
-              poster={GUIDE_VIDEO.replace('.mp4', '.jpg')}
+              src={src}
+              poster={src.replace('.mp4', '.jpg')}
               controls
               autoPlay
               playsInline
@@ -43,7 +62,16 @@ export function VideoGuideButton({ className, label = '🎬 شاهد الشرح'
             >
               متصفحك ما يعرض الفيديو.
             </video>
-            <p className="mt-2 text-center text-xs text-white/60">كيف تبدأ البث وتلعب «جاوب أو بادل» مع الشات. والتفاصيل كاملة في «طريقة اللعب».</p>
+            <p className="mt-2 text-center text-xs text-white/60">{caption}</p>
+            {appQr && (
+              <div className="mx-auto mt-3 flex w-fit items-center gap-3 rounded-2xl border border-white/15 bg-q-bg/85 p-2.5 pe-4">
+                <img src="/app-qr.svg" alt="رمز QR لتحميل التطبيق من App Store" className="size-20 rounded-lg bg-white p-1.5" />
+                <div>
+                  <div className="text-sm font-black text-white/90">📱 حمّل التطبيق</div>
+                  <div className="text-xs font-bold text-white/50">امسح الرمز · App Store</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
