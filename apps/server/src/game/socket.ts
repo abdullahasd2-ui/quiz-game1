@@ -8,6 +8,7 @@ import {
   HINT_QUESTION_POINTS,
   joinRoomInput,
   kickInput,
+  scoreInput,
   listAnswerInput,
   listPickInput,
   MAX_BOARD_CATEGORIES,
@@ -227,6 +228,20 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
           s.data.code = null;
           s.leave(channel(room.code));
         }
+        return { data: null, room };
+      }),
+    );
+
+    socket.on(
+      'game:score',
+      handle(scoreInput, async ({ id, delta }) => {
+        const solo = soloRoom(socket);
+        if (solo) {
+          solo.room.adjustScore(solo.seat, id, delta);
+          return { data: null, room: solo.room };
+        }
+        const { room, seat } = currentRoom(socket);
+        room.adjustScore(seat, id, delta);
         return { data: null, room };
       }),
     );

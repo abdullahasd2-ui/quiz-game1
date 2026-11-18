@@ -417,6 +417,16 @@ export class GameRoom {
     throw new GameError('اللاعب غير موجود');
   }
 
+  /** The host adds or removes points from a team by hand (during the game). */
+  adjustScore(seat: Seat, id: string, delta: number) {
+    if (seat !== (this.mode === 'tv' ? 'tv' : 0)) throw new GameError('المضيف فقط يعدّل النقاط');
+    if (this.status !== 'playing') throw new GameError('تعديل النقاط أثناء اللعب بس');
+    const team = id === '0' ? this.teams[0] : id === '1' ? this.teams[1] : null;
+    if (!team) throw new GameError('الفريق غير موجود');
+    team.score = Math.max(MIN_SCORE, team.score + delta);
+    this.touch();
+  }
+
   /** A member's vote for the step in progress; they can change it until the captain decides. */
   vote(deviceId: string, key: string) {
     const team = this.memberOf(deviceId);

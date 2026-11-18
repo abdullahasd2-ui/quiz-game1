@@ -159,6 +159,16 @@ export class SoloRoom {
     return p!.deviceId;
   }
 
+  /** The host adds or removes points from a player by hand (during the game). */
+  adjustScore(seat: string, pid: string, delta: number) {
+    if (seat !== this.hostPid) throw new GameError('المضيف فقط يعدّل النقاط');
+    if (this.status !== 'playing') throw new GameError('تعديل النقاط أثناء اللعب بس');
+    const p = this.players.find((x) => x.pid === pid);
+    if (!p) throw new GameError('اللاعب غير موجود');
+    p.score = Math.max(MIN_SCORE, p.score + delta);
+    this.touch();
+  }
+
   get connectedCount() {
     return (this.tv?.connected ? 1 : 0) + this.players.filter((p) => p.connected).length;
   }

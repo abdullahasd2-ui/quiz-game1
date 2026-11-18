@@ -223,6 +223,8 @@ export const pickCellInput = z.object({
 export const actionInput = z.object({ action: z.enum(['answer', 'steal', 'reverse']), target: z.string().trim().min(1).max(16).optional() });
 export const hideInput = z.object({ box: z.number().int().min(0).max(HIDE_BOXES - 1) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
+/** The host changes a score by hand: `id` is the team ("0" / "1") or, in a solo room, the player id. */
+export const scoreInput = z.object({ id: z.string().trim().min(1).max(16), delta: z.number().int().min(-1000).max(1000).refine((n) => n !== 0, 'اختر كم نقطة') });
 export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
 export const voteInput = z.object({ key: z.string().trim().min(1).max(16) });
 export const listPickInput = z.object({ category: z.string().trim().min(1).max(20) });
@@ -251,6 +253,8 @@ export interface ClientToServerEvents {
   'game:listPick': (input: z.infer<typeof listPickInput>, reply: Reply) => void;
   'game:listAnswer': (input: z.infer<typeof listAnswerInput>, reply: Reply<{ added: string[] }>) => void;
   'room:kick': (input: z.infer<typeof kickInput>, reply: Reply) => void;
+  /** Host only: add or remove points from a team (or a solo player) by hand. */
+  'game:score': (input: z.infer<typeof scoreInput>, reply: Reply) => void;
   'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;
 }
