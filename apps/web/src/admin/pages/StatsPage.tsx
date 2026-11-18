@@ -1,5 +1,6 @@
 import type { LiveRoom, Platform, RoomMode, UsageDay, Variant } from '@quiz/shared';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,11 +87,29 @@ function LiveSection() {
 }
 
 function LiveRoomRow({ room: r }: { room: LiveRoom }) {
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const steps = r.variant === 'list' ? [1, 5] : [50, 100];
+  async function change(id: string, name: string, delta: number) {
+    setBusy(true);
+    try {
+      await api.liveScore(r.code, id, delta);
+      toast.success(`${delta > 0 ? '+' : ''}${delta} لـ ${name}`);
+      await qc.invalidateQueries({ queryKey: ['stats', 'live'] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
     <TableRow>
       <TableCell dir="ltr" className="text-end font-mono font-semibold tracking-wider">{r.code}</TableCell>
       <TableCell>
-        <div>{VARIANT_LABEL[r.variant]}</div>
+        <div>
+          {VARIANT_LABEL[r.variant]}
+          {r.solo && <span className="text-xs text-muted-foreground"> · فردي</span>}
+        </div>
         <div className="text-xs text-muted-foreground">{MODE_LABEL[r.mode]}</div>
       </TableCell>
       <TableCell>
@@ -113,7 +132,23 @@ function LiveRoomRow({ room: r }: { room: LiveRoom }) {
               {t ? (
                 <>
                   <span className="max-w-32 truncate">{t.name}</span>
-                  {r.status !== 'lobby' && <span className="tabular-nums text-muted-foreground">{num.format(t.score)}</span>}
+                  {r.status !== 'lobby' && <span dir="ltr" className="tabular-nums text-muted-foreground">{num.format(t.score)}</span>}
+                  {r.status === 'playing' && t.id !== undefined && (
+                    <span className="ms-1 flex gap-0.5" dir="ltr">
+                      {[-steps[1]!, -steps[0]!, steps[0]!, steps[1]!].map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          disabled={busy}
+                          onClick={() => change(t.id!, t.name, d)}
+                          className={cn('rounded border px-1 text-[10px] font-bold tabular-nums disabled:opacity-50', d < 0 ? 'border-red-500/40 text-red-500' : 'border-emerald-500/40 text-emerald-600')}
+                          title={`${d > 0 ? 'زيادة' : 'نقص'} ${Math.abs(d)} نقطة`}
+                        >
+                          {d > 0 ? `+${d}` : d}
+                        </button>
+                      ))}
+                    </span>
+                  )}
                 </>
               ) : (
                 <span className="text-muted-foreground">ينتظر لاعبًا</span>

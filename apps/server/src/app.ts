@@ -89,7 +89,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
       await admin.register(adminCategoryRoutes, { prefix: '/categories' });
       await admin.register(adminQuestionRoutes, { prefix: '/questions' });
       await admin.register(adminUploadRoutes, { prefix: '/upload' });
-      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live, kickLive: kickSync.live });
+      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live, kickLive: kickSync.live, adminScore: game.adminScore });
       await admin.register(adminAccountRoutes, { prefix: '/admins' });
     },
     { prefix: '/api/admin' },

@@ -47,7 +47,9 @@ export type LiveRoom = {
   variant: Variant;
   status: RoomStatus;
   phase: GamePhase;
-  teams: ({ name: string; score: number; connected: boolean } | null)[];
+  /** Both teams, or every player in a solo room. `id` is what the admin's score change sends. */
+  teams: ({ id?: string; name: string; score: number; connected: boolean } | null)[];
+  solo?: boolean;
   tvConnected: boolean | null;
   categories: string[];
   roundsPlayed: number;

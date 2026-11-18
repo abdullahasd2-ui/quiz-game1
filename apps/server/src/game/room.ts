@@ -421,6 +421,11 @@ export class GameRoom {
   adjustScore(seat: Seat, id: string, delta: number) {
     if (seat !== (this.mode === 'tv' ? 'tv' : 0)) throw new GameError('المضيف فقط يعدّل النقاط');
     if (this.status !== 'playing') throw new GameError('تعديل النقاط أثناء اللعب بس');
+    this.adminAdjust(id, delta);
+  }
+
+  /** A score change from the admin dashboard (no host check). */
+  adminAdjust(id: string, delta: number) {
     const team = id === '0' ? this.teams[0] : id === '1' ? this.teams[1] : null;
     if (!team) throw new GameError('الفريق غير موجود');
     team.score = Math.max(MIN_SCORE, team.score + delta);

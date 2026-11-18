@@ -1,12 +1,27 @@
-import { usageQuery, type KickLiveStream, type KickStats, type LiveStats, type UsageStats } from '@quiz/shared';
+import { scoreInput, usageQuery, type KickLiveStream, type KickStats, type LiveStats, type UsageStats } from '@quiz/shared';
 import { and, asc, count, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { db } from '../../db/client';
 import { categories, questions } from '../../db/schema';
 import { STATS_TIMEZONE, statsToday } from '../../game/usage';
 
-export async function adminStatsRoutes(app: FastifyInstance, opts: { live: () => LiveStats; kickLive?: () => KickLiveStream[] }) {
+export async function adminStatsRoutes(
+  app: FastifyInstance,
+  opts: { live: () => LiveStats; kickLive?: () => KickLiveStream[]; adminScore?: (code: string, id: string, delta: number) => Promise<void> },
+) {
   app.get('/live', async () => opts.live());
+
+  /** Add or remove points from a team (or a solo player) in a live room. */
+  app.post<{ Params: { code: string } }>('/live/:code/score', async (req, reply) => {
+    const body = scoreInput.safeParse(req.body);
+    if (!body.success) return reply.code(400).send({ error: body.error.issues[0]?.message ?? 'طلب غير صالح' });
+    try {
+      await opts.adminScore!(req.params.code.toUpperCase(), body.data.id, body.data.delta);
+    } catch (e) {
+      return reply.code(400).send({ error: (e as Error).message });
+    }
+    return { ok: true };
+  });
 
   app.get('/usage', async (req): Promise<UsageStats> => {
     const { days } = usageQuery.parse(req.query);
