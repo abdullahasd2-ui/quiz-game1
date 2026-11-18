@@ -5,7 +5,7 @@ import { LegalLayout, Section } from './LegalLayout';
 export function PrivacyPage() {
   return (
     <LegalLayout title="سياسة الخصوصية">
-      <p className="text-[13px] text-white/50">آخر تحديث: 25 أكتوبر 2026</p>
+      <p className="text-[13px] text-white/50">آخر تحديث: 18 نوفمبر 2026</p>
 
       <Section title="باختصار">
         <p>
@@ -24,6 +24,14 @@ export function PrivacyPage() {
             <b className="text-white">كود الغرفة وحالتها</b> (النقاط والأسئلة المعروضة والإجابات) لنفس المدة.
           </li>
         </ul>
+      </Section>
+
+      <Section title="تسجيل دخول الستريمر (Kick وTikTok)">
+        <p>
+          اللعبة نفسها ما تحتاج حساب. بس في وضع البث يقدر الستريمر يسجّل دخول بحسابه في Kick أو TikTok عشان نربط اللعبة بقناته. وقتها ناخذ من المنصة،
+          بموافقته، الاسم الظاهر والصورة واسم المستخدم ومعلومات الملف العامة. نستخدمها بس لمعرفة القناة وقراءة تعليقات البث العامة للعبة، وما ننشر
+          شي باسمه، ولا نوصل لرسائله الخاصة، ولا نبيعها أو نشاركها. يقدر يلغي الربط من «تسجيل خروج» في صفحة البث أو من إعدادات حسابه في المنصة.
+        </p>
       </Section>
 
       <Section title="اللي يُحفظ على جهازك">
@@ -73,7 +81,9 @@ export function PrivacyPage() {
       <Section title="Summary (English)">
         <div dir="ltr" className="space-y-2 text-left">
           <p>
-            Jawab aw Badel is a team trivia game. There are no accounts, ads or third-party trackers, and we do not sell or share personal data. Names
+            Jawab aw Badel is a team trivia game. Players need no accounts; only in the streaming mode a streamer may sign in with Kick or TikTok, and
+            we then receive (with their consent) the display name, avatar, username and public profile info, used only to connect the game to their
+            channel and read the public LIVE chat — never to post on their behalf or read private messages; they can disconnect at any time. There are no ads or third-party trackers, and we do not sell or share personal data. Names
             you type are shown to the other players in your room and live only in server memory until the room closes or sits idle for 30 minutes.
           </p>
           <p>
