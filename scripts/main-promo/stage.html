@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{--bg:#07071a;--panel:#0f0f28;--gold:#f7c948;--orange:#ff6b35;--cyan:#38bdf8;--purple:#a855f7;--pink:#f472b6;--green:#27ae60;--red:#e74c3c;--blue:#3b82f6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Tajawal,sans-serif;color:#fff}
+  .layer{position:absolute;inset:0}
+  .abs{position:absolute}
+  #bg{background:radial-gradient(70% 60% at 75% 0%,#2a1460 0%,transparent 60%),radial-gradient(60% 60% at 10% 100%,#06284a 0%,transparent 60%),var(--bg)}
+  .dot{position:absolute;border-radius:50%}
+  .glyph{position:absolute;font-family:Lalezar;color:#fff;opacity:.05;white-space:nowrap}
+  /* phone */
+  .phone{position:absolute;left:0;top:0;transform-origin:0 0;border-radius:64px;padding:16px;background:linear-gradient(145deg,#2b2b45,#0c0c1c 40%,#1d1d34);box-shadow:0 70px 140px -30px rgba(0,0,0,.95),0 0 0 2px rgba(255,255,255,.14),inset 0 0 0 2px rgba(255,255,255,.06),0 0 120px -30px rgba(168,85,247,.55)}
+  .phone .scr{position:relative;width:390px;height:844px;border-radius:48px;overflow:hidden;background:#07071a}
+  .phone .scr img{position:absolute;left:0;top:0;width:390px;height:844px}
+  .phone .island{position:absolute;left:50%;top:26px;width:112px;height:32px;margin-left:-56px;border-radius:20px;background:#000;z-index:5}
+  .phone .ov{position:absolute;left:0;top:0;width:390px;height:844px}
+  .tag{position:absolute;padding:10px 22px;border-radius:999px;font:900 30px Tajawal;white-space:nowrap;box-shadow:0 20px 50px -15px rgba(0,0,0,.9)}
+  /* laptop */
+  .laptop{position:absolute;left:0;top:0;transform-origin:0 0}
+  .laptop .lid{padding:22px 22px 30px;border-radius:30px 30px 10px 10px;background:linear-gradient(#26263f,#111126);box-shadow:0 0 0 2px rgba(255,255,255,.12),0 70px 140px -30px rgba(0,0,0,.95),0 0 140px -30px rgba(56,189,248,.45)}
+  .laptop .scr{position:relative;width:1440px;height:900px;border-radius:10px;overflow:hidden;background:#07071a}
+  .laptop .scr img{position:absolute;left:0;top:0;width:1440px;height:900px}
+  .laptop .base{margin:0 -110px;height:34px;border-radius:0 0 40px 40px;background:linear-gradient(#3a3a58,#17172b);box-shadow:0 30px 60px -10px rgba(0,0,0,.9)}
+  .laptop .base i{display:block;width:240px;height:12px;margin:0 auto;border-radius:0 0 12px 12px;background:#0d0d1d}
+  .ring{position:absolute;border-radius:16px;border:4px solid var(--gold);box-shadow:0 0 0 6px rgba(247,201,72,.18),0 0 40px rgba(247,201,72,.65)}
+  .tap{position:absolute;border-radius:50%;border:5px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 30px rgba(255,255,255,.6)}
+  .finger{position:absolute;width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 0 8px rgba(255,255,255,.25),0 10px 30px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
+  /* text */
+  .chap{position:absolute;right:90px;top:70px;display:flex;align-items:center;gap:22px;padding:18px 34px 18px 40px;border-radius:32px;background:linear-gradient(90deg,rgba(7,7,26,.5),rgba(7,7,26,.92));border:1.5px solid rgba(255,255,255,.12);box-shadow:0 30px 80px -20px rgba(0,0,0,.9)}
+  .chap .num{font:400 44px Lalezar;min-width:84px;height:84px;padding:0 14px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,var(--orange),var(--gold));color:#111;box-shadow:0 12px 40px -8px rgba(255,107,53,.7)}
+  .chap .t{font:400 76px/1.15 Lalezar;white-space:nowrap;background:linear-gradient(90deg,#fff,#ffe9a8);-webkit-background-clip:text;color:transparent}
+  .chap .s{font:800 30px Tajawal;color:#ffffffd0;white-space:nowrap}
+  .chip{display:inline-flex;align-items:center;gap:12px;padding:14px 28px;border-radius:999px;font:800 32px Tajawal;background:rgba(15,15,40,.9);border:2px solid rgba(255,255,255,.14);box-shadow:0 20px 50px -15px rgba(0,0,0,.85);white-space:nowrap}
+  .chip b{font-weight:900}
+  .big{font:400 150px/1.1 Lalezar;text-align:center;white-space:nowrap}
+  .grad{background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));-webkit-background-clip:text;color:transparent}
+  .gold{background:linear-gradient(90deg,var(--orange),var(--gold));-webkit-background-clip:text;color:transparent}
+  .card{position:absolute;border-radius:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:0 60px 120px -30px rgba(0,0,0,.95)}
+  .stamp{position:absolute;padding:18px 34px;border-radius:26px;font:900 40px Tajawal;white-space:nowrap;box-shadow:0 30px 80px -20px rgba(0,0,0,.9)}
+  .score{position:absolute;width:520px;height:300px;border-radius:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 50px 100px -25px rgba(0,0,0,.95)}
+  .score .n{font:400 150px/1 Lalezar;direction:ltr}
+  .score .t{font:900 44px Tajawal}
+  .flash{position:absolute;inset:0;background:#fff;pointer-events:none}
+  .sweep{position:absolute;top:-30%;height:160%;width:520px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.85),rgba(168,85,247,.95),rgba(244,114,182,.85),transparent);filter:blur(6px);mix-blend-mode:screen}
+  .vignette{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.6));pointer-events:none}
+  .logo{position:absolute}
+  .conf{position:absolute;width:16px;height:26px;border-radius:4px}
+  .tile{position:absolute;width:400px;height:330px;border-radius:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;background:linear-gradient(160deg,rgba(30,27,75,.95),rgba(15,15,40,.95));border:2px solid rgba(255,255,255,.14);box-shadow:0 50px 100px -25px rgba(0,0,0,.95)}
+  .tile .i{font-size:96px;line-height:1}
+  .tile .h{font:400 54px/1.1 Lalezar}
+  .tile .d{font:800 26px/1.35 Tajawal;opacity:.85;padding:0 26px}
+</style>
+</head>
+<body>
+<script src="data.js"></script>
+<div id="stage" class="layer">
+  <div id="bg" class="layer"></div>
+  <div id="particles" class="layer"></div>
+  <div id="scenes" class="layer"></div>
+  <div id="fx" class="layer"></div>
+  <div class="vignette"></div>
+</div>
+<script>
+const W = 1920, H = 1080, TOTAL = 90;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = {
+  io: (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
+  out: (k) => 1 - Math.pow(1 - k, 3),
+  out5: (k) => 1 - Math.pow(1 - k, 5),
+  in: (k) => k * k * k,
+  back: (k) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+  elastic: (k) => (k === 0 || k === 1 ? k : Math.pow(2, -10 * k) * Math.sin((k * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1),
+};
+const P = (t, a, d, e = ease.out) => e(clamp((t - a) / d));
+function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; (parent || document.body).appendChild(e); return e; };
+const css = (e, o) => { for (const k in o) e.style[k] = o[k]; };
+const SHOTS = window.SHOTS;
+const EVENTS = [];
+const cue = (t, s, v = 1) => EVENTS.push({ t: +t.toFixed(3), s, v });
+const scenes = [];
+function scene(key, start, len, build) {
+  const root = el('div', 'layer', document.getElementById('scenes'));
+  const s = { key, start, end: start + len, len, root };
+  s.update = build(s, root);
+  scenes.push(s);
+}
+
+// ---------- devices ----------
+const BEZ = 16;
+// a phone that can hold several real screens (crossfaded) and overlays in screen coordinates
+function phone(root, names) {
+  const ph = el('div', 'phone', root);
+  const scr = el('div', 'scr', ph);
+  el('div', 'island', ph);
+  const imgs = {}, ovs = {};
+  for (const n of names) {
+    const im = el('img', null, scr); im.src = `shots/${n}.jpg`; im.style.opacity = 0; imgs[n] = im;
+    const o = el('div', 'ov', scr); o.style.opacity = 0; ovs[n] = o;
+  }
+  const api = {
+    el: ph, ovs,
+    box: (n, k) => (typeof k === 'string' ? SHOTS[n].boxes[k] : k),
+    // which screen shows: {name: weight}
+    show(w) { for (const n of names) { const v = w[n] || 0; imgs[n].style.opacity = v; ovs[n].style.opacity = v; } },
+    // place: x,y = top-left of the screen content, s = scale
+    put({ x, y, s, ry = 0, rz = 0, o = 1 }) {
+      ph.style.transform = `translate(${x - BEZ * s}px,${y - BEZ * s}px) scale(${s}) perspective(2200px) rotateY(${ry}deg) rotateZ(${rz}deg)`;
+      ph.style.opacity = o;
+    },
+    // place so that point (px,py) of the screen lands on (tx,ty)
+    focus(px, py, s, tx = W / 2, ty = H / 2, extra = {}) { api.put({ x: tx - px * s, y: ty - py * s, s, ...extra }); },
+  };
+  return api;
+}
+function laptop(root, names) {
+  const lp = el('div', 'laptop', root);
+  const lid = el('div', 'lid', lp);
+  const scr = el('div', 'scr', lid);
+  el('div', 'base', lp, '<i></i>');
+  const imgs = {};
+  for (const n of names) { const im = el('img', null, scr); im.src = `shots/${n}.jpg`; im.style.opacity = 0; imgs[n] = im; }
+  return {
+    el: lp, imgs,
+    show(w) { for (const n of names) imgs[n].style.opacity = w[n] || 0; },
+    // the screen's top-left is at x+22*s, y+22*s
+    put({ x, y, s, ry = 0, rx = 0, o = 1 }) { lp.style.transform = `translate(${x}px,${y}px) scale(${s}) perspective(2600px) rotateX(${rx}deg) rotateY(${ry}deg)`; lp.style.opacity = o; },
+    focus(px, py, s, tx = W / 2, ty = H / 2, extra = {}) { this.put({ x: tx - (22 + px) * s, y: ty - (22 + py) * s, s, ...extra }); },
+  };
+}
+const mix = (a, b, k) => Object.fromEntries(Object.keys(a).map((key) => [key, lerp(a[key], b[key], k)]));
+function ring(over, b, pad = 8, r = 16) {
+  const e = el('div', 'ring', over);
+  css(e, { left: b.x - pad + 'px', top: b.y - pad + 'px', width: b.w + pad * 2 + 'px', height: b.h + pad * 2 + 'px', borderRadius: r + 'px', opacity: 0 });
+  return (k) => { e.style.opacity = k; e.style.transform = `scale(${lerp(1.3, 1, ease.back(clamp(k)))})`; };
+}
+function tap(over, b) {
+  const e = el('div', 'tap', over), f = el('div', 'finger', over);
+  const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+  css(e, { left: cx + 'px', top: cy + 'px', opacity: 0 }); css(f, { left: cx + 'px', top: cy + 'px', opacity: 0 });
+  // k: -1..0 finger comes in, 0..1 press ripple
+  return (lt, at) => {
+    const a = clamp((lt - (at - 0.35)) / 0.35), r = clamp((lt - at) / 0.55);
+    f.style.opacity = lt < at - 0.35 || r >= 1 ? 0 : a * (1 - r);
+    f.style.transform = `translate(-50%,-50%) scale(${lt < at ? lerp(1.5, 1, ease.out(a)) : lerp(0.8, 1, r)})`;
+    e.style.opacity = r <= 0 || r >= 1 ? 0 : 1 - r;
+    const s = lerp(20, 140, ease.out(r));
+    css(e, { width: s + 'px', height: s + 'px' });
+  };
+}
+function chapter(root, num, title, sub) {
+  const c = el('div', 'chap', root, `${num ? `<div class="num">${num}</div>` : ''}<div><div class="t">${title}</div>${sub ? `<div class="s">${sub}</div>` : ''}</div>`);
+  const n = c.querySelector('.num'), t = c.querySelector('.t'), s = c.querySelector('.s');
+  return (lt, out = 0) => {
+    const a = P(lt, 0.05, 0.5, ease.back), b = P(lt, 0.15, 0.55, ease.out5), d = P(lt, 0.35, 0.5);
+    if (n) n.style.transform = `scale(${a}) rotate(${(1 - a) * -90}deg)`;
+    t.style.clipPath = `inset(0 0 0 ${(1 - b) * 100}%)`;
+    t.style.transform = `translateX(${(1 - b) * 60}px)`;
+    if (s) { s.style.opacity = d; s.style.transform = `translateY(${(1 - d) * 20}px)`; }
+    c.style.opacity = 1 - out;
+    c.style.transform = `translateY(${-out * 30}px)`;
+  };
+}
+const popIn = (e, lt, at, d = 0.4, from = 0) => { const k = P(lt, at, d, ease.back); e.style.opacity = clamp((lt - at) / 0.12); e.style.transform = `${e.dataset.base || ''} scale(${lerp(from, 1, k)})`; return k; };
+const fadeOut = (e, lt, at, d = 0.3) => { const k = P(lt, at, d); e.style.opacity = Math.min(+e.style.opacity || 1, 1 - k); return k; };
+
+// ---------- background ----------
+const parts = [];
+(() => {
+  const r = rng(11), root = document.getElementById('particles');
+  for (let i = 0; i < 50; i++) {
+    const d = el('div', 'dot', root);
+    const s = 3 + r() * 9, hue = [195, 270, 320, 45][i % 4];
+    css(d, { width: s + 'px', height: s + 'px', background: `hsla(${hue},90%,70%,${0.25 + r() * 0.4})`, boxShadow: `0 0 ${s * 3}px hsla(${hue},90%,65%,.8)` });
+    parts.push({ d, x: r() * W, y: r() * H, vx: (r() - 0.5) * 20, vy: -10 - r() * 30, ph: r() * 6 });
+  }
+  for (let i = 0; i < 12; i++) {
+    const g = el('div', 'glyph', root, ['؟', 'جاوب', 'بادل', 'صح', 'غلط', 'دبل', '500', '×2'][i % 8]);
+    css(g, { fontSize: 80 + r() * 120 + 'px' });
+    parts.push({ d: g, x: r() * W, y: r() * H, vx: (r() - 0.5) * 12, vy: -8 - r() * 10, ph: r() * 6, rot: (r() - 0.5) * 40 });
+  }
+})();
+function drawBg(t) {
+  for (const p of parts) {
+    const x = ((p.x + p.vx * t) % (W + 200) + W + 200) % (W + 200) - 100;
+    const y = ((p.y + p.vy * t) % (H + 300) + H + 300) % (H + 300) - 150;
+    p.d.style.transform = `translate(${x}px,${y}px) rotate(${(p.rot || 0) + Math.sin(t * 0.6 + p.ph) * 8}deg)`;
+  }
+}
+
+// =====================================================================
+// 0. INTRO — «مستعد تختبر معلوماتك؟», the arrows spin, flash, the logo
+scene('intro', 0, 5.2, (s, root) => {
+  const words = ['مستعد', 'تختبر', 'معلوماتك؟'].map((w, i) => { const e = el('div', 'big abs' + (i === 2 ? ' gold' : i === 1 ? ' grad' : ''), root, w); css(e, { left: 0, right: 0, top: '430px', fontSize: '200px' }); return e; });
+  const icon = el('img', 'logo', root); icon.src = 'assets/app-icon-t.png'; css(icon, { width: '540px', left: (W - 540) / 2 + 'px', top: (H - 540) / 2 + 'px' });
+  const logo = el('img', 'logo', root); logo.src = 'assets/app-icon-action-v2-t.png'; css(logo, { width: '700px', left: (W - 700) / 2 + 'px', top: '40px' });
+  const line = el('div', 'abs', root, '<div style="font:400 64px Lalezar;text-align:center">مستعد تختبر <span class="gold">معلوماتك؟</span></div><div style="font:800 32px Tajawal;text-align:center;opacity:.8;margin-top:4px">لعبة أسئلة جماعية · فريق ضد فريق</div>');
+  css(line, { left: 0, right: 0, top: '790px' });
+  const fl = el('div', 'flash', root);
+  cue(0, 'riser'); [0.15, 0.7, 1.25].forEach((t) => cue(t, 'hit', 0.9)); cue(1.95, 'whoosh'); cue(2.7, 'impact'); cue(3.3, 'pop', 0.6);
+  return (lt) => {
+    words.forEach((w, i) => {
+      const a = 0.12 + i * 0.55, b = a + 0.5;
+      const k = P(lt, a, 0.22, ease.out5), o = P(lt, b, 0.16, ease.in);
+      w.style.opacity = lt < a ? 0 : 1 - o;
+      w.style.transform = `scale(${lerp(2.6, 1, k) * lerp(1, 0.7, o)})`;
+      w.style.filter = `blur(${(1 - k) * 14 + o * 10}px)`;
+    });
+    const ik = P(lt, 1.85, 0.75, ease.out5), io = P(lt, 2.62, 0.12);
+    icon.style.opacity = lt < 1.85 ? 0 : 1 - io;
+    icon.style.transform = `scale(${lerp(0.3, 1, ik)}) rotate(${(1 - ik) * -540}deg)`;
+    const lk = P(lt, 2.7, 0.9, ease.elastic);
+    logo.style.opacity = lt < 2.7 ? 0 : 1;
+    logo.style.transform = `scale(${lerp(0.6, 1, lk) * (1 + Math.sin(lt * 3) * 0.012)})`;
+    logo.style.filter = `drop-shadow(0 0 ${40 + Math.sin(lt * 4) * 15}px rgba(168,85,247,.7))`;
+    fl.style.opacity = lt < 2.7 ? 0 : clamp(1 - (lt - 2.7) / 0.45) * 0.95;
+    const tk = P(lt, 3.2, 0.6, ease.out5);
+    line.style.opacity = tk; line.style.transform = `translateY(${(1 - tk) * 40}px)`;
+  };
+});
+
+// 1. THE SITE — on a laptop: hero, «ابدأ اللعب»
+scene('site', 5.2, 6.0, (s, root) => {
+  const L = laptop(root, ['d-hero']);
+  L.show({ 'd-hero': 1 });
+  const url = el('div', 'chip abs', root, '🌐 <b style="direction:ltr;letter-spacing:1px">jawabbadel.com</b>');
+  css(url, { left: '90px', top: '90px', borderColor: 'rgba(56,189,248,.55)' });
+  const ch = chapter(root, '', 'العب من المتصفح', 'بدون تثبيت — افتح الموقع وابدأ');
+  const r = ring(L.imgs['d-hero'].parentNode, SHOTS['d-hero'].boxes.start, 8, 14);
+  cue(s.start + 0.1, 'whoosh', 0.7); cue(s.start + 3.6, 'click');
+  const tp = tap(L.imgs['d-hero'].parentNode, SHOTS['d-hero'].boxes.start);
+  return (lt) => {
+    // the laptop rises tilted, then the camera pushes toward the title and the start button
+    const k = P(lt, 0, 1.1, ease.out5);
+    const wide = { x: 960 - 742 * 0.93, y: lerp(1100, 205, k), s: 0.93, ry: lerp(-14, -6, k), rx: lerp(18, 5, k) };
+    const b = SHOTS['d-hero'].boxes.start;
+    const push = P(lt, 2.0, 1.6, ease.io);
+    if (push <= 0) L.put(wide);
+    else {
+      const sZ = lerp(0.93, 1.75, push);
+      const px = lerp(720, b.x + b.w / 2 - 80, push), py = lerp(450, b.y + 10, push);
+      L.focus(px, py, sZ, 960, lerp(205 + 472 * 0.93, 600, push), { ry: lerp(-6, 0, push), rx: lerp(5, 0, push) });
+    }
+    r(P(lt, 3.1, 0.35)); tp(lt, 3.6);
+    popIn(url, lt, 0.8); ch(lt);
+  };
+});
+
+// 2. MODES + CATEGORIES on the site
+scene('explore', 11.2, 6.0, (s, root) => {
+  const L = laptop(root, ['d-modes', 'd-cats']);
+  const ch = chapter(root, '', 'أطوار وفئات كثيرة', 'كل طور له لعبته · من التاريخ إلى الإيموجي');
+  const cats = ['🏺 تاريخ', '🗺️ جغرافيا', '⚽ كرة قدم', '🚗 سيارات', '🚩 أعلام دول', '🔍 اكتشف الصورة', '🧩 مسيرة لاعب', '🔎 اكتشف الزوم'];
+  const chips = cats.map((c, i) => { const e = el('div', 'chip abs', root, c); css(e, { left: 0, top: 0 }); return e; });
+  const modes = [['🔄', 'جاوب أو بادل', '#38bdf8'], ['🔀', 'جاوب أو اقلب', '#a855f7'], ['↩️', 'جاوب أو بادل أو اعكس', '#f472b6'], ['⏱️', 'عدّها', '#f7c948']];
+  const mchips = modes.map(([i, t, c]) => { const e = el('div', 'chip abs', root, `${i} <b>${t}</b>`); css(e, { borderColor: c, left: 0, top: 0 }); return e; });
+  cue(s.start + 0.2, 'whoosh', 0.6);
+  [0.9, 1.1, 1.3, 1.5].forEach((t) => cue(s.start + t, 'pop', 0.6));
+  cue(s.start + 3.0, 'whoosh', 0.5);
+  cats.forEach((_, i) => cue(s.start + 3.5 + i * 0.12, 'tick', 0.6));
+  return (lt) => {
+    const sw = P(lt, 2.9, 0.6, ease.io);
+    L.show({ 'd-modes': 1 - sw, 'd-cats': sw });
+    L.put({ x: 960 - 742 * 0.78 + lerp(260, 300, lt / 6), y: 250 + lerp(0, -20, lt / 6), s: 0.78, ry: -10, rx: 6 });
+    // mode names fly out to the left side, then the categories rain in
+    mchips.forEach((e, i) => {
+      const k = P(lt, 0.9 + i * 0.2, 0.45, ease.back), o = P(lt, 2.8, 0.4, ease.in);
+      e.style.opacity = clamp((lt - 0.9 - i * 0.2) / 0.1) * (1 - o);
+      e.style.transform = `translate(${lerp(-200, 90, k) - o * 300}px, ${330 + i * 110}px) scale(${k})`;
+    });
+    chips.forEach((e, i) => {
+      const at = 3.5 + i * 0.12, k = P(lt, at, 0.45, ease.back);
+      const col = i % 2, row = Math.floor(i / 2);
+      e.style.opacity = clamp((lt - at) / 0.1);
+      e.style.transform = `translate(${70 + col * 300}px, ${300 + row * 105}px) scale(${k})`;
+    });
+    ch(lt);
+  };
+});
+
+// 3. CREATE A ROOM — phone A: team name → room code + QR
+scene('create', 17.2, 6.4, (s, root) => {
+  const A = phone(root, ['a-create', 'a-lobby']);
+  const ch = chapter(root, '1', 'أنشئ غرفة', 'اكتب اسم فريقك');
+  const rName = ring(A.ovs['a-create'], SHOTS['a-create'].boxes.name, 6, 12);
+  const tGo = tap(A.ovs['a-create'], SHOTS['a-create'].boxes.go);
+  const rCode = ring(A.ovs['a-lobby'], SHOTS['a-lobby'].boxes.code, 8, 22);
+  const codeChip = el('div', 'abs', root, '<div class="chip" style="font-size:40px;border-color:rgba(247,201,72,.6)">🔑 شارك <b class="gold">كود الغرفة</b></div><div class="chip" style="margin-top:18px">📷 أو امسح الـ QR</div>');
+  css(codeChip, { left: '1130px', top: '430px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' });
+  cue(s.start + 0.1, 'whoosh', 0.7); cue(s.start + 2.2, 'click'); cue(s.start + 2.6, 'whoosh', 0.5); cue(s.start + 3.2, 'ding', 0.6);
+  return (lt) => {
+    const sw = P(lt, 2.5, 0.35);
+    A.show({ 'a-create': 1 - sw, 'a-lobby': sw });
+    const inK = P(lt, 0, 0.9, ease.out5);
+    const z = lerp(1.0, 1.55, P(lt, 0.6, 1.0, ease.io)) * (sw > 0 ? lerp(1, 0.68, P(lt, 2.5, 0.8, ease.io)) / lerp(1, 1, 1) : 1);
+    const fy = sw > 0 ? lerp(370, 300, P(lt, 2.5, 0.8, ease.io)) : lerp(422, 380, P(lt, 0.6, 1.0, ease.io));
+    A.focus(195, fy, z, lerp(760, 700, sw), lerp(1500, 560, inK), { ry: lerp(-25, -8, inK), rz: lerp(6, 0, inK) });
+    rName(P(lt, 0.9, 0.35)); tGo(lt, 2.2); rCode(P(lt, 3.1, 0.35));
+    popIn(codeChip, lt, 3.4, 0.5); codeChip.style.transformOrigin = 'right center';
+    ch(lt);
+  };
+});
+
+// 4. THE OTHER TEAM JOINS — phone B types the code, both phones show the teams
+scene('join', 23.6, 6.0, (s, root) => {
+  const B = phone(root, ['b-join']);
+  const A = phone(root, ['a-lobby2']);
+  B.show({ 'b-join': 1 }); A.show({ 'a-lobby2': 1 });
+  const ch = chapter(root, '2', 'خصمك ينضم بالكود', 'كل فريق على جواله');
+  const rCode = ring(B.ovs['b-join'], SHOTS['b-join'].boxes.code, 6, 12);
+  const tGo = tap(B.ovs['b-join'], SHOTS['b-join'].boxes.go);
+  const vs = el('div', 'abs', root, '<div style="font:400 150px Lalezar;direction:ltr" class="gold">VS</div>');
+  css(vs, { left: '880px', top: '430px' });
+  const tagA = el('div', 'tag', root, '🦁 الصقور'), tagB = el('div', 'tag', root, '🐯 النمور');
+  css(tagA, { background: 'linear-gradient(90deg,#1d4ed8,#38bdf8)', left: '1230px', top: '960px' });
+  css(tagB, { background: 'linear-gradient(90deg,#b91c1c,#f97316)', left: '480px', top: '960px' });
+  cue(s.start + 0.1, 'whoosh', 0.7); cue(s.start + 1.9, 'click'); cue(s.start + 2.5, 'whoosh', 0.7); cue(s.start + 3.0, 'impact', 0.8);
+  return (lt) => {
+    const inK = P(lt, 0, 0.8, ease.out5);
+    const split = P(lt, 2.4, 0.9, ease.io);
+    // B alone and zoomed on the code field, then both phones side by side
+    const bz = lerp(1.45, 0.98, split);
+    B.focus(195, lerp(440, 422, split), bz, lerp(760, 560, split), lerp(1400, 540, inK) + split * 10, { ry: lerp(0, 10, split) });
+    A.focus(195, 422, 0.98, lerp(2400, 1360, split), 550, { ry: -10, o: split });
+    rCode(P(lt, 0.7, 0.35) * (1 - split)); tGo(lt, 1.9);
+    const vk = P(lt, 3.0, 0.5, ease.elastic);
+    vs.style.opacity = clamp((lt - 3.0) / 0.1); vs.style.transform = `scale(${lerp(3, 1, vk)}) rotate(${-6 + Math.sin(lt * 4) * 2}deg)`;
+    popIn(tagA, lt, 3.3); popIn(tagB, lt, 3.45);
+    ch(lt);
+  };
+});
+
+// 5. PICK CATEGORIES (3 at least) and the time, start
+scene('cats', 29.6, 5.6, (s, root) => {
+  const A = phone(root, ['a-cats']);
+  A.show({ 'a-cats': 1 });
+  const bx = SHOTS['a-cats'].boxes;
+  const rs = ['geo', 'foot', 'hist', 'flags'].map((k) => ring(A.ovs['a-cats'], bx[k], 4, 16));
+  const tGo = tap(A.ovs['a-cats'], bx.start);
+  const ch = chapter(root, '3', 'اختاروا الفئات', '3 فئات على الأقل · ووقت الإجابة');
+  const note = el('div', 'chip abs', root, '🗂️ <b>4 فئات</b> × <b>5 أسئلة</b> = لوحة من 20 سؤال');
+  css(note, { left: '1080px', top: '560px' });
+  [0.8, 1.05, 1.3, 1.55].forEach((t) => cue(s.start + t, 'tick', 0.9)); cue(s.start + 3.7, 'click'); cue(s.start + 0.05, 'whoosh', 0.6);
+  return (lt) => {
+    const inK = P(lt, 0, 0.7, ease.out5);
+    const toStart = P(lt, 2.6, 0.9, ease.io);
+    A.focus(195, lerp(414, 700, toStart), lerp(1.6, 1.45, toStart), 700, lerp(1400, 560, inK), { ry: -8 });
+    rs.forEach((r, i) => r(P(lt, 0.8 + i * 0.25, 0.3)));
+    tGo(lt, 3.7);
+    popIn(note, lt, 1.9);
+    ch(lt);
+  };
+});
+
+// 6. THE BOARD — the team on turn picks; points = difficulty
+scene('board', 35.2, 5.6, (s, root) => {
+  const A = phone(root, ['a-board']);
+  A.show({ 'a-board': 1 });
+  const bx = SHOTS['a-board'].boxes;
+  const ch = chapter(root, '4', 'اللوحة', 'الفريق اللي دوره يختار سؤال');
+  const ladder = el('div', 'abs', root, [100, 200, 300, 400, 500].map((p, i) => `<div style="display:flex;align-items:center;gap:16px;margin:10px 0"><div style="width:150px;height:74px;border-radius:20px;display:grid;place-items:center;font:400 50px Lalezar;background:linear-gradient(135deg,${['#16a34a', '#0ea5e9', '#eab308', '#f97316', '#dc2626'][i]},#0f0f28 140%);box-shadow:0 18px 40px -12px rgba(0,0,0,.8)">${p}</div><div style="font:800 30px Tajawal;opacity:.9">${['سهل', '', '', '', 'صعب'][i]}</div></div>`).join(''));
+  css(ladder, { left: '1280px', top: '260px' });
+  const arrow = el('div', 'abs', root, '<div style="font:900 34px Tajawal;background:rgba(15,15,40,.9);padding:12px 24px;border-radius:18px;border:2px solid rgba(247,201,72,.5)">📈 كل ما زادت النقاط · زاد التحدي</div>');
+  css(arrow, { left: '1150px', top: '760px' });
+  const cell = tap(A.ovs['a-board'], bx.cell);
+  const rc = ring(A.ovs['a-board'], bx.cell, 4, 14);
+  [0.6, 0.75, 0.9, 1.05, 1.2].forEach((t) => cue(s.start + t, 'tick', 0.7)); cue(s.start + 3.9, 'click'); cue(s.start + 0.05, 'whoosh', 0.6);
+  return (lt) => {
+    const inK = P(lt, 0, 0.7, ease.out5);
+    const zoom = P(lt, 2.9, 0.9, ease.io);
+    A.focus(lerp(195, bx.cell.x + 40, zoom), lerp(420, bx.cell.y + 24, zoom), lerp(1.12, 2.2, zoom), lerp(700, 680, zoom), lerp(1400, 540, inK), { ry: lerp(-10, 0, zoom) });
+    [...ladder.children].forEach((r, i) => popIn(r, lt, 0.6 + i * 0.15, 0.4));
+    popIn(arrow, lt, 1.6);
+    rc(P(lt, 3.5, 0.3)); cell(lt, 3.9);
+    ch(lt);
+  };
+});
+
+// 7. THE SECRET CHOICE — both phones; Falcons swap, Tigers answer
+scene('secret', 40.8, 8.0, (s, root) => {
+  const A = phone(root, ['a-choose', 'a-swapped']);
+  const B = phone(root, ['b-choose', 'b-options']);
+  const ch = chapter(root, '5', 'القرار سرّي!', 'كل فريق يختار بدون ما يشوف الثاني');
+  const q = el('div', 'abs', root, '<div style="font:400 66px Lalezar;text-align:center;text-shadow:0 10px 40px rgba(0,0,0,.8)">ما هي عاصمة الإمارات؟</div><div style="text-align:center;margin-top:6px"><span class="chip" style="font-size:28px;padding:8px 20px">🗺️ جغرافيا · <b class="gold">200</b> نقطة</span></div>');
+  css(q, { left: 0, right: 0, top: '235px' });
+  const c1 = el('div', 'card', root, '<div style="font-size:90px">✅</div><div style="font:400 72px Lalezar">جاوب</div><div style="font:800 28px Tajawal;opacity:.9">تجاوب بنفسك</div>');
+  const c2 = el('div', 'card', root, '<div style="font-size:90px">🔄</div><div style="font:400 72px Lalezar">بادل</div><div style="font:800 28px Tajawal;opacity:.9">تاخذ جواب الخصم</div>');
+  css(c1, { width: '400px', height: '400px', left: '1000px', top: '420px', background: 'linear-gradient(160deg,#14532d,#16a34a)', border: '3px solid #4ade80' });
+  css(c2, { width: '400px', height: '400px', left: '520px', top: '420px', background: 'linear-gradient(160deg,#7f1d1d,#dc2626)', border: '3px solid #f87171' });
+  const ortxt = el('div', 'abs', root, '<div style="font:400 90px Lalezar" class="gold">أو</div>'); css(ortxt, { left: '920px', top: '540px', width: '80px', textAlign: 'center' });
+  const tA = tap(A.ovs['a-choose'], SHOTS['a-choose'].boxes.swap), tB = tap(B.ovs['b-choose'], SHOTS['b-choose'].boxes.answer);
+  const lockA = el('div', 'abs', root, '<div style="font-size:70px">🔒</div>'), lockB = el('div', 'abs', root, '<div style="font-size:70px">🔒</div>');
+  const lab = (t, bg) => { const e = el('div', 'tag', root, t); css(e, { background: bg }); return e; };
+  const la = lab('🦁 الصقور: <b>بادل!</b>', 'linear-gradient(90deg,#1d4ed8,#38bdf8)'), lb = lab('🐯 النمور: <b>جاوب</b>', 'linear-gradient(90deg,#b91c1c,#f97316)');
+  css(la, { left: '1210px', top: '975px' }); css(lb, { left: '440px', top: '975px' });
+  cue(s.start + 0.6, 'impact', 0.6); cue(s.start + 1.6, 'hit', 0.8); cue(s.start + 1.9, 'hit', 0.8);
+  cue(s.start + 4.3, 'click'); cue(s.start + 4.6, 'stamp', 0.6); cue(s.start + 5.3, 'click'); cue(s.start + 5.6, 'stamp', 0.6);
+  return (lt) => {
+    const qk = P(lt, 0.3, 0.6, ease.back), qo = P(lt, 3.0, 0.4, ease.in);
+    q.style.opacity = clamp((lt - 0.3) / 0.15) * (1 - qo); q.style.transform = `scale(${qk}) translateY(${-qo * 40}px)`;
+    const k1 = P(lt, 1.6, 0.5, ease.back), k2 = P(lt, 1.9, 0.5, ease.back), co = P(lt, 3.0, 0.45, ease.in);
+    c1.style.opacity = clamp((lt - 1.6) / 0.1) * (1 - co); c2.style.opacity = clamp((lt - 1.9) / 0.1) * (1 - co);
+    c1.style.transform = `translateX(${(1 - k1) * 700 + co * 600}px) rotate(${(1 - k1) * 10 + 3}deg)`;
+    c2.style.transform = `translateX(${(1 - k2) * -700 - co * 600}px) rotate(${(1 - k2) * -10 - 3}deg)`;
+    ortxt.style.opacity = clamp((lt - 2.2) / 0.1) * (1 - co); ortxt.style.transform = `scale(${P(lt, 2.2, 0.4, ease.back)})`;
+    // phones come up after the cards
+    const pk = P(lt, 3.1, 0.8, ease.out5);
+    const sw = P(lt, 4.55, 0.3);
+    A.show({ 'a-choose': 1 - sw, 'a-swapped': sw });
+    const bs = P(lt, 5.55, 0.3);
+    B.show({ 'b-choose': 1 - bs, 'b-options': bs });
+    A.focus(195, 440, 0.94, 1360, lerp(1500, 590, pk), { ry: -9 });
+    B.focus(195, 440, 0.94, 560, lerp(1500, 590, P(lt, 3.25, 0.8, ease.out5)), { ry: 9 });
+    tA(lt, 4.3); tB(lt, 5.3);
+    // locks: the other team cannot see
+    const lk = P(lt, 6.2, 0.4, ease.back);
+    [lockA, lockB].forEach((e, i) => { css(e, { left: (i ? 300 : 1080) + 'px', top: '930px' }); e.style.opacity = clamp((lt - 6.2) / 0.1); e.style.transform = `scale(${lk}) rotate(${Math.sin(lt * 4 + i) * 6}deg)`; });
+    popIn(la, lt, 4.7); popIn(lb, lt, 5.7);
+    ch(lt);
+  };
+});
+
+// 8. THE ANSWER — Tigers answer: «أبوظبي»
+scene('answer', 48.8, 5.4, (s, root) => {
+  const B = phone(root, ['b-options']);
+  B.show({ 'b-options': 1 });
+  const bx = SHOTS['b-options'].boxes;
+  const ch = chapter(root, '6', 'جاوب قبل ما يخلص الوقت', '4 خيارات · جواب واحد صح');
+  const t = tap(B.ovs['b-options'], bx.opts);
+  const opts = ['أبوظبي', 'دبي', 'الشارقة', 'العين'].map((o, i) => { const e = el('div', 'abs', root, `<div class="chip" style="font-size:44px;padding:18px 40px;min-width:330px;justify-content:center">${o}</div>`); css(e, { left: (i % 2 ? 1150 : 1530) + 'px', top: 360 + Math.floor(i / 2) * 140 + 'px' }); return e; });
+  const right = el('div', 'abs', root, '<div class="chip" style="font-size:44px;padding:18px 40px;min-width:330px;justify-content:center;background:linear-gradient(90deg,#15803d,#22c55e);border-color:#86efac">✅ أبوظبي</div>');
+  css(right, { left: '1530px', top: '360px' });
+  [0.5, 0.65, 0.8, 0.95].forEach((x) => cue(s.start + x, 'pop', 0.6)); cue(s.start + 2.6, 'click'); cue(s.start + 2.9, 'ding');
+  return (lt) => {
+    const inK = P(lt, 0, 0.6, ease.out5);
+    B.focus(195, 440, lerp(1.0, 1.3, P(lt, 1.6, 1.0, ease.io)), 700, lerp(1400, 560, inK), { ry: -9 });
+    opts.forEach((e, i) => { popIn(e, lt, 0.5 + i * 0.15); if (i === 0) e.style.opacity = Math.min(+e.style.opacity, 1 - P(lt, 2.85, 0.1)); else e.style.opacity = Math.min(+e.style.opacity, 1 - 0.65 * P(lt, 2.9, 0.3)); });
+    const rk = P(lt, 2.85, 0.45, ease.back);
+    right.style.opacity = clamp((lt - 2.85) / 0.05); right.style.transform = `scale(${lerp(1.5, 1.08, rk)})`;
+    t(lt, 2.6);
+    ch(lt);
+  };
+});
+
+// 9. THE RESULT — the Falcons swapped and the Tigers were right → Falcons ×2, Tigers 0
+scene('result', 54.2, 8.4, (s, root) => {
+  const A = phone(root, ['a-result']);
+  A.show({ 'a-result': 1 });
+  const ch = chapter(root, '7', 'النتيجة', 'بادلوا وجواب الخصم صح = دبل!');
+  const ov = A.ovs['a-result'];
+  const rRight = ring(ov, { x: 38, y: 312, w: 314, h: 68 }, 4, 18);
+  const rFal = ring(ov, { x: 200, y: 392, w: 152, h: 170 }, 4, 18);
+  const x2 = el('div', 'abs', root, '<div style="font:400 260px/1 Lalezar;direction:ltr" class="gold">×2</div>');
+  css(x2, { left: '1300px', top: '260px' });
+  const pts = el('div', 'abs', root, '<div style="font:400 120px/1 Lalezar;direction:ltr;color:#fde68a;text-shadow:0 0 40px rgba(247,201,72,.7)">200 → 400</div>');
+  css(pts, { left: '1180px', top: '560px' });
+  const rules = [
+    ['✅ جاوب صح', 'نقاط السؤال', 'rgba(22,101,52,.95)', '#4ade80'],
+    ['🔄 بادل + جواب الخصم صح', 'دبل · والخصم ما ياخذ شي', 'rgba(76,29,149,.95)', '#c084fc'],
+    ['🔄 بادل + جواب الخصم غلط', 'تنقص من نقاطك', 'rgba(127,29,29,.95)', '#f87171'],
+  ].map(([a, b, bg, bd]) => { const e = el('div', 'stamp', root, `${a} = <b style="color:var(--gold)">${b}</b>`); css(e, { background: bg, border: `3px solid ${bd}`, right: '90px' }); return e; });
+  cue(s.start + 0.8, 'ding'); cue(s.start + 2.0, 'impact'); cue(s.start + 2.3, 'stamp'); cue(s.start + 5.0, 'whoosh', 0.6);
+  [5.4, 6.0, 6.6].forEach((t) => cue(s.start + t, 'stamp', 0.8));
+  return (lt) => {
+    const inK = P(lt, 0, 0.6, ease.out5);
+    const move = P(lt, 4.9, 0.9, ease.io);
+    A.focus(lerp(276, 195, move), lerp(470, 440, move), lerp(1.9, 1.0, move), lerp(720, 470, move), lerp(1400, 545, inK) + move * 0, { ry: lerp(-6, 8, move) });
+    rRight(P(lt, 0.7, 0.35) * (1 - move)); rFal(P(lt, 1.8, 0.35) * (1 - move));
+    const xk = P(lt, 2.0, 0.6, ease.elastic), xo = P(lt, 4.7, 0.3);
+    x2.style.opacity = clamp((lt - 2.0) / 0.08) * (1 - xo); x2.style.transform = `scale(${lerp(3.2, 1, xk)}) rotate(${-8 + Math.sin(lt * 5) * 2}deg)`;
+    popIn(pts, lt, 2.6, 0.5); pts.style.opacity = Math.min(+pts.style.opacity, 1 - xo);
+    rules.forEach((e, i) => {
+      const at = 5.4 + i * 0.6, k = P(lt, at, 0.35, ease.back);
+      e.style.opacity = clamp((lt - at) / 0.08); e.style.top = 330 + i * 150 + 'px';
+      e.style.transform = `scale(${lerp(1.8, 1, k)}) rotate(${(1 - k) * -6}deg)`;
+    });
+    ch(lt);
+  };
+});
+
+// 10. THE RACE — a whole board later: the scores trade the lead, three right in a row = double
+scene('race', 62.6, 7.8, (s, root) => {
+  const ch = chapter(root, '8', 'المنافسة تشتعل', '20 سؤال · والنقاط تتقلب');
+  const fa = el('div', 'score', root, '<div class="t">🦁 الصقور</div><div class="n">0</div>');
+  const fb = el('div', 'score', root, '<div class="t">🐯 النمور</div><div class="n">0</div>');
+  css(fa, { left: '1100px', top: '330px', background: 'linear-gradient(160deg,#1e3a8a,#0f0f28)', border: '3px solid #60a5fa' });
+  css(fb, { left: '300px', top: '330px', background: 'linear-gradient(160deg,#7f1d1d,#0f0f28)', border: '3px solid #f87171' });
+  const vs = el('div', 'abs', root, '<div style="font:400 110px Lalezar" class="gold">VS</div>'); css(vs, { left: '880px', top: '400px', direction: 'ltr' });
+  const na = fa.querySelector('.n'), nb = fb.querySelector('.n');
+  // a believable race ending on the real final score (Tigers 5200 – Falcons 4700)
+  const pa = [0, 400, 400, 900, 1300, 1300, 2100, 2600, 3100, 3100, 3600, 4300, 4700, 4700];
+  const pb = [0, 0, 300, 300, 800, 1500, 1500, 1900, 1900, 2800, 3500, 3500, 4400, 5200];
+  const fire = el('div', 'abs', root, '<div class="chip" style="font-size:40px;border-color:rgba(255,107,53,.8);background:linear-gradient(90deg,rgba(124,45,18,.95),rgba(15,15,40,.95))">🔥 3 أجوبة صح ورا بعض = <b class="gold">دبل</b></div>');
+  css(fire, { left: 0, right: 0, top: '720px', textAlign: 'center' });
+  const lead = el('div', 'abs', root, ''); css(lead, { left: 0, right: 0, top: '860px', textAlign: 'center', font: '900 34px Tajawal' });
+  const steps = pa.length - 1, T0 = 0.9, T1 = 6.4;
+  for (let i = 1; i <= steps; i++) cue(s.start + T0 + ((T1 - T0) * i) / steps, i === steps ? 'impact' : 'tick', i === steps ? 0.8 : 0.8);
+  cue(s.start + 3.2, 'whoosh', 0.6);
+  return (lt) => {
+    const k = clamp((lt - T0) / (T1 - T0)) * steps;
+    const i = Math.min(steps - 1, Math.floor(k)), f = ease.out(k - i);
+    const a = Math.round(lerp(pa[i], pa[Math.min(steps, i + 1)], k >= steps ? 1 : f)), b = Math.round(lerp(pb[i], pb[Math.min(steps, i + 1)], k >= steps ? 1 : f));
+    na.textContent = a; nb.textContent = b;
+    const ka = P(lt, 0.2, 0.5, ease.back), kb = P(lt, 0.35, 0.5, ease.back);
+    fa.style.opacity = clamp((lt - 0.2) / 0.1); fb.style.opacity = clamp((lt - 0.35) / 0.1);
+    const bump = (x) => 1 + Math.max(0, Math.sin(x * Math.PI)) * 0.06;
+    fa.style.transform = `scale(${ka * (a > b ? bump(k % 1) : 0.96)})`;
+    fb.style.transform = `scale(${kb * (b > a ? bump(k % 1) : 0.96)})`;
+    fa.style.boxShadow = a > b ? '0 0 80px rgba(96,165,250,.6),0 50px 100px -25px rgba(0,0,0,.95)' : '0 50px 100px -25px rgba(0,0,0,.95)';
+    fb.style.boxShadow = b > a ? '0 0 80px rgba(248,113,113,.6),0 50px 100px -25px rgba(0,0,0,.95)' : '0 50px 100px -25px rgba(0,0,0,.95)';
+    vs.style.transform = `scale(${P(lt, 0.5, 0.5, ease.back)}) rotate(${Math.sin(lt * 5) * 4}deg)`; vs.style.opacity = clamp((lt - 0.5) / 0.1);
+    popIn(fire, lt, 3.2, 0.5);
+    lead.textContent = lt < 1.2 ? '' : a === b ? '⚖️ تعادل!' : a > b ? '🦁 الصقور متقدمين' : '🐯 النمور متقدمين';
+    lead.style.opacity = clamp((lt - 1.2) / 0.3);
+    ch(lt);
+  };
+});
+
+// 11. THE WINNER — the real final screen
+scene('final', 70.4, 6.6, (s, root) => {
+  const A = phone(root, ['a-final']);
+  A.show({ 'a-final': 1 });
+  const ch = chapter(root, '🏆', 'الأعلى نقاط يفوز', 'النمور 5200 · الصقور 4700');
+  const big = el('div', 'abs', root, '<div style="font:400 140px/1.05 Lalezar;text-align:center" class="gold">النمور<br>الفائز!</div>');
+  css(big, { left: '1080px', top: '330px', width: '720px' });
+  const r = rng(5), conf = [];
+  for (let i = 0; i < 110; i++) {
+    const c = el('div', 'conf', root);
+    css(c, { background: ['#f7c948', '#38bdf8', '#a855f7', '#f472b6', '#53fc18', '#ff6b35'][i % 6] });
+    conf.push({ c, x: r() * W, vy: 380 + r() * 420, vx: (r() - 0.5) * 300, rot: r() * 720, d: r() * 0.7, s: 0.6 + r() * 0.8 });
+  }
+  cue(s.start + 0.5, 'impact'); cue(s.start + 0.6, 'sparkle'); cue(s.start + 1.1, 'stamp', 0.7);
+  return (lt) => {
+    const inK = P(lt, 0, 0.7, ease.out5);
+    A.focus(195, 300, lerp(1.25, 1.4, lt / 6.6), 680, lerp(1400, 470, inK), { ry: -8 });
+    const bk = P(lt, 1.1, 0.6, ease.elastic);
+    big.style.opacity = clamp((lt - 1.1) / 0.1); big.style.transform = `scale(${lerp(2.2, 1, bk)})`;
+    for (const p of conf) {
+      const tt = lt - 0.5 - p.d;
+      if (tt < 0) { p.c.style.opacity = 0; continue; }
+      p.c.style.opacity = 1 - clamp((tt - 3.4) / 0.8);
+      p.c.style.transform = `translate(${p.x + p.vx * tt}px, ${-60 + p.vy * tt + 110 * tt * tt}px) rotate(${p.rot * tt}deg) scale(${p.s})`;
+    }
+    ch(lt);
+  };
+});
+
+// 12. WHY YOU'LL LOVE IT — four tiles, only what the game really has
+scene('features', 77.0, 6.4, (s, root) => {
+  const tiles = [
+    ['🗂️', 'فئات متنوعة', 'تاريخ وجغرافيا وكورة وأعلام وصور…'],
+    ['📈', '100 → 500', 'سهل لين صعب — أنت تختار التحدي'],
+    ['🧠', 'اختبر معلوماتك', 'سؤال حقيقي و4 خيارات ووقت يمشي'],
+    ['⚔️', 'فريق ضد فريق', 'جاوب أو بادل… والقرار سرّي'],
+  ].map(([i, h, d], n) => { const e = el('div', 'tile', root, `<div class="i">${i}</div><div class="h ${n % 2 ? 'grad' : 'gold'}">${h}</div><div class="d">${d}</div>`); css(e, { left: 1460 - n * 440 + 'px', top: '380px' }); return e; });
+  const head = el('div', 'abs', root, '<div style="font:400 92px Lalezar;text-align:center">ليش <span class="grad">جاوب أو بادل</span>؟</div>');
+  css(head, { left: 0, right: 0, top: '150px' });
+  [0.6, 0.85, 1.1, 1.35].forEach((t) => cue(s.start + t, 'stamp', 0.6)); cue(s.start + 0.1, 'whoosh', 0.6);
+  return (lt) => {
+    const hk = P(lt, 0.1, 0.5, ease.out5);
+    head.style.opacity = hk; head.style.transform = `translateY(${(1 - hk) * -40}px)`;
+    tiles.forEach((e, i) => {
+      const at = 0.6 + i * 0.25, k = P(lt, at, 0.55, ease.back);
+      e.style.opacity = clamp((lt - at) / 0.1);
+      e.style.transform = `translateY(${(1 - k) * 160 + Math.sin(lt * 1.6 + i) * 8}px) rotate(${(1 - k) * (i % 2 ? 8 : -8)}deg)`;
+    });
+  };
+});
+
+// 13. END — logo, the site, the closing line
+scene('end', 83.4, 6.6, (s, root) => {
+  const logo = el('img', 'logo', root); logo.src = 'assets/app-icon-action-v2-t.png';
+  css(logo, { width: '540px', left: (W - 540) / 2 + 'px', top: '50px' });
+  const line = el('div', 'abs', root, '<div style="font:400 92px/1.2 Lalezar;text-align:center"><span class="grad">جاوب أو بادل…</span> <span class="gold">التحدي يبدأ منك!</span></div>');
+  css(line, { left: 0, right: 0, top: '600px' });
+  const url = el('div', 'abs', root, '<div style="display:inline-flex;align-items:center;gap:16px;font:900 62px Tajawal;direction:ltr;letter-spacing:1px;padding:16px 50px;border-radius:28px;background:linear-gradient(90deg,var(--orange),var(--gold));color:#111;box-shadow:0 30px 80px -20px rgba(255,107,53,.9)">jawabbadel.com</div>');
+  css(url, { left: 0, right: 0, top: '790px', textAlign: 'center' });
+  cue(s.start + 0.2, 'impact'); cue(s.start + 1.0, 'pop'); cue(s.start + 1.6, 'pop');
+  return (lt) => {
+    const lk = P(lt, 0, 0.8, ease.elastic);
+    logo.style.transform = `scale(${lerp(0.4, 1, lk) * (1 + Math.sin(lt * 2.5) * 0.015)})`;
+    logo.style.filter = `drop-shadow(0 0 ${40 + Math.sin(lt * 4) * 15}px rgba(56,189,248,.6))`;
+    const k = P(lt, 0.9, 0.6, ease.out5);
+    line.style.opacity = k; line.style.transform = `translateY(${(1 - k) * 40}px)`;
+    const uk = P(lt, 1.5, 0.5, ease.back);
+    url.style.opacity = clamp((lt - 1.5) / 0.1); url.style.transform = `scale(${uk * (1 + Math.max(0, Math.sin((lt - 2) * 4)) * 0.025)})`;
+    // fade to black at the very end
+    root.parentNode.parentNode.style.opacity = 1;
+  };
+});
+
+// ---------- transitions ----------
+const fx = document.getElementById('fx');
+const sweep = el('div', 'sweep', fx);
+const black = el('div', 'flash', fx); black.style.background = '#000';
+const TR = 0.5;
+for (let i = 2; i < scenes.length; i++) cue(scenes[i].start - 0.3, 'whoosh', 0.7);
+function render(t) {
+  drawBg(t);
+  let sw = -1;
+  scenes.forEach((s, i) => {
+    const a = i === 0 ? -1 : s.start - TR / 2;
+    const b = i === scenes.length - 1 ? TOTAL + 1 : s.end + TR / 2;
+    if (t < a || t > b) { s.root.style.display = 'none'; return; }
+    s.root.style.display = 'block';
+    const inK = i === 0 ? 1 : ease.out(clamp((t - a) / TR));
+    const outK = i === scenes.length - 1 ? 0 : ease.in(clamp((t - (s.end - TR / 2)) / TR));
+    s.root.style.transform = `scale(${lerp(0.88, 1, inK) * lerp(1, 1.25, outK)}) rotate(${(1 - inK) * -1.5 + outK * 1.5}deg)`;
+    s.root.style.opacity = Math.min(inK, 1 - outK);
+    s.root.style.filter = inK < 1 || outK > 0 ? `blur(${(1 - inK) * 14 + outK * 18}px)` : 'none';
+    s.update(t - s.start);
+    if (i > 1 && Math.abs(t - s.start) < TR) sw = (t - s.start + TR) / (2 * TR);
+  });
+  sweep.style.display = sw < 0 ? 'none' : 'block';
+  if (sw >= 0) sweep.style.transform = `translateX(${lerp(W + 300, -900, ease.io(sw))}px) skewX(-18deg)`;
+  black.style.opacity = clamp((t - (TOTAL - 0.8)) / 0.8);
+}
+window.render = render;
+window.TIMELINE = { total: TOTAL, events: EVENTS.sort((a, b) => a.t - b.t), voice: [], scenes: scenes.map((s) => ({ key: s.key, start: s.start, end: s.end })) };
+</script>
+</body>
+</html>
