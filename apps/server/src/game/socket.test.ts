@@ -344,12 +344,6 @@ describe('solo rooms (فردي)', () => {
     expect(rows[pa!]).toMatchObject({ outcome: 'robbed', delta: 0, by: [pb] });
     expect(rows[pb!]).toMatchObject({ outcome: 'swap-win', delta: 400, target: pa });
     expect(a.solo!.players.map((p) => p.score)).toEqual([0, 400, 0]);
-    // The host changes a score by hand; nobody else can.
-    expect(await call(b.socket, 'game:score', { id: pa, delta: 100 })).toEqual({ ok: false, error: 'المضيف فقط يعدّل النقاط' });
-    expect((await call(a.socket, 'game:score', { id: pa, delta: 150 })).ok).toBe(true);
-    await until(() => a.solo?.players[0]?.score === 150);
-    expect((await call(a.socket, 'game:score', { id: pa, delta: -150 })).ok).toBe(true);
-    await until(() => a.solo?.players[0]?.score === 0);
     // Team-only steps are refused.
     expect(await call(a.socket, 'game:vote', { key: 'answer' })).toEqual({ ok: false, error: 'هذا الخيار للعب بفريقين فقط' });
     expect((await call(a.socket, 'game:next')).ok).toBe(true);

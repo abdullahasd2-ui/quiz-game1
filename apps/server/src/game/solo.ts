@@ -159,10 +159,8 @@ export class SoloRoom {
     return p!.deviceId;
   }
 
-  /** The host adds or removes points from a player by hand (during the game). */
-  adjustScore(seat: string, pid: string, delta: number) {
-    if (seat !== this.hostPid) throw new GameError('المضيف فقط يعدّل النقاط');
-    if (this.status !== 'playing') throw new GameError('تعديل النقاط أثناء اللعب بس');
+  /** A score change from the admin dashboard (no host check). */
+  adminAdjust(pid: string, delta: number) {
     const p = this.players.find((x) => x.pid === pid);
     if (!p) throw new GameError('اللاعب غير موجود');
     p.score = Math.max(MIN_SCORE, p.score + delta);

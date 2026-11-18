@@ -59,6 +59,7 @@ export const api = {
   },
   coverage: () => request<CoverageRow[]>('GET', '/api/admin/stats/coverage'),
   live: () => request<LiveStats>('GET', '/api/admin/stats/live'),
+  liveScore: (code: string, id: string, delta: number) => request<{ ok: true }>('POST', `/api/admin/stats/live/${code}/score`, { id, delta }),
   usage: (days: number) => request<UsageStats>('GET', `/api/admin/stats/usage?days=${days}`),
   kickStats: (days: number) => request<KickStats>('GET', `/api/admin/stats/kick?days=${days}`),
 

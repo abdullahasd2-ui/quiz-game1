@@ -8,7 +8,6 @@ import {
   HINT_QUESTION_POINTS,
   joinRoomInput,
   kickInput,
-  scoreInput,
   listAnswerInput,
   listPickInput,
   MAX_BOARD_CATEGORIES,
@@ -233,20 +232,6 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     );
 
     socket.on(
-      'game:score',
-      handle(scoreInput, async ({ id, delta }) => {
-        const solo = soloRoom(socket);
-        if (solo) {
-          solo.room.adjustScore(solo.seat, id, delta);
-          return { data: null, room: solo.room };
-        }
-        const { room, seat } = currentRoom(socket);
-        room.adjustScore(seat, id, delta);
-        return { data: null, room };
-      }),
-    );
-
-    socket.on(
       'game:start',
       handle(startGameInput, async ({ categoryIds, actionSeconds, listCategories }) => {
         const solo = soloRoom(socket);
@@ -452,7 +437,11 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
           variant: room.variant,
           status: room.status,
           phase: room.phase,
-          teams: room.teams.map((t) => (t ? { name: t.name, score: t.score, connected: t.connected } : null)),
+          teams:
+            room instanceof SoloRoom
+              ? room.players.map((p) => ({ id: p.pid, name: p.name, score: p.score, connected: p.connected }))
+              : room.teams.map((t, i) => (t ? { id: String(i), name: t.name, score: t.score, connected: t.connected } : null)),
+          solo: room instanceof SoloRoom,
           tvConnected: room.mode === 'tv' ? Boolean(room.tv?.connected) : null,
           categories: room.categories.map((c) => c.name),
           roundsPlayed: room.roundsPlayed,
@@ -475,5 +464,13 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     io.engine.close();
   });
 
-  return { io, rooms, live };
+  /** The admin dashboard changes a score in a live room; every device in it sees the new score. */
+  async function adminScore(code: string, id: string, delta: number) {
+    const room = rooms.get(code);
+    if (!room) throw new GameError('الغرفة غير موجودة!');
+    room.adminAdjust(id, delta);
+    await broadcast(room);
+  }
+
+  return { io, rooms, live, adminScore };
 }

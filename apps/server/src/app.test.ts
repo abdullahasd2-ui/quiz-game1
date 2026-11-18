@@ -383,3 +383,13 @@ describe('popular', () => {
     for (const v of Object.values(body)) expect(Array.isArray(v)).toBe(true);
   });
 });
+
+describe('admin live score', () => {
+  it('needs an admin, and a live room', async () => {
+    const url = '/api/admin/stats/live/ABCDEF/score';
+    expect((await app.inject({ method: 'POST', url, payload: { id: '0', delta: 100 } })).statusCode).toBe(401);
+    const res = await app.inject({ method: 'POST', url, headers: { cookie }, payload: { id: '0', delta: 100 } });
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toEqual({ error: 'الغرفة غير موجودة!' });
+  });
+});

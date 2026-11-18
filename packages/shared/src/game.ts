@@ -253,8 +253,6 @@ export interface ClientToServerEvents {
   'game:listPick': (input: z.infer<typeof listPickInput>, reply: Reply) => void;
   'game:listAnswer': (input: z.infer<typeof listAnswerInput>, reply: Reply<{ added: string[] }>) => void;
   'room:kick': (input: z.infer<typeof kickInput>, reply: Reply) => void;
-  /** Host only: add or remove points from a team (or a solo player) by hand. */
-  'game:score': (input: z.infer<typeof scoreInput>, reply: Reply) => void;
   'game:vote': (input: z.infer<typeof voteInput>, reply: Reply) => void;
   'game:next': (reply: Reply) => void;
 }
