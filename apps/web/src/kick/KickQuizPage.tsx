@@ -52,6 +52,7 @@ import { AboutBadge, FaceGrid } from './PackParts';
 import { Podium } from './Podium';
 import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from './ListParts';
 import { QuizHowToButton } from './QuizHowTo';
+import { VideoGuideButton } from './VideoGuide';
 import { HotBadge, usePopular } from '@/game/popular';
 import { StreamQuick } from '@/quick/StreamQuick';
 import { useCardSpotlight } from '@/lib/spotlight';
@@ -593,6 +594,7 @@ export function KickQuizPage() {
           </div>
           <p className="mb-2 text-center text-xs text-white/50">المشاهدون يكتبون «دخول» عشان يلعبون، وكل لاعب نقاطه لحاله</p>
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
+            <VideoGuideButton />
             <QuizHowToButton forStreamer />
           </div>
           <div className="q-card">
@@ -652,7 +654,7 @@ export function KickQuizPage() {
       {quick}
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={STREAM_KEYS} title="اختصارات الستريمر" />
       <div className="mx-auto mb-2 flex max-w-5xl items-center justify-between text-xs">
-        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
+        <span className="flex items-center gap-2 text-white/70">{state.phase === 'lobby' ? 'قبل بداية اللعبة' : `اللعب: ${state.used.length} من ${state.totalCells} ${state.variant === 'hide' ? 'جولة' : 'سؤال'}${state.pack ? ` · ${state.pack.name}` : ''}`} <QuizHowToButton forStreamer pack={Boolean(state.pack)} variant={state.phase === 'lobby' ? undefined : (state.variant ?? 'swap')} className="px-2.5 py-0.5 text-[11px]" /> <VideoGuideButton label="🎬 الشرح" className="px-2.5 py-0.5 text-[11px]" /> <CornerTools onHelp={() => setHelp(true)} className="[&_button]:size-7 [&_button]:text-sm" /></span>
         <span className="flex items-center gap-2">
           {test ? '🧪 وضع التجربة' : <><span className={cn('size-2 rounded-full', dot)} />{status.state === 'live' ? 'متصل بالشات' : status.detail ?? 'جاري الاتصال...'}</>}
         </span>
