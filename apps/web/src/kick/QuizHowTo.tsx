@@ -196,7 +196,7 @@ export function QuizHowTo({ forStreamer = false, variant, pack = false, classNam
           </div>
         ))}
         {!variant && (
-          <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط زر «طريقة لعب» اللي تحت الأطوار.</p>
+          <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط «📖 طريقة اللعب» اللي يطلع في بطاقته.</p>
         )}
         <div className="rounded-xl border border-q-orange/35 bg-q-orange/10 p-3">
           <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في كل الأطوار</div>
@@ -242,17 +242,24 @@ export function QuizHowToButton({ forStreamer = false, variant, pack = false, cl
           {label ?? '📖 طريقة اللعب'}
         </button>
       )}
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[17px] font-black text-q-purple">{title ?? '📖 طريقة اللعب'}</h2>
-          <button type="button" onClick={() => setOpen(false)} className="text-xl text-white/50" aria-label="إغلاق">
-            ✕
-          </button>
-        </div>
-        <div className="max-h-[70dvh] overflow-auto">
-          <QuizHowTo forStreamer={forStreamer} variant={variant} pack={pack} />
-        </div>
-      </Modal>
+      <QuizHowToModal open={open} onClose={() => setOpen(false)} forStreamer={forStreamer} variant={variant} pack={pack} title={title} />
     </>
+  );
+}
+
+/** The rules window on its own (for a button that is not this component, like the pill in a mode card). */
+export function QuizHowToModal({ open, onClose, forStreamer = false, variant, pack = false, title }: { open: boolean; onClose: () => void; forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; title?: string }) {
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-[17px] font-black text-q-purple">{title ?? '📖 طريقة اللعب'}</h2>
+        <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
+          ✕
+        </button>
+      </div>
+      <div className="max-h-[70dvh] overflow-auto">
+        <QuizHowTo forStreamer={forStreamer} variant={variant} pack={pack} />
+      </div>
+    </Modal>
   );
 }
