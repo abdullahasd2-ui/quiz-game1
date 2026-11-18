@@ -304,3 +304,55 @@ describe('live game over sockets', () => {
     expect(await gameRow(otherCode)).toMatchObject({ startedAt: null, finishedAt: null, roundsPlayed: 0, scores: [0, 0] });
   });
 });
+
+describe('solo rooms (فردي)', () => {
+  async function soloDevice(id: string) {
+    const d = await device(id);
+    const s = { ...d, solo: null as import('@quiz/shared').SoloView | null };
+    d.socket.on('room:solo', (v) => (s.solo = v));
+    return s;
+  }
+
+  it('three players: answer, swap a chosen player, results per player', async () => {
+    const a = await soloDevice('solo-dev-a');
+    const b = await soloDevice('solo-dev-b');
+    const c = await soloDevice('solo-dev-c');
+    const created = await call<{ code: string }>(a.socket, 'room:create', { mode: 'mobile', variant: 'swap', solo: true, playerName: 'علي' });
+    if (!created.ok) throw new Error(created.error);
+    const code = created.data.code;
+    expect((await call(b.socket, 'room:join', { code, playerName: 'سارة' })).ok).toBe(true);
+    expect((await call(c.socket, 'room:join', { code, playerName: 'فهد' })).ok).toBe(true);
+    await until(() => a.solo?.players.length === 3);
+    expect(await call(b.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).toEqual({ ok: false, error: 'المضيف فقط يبدأ اللعبة' });
+    expect((await call(a.socket, 'game:start', { categoryIds: catIds.slice(0, 3) })).ok).toBe(true);
+    await until(() => a.solo?.status === 'playing');
+    const [pa, pb] = a.solo!.players.map((p) => p.id);
+    expect(a.solo!.turn).toBe(pa);
+    expect((await call(a.socket, 'game:pick', { categoryId: catIds[0], points: 200 })).ok).toBe(true);
+    await until(() => b.solo?.phase === 'action');
+    expect(await call(b.socket, 'game:action', { action: 'steal', target: pb })).toEqual({ ok: false, error: 'ما تقدر تختار نفسك!' });
+    expect((await call(a.socket, 'game:action', { action: 'answer' })).ok).toBe(true);
+    expect((await call(b.socket, 'game:action', { action: 'steal', target: pa })).ok).toBe(true);
+    expect((await call(c.socket, 'game:action', { action: 'answer' })).ok).toBe(true);
+    await until(() => a.solo?.phase === 'answer');
+    expect(await call(b.socket, 'game:answer', { index: 0 })).toEqual({ ok: false, error: 'ما عليك جواب في هذا السؤال' });
+    const right = a.solo!.question!.options.indexOf('صح');
+    await call(a.socket, 'game:answer', { index: right });
+    await call(c.socket, 'game:answer', { index: (right + 1) % 4 });
+    await until(() => a.solo?.phase === 'result');
+    const rows = a.solo!.result!.rows;
+    expect(rows[pa!]).toMatchObject({ outcome: 'robbed', delta: 0, by: [pb] });
+    expect(rows[pb!]).toMatchObject({ outcome: 'swap-win', delta: 400, target: pa });
+    expect(a.solo!.players.map((p) => p.score)).toEqual([0, 400, 0]);
+    // Team-only steps are refused.
+    expect(await call(a.socket, 'game:vote', { key: 'answer' })).toEqual({ ok: false, error: 'هذا الخيار للعب بفريقين فقط' });
+    expect((await call(a.socket, 'game:next')).ok).toBe(true);
+    await until(() => a.solo?.phase === 'board');
+    expect(a.solo!.turn).toBe(pb);
+  });
+
+  it('«خبّي أو اكشف» is for teams only', async () => {
+    const a = await soloDevice('solo-dev-h');
+    expect(await call(a.socket, 'room:create', { mode: 'mobile', variant: 'hide', solo: true })).toEqual({ ok: false, error: '«خبّي أو اكشف» للعب بفريقين فقط' });
+  });
+});

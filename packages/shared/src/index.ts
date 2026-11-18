@@ -8,3 +8,4 @@ export * from './kick-client';
 export * from './streamquiz';
 export * from './listquiz';
 export * from './packs';
+export * from './solo';

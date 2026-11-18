@@ -151,7 +151,7 @@ export function LobbyScreen({ view }: { view: RoomView }) {
 
 const actionWord = (v: Variant) => (v === 'flip' ? 'جاوب أو اقلب' : v === 'triple' ? 'جاوب أو بادل أو اعكس' : 'جاوب أو بادل');
 
-function CategoryPicker({ tv, variant }: { tv: boolean; variant: Variant }) {
+export function CategoryPicker({ tv, variant }: { tv: boolean; variant: Variant }) {
   const { data: categories, isLoading, isError } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories });
   // Categories the player picked from the shortcuts before making the room start selected.
   const [selected, setSelected] = useState<number[]>(() => takePreselected().slice(0, MAX_BOARD_CATEGORIES));
@@ -245,7 +245,7 @@ function CategoryPicker({ tv, variant }: { tv: boolean; variant: Variant }) {
 }
 
 /** «عدّها»: the list categories (the same as the stream's, «حروف» included) and the time to answer. */
-function ListPicker({ tv }: { tv: boolean }) {
+export function ListPicker({ tv, solo = false }: { tv: boolean; solo?: boolean }) {
   const { data: cats, isError } = useQuery({
     queryKey: ['list-categories'],
     queryFn: async () => (await (await fetch(serverUrl('/api/kick/lists/categories'))).json()) as { id: string; name: string; icon: string }[],
@@ -270,7 +270,7 @@ function ListPicker({ tv }: { tv: boolean }) {
   return (
     <div>
       <div className="mb-2.5 text-center text-xs text-white/50">
-        فئات «عدّها» — الفريق اللي دوره يختار منها كل جولة · مختار {selected.length}
+        فئات «عدّها» — {solo ? 'اللاعب' : 'الفريق'} اللي دوره يختار منها كل جولة · مختار {selected.length}
       </div>
       {isError && <div className="mb-2 text-center text-sm text-q-red">تعذر تحميل الفئات</div>}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -291,7 +291,7 @@ function ListPicker({ tv }: { tv: boolean }) {
           );
         })}
       </div>
-      <p className="mt-2 text-center text-[11px] text-white/50">الأسئلة من السهلة للمتوسطة · كل جواب صح نقطة، والفريق اللي يلقى أكثر ياخذ +5</p>
+      <p className="mt-2 text-center text-[11px] text-white/50">الأسئلة من السهلة للمتوسطة · كل جواب صح نقطة، {solo ? 'وأكثر ثلاثة لاعبين ياخذون +5 و+3 و+2' : 'والفريق اللي يلقى أكثر ياخذ +5'}</p>
       <div className="mt-4">
         <div className="mb-1.5 text-center text-xs text-white/60">⏱️ وقت الكتابة لكل سؤال</div>
         <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="وقت الكتابة">
