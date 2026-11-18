@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { POINTS, type Action, type Variant } from './rules';
 import type { QuestionType } from './schemas';
+import type { SoloView } from './solo';
 
 // Live game protocol shared by the Socket.IO server and the web client.
 
@@ -188,6 +189,8 @@ const playerName = z.string().trim().max(TEAM_NAME_MAX, `الاسم أطول م�
 export const createRoomInput = z.object({
   mode: z.enum(['mobile', 'tv']),
   variant: z.enum(['swap', 'flip', 'triple', 'hide', 'list']),
+  /** «فردي»: every player on their own, no teams (every mode except hide). */
+  solo: z.boolean().optional(),
   teamName: teamName.optional(),
   playerName: playerName.optional(),
 });
@@ -216,7 +219,8 @@ export const pickCellInput = z.object({
   categoryId: z.number().int().positive(),
   points: z.number().refine((p) => (POINTS as readonly number[]).includes(p)),
 });
-export const actionInput = z.object({ action: z.enum(['answer', 'steal', 'reverse']) });
+/** `target`: in a solo room, the player you swap / flip / reverse. */
+export const actionInput = z.object({ action: z.enum(['answer', 'steal', 'reverse']), target: z.string().trim().min(1).max(16).optional() });
 export const hideInput = z.object({ box: z.number().int().min(0).max(HIDE_BOXES - 1) });
 export const answerInput = z.object({ index: z.number().int().min(0).max(3) });
 export const kickInput = z.object({ id: z.string().trim().min(1).max(16) });
@@ -253,5 +257,7 @@ export interface ClientToServerEvents {
 
 export interface ServerToClientEvents {
   'room:state': (view: RoomView) => void;
+  /** A solo room's view (instead of room:state). */
+  'room:solo': (view: SoloView) => void;
   'room:closed': (reason: string) => void;
 }

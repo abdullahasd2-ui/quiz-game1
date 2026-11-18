@@ -4,6 +4,9 @@ import type { FastifyBaseLogger } from 'fastify';
 import { db } from '../db/client';
 import { dailyVisits, games } from '../db/schema';
 import type { GameRoom } from './room';
+import type { SoloRoom } from './solo';
+
+type AnyRoom = GameRoom | SoloRoom;
 
 /** Stats days follow Saudi time, so "today" matches the players' day. */
 export const STATS_TIMEZONE = 'Asia/Riyadh';
@@ -17,9 +20,9 @@ const VISIT_GAP = sql`interval '30 minutes'`;
  * fail gameplay: a stats hiccup is logged and dropped.
  */
 export class UsageLog {
-  private readonly gameIds = new WeakMap<GameRoom, Promise<number | null>>();
+  private readonly gameIds = new WeakMap<AnyRoom, Promise<number | null>>();
   private readonly pending = new Set<Promise<unknown>>();
-  private readonly endedRooms = new WeakSet<GameRoom>();
+  private readonly endedRooms = new WeakSet<AnyRoom>();
 
   constructor(private readonly log: FastifyBaseLogger) {}
 
@@ -44,7 +47,7 @@ export class UsageLog {
     this.track(db.update(dailyVisits).set({ lastSeenAt: sql`now()` }).where(and(eq(dailyVisits.day, statsToday), eq(dailyVisits.deviceId, deviceId))));
   }
 
-  created(room: GameRoom) {
+  created(room: AnyRoom) {
     const id = db
       .insert(games)
       .values({ code: room.code, mode: room.mode, variant: room.variant })
@@ -53,12 +56,12 @@ export class UsageLog {
     this.gameIds.set(room, this.track(id).then((v) => v ?? null));
   }
 
-  started(room: GameRoom) {
+  started(room: AnyRoom) {
     this.update(room, { startedAt: new Date(), categoryIds: room.categories.map((c) => c.id) });
   }
 
   /** Called whenever a room ends: after the last round, or closed/idle before it. */
-  ended(room: GameRoom) {
+  ended(room: AnyRoom) {
     // A finished room is closed again later when it goes idle; keep the first ending.
     if (this.endedRooms.has(room)) return;
     this.endedRooms.add(room);
@@ -72,7 +75,7 @@ export class UsageLog {
     await Promise.allSettled([...this.pending]);
   }
 
-  private update(room: GameRoom, values: Partial<typeof games.$inferInsert>) {
+  private update(room: AnyRoom, values: Partial<typeof games.$inferInsert>) {
     const id = this.gameIds.get(room);
     if (!id) return;
     this.track(id.then((gameId) => (gameId === null ? undefined : db.update(games).set(values).where(eq(games.id, gameId)))));

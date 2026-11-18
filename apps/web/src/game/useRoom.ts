@@ -1,10 +1,12 @@
-import type { RoomView } from '@quiz/shared';
+import type { RoomView, SoloView } from '@quiz/shared';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { getSocket, savedRoom, send } from './connection';
 
 export type RoomState = {
   view: RoomView | null;
+  /** A solo room (every player on their own) instead of a team room. */
+  solo: SoloView | null;
   /** Local-clock deadline of the running action/answer timer. */
   deadline: number | null;
   connected: boolean;
@@ -16,6 +18,7 @@ export type RoomState = {
 export function useRoom() {
   const [state, setState] = useState<RoomState>(() => ({
     view: null,
+    solo: null,
     deadline: null,
     connected: false,
     resuming: savedRoom.get() !== null,
@@ -32,7 +35,7 @@ export function useRoom() {
       const res = await send('room:join', { code });
       if (!res.ok) {
         savedRoom.set(null);
-        setState((s) => ({ ...s, view: null, deadline: null, resuming: false }));
+        setState((s) => ({ ...s, view: null, solo: null, deadline: null, resuming: false }));
       }
     };
     const onState = (view: RoomView) => {
@@ -40,14 +43,25 @@ export function useRoom() {
       setState((s) => ({
         ...s,
         view,
+        solo: null,
         deadline: view.remainingMs === null ? null : Date.now() + view.remainingMs,
+        resuming: false,
+      }));
+    };
+    const onSolo = (solo: SoloView) => {
+      savedRoom.set(solo.code);
+      setState((s) => ({
+        ...s,
+        view: null,
+        solo,
+        deadline: solo.remainingMs === null ? null : Date.now() + solo.remainingMs,
         resuming: false,
       }));
     };
     const onClosed = (reason: string) => {
       savedRoom.set(null);
       toast.info(reason);
-      setState((s) => ({ ...s, view: null, deadline: null, resuming: false }));
+      setState((s) => ({ ...s, view: null, solo: null, deadline: null, resuming: false }));
     };
     const onDisconnect = () => setState((s) => ({ ...s, connected: false }));
     const onConnectError = () => setState((s) => ({ ...s, connected: false, resuming: false }));
@@ -56,6 +70,7 @@ export function useRoom() {
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
     socket.on('room:state', onState);
+    socket.on('room:solo', onSolo);
     socket.on('room:closed', onClosed);
     if (socket.connected) void resume();
     return () => {
@@ -63,6 +78,7 @@ export function useRoom() {
       socket.off('disconnect', onDisconnect);
       socket.off('connect_error', onConnectError);
       socket.off('room:state', onState);
+      socket.off('room:solo', onSolo);
       socket.off('room:closed', onClosed);
     };
   }, []);
@@ -70,7 +86,7 @@ export function useRoom() {
   const leave = async () => {
     await send('room:leave');
     savedRoom.set(null);
-    setState((s) => ({ ...s, view: null, deadline: null }));
+    setState((s) => ({ ...s, view: null, solo: null, deadline: null }));
   };
 
   return { ...state, leave };

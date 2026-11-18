@@ -14,6 +14,7 @@ import { LobbyScreen } from './screens/LobbyScreen';
 import { QuestionScreen, TvQuestionScreen } from './screens/QuestionScreen';
 import { PlayersButton } from './screens/PlayersPanel';
 import { ResultOverlay } from './screens/ResultOverlay';
+import { SoloGame } from './screens/SoloScreens';
 import { Background3D } from '@/game/fx/Background3D';
 import { useRoom } from './useRoom';
 import { GameQuick } from '@/quick/GameQuick';
@@ -35,14 +36,14 @@ const GAME_KEYS: HotkeyRow[] = [
 ];
 
 export function GamePage() {
-  const { view, deadline, connected, resuming, leave } = useRoom();
+  const { view, solo, deadline, connected, resuming, leave } = useRoom();
   const [params] = useSearchParams();
   useGameFx(view);
   useCardSpotlight();
   // No fullscreen in the main game (phones and the app); the stream pages keep it.
   const { help, setHelp } = useHotkeys(undefined, { fullscreen: false });
   // The screen stays on from the lobby to the final result.
-  useWakeLock(Boolean(view && view.status !== 'done'));
+  useWakeLock(Boolean((view ?? solo) && (view ?? solo)!.status !== 'done'));
   // The player's own record (on this device) when a game reaches its final screen.
   useEffect(() => {
     if (view?.status === 'done') recordGame(view);
@@ -62,10 +63,12 @@ export function GamePage() {
         <div className="text-sm text-white/50">جاري استرجاع الغرفة...</div>
       </div>
     );
+  } else if (solo) {
+    screen = <SoloGame view={solo} deadline={deadline} onPlayAgain={leave} />;
   } else if (!view) {
     const code = params.get('code')?.toUpperCase() ?? '';
     // Keyed so an invite link opened while on the home screen refills the form.
-    screen = <HomeScreen key={code} initialCode={code} />;
+    screen = <HomeScreen key={code} initialCode={code} initialSolo={params.get('solo') === '1'} />;
   } else if (view.status === 'lobby') {
     screen = <LobbyScreen view={view} />;
   } else if (view.status === 'done') {
@@ -81,7 +84,9 @@ export function GamePage() {
   }
 
   // Each new screen is dealt onto the table (see screen-in in index.css); within one question the screen stays put.
-  const screenKey = !view
+  const screenKey = solo
+    ? `solo-${solo.status}-${solo.phase === 'board' ? 'board' : 'q'}-${solo.used.length}-${solo.list?.round ?? 0}`
+    : !view
     ? 'home'
     : view.status !== 'playing'
       ? view.status
@@ -103,15 +108,15 @@ export function GamePage() {
     >
       <Intro />
       <div className="q-aurora" aria-hidden />
-      {view && <div className="q-topfade" aria-hidden />}
+      {(view || solo) && <div className="q-topfade" aria-hidden />}
       <Background3D />
       <SoundToggle />
       <CornerTools fullscreen={false} onHelp={() => setHelp(true)} className="fixed top-[calc(env(safe-area-inset-top)+0.625rem)] right-13 z-40" />
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} fullscreen={false} />
-      <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />
+      {!solo && <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />}
       <GameStart status={view?.status ?? null} />
-      {!view && <StreamerLink />}
-      {view && view.status !== 'done' && (
+      {!view && !solo && <StreamerLink />}
+      {(view ?? solo) && (view ?? solo)!.status !== 'done' && (
         <button
           type="button"
           onClick={leave}
@@ -121,7 +126,7 @@ export function GamePage() {
         </button>
       )}
       {view?.status === 'playing' && <PlayersButton view={view} />}
-      {!connected && !resuming && view && (
+      {!connected && !resuming && (view || solo) && (
         <div className="fixed inset-x-0 top-0 z-40 bg-q-red/90 pt-[calc(env(safe-area-inset-top)+0.25rem)] pb-1 text-center text-xs font-bold" role="status">
           انقطع الاتصال — جاري إعادة الاتصال...
         </div>

@@ -28,6 +28,10 @@ import { z } from 'zod';
 import { env } from '../env';
 import { drawQuestion as drawFromDb, listPublicCategories } from './catalog';
 import { GameError, GameRoom, type DealtQuestion } from './room';
+import { SoloRoom } from './solo';
+
+type AnyRoom = GameRoom | SoloRoom;
+const SOLO_ONLY_TEAMS = 'هذا الخيار للعب بفريقين فقط';
 import { LIST_CATEGORIES, listBank, weightedPick } from '../kick/lists/bank';
 import { UsageLog } from './usage';
 
@@ -56,7 +60,7 @@ const channel = (code: string) => `room:${code}`;
 export function attachGameServer(app: FastifyInstance, opts: GameServerOptions = {}) {
   const drawQuestion = opts.drawQuestion ?? drawFromDb;
   const io: GameServer = new Server(app.server, { serveClient: false, cors: { origin: env.NODE_ENV === 'production' ? env.APP_ORIGINS : true } });
-  const rooms = new Map<string, GameRoom>();
+  const rooms = new Map<string, AnyRoom>();
   const usage = new UsageLog(app.log);
 
   function newCode() {
@@ -68,14 +72,19 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   }
 
   /** Every device gets its own view (hidden info differs per seat). */
-  async function broadcast(room: GameRoom) {
+  async function broadcast(room: AnyRoom) {
     for (const s of await io.in(channel(room.code)).fetchSockets()) {
+      if (room instanceof SoloRoom) {
+        const seat = room.seatOf(s.data.deviceId);
+        if (seat !== null) s.emit('room:solo', room.view(seat));
+        continue;
+      }
       const viewer = room.viewerOf(s.data.deviceId);
       if (viewer) s.emit('room:state', room.view(viewer.seat, viewer.member));
     }
   }
 
-  function closeRoom(room: GameRoom, reason: string) {
+  function closeRoom(room: AnyRoom, reason: string) {
     usage.ended(room);
     room.dispose();
     rooms.delete(room.code);
@@ -83,9 +92,19 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     io.in(channel(room.code)).socketsLeave(channel(room.code));
   }
 
+  /** A solo room and the player id (or 'tv') of this device, or null when the room has teams. */
+  function soloRoom(socket: GameSocket) {
+    const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
+    if (!(room instanceof SoloRoom)) return null;
+    const seat = room.seatOf(socket.data.deviceId);
+    if (seat === null) throw new GameError('لست في هذه الغرفة');
+    return { room, seat };
+  }
+
   function currentRoom(socket: GameSocket) {
     const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
     if (!room) throw new GameError('الغرفة غير موجودة!');
+    if (room instanceof SoloRoom) throw new GameError(SOLO_ONLY_TEAMS);
     const seat = room.seatOf(socket.data.deviceId);
     if (seat === null) {
       if (room.memberOf(socket.data.deviceId) !== null) throw new GameError('رئيس الفريق هو اللي يقرر — صوّت له!');
@@ -95,7 +114,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   }
 
   /** Is another tab of the same device still in the room? Then it stays "connected". */
-  async function deviceStillHere(room: GameRoom, deviceId: string, except: string) {
+  async function deviceStillHere(room: AnyRoom, deviceId: string, except: string) {
     const sockets = await io.in(channel(room.code)).fetchSockets();
     return sockets.some((s) => s.id !== except && s.data.deviceId === deviceId);
   }
@@ -110,7 +129,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     await broadcast(room);
   }
 
-  async function enter(socket: GameSocket, room: GameRoom) {
+  async function enter(socket: GameSocket, room: AnyRoom) {
     if (socket.data.code && socket.data.code !== room.code) await detach(socket);
     socket.data.code = room.code;
     await socket.join(channel(room.code));
@@ -118,7 +137,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
   }
 
   /** Wraps a handler: validates input, turns GameError/ZodError into `{ok:false}`, broadcasts on success. */
-  function handle<I, T>(schema: z.ZodType<I> | null, fn: (input: I) => Promise<{ data: T; room?: GameRoom }>) {
+  function handle<I, T>(schema: z.ZodType<I> | null, fn: (input: I) => Promise<{ data: T; room?: AnyRoom }>) {
     return async (...args: unknown[]) => {
       const reply = args.at(-1) as ((res: Ack<T>) => void) | undefined;
       if (typeof reply !== 'function') return;
@@ -152,8 +171,17 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       'room:create',
       handle(createRoomInput, async (input) => {
         const code = newCode();
-        const room = new GameRoom(code, input.mode, input.variant, () => void broadcast(room));
-        room.seatHost(deviceId, input.teamName, input.playerName);
+        let room: AnyRoom;
+        if (input.solo) {
+          if (input.variant === 'hide') throw new GameError('«خبّي أو اكشف» للعب بفريقين فقط');
+          const solo = new SoloRoom(code, input.mode, input.variant, () => void broadcast(solo));
+          solo.seatHost(deviceId, input.playerName);
+          room = solo;
+        } else {
+          const teams = new GameRoom(code, input.mode, input.variant, () => void broadcast(teams));
+          teams.seatHost(deviceId, input.teamName, input.playerName);
+          room = teams;
+        }
         rooms.set(code, room);
         usage.created(room);
         await enter(socket, room);
@@ -166,7 +194,8 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       handle(joinRoomInput, async ({ code, teamName, team, playerName }) => {
         const room = rooms.get(code);
         if (!room) throw new GameError('الغرفة غير موجودة!');
-        room.join(deviceId, teamName, team, playerName);
+        if (room instanceof SoloRoom) room.join(deviceId, playerName);
+        else room.join(deviceId, teamName, team, playerName);
         await enter(socket, room);
         return { data: { code } };
       }),
@@ -188,8 +217,9 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'room:kick',
       handle(kickInput, async ({ id }) => {
-        const { room, seat } = currentRoom(socket);
-        const removed = room.kick(seat, id);
+        const solo = soloRoom(socket);
+        const { room, seat } = solo ?? currentRoom(socket);
+        const removed = solo ? solo.room.kick(solo.seat, id) : (room as GameRoom).kick(seat as never, id);
         // Every tab of the removed device is told and pulled out of the room's channel.
         for (const s of await io.in(channel(room.code)).fetchSockets()) {
           if (s.data.deviceId !== removed) continue;
@@ -204,12 +234,14 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'game:start',
       handle(startGameInput, async ({ categoryIds, actionSeconds, listCategories }) => {
-        const { room, seat } = currentRoom(socket);
+        const solo = soloRoom(socket);
+        const { room, seat } = solo ?? currentRoom(socket);
         if (room.variant === 'list') {
           // «عدّها»: the list categories (football, geo… «حروف»), no board.
           const cats = LIST_CATEGORIES.filter((c) => listCategories?.includes(c.id)).map(({ id, name, icon }) => ({ id, name, icon }));
           if (!cats.length) throw new GameError('اختر فئة وحدة على الأقل');
-          room.start(seat, [], actionSeconds, cats);
+          if (room instanceof SoloRoom) room.start(seat as string, [], actionSeconds, cats);
+          else room.start(seat as never, [], actionSeconds, cats);
           usage.started(room);
           return { data: null, room };
         }
@@ -221,7 +253,8 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
         if (notReady) throw new GameError(`فئة «${notReady.name}» ليس فيها أسئلة كافية`);
         // Keep the order the host picked them in.
         const byId = new Map(found.map((c) => [c.id, { id: c.id, name: c.name, icon: c.icon }]));
-        room.start(seat, categoryIds.map((id) => byId.get(id)!), actionSeconds);
+        if (room instanceof SoloRoom) room.start(seat as string, categoryIds.map((id) => byId.get(id)!), actionSeconds);
+        else room.start(seat as never, categoryIds.map((id) => byId.get(id)!), actionSeconds);
         usage.started(room);
         return { data: null, room };
       }),
@@ -230,8 +263,10 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'game:pick',
       handle(pickCellInput, async ({ categoryId, points }) => {
-        const { room, seat } = currentRoom(socket);
-        room.assertCanPick(seat, categoryId, points);
+        const solo = soloRoom(socket);
+        const { room, seat } = solo ?? currentRoom(socket);
+        if (room instanceof SoloRoom) room.assertCanPick(seat as string, categoryId, points);
+        else room.assertCanPick(seat as never, categoryId, points);
         room.picking = true;
         try {
           const question = await drawQuestion(categoryId, points);
@@ -246,7 +281,12 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
 
     socket.on(
       'game:action',
-      handle(actionInput, async ({ action }) => {
+      handle(actionInput, async ({ action, target }) => {
+        const solo = soloRoom(socket);
+        if (solo) {
+          solo.room.act(solo.seat, action, target);
+          return { data: null, room: solo.room };
+        }
         const { room, seat } = currentRoom(socket);
         room.act(seat, action);
         return { data: null, room };
@@ -256,6 +296,11 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'game:answer',
       handle(answerInput, async ({ index }) => {
+        const solo = soloRoom(socket);
+        if (solo) {
+          solo.room.answer(solo.seat, index);
+          return { data: null, room: solo.room };
+        }
         const { room, seat } = currentRoom(socket);
         room.answer(seat, index);
         return { data: null, room };
@@ -284,8 +329,10 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'game:listPick',
       handle(listPickInput, async ({ category }) => {
-        const { room, seat } = currentRoom(socket);
-        room.assertCanListPick(seat, category);
+        const solo = soloRoom(socket);
+        const { room, seat } = solo ?? currentRoom(socket);
+        if (room instanceof SoloRoom) room.assertCanListPick(seat as string, category);
+        else room.assertCanListPick(seat as never, category);
         const pool = listBank().filter(
           (q) => q.level !== 'hard' && !room.listUsed.has(q.id) && (category === 'letters' ? Boolean(q.letter) : q.cat === category),
         );
@@ -302,8 +349,13 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       'game:listAnswer',
       handle(listAnswerInput, async ({ text }) => {
         // Unlike every other step, members type their own answers here: their team is their seat.
+        const solo = soloRoom(socket);
+        if (solo) {
+          const added = solo.room.listAnswer(solo.seat, text);
+          return { data: { added }, room: added.length ? solo.room : undefined };
+        }
         const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
-        if (!room) throw new GameError('الغرفة غير موجودة!');
+        if (!room || room instanceof SoloRoom) throw new GameError('الغرفة غير موجودة!');
         const seat = room.seatOf(socket.data.deviceId) ?? room.memberOf(socket.data.deviceId);
         if (seat === null) throw new GameError('لست في هذه الغرفة');
         const added = room.listAnswer(seat, text);
@@ -339,6 +391,7 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
       handle(voteInput, async ({ key }) => {
         const room = socket.data.code ? rooms.get(socket.data.code) : undefined;
         if (!room) throw new GameError('الغرفة غير موجودة!');
+        if (room instanceof SoloRoom) throw new GameError(SOLO_ONLY_TEAMS);
         room.vote(deviceId, key);
         return { data: null, room };
       }),
@@ -347,8 +400,10 @@ export function attachGameServer(app: FastifyInstance, opts: GameServerOptions =
     socket.on(
       'game:next',
       handle(null, async () => {
-        const { room, seat } = currentRoom(socket);
-        room.next(seat);
+        const solo = soloRoom(socket);
+        const { room, seat } = solo ?? currentRoom(socket);
+        if (room instanceof SoloRoom) room.next(seat as string);
+        else room.next(seat as never);
         if (room.status === 'done') usage.ended(room);
         return { data: null, room };
       }),

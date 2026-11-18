@@ -157,8 +157,10 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
   );
 }
 
-export function HomeScreen({ initialCode }: { initialCode: string }) {
+export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: string; initialSolo?: boolean }) {
   const [variant, setVariant] = useState<Variant>('swap');
+  // «فردي»: every player on their own (every mode except «خبّي أو اكشف»).
+  const [solo, setSolo] = useState(initialSolo);
   const hot = usePopular()?.variants[0];
   const [mode, setMode] = useState<RoomMode>('mobile');
   const [tab, setTab] = useState<'create' | 'join'>(initialCode ? 'join' : 'create');
@@ -184,7 +186,16 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   async function create(e?: FormEvent) {
     e?.preventDefault();
     setBusy('create');
-    const res = await send('room:create', { mode, variant, teamName: mode === 'mobile' ? createName.trim() || undefined : undefined });
+    if (solo && variant === 'hide') {
+      setBusy(null);
+      return toast.error('«خبّي أو اكشف» للعب بفريقين فقط — اختر طور ثاني أو العب بفريقين');
+    }
+    const res = await send(
+      'room:create',
+      solo
+        ? { mode, variant, solo: true, playerName: mode === 'mobile' ? createName.trim() || undefined : undefined }
+        : { mode, variant, teamName: mode === 'mobile' ? createName.trim() || undefined : undefined },
+    );
     setBusy(null);
     if (!res.ok) toast.error(res.error);
   }
@@ -193,9 +204,12 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
     e.preventDefault();
     const clean = code.trim().toUpperCase();
     if (clean.length !== ROOM_CODE_LENGTH) return toast.error(`الكود ${ROOM_CODE_LENGTH} أحرف!`);
-    if (joinTeam === null) return toast.error('اختر فريقك: الأول أو الثاني');
+    if (!solo && joinTeam === null) return toast.error('اختر فريقك: الأول أو الثاني');
     setBusy('join');
-    const res = await send('room:join', { code: clean, team: joinTeam, teamName: joinName.trim() || undefined, playerName: playerName.trim() || undefined });
+    const res = await send(
+      'room:join',
+      solo ? { code: clean, playerName: playerName.trim() || undefined } : { code: clean, team: joinTeam!, teamName: joinName.trim() || undefined, playerName: playerName.trim() || undefined },
+    );
     setBusy(null);
     if (!res.ok) toast.error(res.error);
   }
@@ -217,8 +231,8 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
 
   const joinForm = (
     <form onSubmit={join}>
-      <p className="mb-1.5 text-xs font-bold text-white/60">اختر فريقك (حتى {MAX_TEAM_SIZE} لاعبين في الفريق)</p>
-      <div className="mb-3 grid grid-cols-2 gap-2.5">
+      {!solo && <p className="mb-1.5 text-xs font-bold text-white/60">اختر فريقك (حتى {MAX_TEAM_SIZE} لاعبين في الفريق)</p>}
+      <div className={cn('mb-3 grid grid-cols-2 gap-2.5', solo && 'hidden')}>
         {([0, 1] as const).map((t) => (
           <button
             key={t}
@@ -248,13 +262,15 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           dir="ltr"
         />
       </Field>
-      <div className="grid gap-x-3 sm:grid-cols-2">
-        <Field label="اسمك (يظهر لفريقك)">
+      <div className={cn('grid gap-x-3', !solo && 'sm:grid-cols-2')}>
+        <Field label={solo ? 'اسمك (يظهر لباقي اللاعبين)' : 'اسمك (يظهر لفريقك)'}>
           <input className="q-input" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="مثال: سعد" maxLength={TEAM_NAME_MAX} />
         </Field>
+        {!solo && (
         <Field label="اسم الفريق (فقط إذا كنت أول من يدخله)">
           <input className="q-input" value={joinName} onChange={(e) => setJoinName(e.target.value)} placeholder="مثال: الصقور" maxLength={TEAM_NAME_MAX} />
         </Field>
+        )}
       </div>
       <button className="q-btn-gold" disabled={busy !== null}>
         {busy === 'join' ? 'جاري الانضمام...' : '🔗 انضمام'}
@@ -379,12 +395,42 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         </div>
 
         <div className="mb-4">
+          <p className="mb-1.5 text-xs font-bold text-white/60">مين ضد مين؟</p>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                [false, '👥', 'فريقين', 'فريق ضد فريق، وكل فريق يقرر مع بعض'],
+                [true, '🙋', 'فردي', 'كل واحد يلعب لحاله، وتبادل مع اللاعب اللي تختاره'],
+              ] as const
+            ).map(([id, icon, title, desc]) => (
+              <button
+                key={title}
+                type="button"
+                onClick={() => setSolo(id)}
+                aria-pressed={solo === id}
+                className={cn(
+                  'flex items-center gap-2.5 rounded-2xl border-2 p-2.5 text-start transition-all',
+                  solo === id ? (id ? 'border-q-cyan bg-q-cyan/10' : 'border-q-gold bg-q-gold/8') : 'border-q-line bg-q-panel/50 hover:border-white/25',
+                )}
+              >
+                <span className="text-2xl">{icon}</span>
+                <span>
+                  <span className="block text-sm font-black">{title}</span>
+                  <span className="block text-[10.5px] leading-snug text-white/55">{desc}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+          {solo && variant === 'hide' && <p className="mt-1.5 text-[11px] text-q-orange">«خبّي أو اكشف» للعب بفريقين فقط — اختر طور ثاني للعب الفردي.</p>}
+        </div>
+
+        <div className="mb-4">
           <p className="mb-1.5 text-xs font-bold text-white/60">طريقة اللعب</p>
           <div className="grid grid-cols-2 gap-2">
             {(
               [
-                ['mobile', '📱', 'جوال', 'جهازين — كل فريق على جهازه'],
-                ['tv', '📺', 'تلفاز', '3 أجهزة — التلفاز يعرض والفريقين على جوالاتهم'],
+                ['mobile', '📱', 'جوال', solo ? 'كل لاعب على جواله' : 'جهازين — كل فريق على جهازه'],
+                ['tv', '📺', 'تلفاز', solo ? 'التلفاز يعرض وكل لاعب على جواله' : '3 أجهزة — التلفاز يعرض والفريقين على جوالاتهم'],
               ] as const
             ).map(([id, icon, title, desc]) => (
               <button
@@ -424,8 +470,8 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
             )}
             {mode === 'mobile' ? (
               <form onSubmit={create}>
-                <Field label="اسم فريقك">
-                  <input id="create-name" className="q-input" value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="مثال: النمور" maxLength={TEAM_NAME_MAX} />
+                <Field label={solo ? 'اسمك' : 'اسم فريقك'}>
+                  <input id="create-name" className="q-input" value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder={solo ? 'مثال: سعد' : 'مثال: النمور'} maxLength={TEAM_NAME_MAX} />
                 </Field>
                 <button className="q-btn-gold q-shine" disabled={busy !== null}>
                   {busy === 'create' ? 'جاري الإنشاء...' : 'إنشاء غرفة'}
@@ -583,6 +629,15 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
         <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="📺 وضع التلفاز (3 أجهزة)">
           <div>• التلفاز: ينشئ الغرفة ويختار الأسئلة ويعرض النتائج</div>
           <div>• الفريق 1 و2: ينضمون بالكود ويجاوبون على جوالاتهم</div>
+        </HowSection>
+        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🙋 اللعب الفردي">
+          <div>• في اللعب الفردي ما فيه فرق، وكل لاعب يلعب لحاله ونقاطه له بروحه. تقدرون تكونون من لاعبين إلى 12 لاعب.</div>
+          <div>• واحد ينشئ الغرفة ويختار «فردي»، والباقي يدخلون بالكود ويكتبون أسماءهم بس، بدون ما يختارون فريق.</div>
+          <div>• اللاعبين يتناوبون على اختيار السؤال من اللوحة، وكل سؤال الكل يختار قراره سرًا في نفس الوقت.</div>
+          <div>• إذا اخترت «بادل» أو «اقلب» أو «اعكس» تطلع لك قائمة اللاعبين تحت الخيار، وتختار منها اللاعب اللي تبي تلعب على جوابه، مثل ما الستريمر يختار واحد من المشاركين في البث.</div>
+          <div>• إذا بادلت جواب لاعب وطلع جوابه صح تاخذ دبل النقاط، وهو ياخذ صفر لأن جوابه انزرف. وإذا طلع جوابه غلط تنقص من نقاطك.</div>
+          <div>• إذا اللاعب اللي اخترته ما جاوب بنفسه، لأنه هو بعد اختار بادل أو اقلب أو اعكس، فما تاخذ شي. وإذا اثنين اختاروا بعض فالاثنين ياخذون صفر.</div>
+          <div>• كل الأطوار موجودة في اللعب الفردي ما عدا «خبّي أو اكشف» لأنه يحتاج فريقين. وفي «عدّها» كل لاعب يكتب أجوبته لحاله، وأكثر ثلاثة لاعبين ياخذون 5 و3 و2 نقاط زيادة.</div>
         </HowSection>
         <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
         <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🔄 جاوب أو بادل">
