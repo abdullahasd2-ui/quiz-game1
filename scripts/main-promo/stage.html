@@ -580,8 +580,14 @@ scene('end', 83.4, 6.6, (s, root) => {
   css(line, { left: 0, right: 0, top: '600px' });
   const url = el('div', 'abs', root, '<div style="display:inline-flex;align-items:center;gap:16px;font:900 62px Tajawal;direction:ltr;letter-spacing:1px;padding:16px 50px;border-radius:28px;background:linear-gradient(90deg,var(--orange),var(--gold));color:#111;box-shadow:0 30px 80px -20px rgba(255,107,53,.9)">jawabbadel.com</div>');
   css(url, { left: 0, right: 0, top: '790px', textAlign: 'center' });
+  // the App Store QR: grab the iPhone app
+  const qr = el('div', 'abs', root, '<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px;border-radius:32px;background:rgba(10,10,30,.92);border:2px solid rgba(255,255,255,.16);box-shadow:0 40px 90px -20px rgba(0,0,0,.95)"><img src="assets/app-qr.svg" style="width:230px;height:230px;background:#fff;border-radius:18px;padding:14px"><div style="font:900 30px Tajawal">📱 حمّل التطبيق</div><div style="font:800 24px Tajawal;opacity:.65;direction:ltr">App Store</div></div>');
+  css(qr, { left: '110px', top: '330px' });
+  cue(s.start + 2.2, 'pop', 0.8);
   cue(s.start + 0.2, 'impact'); cue(s.start + 1.0, 'pop'); cue(s.start + 1.6, 'pop');
   return (lt) => {
+    const qk = P(lt, 2.2, 0.5, ease.back);
+    qr.style.opacity = clamp((lt - 2.2) / 0.1); qr.style.transform = `scale(${qk}) rotate(${(1 - qk) * -8}deg)`;
     const lk = P(lt, 0, 0.8, ease.elastic);
     logo.style.transform = `scale(${lerp(0.4, 1, lk) * (1 + Math.sin(lt * 2.5) * 0.015)})`;
     logo.style.filter = `drop-shadow(0 0 ${40 + Math.sin(lt * 4) * 15}px rgba(56,189,248,.6))`;
