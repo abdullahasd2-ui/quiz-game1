@@ -7,3 +7,4 @@ apps/server/uploads/
 apps/mobile/store/video/**/*.mp4
 /*.mp4
 scripts/stream-guide/out/
+scripts/stream-guide/ev/
