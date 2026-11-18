@@ -43,7 +43,7 @@ export function VideoGuideButton({ className, label = '🎬 شاهد الشرح'
             >
               متصفحك ما يعرض الفيديو.
             </video>
-            <p className="mt-2 text-center text-xs text-white/60">الشرح بالصوت ومكتوب على الشاشة بعد. والتفاصيل كاملة في «طريقة اللعب».</p>
+            <p className="mt-2 text-center text-xs text-white/60">كيف تبدأ البث وتلعب «جاوب أو بادل» مع الشات. والتفاصيل كاملة في «طريقة اللعب».</p>
           </div>
         </div>
       )}

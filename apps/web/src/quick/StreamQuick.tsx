@@ -146,7 +146,7 @@ export function StreamQuick(p: StreamQuickProps) {
     id: 'tools',
     title: '🧰 أدوات',
     items: [
-      { id: 'video', icon: '🎬', title: 'فيديو الشرح', hint: 'دقيقتين تقريبًا بالصوت: كيف تبدأ البث وطور جاوب أو بادل', run: () => document.querySelector<HTMLButtonElement>('[data-qa="guide-video"]')?.click() },
+      { id: 'video', icon: '🎬', title: 'فيديو الشرح', hint: 'دقيقة ونص: كيف تبدأ البث وتلعب جاوب أو بادل', run: () => document.querySelector<HTMLButtonElement>('[data-qa="guide-video"]')?.click() },
       { id: 'howto', icon: '📖', title: 'طريقة اللعب', hint: 'للستريمر والمشاهدين', run: howto },
       { id: 'keys', icon: '⌨️', title: 'اختصارات لوحة المفاتيح', badge: '؟', run: p.onKeys },
       { id: 'full', icon: '⛶', title: 'ملء الشاشة', badge: 'F', run: () => void toggleFullscreen() },

@@ -8,3 +8,14 @@ apps/mobile/store/video/**/*.mp4
 /*.mp4
 scripts/stream-guide/out/
 scripts/stream-guide/ev/
+scripts/stream-guide/promo/node_modules/
+scripts/stream-guide/promo/shots/
+scripts/stream-guide/promo/voice/
+scripts/stream-guide/promo/assets/
+scripts/stream-guide/promo/render/
+scripts/stream-guide/promo/pv/
+scripts/stream-guide/promo/fonts.css
+scripts/stream-guide/promo/data.js
+scripts/stream-guide/promo/timeline.json
+scripts/stream-guide/promo/mix.wav
+scripts/stream-guide/promo/package*.json
