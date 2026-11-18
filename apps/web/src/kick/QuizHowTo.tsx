@@ -25,6 +25,13 @@ export function viewerSteps(variant?: StreamVariant): Step[] {
       { icon: '📦', title: 'خمّن', text: 'اكتب رقم الصندوق اللي فيه المفتاح من 1 إلى 10. أول رقم تكتبه هو اللي ينحسب.' },
       SCORE,
     ];
+  if (!variant)
+    return [
+      JOIN,
+      { icon: '🎮', title: 'الستريمر يختار الطور', text: 'كل طور له طريقة لعب ونقاط خاصة فيه، والستريمر يختاره قبل ما تبدأ اللعبة.' },
+      { icon: '💬', title: 'العب من الشات', text: 'كل شي يصير من الشات: تكتب رقم أو جواب، ونقاطك تنحسب لك على طول.' },
+      SCORE,
+    ];
   const choose =
     variant === 'flip'
       ? 'اكتب 1 عشان تجاوب بنفسك، أو 2 عشان تقلب على الستريمر.'
@@ -150,7 +157,8 @@ export const COMMON_RULES: string[] = [
 const PACK_RULE = '🎭 «مين فينا؟»: تطلع صور أعضاء الفريق، واكتب رقم الشخص اللي هو الجواب. كل ما جاوبت أسرع تاخذ نقاط أكثر، لأن الصور الغلط تختفي ونقاط السؤال تنقص مع الوقت.';
 
 export function QuizHowTo({ forStreamer = false, variant, pack = false, className }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string }) {
-  const modes = variant ? MODE_RULES.filter((m) => m.variant === variant) : MODE_RULES;
+  // no mode chosen = the basics only; each mode's rules open from its own button
+  const modes = variant ? MODE_RULES.filter((m) => m.variant === variant) : [];
   return (
     <div className={cn('text-start', className)}>
       {forStreamer && (
@@ -187,6 +195,9 @@ export function QuizHowTo({ forStreamer = false, variant, pack = false, classNam
             )}
           </div>
         ))}
+        {!variant && (
+          <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط زر «طريقة لعب» اللي تحت الأطوار.</p>
+        )}
         <div className="rounded-xl border border-q-orange/35 bg-q-orange/10 p-3">
           <div className="mb-1.5 text-sm font-black text-q-orange">⭐ في كل الأطوار</div>
           <ul className="list-disc space-y-1 ps-5 text-xs leading-relaxed text-white/80">
@@ -202,7 +213,7 @@ export function QuizHowTo({ forStreamer = false, variant, pack = false, classNam
 
 /** Small «📖 طريقة اللعب» button that opens the rules in a modal, like the main game's home screen. */
 /** `fancy`: the big eye-catching version (start screen), same look as the home page's «طريقة اللعب». */
-export function QuizHowToButton({ forStreamer = false, variant, pack = false, className, fancy = false }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string; fancy?: boolean }) {
+export function QuizHowToButton({ forStreamer = false, variant, pack = false, className, fancy = false, label, title }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string; fancy?: boolean; label?: string; title?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -228,12 +239,12 @@ export function QuizHowToButton({ forStreamer = false, variant, pack = false, cl
           onClick={() => setOpen(true)}
           className={cn('rounded-full border-[1.5px] border-white/20 px-4 py-1 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple', className)}
         >
-          📖 طريقة اللعب
+          {label ?? '📖 طريقة اللعب'}
         </button>
       )}
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[17px] font-black text-q-purple">📖 طريقة اللعب</h2>
+          <h2 className="text-[17px] font-black text-q-purple">{title ?? '📖 طريقة اللعب'}</h2>
           <button type="button" onClick={() => setOpen(false)} className="text-xl text-white/50" aria-label="إغلاق">
             ✕
           </button>

@@ -777,6 +777,17 @@ export function KickQuizPage() {
                     );
                   })}
                 </div>
+                <div className="mt-3 flex justify-center">
+                  <QuizHowToButton
+                    key={variant}
+                    forStreamer
+                    variant={variant}
+                    pack={Boolean(pack)}
+                    label={`📖 طريقة لعب «${streamLabels(variant).title}»`}
+                    title={`📖 طريقة لعب «${streamLabels(variant).title}»`}
+                    className="border-2 border-q-cyan/60 bg-q-cyan/10 px-5 py-2 text-sm font-black text-white shadow-[0_8px_24px_-8px_rgba(56,189,248,0.7)] hover:-translate-y-0.5 hover:border-q-cyan hover:text-white motion-safe:animate-pop-in"
+                  />
+                </div>
               </div>
 
               {pack ? null : variant === 'list' ? (

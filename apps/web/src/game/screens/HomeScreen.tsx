@@ -170,6 +170,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   const [code, setCode] = useState(initialCode);
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
   const [howOpen, setHowOpen] = useState(false);
+  const [howMode, setHowMode] = useState<Variant | undefined>();
   const { data: categories } = useQuery({ queryKey: ['public-categories'], queryFn: api.publicCategories, staleTime: 60_000 });
   const [pre, setPre] = useState<number[]>(() => takePreselected(false));
 
@@ -180,7 +181,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
   });
   useBus('home:mode', setMode);
   useBus('home:tab', setTab);
-  useBus('home:how', () => setHowOpen(true));
+  useBus('home:how', () => (setHowMode(undefined), setHowOpen(true)));
 
   async function create(e?: FormEvent) {
     e?.preventDefault();
@@ -287,7 +288,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           <button type="button" onClick={goPlay} className="q-btn-gold q-shine text-base">
             🚀 ابدأ اللعب
           </button>
-          <button type="button" onClick={() => setHowOpen(true)} className="q-how w-full sm:w-auto" aria-label="طريقة اللعب — افهم اللعبة في دقيقة">
+          <button type="button" onClick={() => (setHowMode(undefined), setHowOpen(true))} className="q-how w-full sm:w-auto" aria-label="طريقة اللعب — افهم اللعبة في دقيقة">
             <span className="q-how-in">
               <span className="q-how-icon" aria-hidden>
                 📖
@@ -345,6 +346,16 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
             className="q-chip"
           >
             {extra ? '▲ إخفاء الأطوار الإضافية' : '🎁 أطوار إضافية'}
+          </button>
+        </div>
+        <div className="mb-3 flex justify-center">
+          <button
+            key={variant}
+            type="button"
+            onClick={() => (setHowMode(variant), setHowOpen(true))}
+            className="flex items-center gap-2 rounded-full border-2 border-q-cyan/60 bg-q-cyan/10 px-5 py-2 text-sm font-black text-white shadow-[0_8px_24px_-8px_rgba(56,189,248,0.7)] transition-transform hover:-translate-y-0.5 motion-safe:animate-pop-in"
+          >
+            📖 طريقة لعب «{chosen.title}»
           </button>
         </div>
         <div className="mb-3 flex justify-center">
@@ -512,8 +523,8 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
           ))}
         </ol>
         <div className="mt-3 text-center">
-          <button type="button" onClick={() => setHowOpen(true)} className="q-chip">
-            📖 القواعد كاملة مع أمثلة النقاط
+          <button type="button" onClick={() => (setHowMode(undefined), setHowOpen(true))} className="q-chip">
+            📖 طريقة اللعب
           </button>
         </div>
       </section>
@@ -527,7 +538,7 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         </a>
       </nav>
 
-      <HowToPlay open={howOpen} onClose={() => setHowOpen(false)} />
+      <HowToPlay open={howOpen} variant={howMode} onClose={() => setHowOpen(false)} />
     </div>
   );
 }
@@ -579,27 +590,10 @@ function HowSection({ tone, title, children }: { tone: string; title: string; ch
   );
 }
 
-function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
-  return (
-    <Modal open={open} onClose={onClose}>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-[17px] font-black text-q-purple">📖 طريقة اللعب</h2>
-        <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
-          ✕
-        </button>
-      </div>
-      <div className="grid gap-2.5 text-start text-[13px] leading-loose text-white/80">
-        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="📱 وضع الجوال (جهازين)">
-          <div>• جهاز ينشئ غرفة والباقي ينضمون بالكود ويختارون فريقهم</div>
-          <div>• أول من يدخل الفريق هو الرئيس، والبقية أعضاء (حتى 10 لكل فريق)</div>
-          <div>• الأعضاء يصوّتون على كل خطوة، والرئيس يقرر على حسب التصويت</div>
-          <div>• الفريق الذي دوره يختار من اللوحة</div>
-          <div>• كلاهم يختار سراً جاوب أو بادل ثم يجاوبون</div>
-        </HowSection>
-        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="📺 وضع التلفاز (3 أجهزة)">
-          <div>• التلفاز: ينشئ الغرفة ويختار الأسئلة ويعرض النتائج</div>
-          <div>• الفريق 1 و2: ينضمون بالكود ويجاوبون على جوالاتهم</div>
-        </HowSection>
+/** Each mode's own rules (with examples), shown only for the mode picked. */
+const MODE_HOW: Record<Variant, ReactNode> = {
+  swap: (
+    <>
         <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
         <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="🔄 جاوب أو بادل">
           <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
@@ -614,6 +608,16 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
             ]}
           />
         </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  flip: (
+    <>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
         <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="🔀 جاوب أو اقلب">
           <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
           <div>🔀 <b>اقلب على الخصم:</b> أنت ما تجاوب، ونتيجة الخصم تنقلب عليه. إذا جواب الخصم صح تنقص نقاطه، وإذا جواب الخصم غلط تزيد نقاطه.</div>
@@ -626,6 +630,16 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
             ]}
           />
         </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  triple: (
+    <>
+        <p className="text-center text-xs text-white/50">الأمثلة تحت على سؤال قيمته <b className="text-q-gold">200</b> نقطة</p>
         <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="↩️ جاوب أو بادل أو اعكس">
           <div>✅ <b>جاوب:</b> تجاوب بنفسك. إذا جوابك صح تاخذ نقاط السؤال، وإذا جوابك غلط ما تاخذ شي.</div>
           <div>🔄 <b>بادل:</b> تاخذ جواب الفريق الخصم بدال جوابك. إذا جواب الخصم صح تاخذ دبل النقاط والخصم ما ياخذ شي، وإذا جواب الخصم غلط تنقص من نقاطك.</div>
@@ -640,6 +654,15 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
             ]}
           />
         </HowSection>
+        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
+          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
+          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
+          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+        </HowSection>
+      </>
+  ),
+  list: (
+    <>
         <HowSection tone="border-q-pink/30 bg-q-pink/10 [&>div:first-child]:text-q-pink" title="⏱️ عدّها">
           <div>• في كل جولة الفريق اللي دوره يختار فئة، مثل كورة أو جغرافيا أو حروف، ويطلع سؤال واحد للفريقين مثل «اذكر دول عربية».</div>
           <div>• كل لاعب في الفريقين، الرئيس والأعضاء، يكتب أكبر عدد من الأجوبة قبل ما يخلص الوقت، ويقدر يكتب أكثر من جواب بينها فاصلة.</div>
@@ -647,17 +670,55 @@ function HowToPlay({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div>• كل جواب صح بنقطة، والفريق اللي يلقى أجوبة أكثر ياخذ 5 نقاط زيادة، وإذا تعادلوا ما أحد ياخذ الزيادة.</div>
           <div>• الأسئلة من السهلة إلى المتوسطة، واللعبة 10 جولات والفريقين يتبادلون اختيار الفئة.</div>
         </HowSection>
+      </>
+  ),
+  hide: (
+    <>
         <HowSection tone="border-q-green/30 bg-q-green/10 [&>div:first-child]:text-q-green" title="📦 خبّي أو اكشف">
           <div>• فيه 10 صناديق. الفريق اللي دوره يخبّي المفتاح 🔑 في صندوق، والفريق الثاني ما يشوف وين خبّاه.</div>
           <div>• الفريق الثاني يخمّن رقم الصندوق. إذا لقى المفتاح ياخذ النقاط، وإذا ما لقاه تروح النقاط للفريق اللي خبّى.</div>
           <div>• زر 💡 التلميح (مرة وحدة بالجولة): يطلع سؤال متوسط. إذا جاوبته صح ينشال نص الصناديق، وإذا جاوبته غلط تروح النقاط للخصم على طول.</div>
           <div>• الأدوار تتبادل، وكل فريق يخبّي 5 مرات.</div>
         </HowSection>
-        <HowSection tone="border-q-orange/35 bg-q-orange/10 [&>div:first-child]:text-q-orange" title="🔥 سلسلة الإجابات (دبل)">
-          <div>• إذا جاوب فريقك صح 3 مرات ورا بعض، تاخذون دبل نقاط السؤال الثالث.</div>
-          <div>• كل جواب صح يضيف 🔥 تحت نقاط فريقك، ولما تصير 🔥🔥 فالجواب الصح الجاي دبل.</div>
-          <div>• إذا جاوبتوا غلط ترجع السلسلة من الصفر. واختيار «بادل» أو «اقلب» أو «اعكس» ما يأثر عليها.</div>
+      </>
+  ),
+};
+
+/** «طريقة اللعب»: the basics only; with `variant`, that mode's rules. */
+function HowToPlay({ open, onClose, variant }: { open: boolean; onClose: () => void; variant?: Variant }) {
+  const mode = variant && [...MODES, ...EXTRA_MODES].find((m) => m.id === variant);
+  return (
+    <Modal open={open} onClose={onClose}>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-[17px] font-black text-q-purple">📖 {mode ? `طريقة لعب «${mode.title}»` : 'طريقة اللعب'}</h2>
+        <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
+          ✕
+        </button>
+      </div>
+      <div className="grid gap-2.5 text-start text-[13px] leading-loose text-white/80">
+        {mode ? (
+          MODE_HOW[mode.id]
+        ) : (
+          <>
+            <HowSection tone="border-q-gold/25 bg-q-gold/8 [&>div:first-child]:text-q-gold" title="🎯 فكرة اللعبة">
+              <div>• فريقين يتنافسون على أسئلة من فئات مختلفة، والفريق اللي يجمع نقاط أكثر في النهاية يفوز.</div>
+              <div>• أول شي تختارون الطور، وكل طور له طريقة لعب ونقاط خاصة فيه.</div>
+              <div>• بعدها تختارون الفئات، والفريقين يتبادلون الدور.</div>
+            </HowSection>
+        <HowSection tone="border-q-purple/30 bg-q-purple/10 [&>div:first-child]:text-q-purple" title="📱 وضع الجوال (جهازين)">
+          <div>• جهاز ينشئ غرفة والباقي ينضمون بالكود ويختارون فريقهم</div>
+          <div>• أول من يدخل الفريق هو الرئيس، والبقية أعضاء (حتى 10 لكل فريق)</div>
+          <div>• الأعضاء يصوّتون على كل خطوة، والرئيس يقرر على حسب التصويت</div>
+          <div>• الفريق الذي دوره يختار من اللوحة</div>
+          <div>• كلاهم يختار سراً جاوب أو بادل ثم يجاوبون</div>
         </HowSection>
+        <HowSection tone="border-q-cyan/30 bg-q-cyan/10 [&>div:first-child]:text-q-cyan" title="📺 وضع التلفاز (3 أجهزة)">
+          <div>• التلفاز: ينشئ الغرفة ويختار الأسئلة ويعرض النتائج</div>
+          <div>• الفريق 1 و2: ينضمون بالكود ويجاوبون على جوالاتهم</div>
+        </HowSection>
+            <p className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center text-xs text-white/70">💡 قواعد كل طور ونقاطه: اختر الطور واضغط زر «طريقة لعب» اللي تحت الأطوار.</p>
+          </>
+        )}
       </div>
       <button type="button" onClick={onClose} className="q-btn-tv mt-3.5">
         فهمت! 🚀
