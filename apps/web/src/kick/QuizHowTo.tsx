@@ -201,18 +201,36 @@ export function QuizHowTo({ forStreamer = false, variant, pack = false, classNam
 }
 
 /** Small «📖 طريقة اللعب» button that opens the rules in a modal, like the main game's home screen. */
-export function QuizHowToButton({ forStreamer = false, variant, pack = false, className }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string }) {
+/** `fancy`: the big eye-catching version (start screen), same look as the home page's «طريقة اللعب». */
+export function QuizHowToButton({ forStreamer = false, variant, pack = false, className, fancy = false }: { forStreamer?: boolean; variant?: StreamVariant; pack?: boolean; className?: string; fancy?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button
-        type="button"
-        data-qa="howto"
-        onClick={() => setOpen(true)}
-        className={cn('rounded-full border-[1.5px] border-white/20 px-4 py-1 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple', className)}
-      >
-        📖 طريقة اللعب
-      </button>
+      {fancy ? (
+        <button type="button" data-qa="howto" onClick={() => setOpen(true)} className={cn('q-how', className)} aria-label="طريقة اللعب — افهم اللعبة في دقيقة">
+          <span className="q-how-in">
+            <span className="q-how-icon" aria-hidden>
+              📖
+            </span>
+            <span className="text-start leading-tight">
+              <span className="block text-[16px] font-black text-white">طريقة اللعب</span>
+              <span className="block text-[11px] font-bold text-white/65">افهم اللعبة في دقيقة</span>
+            </span>
+            <span className="q-how-new" aria-hidden>
+              جديد؟ ابدأ هنا
+            </span>
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          data-qa="howto"
+          onClick={() => setOpen(true)}
+          className={cn('rounded-full border-[1.5px] border-white/20 px-4 py-1 text-[13px] text-white/60 transition-colors hover:border-q-purple hover:text-q-purple', className)}
+        >
+          📖 طريقة اللعب
+        </button>
+      )}
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-[17px] font-black text-q-purple">📖 طريقة اللعب</h2>
