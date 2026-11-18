@@ -15,6 +15,7 @@ import { GamePage } from './game/GamePage';
 import { KickQuizScreen } from './kick/KickQuizScreen';
 import { KickQuizPage } from './kick/KickQuizPage';
 import { PrivacyPage } from './legal/PrivacyPage';
+import { TermsPage } from './legal/TermsPage';
 import { SupportPage } from './legal/SupportPage';
 
 function KickRedirect() {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
   { path: '/kick/quiz/screen', element: <KickQuizScreen /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/support', element: <SupportPage /> },
+  { path: '/terms', element: <TermsPage /> },
   // Sound and effects gallery for developers; `import.meta.env.DEV` is false in builds, so this route and its code never ship.
   ...(import.meta.env.DEV ? [{ path: '/fx-demo', lazy: async () => ({ Component: (await import('./game/fx/FxDemo')).FxDemo }) }] : []),
   { path: '/admin/login', element: <LoginPage /> },

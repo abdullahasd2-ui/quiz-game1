@@ -535,6 +535,9 @@ export function HomeScreen({ initialCode }: { initialCode: string }) {
         <a href={serverUrl('/privacy')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
           سياسة الخصوصية
         </a>
+        <a href={serverUrl('/terms')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
+          شروط الاستخدام
+        </a>
         <a href={serverUrl('/support')} target="_blank" rel="noopener noreferrer" className="hover:text-q-gold">
           الدعم
         </a>
