@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DUEL_DEFAULTS, castleDamage, duelChat, duelDeal, duelFinish, duelPublicView, duelTick, duelTop, fazaGoal, newDuel, type DuelSettings, type DuelState, type DuelTeam } from './duel';
+import { DUEL_DEFAULTS, castleDamage, duelCaptain, teamSize, duelChat, duelDeal, duelFinish, duelPublicView, duelTick, duelTop, fazaGoal, newDuel, type DuelSettings, type DuelState, type DuelTeam } from './duel';
 
 const Q = { text: 'ما هي عاصمة الإمارات؟', options: ['أبوظبي', 'دبي', 'الشارقة', 'العين'], correctIndex: 0, points: 300 };
 const start = (mode: DuelSettings['mode'], extra: Partial<DuelSettings> = {}) => newDuel({ a: 'falcon', b: 'tiger' }, { ...DUEL_DEFAULTS, mode, ...extra }, 's1');
@@ -108,5 +108,35 @@ describe('duel', () => {
     expect(v.round!.question.correctIndex).toBe(-1);
     expect(v.round!.answers['a:x1']!.pick).toBe(-1);
     expect(duelFinish(s).phase).toBe('over');
+  });
+});
+
+describe('«بث واحد»: one channel, two teams', () => {
+  const start = () => newDuel({ a: 'host', b: '' }, DUEL_DEFAULTS, 's1', false, true);
+  it('«أزرق» and «أحمر» pick a team; «دخول» fills the smaller one; the team can change in the lobby', () => {
+    let s = start();
+    s = duelChat(s, 'a', 'fahad', 'أزرق', 0);
+    s = duelChat(s, 'a', 'reem', 'احمر', 0);
+    s = duelChat(s, 'a', 'saad', 'دخول', 0);
+    expect(teamSize(s, 'a')).toBe(2);
+    expect(teamSize(s, 'b')).toBe(1);
+    s = duelChat(s, 'a', 'saad', 'أحمر', 0);
+    expect(teamSize(s, 'a')).toBe(1);
+    expect(teamSize(s, 'b')).toBe(2);
+  });
+  it('the streamer picks the red captain, who names the red team and stays red', () => {
+    let s = duelChat(start(), 'a', 'Nawaf', 'أزرق', 0);
+    s = duelCaptain(s, 'Nawaf');
+    expect(s.captain).toBe('Nawaf');
+    expect(s.channels.b).toBe('Nawaf');
+    expect(s.players['b:nawaf']?.team).toBe('b');
+    expect(duelChat(s, 'a', 'Nawaf', 'أزرق', 0).players['b:nawaf']).toBeDefined();
+  });
+  it('answers count for the team the viewer picked', () => {
+    let s = duelChat(start(), 'a', 'reem', 'أحمر', 0);
+    s = duelChat(s, 'a', 'fahad', 'أزرق', 0);
+    s = duelDeal(s, { text: 'q', options: ['x', 'y', 'z', 'w'], correctIndex: 1, points: 100 }, 0);
+    s = duelChat(s, 'a', 'reem', '2', 10);
+    expect(s.round?.live.b).toBe(1);
   });
 });

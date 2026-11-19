@@ -578,7 +578,7 @@ export function KickQuizPage() {
             <span className="text-3xl">⚔️</span>
             <span className="text-start leading-tight">
               <span className="block text-base font-black text-white">تحدي القنوات <span className="ms-1 rounded-full bg-q-gold px-1.5 text-[10px] text-black">جديد</span></span>
-              <span className="block text-[11px] font-bold text-white/65">ستريمرين، وكل شات فريق: القلعة · الفزعة · السلسلة</span>
+              <span className="block text-[11px] font-bold text-white/65">بثين ضد بعض، أو شاتك ينقسم فريقين: القلعة · الفزعة · السلسلة</span>
             </span>
           </a>
           <div className="q-card">
