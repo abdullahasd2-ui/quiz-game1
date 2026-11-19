@@ -13,6 +13,8 @@ import { KickStatsPage } from './admin/pages/KickStatsPage';
 import { StatsPage } from './admin/pages/StatsPage';
 import { GamePage } from './game/GamePage';
 import { KickQuizScreen } from './kick/KickQuizScreen';
+import { DuelPage } from './kick/DuelPage';
+import { DuelScreen } from './kick/DuelScreen';
 import { KickQuizPage } from './kick/KickQuizPage';
 import { PrivacyPage } from './legal/PrivacyPage';
 import { TermsPage } from './legal/TermsPage';
@@ -28,6 +30,8 @@ export const router = createBrowserRouter([
   { path: '/kick', element: <KickRedirect /> },
   { path: '/kick/quiz', element: <KickQuizPage /> },
   { path: '/kick/quiz/screen', element: <KickQuizScreen /> },
+  { path: '/kick/duel', element: <DuelPage /> },
+  { path: '/kick/duel/screen', element: <DuelScreen /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/support', element: <SupportPage /> },
   { path: '/terms', element: <TermsPage /> },

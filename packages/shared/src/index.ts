@@ -9,3 +9,4 @@ export * from './streamquiz';
 export * from './listquiz';
 export * from './packs';
 export * from './solo';
+export * from './duel';
