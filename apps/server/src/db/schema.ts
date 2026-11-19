@@ -78,6 +78,8 @@ export const games = pgTable(
     code: varchar('code', { length: 12 }).notNull(),
     mode: varchar('mode', { length: 10 }).notNull(),
     variant: varchar('variant', { length: 10 }).notNull(),
+    /** «فردي»: every player on their own (no teams). */
+    solo: boolean('solo').notNull().default(false),
     categoryIds: jsonb('category_ids').$type<number[]>(),
     roundsPlayed: smallint('rounds_played').notNull().default(0),
     scores: jsonb('scores').$type<[number, number]>(),
@@ -88,6 +90,31 @@ export const games = pgTable(
     abandonedAt: timestamp('abandoned_at', { withTimezone: true }),
   },
   (t) => [index('games_created_at_idx').on(t.createdAt)],
+);
+
+/** «تحدي القنوات»: one row per challenge the host page opened, updated as it is played. */
+export const kickDuels = pgTable(
+  'kick_duels',
+  {
+    id: serial('id').primaryKey(),
+    session: varchar('session', { length: 32 }).notNull().unique(),
+    mode: varchar('mode', { length: 10 }).notNull(),
+    /** «بث واحد»: one channel's chat split in two. */
+    single: boolean('single').notNull().default(false),
+    test: boolean('test').notNull().default(false),
+    channelA: varchar('channel_a', { length: 64 }).notNull(),
+    channelB: varchar('channel_b', { length: 64 }).notNull(),
+    playersA: integer('players_a').notNull().default(0),
+    playersB: integer('players_b').notNull().default(0),
+    rounds: smallint('rounds').notNull().default(0),
+    /** 'a', 'b' or 'draw' once it is over. */
+    winner: varchar('winner', { length: 4 }),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    gameStartedAt: timestamp('game_started_at', { withTimezone: true }),
+    finishedAt: timestamp('finished_at', { withTimezone: true }),
+    lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('kick_duels_started_at_idx').on(t.startedAt)],
 );
 
 /** Each time a streamer linked their Kick account (the official Kick app login). */

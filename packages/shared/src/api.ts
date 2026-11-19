@@ -83,7 +83,8 @@ export type UsageStats = {
   byDay: UsageDay[];
   /** Different devices: `visitors` in the chosen days, `allTime` since the start (each device counted once). */
   platforms: { platform: Platform; visitors: number; allTime: number }[];
-  modes: { mode: RoomMode; variant: Variant; games: number }[];
+  /** `solo`: «فردي» (every player on their own). */
+  modes: { mode: RoomMode; variant: Variant; solo?: boolean; games: number }[];
   topCategories: { categoryId: number; name: string; games: number }[];
 };
 
@@ -91,6 +92,26 @@ export type ApiErrorBody = { error: string; issues?: { path: string; message: st
 
 /** Kick stream mode in the admin dashboard. */
 export type KickLiveStream = { channel: string; variant: string | null; phase: string; players: number; rounds: number; totalRounds: number; test: boolean; since: number };
+/** A «تحدي القنوات» open now. `score` is the castles' life, the rounds won or the chain points, per team. */
+export type DuelLive = {
+  code: string;
+  mode: string;
+  single: boolean;
+  test: boolean;
+  channels: { a: string; b: string };
+  players: { a: number; b: number };
+  score: { a: number; b: number };
+  phase: string;
+  rounds: number;
+  winner: string | null;
+  since: number;
+};
+export type DuelStats = {
+  totals: { duels: number; real: number; started: number; finished: number; single: number; players: number; maxPlayers: number; rounds: number };
+  modes: { mode: string; single: boolean; duels: number }[];
+  recent: { mode: string; single: boolean; test: boolean; channelA: string; channelB: string; playersA: number; playersB: number; rounds: number; winner: string | null; startedAt: string; finishedAt: string | null }[];
+  live: DuelLive[];
+};
 export type KickStats = {
   days: number;
   totals: {
@@ -113,6 +134,8 @@ export type KickStats = {
   topChannels: { channel: string; streams: number; joins: number; lastAt: string }[];
   recent: { channel: string; variant: string | null; test: boolean; players: number; rounds: number; startedAt: string; finishedAt: string | null }[];
   live: KickLiveStream[];
+  /** «تحدي القنوات». */
+  duels?: DuelStats;
 };
 
 /** What players pick most (most first), for the «🔥 الأكثر لعبًا» marks — order only, no numbers. */

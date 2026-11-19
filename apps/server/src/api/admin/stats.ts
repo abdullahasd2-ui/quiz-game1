@@ -1,4 +1,4 @@
-import { scoreInput, usageQuery, type KickLiveStream, type KickStats, type LiveStats, type UsageStats } from '@quiz/shared';
+import { scoreInput, usageQuery, type DuelLive, type DuelStats, type KickLiveStream, type KickStats, type LiveStats, type UsageStats } from '@quiz/shared';
 import { and, asc, count, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { db } from '../../db/client';
@@ -7,7 +7,7 @@ import { STATS_TIMEZONE, statsToday } from '../../game/usage';
 
 export async function adminStatsRoutes(
   app: FastifyInstance,
-  opts: { live: () => LiveStats; kickLive?: () => KickLiveStream[]; adminScore?: (code: string, id: string, delta: number) => Promise<void> },
+  opts: { live: () => LiveStats; kickLive?: () => KickLiveStream[]; duelLive?: () => DuelLive[]; adminScore?: (code: string, id: string, delta: number) => Promise<void> },
 ) {
   app.get('/live', async () => opts.live());
 
@@ -57,8 +57,8 @@ export async function adminStatsRoutes(
           count(distinct device_id)::int as "allTime"
         from daily_visits group by platform order by 2 desc, 1`),
       rows<UsageStats['modes'][number]>(sql`
-        select mode, variant, count(*)::int as "games" from games where started_at is not null and ${gameDay} >= ${since}
-        group by mode, variant order by 3 desc`),
+        select mode, variant, solo, count(*)::int as "games" from games where started_at is not null and ${gameDay} >= ${since}
+        group by mode, variant, solo order by 4 desc`),
       rows<UsageStats['topCategories'][number]>(sql`
         select c.id as "categoryId", c.name, count(*)::int as "games"
         from games g cross join lateral jsonb_array_elements_text(g.category_ids) as picked(id)
@@ -93,7 +93,7 @@ export async function adminStatsRoutes(
     const since = sql`(${statsToday} - ${days - 1}::int)`;
     const day = (col: string) => sql.raw(`(${col} at time zone '${STATS_TIMEZONE}')::date`);
     const rows = <T>(q: ReturnType<typeof sql>) => db.execute(q) as unknown as Promise<T[]>;
-    const [links, streams, byDay, variants, topChannels, recent] = await Promise.all([
+    const [links, streams, byDay, variants, topChannels, recent, duelTotals, duelModes, duelRecent] = await Promise.all([
       rows<{ links: number; channels: number }>(sql`
         select count(*)::int as "links", count(distinct lower(channel))::int as "channels" from kick_links where ${day('linked_at')} >= ${since}`),
       rows<KickStats['totals']>(sql`
@@ -119,6 +119,20 @@ export async function adminStatsRoutes(
       rows<KickStats['recent'][number]>(sql`
         select channel, variant, test, players, rounds, started_at::text as "startedAt", finished_at::text as "finishedAt"
         from kick_streams order by started_at desc limit 15`),
+      rows<DuelStats['totals']>(sql`
+        select count(*)::int as "duels", count(*) filter (where not test)::int as "real",
+          count(game_started_at) filter (where not test)::int as "started", count(finished_at) filter (where not test)::int as "finished",
+          count(*) filter (where single and not test)::int as "single",
+          coalesce(sum(players_a + players_b), 0)::int as "players", coalesce(max(players_a + players_b), 0)::int as "maxPlayers",
+          coalesce(sum(rounds) filter (where not test), 0)::int as "rounds"
+        from kick_duels where ${day('started_at')} >= ${since}`),
+      rows<DuelStats['modes'][number]>(sql`
+        select mode, single, count(*)::int as "duels" from kick_duels where game_started_at is not null and not test and ${day('started_at')} >= ${since}
+        group by mode, single order by 3 desc`),
+      rows<DuelStats['recent'][number]>(sql`
+        select mode, single, test, channel_a as "channelA", channel_b as "channelB", players_a as "playersA", players_b as "playersB", rounds, winner,
+          started_at::text as "startedAt", finished_at::text as "finishedAt"
+        from kick_duels order by started_at desc limit 15`),
     ]);
     const t = streams[0];
     return {
@@ -140,6 +154,12 @@ export async function adminStatsRoutes(
       topChannels,
       recent,
       live: opts.kickLive?.() ?? [],
+      duels: {
+        totals: duelTotals[0] ?? { duels: 0, real: 0, started: 0, finished: 0, single: 0, players: 0, maxPlayers: 0, rounds: 0 },
+        modes: duelModes,
+        recent: duelRecent,
+        live: opts.duelLive?.() ?? [],
+      },
     };
   });
 

@@ -1,4 +1,4 @@
-import type { KickLiveStream } from '@quiz/shared';
+import type { DuelLive, DuelStats, KickLiveStream } from '@quiz/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -136,7 +136,122 @@ export function KickStatsPage() {
           </CardContent>
         </Card>
       </section>
+
+      <DuelSection d={k?.duels} loading={loading} />
     </>
+  );
+}
+
+const DUEL_MODE: Record<string, string> = { castle: '🏰 القلعة', faza: '⚡ الفزعة', chain: '⛓️ السلسلة' };
+const winnerLabel = (w: string | null, a: string, b: string) => (w === 'a' ? a : w === 'b' ? b : w === 'draw' ? 'تعادل' : '—');
+
+/** «تحدي القنوات»: the challenges open now, the period's numbers, the modes, and the last challenges. */
+function DuelSection({ d, loading }: { d: DuelStats | undefined; loading: boolean }) {
+  const t = d?.totals;
+  return (
+    <section className="mt-10">
+      <div className="mb-3 flex items-center gap-2">
+        <h2 className="text-lg font-semibold">⚔️ تحدي القنوات</h2>
+        <Badge variant="secondary">{d?.live.length ?? 0} شغّال الحين</Badge>
+      </div>
+      {loading ? <Skeleton className="h-24 w-full" /> : <DuelLiveCards rows={d?.live ?? []} />}
+
+      <div className="my-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Stat label="تحديات انفتحت" value={t?.real} hint={t && `+${num.format(t.duels - t.real)} بوضع التجربة`} loading={loading} />
+        <Stat label="بدأت فيها اللعبة" value={t?.started} hint={t && `${num.format(t.finished)} اكتملت · ${num.format(t.rounds)} سؤال`} loading={loading} />
+        <Stat label="بث واحد" value={t?.single} hint="شات واحد انقسم فريقين" loading={loading} />
+        <Stat label="اللاعبين" value={t?.players} hint={t && `أكثر تحدي: ${num.format(t.maxPlayers)} لاعب`} loading={loading} />
+      </div>
+
+      <div className="mb-4 grid gap-4 lg:grid-cols-2">
+        <ChartCard title="الأطوار" description="التحديات اللي بدأت فيها اللعبة، بدون التجربة" loading={loading}>
+          <BarList
+            rows={(d?.modes ?? []).map((m) => ({ key: `${m.mode}:${m.single}`, label: `${DUEL_MODE[m.mode] ?? m.mode} · ${m.single ? 'بث واحد' : 'بثين'}`, value: m.duels }))}
+            empty="ما فيه تحديات للحين"
+          />
+        </ChartCard>
+        <Card>
+          <CardHeader>
+            <CardTitle>آخر التحديات</CardTitle>
+            <CardDescription>آخر 15 تحدي، ومنها التجربة</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <Skeleton className="h-40 w-full" />
+            ) : !d?.recent.length ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">ما فيه تحديات للحين</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>الأزرق ضد الأحمر</TableHead>
+                    <TableHead>الطور</TableHead>
+                    <TableHead>اللاعبين</TableHead>
+                    <TableHead>الفايز</TableHead>
+                    <TableHead>البداية</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {d.recent.map((r, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">
+                        <span dir="ltr">{r.channelA}</span> ⚔️ <span dir="ltr">{r.single ? `👑 ${r.channelB || '—'}` : r.channelB}</span>
+                        {r.test && <Badge variant="outline" className="ms-1">تجربة</Badge>}
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {DUEL_MODE[r.mode] ?? r.mode}
+                        <div className="text-muted-foreground">{r.single ? 'بث واحد' : 'بثين'}</div>
+                      </TableCell>
+                      <TableCell className="tabular-nums">
+                        {num.format(r.playersA)} · {num.format(r.playersB)}
+                      </TableCell>
+                      <TableCell>{r.finishedAt ? <Badge>{winnerLabel(r.winner, r.channelA, r.single ? `👑 ${r.channelB}` : r.channelB)}</Badge> : <Badge variant="secondary">ما كمّل</Badge>}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{when.format(new Date(r.startedAt))}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </section>
+  );
+}
+
+function DuelLiveCards({ rows }: { rows: DuelLive[] }) {
+  if (!rows.length) return <p className="rounded-lg border border-dashed py-6 text-center text-sm text-muted-foreground">ما فيه تحدي شغّال الحين</p>;
+  const unit = (mode: string) => (mode === 'castle' ? '❤️' : mode === 'faza' ? 'جولة' : 'نقطة');
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {rows.map((r) => (
+        <Card key={r.code}>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between gap-2 text-base">
+              <span>
+                {DUEL_MODE[r.mode] ?? r.mode} {r.test && <Badge variant="outline">تجربة</Badge>}
+              </span>
+              <Badge variant="secondary">{r.single ? 'بث واحد' : 'بثين'}</Badge>
+            </CardTitle>
+            <CardDescription>
+              {r.phase === 'lobby' ? 'في اللوبي' : r.phase === 'over' ? `انتهى · ${winnerLabel(r.winner, r.channels.a, r.channels.b)}` : `السؤال ${num.format(r.rounds + (r.phase === 'question' ? 1 : 0))}`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-3 text-sm">
+            {(['a', 'b'] as const).map((t) => (
+              <div key={t} className={t === 'a' ? 'text-sky-600 dark:text-sky-300' : 'text-rose-600 dark:text-rose-300'}>
+                <div className="truncate font-semibold" dir="ltr">
+                  {r.channels[t]}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {num.format(r.players[t])} لاعب · {num.format(r.score[t])} {unit(r.mode)}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }
 
