@@ -140,3 +140,16 @@ describe('«بث واحد»: one channel, two teams', () => {
     expect(s.round?.live.b).toBe(1);
   });
 });
+
+describe('team stats boards', () => {
+  it('count answers, right ones, fastest answers and the best share per team', () => {
+    let s = newDuel({ a: 'x', b: 'y' }, DUEL_DEFAULTS, 's', true);
+    for (const [t, u] of [['a', 'a1'], ['a', 'a2'], ['b', 'b1']] as const) s = duelChat(s, t, u, 'دخول', 0);
+    s = duelDeal(s, { text: 'q', options: ['x', 'y', 'z', 'w'], correctIndex: 0, points: 100 }, 0);
+    s = duelChat(s, 'a', 'a1', '1', 1);
+    s = duelChat(s, 'a', 'a2', '2', 2);
+    s = duelChat(s, 'b', 'b1', '1', 3);
+    expect(s.stats?.a).toEqual({ answered: 2, right: 1, stars: 1, best: 50, questions: 1 });
+    expect(s.stats?.b).toEqual({ answered: 1, right: 1, stars: 1, best: 100, questions: 1 });
+  });
+});
