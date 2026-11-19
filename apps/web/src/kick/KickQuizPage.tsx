@@ -571,16 +571,6 @@ export function KickQuizPage() {
             <QuizHowToButton forStreamer fancy />
             <VideoGuideButton />
           </div>
-          <a
-            href="/kick/duel"
-            className="mb-5 flex items-center justify-center gap-3 rounded-2xl border-2 border-white/15 bg-linear-to-l from-sky-600/30 via-q-panel to-rose-600/30 px-4 py-3 text-center shadow-[0_10px_30px_-12px_rgba(168,85,247,0.7)] transition-transform hover:-translate-y-0.5"
-          >
-            <span className="text-3xl">⚔️</span>
-            <span className="text-start leading-tight">
-              <span className="block text-base font-black text-white">تحدي القنوات <span className="ms-1 rounded-full bg-q-gold px-1.5 text-[10px] text-black">جديد</span></span>
-              <span className="block text-[11px] font-bold text-white/65">بثين ضد بعض، أو شاتك ينقسم فريقين: القلعة · الفزعة · السلسلة</span>
-            </span>
-          </a>
           <div className="q-card">
             {canLink && !linked && (
               <a href={`${SERVER_URL}/api/kick/login?next=quiz`} className="q-btn-gold mb-3 block text-center">
