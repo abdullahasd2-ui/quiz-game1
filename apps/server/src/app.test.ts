@@ -393,3 +393,23 @@ describe('admin live score', () => {
     expect(res.json()).toEqual({ error: 'الغرفة غير موجودة!' });
   });
 });
+
+describe('admin: «تحدي القنوات» stats', () => {
+  it('records a challenge as it is played and lists it', async () => {
+    const { createDuelRecorder } = await import('./kick/duelStats');
+    const { newDuel, duelChat, DUEL_DEFAULTS } = await import('@quiz/shared');
+    const record = createDuelRecorder((e) => {
+      throw e;
+    });
+    let s = newDuel({ a: 'host_ch', b: '' }, { ...DUEL_DEFAULTS, mode: 'chain' }, 'duel-test-1', false, true);
+    s = duelChat(s, 'a', 'fahad', 'أزرق', 0);
+    s = duelChat(s, 'a', 'reem', 'أحمر', 0);
+    await record(s);
+    await record({ ...s, phase: 'over', winner: 'a', rounds: 4, captain: 'reem' });
+    const res = await app.inject({ method: 'GET', url: '/api/admin/stats/kick?days=7', headers: { cookie } });
+    const duels = res.json().duels;
+    expect(duels.totals).toMatchObject({ duels: 1, real: 1, started: 1, finished: 1, single: 1, players: 2 });
+    expect(duels.modes).toEqual([{ mode: 'chain', single: true, duels: 1 }]);
+    expect(duels.recent[0]).toMatchObject({ channelA: 'host_ch', channelB: 'reem', winner: 'a', rounds: 4 });
+  });
+});

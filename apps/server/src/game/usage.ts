@@ -50,7 +50,7 @@ export class UsageLog {
   created(room: AnyRoom) {
     const id = db
       .insert(games)
-      .values({ code: room.code, mode: room.mode, variant: room.variant })
+      .values({ code: room.code, mode: room.mode, variant: room.variant, solo: 'solo' in room })
       .returning({ id: games.id })
       .then((rows) => rows[0]?.id ?? null);
     this.gameIds.set(room, this.track(id).then((v) => v ?? null));

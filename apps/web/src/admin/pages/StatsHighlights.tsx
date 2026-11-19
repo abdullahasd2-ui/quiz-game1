@@ -157,8 +157,10 @@ export function ModesDonut({ u }: { u: UsageStats }) {
   const byVariant = new Map<Variant, number>();
   let mobile = 0;
   let tv = 0;
+  let solo = 0;
   for (const m of u.modes) {
     byVariant.set(m.variant, (byVariant.get(m.variant) ?? 0) + m.games);
+    if (m.solo) solo += m.games;
     if (m.mode === 'mobile') mobile += m.games;
     else tv += m.games;
   }
@@ -202,6 +204,16 @@ export function ModesDonut({ u }: { u: UsageStats }) {
         <div className="flex h-2.5 overflow-hidden rounded-full bg-muted">
           <div className="bg-sky-400" style={{ width: `${(mobile / total) * 100}%` }} />
           <div className="bg-fuchsia-500" style={{ width: `${(tv / total) * 100}%` }} />
+        </div>
+      </div>
+      <div className="mt-3">
+        <div className="mb-1 flex justify-between text-xs text-muted-foreground">
+          <span>👥 فريقين {Math.round(((total - solo) / total) * 100)}٪</span>
+          <span>🙋 فردي {Math.round((solo / total) * 100)}٪</span>
+        </div>
+        <div className="flex h-2.5 overflow-hidden rounded-full bg-muted">
+          <div className="bg-amber-400" style={{ width: `${((total - solo) / total) * 100}%` }} />
+          <div className="bg-cyan-400" style={{ width: `${(solo / total) * 100}%` }} />
         </div>
       </div>
     </div>

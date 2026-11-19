@@ -23,6 +23,7 @@ import { kickPusher } from './kick/pusher';
 import { kickSlugs } from '@quiz/shared';
 import { attachKickSync } from './kick/sync';
 import { attachDuelSync } from './kick/duelSync';
+import { createDuelRecorder } from './kick/duelStats';
 import { createStreamRecorder } from './kick/streamStats';
 import { db } from './db/client';
 import { kickLinks } from './db/schema';
@@ -52,7 +53,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   attachKickRelay(game.io, kickHub);
   const recordStream = createStreamRecorder((err) => app.log.warn({ err }, 'kick stream stats'));
   const kickSync = attachKickSync(game.io, { onState: (st) => void recordStream(st) });
-  attachDuelSync(game.io);
+  const duels = attachDuelSync(game.io, createDuelRecorder((err) => app.log.error(err)));
   app.addHook('onClose', async () => kickHub.closeAll());
   await app.register(kickQuestionRoutes);
   // The chat room id of a Kick channel, for the stream page: Kick lets the server look a channel up but often refuses
@@ -91,7 +92,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
       await admin.register(adminCategoryRoutes, { prefix: '/categories' });
       await admin.register(adminQuestionRoutes, { prefix: '/questions' });
       await admin.register(adminUploadRoutes, { prefix: '/upload' });
-      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live, kickLive: kickSync.live, adminScore: game.adminScore });
+      await admin.register(adminStatsRoutes, { prefix: '/stats', live: game.live, kickLive: kickSync.live, duelLive: duels.live, adminScore: game.adminScore });
       await admin.register(adminAccountRoutes, { prefix: '/admins' });
     },
     { prefix: '/api/admin' },
