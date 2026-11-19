@@ -150,6 +150,7 @@ export function StreamQuick(p: StreamQuickProps) {
       { id: 'howto', icon: '📖', title: 'طريقة اللعب', hint: 'للستريمر والمشاهدين', run: howto },
       { id: 'keys', icon: '⌨️', title: 'اختصارات لوحة المفاتيح', badge: '؟', run: p.onKeys },
       { id: 'full', icon: '⛶', title: 'ملء الشاشة', badge: 'F', run: () => void toggleFullscreen() },
+      { id: 'duel', icon: '⚔️', title: 'تحدي القنوات', hint: 'بثين ضد بعض، أو شاتك ينقسم فريقين', keywords: 'duel castle تحدي قلعة', run: () => window.location.assign('/kick/duel') },
       { id: 'home', icon: '🏠', title: 'اللعبة الأساسية', hint: 'جاوب أو بادل بين فريقين', run: () => window.location.assign('/') },
     ],
   });
