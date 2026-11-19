@@ -5,6 +5,7 @@ import { CastleWorld } from './duel/CastleWorld';
 import { ChainWorld } from './duel/ChainWorld';
 import { FazaWorld } from './duel/FazaWorld';
 import { useDuelSounds } from './duel/useDuelSounds';
+import { teamLabel } from './duel/common';
 import { Victory } from './duel/Victory';
 import './duel/duel.css';
 
@@ -67,7 +68,7 @@ function TeamCard({ s, t, big }: { s: DuelState; t: DuelTeam; big: boolean }) {
   return (
     <div className={cn('rounded-3xl border-2 bg-linear-to-b p-3 text-center transition-all', c.ring, c.bg, (turn || won) && c.glow, turn && 'scale-[1.03]')}>
       <div className={cn('truncate font-black', c.text, big ? 'text-3xl' : 'text-lg')} dir="ltr">
-        {s.channels[t] || (t === 'a' ? 'قناتك' : 'الخصم')}
+        {teamLabel(s, t)}
       </div>
       <div className={cn('font-bold text-white/70', big ? 'text-lg' : 'text-xs')}>👥 {teamSize(s, t)} لاعب{turn ? ' · 🎯 دوركم!' : ''}</div>
     </div>
@@ -77,8 +78,21 @@ function TeamCard({ s, t, big }: { s: DuelState; t: DuelTeam; big: boolean }) {
 function JoinHint({ s, big }: { s: DuelState; big: boolean }) {
   return (
     <div className={cn('rounded-3xl border border-q-gold/30 bg-q-gold/5 p-4 text-center', big && 'p-6')}>
-      <div className={cn('q-display text-q-gold', big ? 'text-5xl' : 'text-2xl')}>اكتب «دخول» في شات قناتك</div>
-      <div className={cn('mt-2 font-bold text-white/80', big ? 'text-2xl' : 'text-sm')}>تنضم لفريق القناة اللي تتابعها، وتجاوب برقم الخيار أو تكتب الجواب.</div>
+      {s.single ? (
+        <>
+          <div className={cn('q-display text-q-gold', big ? 'text-5xl' : 'text-2xl')}>
+            اكتب <span className="text-sky-300">«أزرق»</span> أو <span className="text-rose-300">«أحمر»</span> في الشات
+          </div>
+          <div className={cn('mt-2 font-bold text-white/80', big ? 'text-2xl' : 'text-sm')}>
+            «أزرق» تلعب مع فريق <span dir="ltr">{s.channels.a}</span>، و«أحمر» تلعب مع {s.captain ? <>فريق الرئيس <b className="text-rose-300">{s.captain}</b></> : 'الفريق الثاني اللي يختار له الستريمر رئيس من الشات'}. وتجاوب برقم الخيار أو تكتب الجواب.
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={cn('q-display text-q-gold', big ? 'text-5xl' : 'text-2xl')}>اكتب «دخول» في شات قناتك</div>
+          <div className={cn('mt-2 font-bold text-white/80', big ? 'text-2xl' : 'text-sm')}>تنضم لفريق القناة اللي تتابعها، وتجاوب برقم الخيار أو تكتب الجواب.</div>
+        </>
+      )}
       <div className={cn('mt-1 text-white/60', big ? 'text-xl' : 'text-xs')}>{modeOf(s).short}</div>
     </div>
   );

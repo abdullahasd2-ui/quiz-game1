@@ -9,6 +9,7 @@ import {
   DUEL_WIN_CHOICES,
   KICK_CHANNEL_RE,
   POINTS,
+  duelCaptain,
   duelChat,
   duelDeal,
   duelFinish,
@@ -49,6 +50,8 @@ export function DuelPage() {
   const [channelA, setChannelA] = useState('');
   const [channelB, setChannelB] = useState('');
   const [test, setTest] = useState(false);
+  /** «بث واحد»: one channel, its chat split in two (the streamer picks the red captain). */
+  const [single, setSingle] = useState(false);
   const [settings, setSettings] = useState<DuelSettings>(DUEL_DEFAULTS);
   const [cats, setCats] = useState<PublicCategory[]>([]);
   const [picked, setPicked] = useState<number[]>([]);
@@ -75,7 +78,8 @@ export function DuelPage() {
   const on = Boolean(state) && !test;
   const chat = useCallback((team: DuelTeam, user: string, text: string) => setState((s) => (s ? duelChat(s, team, user, text, Date.now()) : s)), []);
   const statusA = useKickChat(state?.channels.a ?? '', on, useCallback((u: string, t: string) => chat('a', u, t), [chat]));
-  const statusB = useKickChat(state?.channels.b ?? '', on, useCallback((u: string, t: string) => chat('b', u, t), [chat]));
+  // In «بث واحد» the red team is in the same chat (channels.b is then the captain's name, not a channel).
+  const statusB = useKickChat(state?.single ? '' : (state?.channels.b ?? ''), on, useCallback((u: string, t: string) => chat('b', u, t), [chat]));
 
   // Publish to the broadcast page on every change and every few seconds (a late-opened screen catches up).
   const latest = useRef<DuelState | null>(null);
@@ -100,16 +104,17 @@ export function DuelPage() {
 
   const screenUrl = `${window.location.origin}/kick/duel/screen?code=${sync.code}`;
   const validA = test || KICK_CHANNEL_RE.test(channelA.trim());
-  const validB = test || KICK_CHANNEL_RE.test(channelB.trim());
+  const validB = test || single || KICK_CHANNEL_RE.test(channelB.trim());
   const set = <K extends keyof DuelSettings>(k: K, v: DuelSettings[K]) => setSettings((x) => ({ ...x, [k]: v }));
 
   function open() {
     setError('');
-    if (!validA || !validB) return setError('اكتب اسم القناتين مثل ما يطلع في رابطها: kick.com/الاسم');
-    if (!test && channelA.trim().toLowerCase() === channelB.trim().toLowerCase()) return setError('القناتين لازم يكونون مختلفين');
+    if (!validA || !validB) return setError(single ? 'اكتب اسم قناتك مثل ما يطلع في رابطها: kick.com/الاسم' : 'اكتب اسم القناتين مثل ما يطلع في رابطها: kick.com/الاسم');
+    if (!test && !single && channelA.trim().toLowerCase() === channelB.trim().toLowerCase()) return setError('القناتين لازم يكونون مختلفين');
     if (picked.length < 2) return setError('اختر فئتين على الأقل');
     used.current.clear();
-    setState(newDuel({ a: test ? channelA.trim() || 'قناتك' : channelA.trim(), b: test ? channelB.trim() || 'الخصم' : channelB.trim() }, settings, randomId(8), test));
+    const a = test ? channelA.trim() || 'قناتك' : channelA.trim();
+    setState(newDuel({ a, b: single ? '' : test ? channelB.trim() || 'الخصم' : channelB.trim() }, settings, randomId(8), test, single));
   }
 
   async function next() {
@@ -137,7 +142,7 @@ export function DuelPage() {
 
   const resultAt = state?.phase === 'result' ? state.round?.endsAt ?? 0 : 0;
   const canNext = state && (state.phase === 'lobby' || (state.phase === 'result' && now - resultAt > DUEL_RESULT_MS));
-  const ready = state && (state.test || (teamSize(state, 'a') > 0 && teamSize(state, 'b') > 0));
+  const ready = state && (state.single ? Boolean(state.captain) && teamSize(state, 'a') > 0 : state.test || (teamSize(state, 'a') > 0 && teamSize(state, 'b') > 0));
 
   return (
     <div className="min-h-dvh bg-q-bg text-white" dir="rtl">
@@ -157,10 +162,30 @@ export function DuelPage() {
           <div className="space-y-4">
             <p className="text-center text-sm text-white/70">ستريمرين، وكل شات فريق. متابعين قناتك ضد متابعين قناة الخصم، والنقاط بالنسبة عشان القناة الصغيرة تقدر تفوز.</p>
 
-            <section className="grid gap-3 sm:grid-cols-2">
-              {(['a', 'b'] as const).map((t) => (
+            <section className="grid grid-cols-2 gap-2 rounded-3xl border border-white/10 bg-q-panel/60 p-1.5">
+              {(
+                [
+                  [false, '📡📡 بثين', 'قناتك ضد قناة ستريمر ثاني، وكل شات فريق'],
+                  [true, '📡 بث واحد', 'شاتك ينقسم فريقين: أزرق معك، وأحمر مع رئيس تختاره من الشات'],
+                ] as const
+              ).map(([id, title, desc]) => (
+                <button
+                  key={title}
+                  type="button"
+                  onClick={() => setSingle(id)}
+                  aria-pressed={single === id}
+                  className={cn('rounded-2xl px-3 py-2.5 text-start transition', single === id ? 'bg-q-gold/15 ring-2 ring-q-gold' : 'hover:bg-white/5')}
+                >
+                  <div className="font-black">{title}</div>
+                  <div className="text-xs leading-relaxed text-white/65">{desc}</div>
+                </button>
+              ))}
+            </section>
+
+            <section className={cn('grid gap-3', !single && 'sm:grid-cols-2')}>
+              {(single ? (['a'] as const) : (['a', 'b'] as const)).map((t) => (
                 <label key={t} className={cn('block rounded-3xl border-2 bg-linear-to-b p-4', TEAM[t].ring, TEAM[t].bg)}>
-                  <div className={cn('mb-2 font-black', TEAM[t].text)}>{t === 'a' ? '🔵 قناتك (المضيف)' : '🔴 قناة الخصم'}</div>
+                  <div className={cn('mb-2 font-black', TEAM[t].text)}>{t === 'a' ? (single ? '📡 قناتك' : '🔵 قناتك (المضيف)') : '🔴 قناة الخصم'}</div>
                   <input
                     dir="ltr"
                     value={t === 'a' ? channelA : channelB}
@@ -234,7 +259,7 @@ export function DuelPage() {
         {state && (
           <div className="space-y-4">
             <div className="rounded-3xl border border-q-cyan/30 bg-q-cyan/5 p-3">
-              <div className="mb-1 text-sm font-black text-q-cyan">📺 رابط شاشة البث — حطه في OBS، وأرسله للستريمر الثاني يحطه عنده</div>
+              <div className="mb-1 text-sm font-black text-q-cyan">📺 رابط شاشة البث — حطه في OBS{state.single ? '' : '، وأرسله للستريمر الثاني يحطه عنده'}</div>
               <div className="flex gap-2">
                 <input readOnly dir="ltr" value={screenUrl} className="min-w-0 flex-1 rounded-xl border border-white/15 bg-q-bg/70 px-3 py-2 text-xs" onFocus={(e) => e.target.select()} />
                 <button
@@ -246,12 +271,14 @@ export function DuelPage() {
                 </button>
               </div>
               {!state.test && (
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                <div className={cn('mt-2 grid gap-2 text-xs', !state.single && 'grid-cols-2')}>
                   <ChatStatus t="a" name={state.channels.a} st={statusA} />
-                  <ChatStatus t="b" name={state.channels.b} st={statusB} />
+                  {!state.single && <ChatStatus t="b" name={state.channels.b} st={statusB} />}
                 </div>
               )}
             </div>
+
+            {state.single && state.phase === 'lobby' && <CaptainPicker s={state} onPick={(u) => setState((s) => (s ? duelCaptain(s, u) : s))} />}
 
             <DuelArena s={state} now={now} />
 
@@ -261,7 +288,7 @@ export function DuelPage() {
             <div className="flex flex-wrap justify-center gap-2">
               {state.phase === 'lobby' && (
                 <button type="button" disabled={!ready || loading} onClick={() => void next()} className="q-btn-gold px-8 text-lg disabled:opacity-50">
-                  {ready ? 'ابدأ التحدي — أول سؤال ▶' : 'ننتظر لاعب من كل شات…'}
+                  {ready ? 'ابدأ التحدي — أول سؤال ▶' : state.single ? (state.captain ? 'ننتظر لاعب في الفريق الأزرق…' : 'اختر رئيس الفريق الأحمر أول 👑') : 'ننتظر لاعب من كل شات…'}
                 </button>
               )}
               {state.phase === 'question' && (
@@ -316,6 +343,40 @@ function ChatStatus({ t, name, st }: { t: DuelTeam; name: string; st: KickStatus
         {name}
       </span>{' '}
       {live ? <span className="text-q-green">🟢 متصل بالشات</span> : st?.state === 'error' ? <span className="text-q-red">🔴 {st.detail ?? 'تعذّر الاتصال'}</span> : <span className="text-white/60">⏳ {st?.detail ?? 'جاري الاتصال...'}</span>}
+    </div>
+  );
+}
+
+/** «بث واحد»: the streamer taps one of the chat to make them the red team's captain. */
+function CaptainPicker({ s, onPick }: { s: DuelState; onPick: (user: string) => void }) {
+  const players = Object.values(s.players).sort((x, y) => x.name.localeCompare(y.name));
+  return (
+    <div className="rounded-3xl border-2 border-rose-400/40 bg-rose-500/5 p-3">
+      <div className="mb-1 font-black text-rose-200">👑 اختر رئيس الفريق الأحمر من الشات</div>
+      <p className="mb-2 text-xs leading-relaxed text-white/65">
+        اللي يكتب «أزرق» يلعب معك، واللي يكتب «أحمر» يلعب مع الرئيس. اضغط على اسم أي واحد دخل عشان يصير رئيس الأحمر، والفريق الأحمر ياخذ اسمه.
+        {s.captain ? '' : ' لازم تختار رئيس قبل ما تبدأ.'}
+      </p>
+      {players.length === 0 ? (
+        <div className="text-xs text-white/45">ما أحد دخل للحين…</div>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          {players.map((p) => {
+            const chief = s.captain?.toLowerCase() === p.name.toLowerCase();
+            return (
+              <button
+                key={`${p.team}:${p.name}`}
+                type="button"
+                onClick={() => onPick(p.name)}
+                className={cn('rounded-full border-2 px-3 py-1 text-sm font-black transition', chief ? 'border-q-gold bg-q-gold/20' : p.team === 'a' ? 'border-sky-400/40 text-sky-200' : 'border-rose-400/40 text-rose-200')}
+              >
+                {chief ? '👑 ' : p.team === 'a' ? '🔵 ' : '🔴 '}
+                {p.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

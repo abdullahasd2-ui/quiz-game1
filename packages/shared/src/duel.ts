@@ -96,12 +96,25 @@ export type DuelState = {
   winner: DuelTeam | 'draw' | null;
   /** Test mode: no Kick chat, the streamer types the chat lines. */
   test?: boolean;
+  /**
+   * «بث واحد»: one channel, its chat split in two. Viewers type «أزرق» (the streamer's team) or «أحمر»
+   * (the team of the captain the streamer picks from the chat); «دخول» puts them on the smaller team.
+   */
+  single?: boolean;
+  /** «بث واحد»: the red team's captain (one of the chat), picked by the streamer in the lobby. */
+  captain?: string | null;
 };
+
+/** «بث واحد»: the words that pick a team. */
+export const BLUE_WORDS = ['ازرق', 'أزرق', 'الازرق', 'الأزرق', 'blue'] as const;
+export const RED_WORDS = ['احمر', 'أحمر', 'الاحمر', 'الأحمر', 'red'] as const;
 
 const zero = (): Record<DuelTeam, number> => ({ a: 0, b: 0 });
 
-export function newDuel(channels: Record<DuelTeam, string>, settings: DuelSettings, session: string, test = false): DuelState {
+export function newDuel(channels: Record<DuelTeam, string>, settings: DuelSettings, session: string, test = false, single = false): DuelState {
   return {
+    single,
+    captain: null,
     session,
     phase: 'lobby',
     settings,
@@ -130,16 +143,55 @@ export const castleDamage = (pct: number, points: number) => Math.round((pct / 1
 
 /** A chat line from one of the channels: «دخول» joins that channel's team; during a question, the first answer counts. */
 export function duelChat(s: DuelState, team: DuelTeam, user: string, text: string, now: number): DuelState {
-  const key = playerKey(team, user);
   const t = normalize(text).toLowerCase().trim();
+  if (s.single) return singleChat(s, user, text, t, now);
+  const key = playerKey(team, user);
   if ((JOIN_WORDS as readonly string[]).includes(t)) {
     if (s.players[key] || s.phase === 'over') return s;
     return { ...s, players: { ...s.players, [key]: { team, name: user, score: 0 } } };
   }
+  return answerChat(s, key, text, now);
+}
+
+/** «بث واحد»: one chat. The team words pick (or switch, in the lobby) a team; anything else is an answer. */
+function singleChat(s: DuelState, user: string, text: string, t: string, now: number): DuelState {
+  const keys = { a: playerKey('a', user), b: playerKey('b', user) };
+  const mine = s.players[keys.a] ? 'a' : s.players[keys.b] ? 'b' : null;
+  const words = t.replace(/[!.]/g, '');
+  const want: DuelTeam | null = (BLUE_WORDS as readonly string[]).includes(words)
+    ? 'a'
+    : (RED_WORDS as readonly string[]).includes(words)
+      ? 'b'
+      : (JOIN_WORDS as readonly string[]).includes(t)
+        ? (mine ?? (teamSize(s, 'a') <= teamSize(s, 'b') ? 'a' : 'b'))
+        : null;
+  if (want) {
+    if (s.phase === 'over' || mine === want) return s;
+    // A team can only be changed before the game starts, and the captain stays red.
+    if (mine && (s.phase !== 'lobby' || s.captain?.toLowerCase() === user.toLowerCase())) return s;
+    const players = { ...s.players };
+    if (mine) delete players[keys[mine]];
+    players[keys[want]] = { team: want, name: user, score: 0 };
+    return { ...s, players };
+  }
+  return mine ? answerChat(s, keys[mine], text, now) : s;
+}
+
+/** «بث واحد»: the streamer makes one of the chat the red team's captain (before the game starts). */
+export function duelCaptain(s: DuelState, user: string): DuelState {
+  if (!s.single || s.phase !== 'lobby') return s;
+  const players = { ...s.players };
+  delete players[playerKey('a', user)];
+  players[playerKey('b', user)] = { team: 'b', name: user, score: players[playerKey('b', user)]?.score ?? 0 };
+  return { ...s, players, captain: user, channels: { ...s.channels, b: user } };
+}
+
+function answerChat(s: DuelState, key: string, text: string, now: number): DuelState {
   const r = s.round;
   if (s.phase !== 'question' || !r || now > r.endsAt) return s;
   const p = s.players[key];
   if (!p || r.answers[key]) return s;
+  const team = p.team;
   if (s.settings.mode === 'chain' && r.turn !== team) return s;
   const pick = parseOption(text, r.question.options);
   if (pick === null) return s;

@@ -7,7 +7,8 @@ export const HEX = {
   b: { light: '#ff6b8b', dark: '#be123c' },
 } as const;
 
-export const teamLabel = (s: DuelState, t: DuelTeam) => s.channels[t] || (t === 'a' ? 'قناتك' : 'الخصم');
+export const teamLabel = (s: DuelState, t: DuelTeam) =>
+  s.single && t === 'b' ? (s.captain ? `👑 ${s.captain}` : 'الفريق الأحمر') : s.channels[t] || (t === 'a' ? 'قناتك' : 'الخصم');
 
 /** Points on a ring (with a little jitter) for spark bursts. */
 export function sparks(n: number, radius: number) {
