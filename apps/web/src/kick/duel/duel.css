@@ -1,0 +1,583 @@
+/* «تحدي القنوات»: the three worlds (castle, chain, faza). Only transform / opacity / filter are animated, so the GPU does the work. */
+
+.duel-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 2rem;
+  contain: layout paint;
+}
+
+/* ── Sky, clouds, embers ─────────────────────────────────────────────── */
+.duel-sky {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(120% 70% at 50% 110%, rgba(255, 140, 60, calc(0.15 + var(--heat, 0) * 0.55)), transparent 60%),
+    linear-gradient(to bottom, #0b0a26 0%, #1b1450 calc(55% - var(--dusk, 0) * 20%), #3a1b4f 85%, #5a2235 100%);
+  transition: background 1.2s ease;
+}
+.duel-stars {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: radial-gradient(1px 1px at 12% 18%, #fff9, transparent), radial-gradient(1px 1px at 32% 8%, #fff7, transparent),
+    radial-gradient(1.5px 1.5px at 58% 22%, #fffa, transparent), radial-gradient(1px 1px at 78% 12%, #fff8, transparent),
+    radial-gradient(1px 1px at 88% 30%, #fff6, transparent), radial-gradient(1.5px 1.5px at 6% 38%, #fff7, transparent);
+  animation: duel-twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes duel-twinkle {
+  to {
+    opacity: 0.35;
+  }
+}
+.duel-cloud {
+  position: absolute;
+  z-index: -1;
+  width: 38%;
+  height: 16%;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(200, 190, 255, 0.16), transparent);
+  filter: blur(2px);
+  animation: duel-drift var(--d, 46s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-drift {
+  from {
+    transform: translateX(-60%);
+  }
+  to {
+    transform: translateX(320%);
+  }
+}
+.duel-ember {
+  position: absolute;
+  bottom: 8%;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: #ffb347;
+  box-shadow: 0 0 8px #ff8a3d;
+  opacity: 0;
+  animation: duel-ember var(--d, 5s) ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-ember {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x, 20px), -180px);
+    opacity: 0;
+  }
+}
+
+/* ── Castle ──────────────────────────────────────────────────────────── */
+.castle {
+  transform-origin: 50% 100%;
+  animation: castle-rise 1.4s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+@keyframes castle-rise {
+  from {
+    transform: translateY(40%) scale(0.92);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+.castle-part {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1),
+    opacity 0.6s ease;
+}
+.castle-part[data-built='false'] {
+  transform: scaleY(0);
+  opacity: 0;
+}
+.castle-part.rise {
+  animation: castle-part-rise 0.9s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes castle-part-rise {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+/* A tower top knocked off by the damage. */
+.castle-fall {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    transform 1.1s cubic-bezier(0.5, 0, 0.75, 0),
+    opacity 1.1s ease-in;
+}
+.castle-fall[data-fallen='true'] {
+  transform: translate(var(--fx, 6px), 60px) rotate(var(--fr, 35deg));
+  opacity: 0;
+}
+.castle-crack {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  transition: stroke-dashoffset 0.8s ease;
+}
+.castle-crack[data-on='true'] {
+  stroke-dashoffset: 0;
+}
+.castle-gate {
+  transform-box: fill-box;
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.3, 1);
+}
+.castle-gate[data-open='true'] {
+  transform: translateY(-88%);
+}
+.castle-gatelight {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.castle-gatelight[data-open='true'] {
+  opacity: 1;
+}
+.castle-window {
+  animation: castle-flicker 2.4s ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+.castle-window[data-alert='true'] {
+  animation-duration: 0.7s;
+}
+@keyframes castle-flicker {
+  0% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.castle-flag {
+  transform-box: fill-box;
+  transform-origin: 0% 50%;
+  animation: castle-wave 1.6s ease-in-out infinite alternate;
+}
+@keyframes castle-wave {
+  from {
+    transform: skewY(-6deg) scaleX(0.92);
+  }
+  to {
+    transform: skewY(5deg) scaleX(1.04);
+  }
+}
+.castle-torch {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.5s,
+    transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.castle-torch[data-lit='false'] {
+  opacity: 0;
+  transform: scale(0.2);
+}
+.castle-torch[data-lit='true'] path {
+  animation: castle-flame 0.35s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes castle-flame {
+  to {
+    transform: scaleY(1.25) scaleX(0.85);
+  }
+}
+.castle-fire {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: castle-flame 0.25s ease-in-out infinite alternate;
+}
+.castle-smoke {
+  animation: castle-smoke 3.2s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes castle-smoke {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(-46px) scale(1.8);
+    opacity: 0;
+  }
+}
+.castle-hit {
+  animation: castle-hit 0.7s ease-out both;
+  animation-delay: var(--delay, 0.95s);
+}
+@keyframes castle-hit {
+  0%,
+  100% {
+    transform: none;
+    filter: none;
+  }
+  10% {
+    transform: translateX(-7px) rotate(-1.2deg);
+    filter: brightness(2.2) saturate(0.4);
+  }
+  25% {
+    transform: translateX(6px) rotate(1deg);
+  }
+  45% {
+    transform: translateX(-4px);
+  }
+  65% {
+    transform: translateX(2px);
+  }
+}
+.castle-down {
+  transform-origin: 50% 100%;
+  animation: castle-collapse 1.8s cubic-bezier(0.6, 0, 0.8, 0.4) 0.9s both;
+}
+@keyframes castle-collapse {
+  to {
+    transform: translateY(38%) rotate(-4deg) scaleY(0.55);
+    filter: grayscale(0.9) brightness(0.55);
+  }
+}
+
+/* The fireball: the outer box flies across, the inner one makes the arc. */
+.duel-shot {
+  position: absolute;
+  z-index: 5;
+  top: 38%;
+  pointer-events: none;
+  animation: duel-shot-x 0.95s cubic-bezier(0.45, 0.05, 0.55, 0.95) both;
+  animation-delay: var(--delay, 0s);
+}
+.duel-shot > span {
+  display: block;
+  animation: duel-shot-y 0.95s both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-shot-x {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  96% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(var(--dx));
+    opacity: 0;
+  }
+}
+@keyframes duel-shot-y {
+  0% {
+    transform: translateY(0) scale(0.7);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  }
+  45% {
+    transform: translateY(var(--arc, -90px)) scale(1);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.3);
+  }
+  100% {
+    transform: translateY(40px) scale(1.3);
+  }
+}
+.duel-burst {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+}
+.duel-burst i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--c, #ffb347);
+  box-shadow: 0 0 10px var(--c, #ff8a3d);
+  opacity: 0;
+  animation: duel-spark 0.9s ease-out both;
+  animation-delay: var(--delay, 0.95s);
+}
+@keyframes duel-spark {
+  0% {
+    transform: translate(0, 0) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0.2);
+    opacity: 0;
+  }
+}
+.duel-pop {
+  animation: duel-pop 0.7s cubic-bezier(0.3, 1.7, 0.5, 1) both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-pop {
+  from {
+    transform: scale(0.2) translateY(20px);
+    opacity: 0;
+  }
+}
+.duel-float-up {
+  animation: duel-float-up 1.6s ease-out both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-float-up {
+  0% {
+    transform: translateY(10px) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(0) scale(1.15);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-36px) scale(1);
+    opacity: 0;
+  }
+}
+.duel-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--fx, 50%) 55%, rgba(255, 200, 120, 0.55), transparent 55%);
+  opacity: 0;
+  animation: duel-flash 0.6s ease-out both;
+  animation-delay: var(--delay, 0.95s);
+}
+@keyframes duel-flash {
+  15% {
+    opacity: 1;
+  }
+}
+
+/* ── Chain ───────────────────────────────────────────────────────────── */
+.chain-link {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+.chain-link.new {
+  animation: chain-drop 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+@keyframes chain-drop {
+  0% {
+    transform: translateY(-60px) rotate(-40deg) scale(0.6);
+    opacity: 0;
+  }
+  55% {
+    transform: translateY(4px) rotate(10deg) scale(1.05);
+    opacity: 1;
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
+}
+.chain-hot {
+  animation: chain-glow 1.4s ease-in-out infinite alternate;
+}
+@keyframes chain-glow {
+  from {
+    filter: drop-shadow(0 0 2px var(--c)) brightness(1);
+  }
+  to {
+    filter: drop-shadow(0 0 10px var(--c)) brightness(1.25);
+  }
+}
+.chain-shard {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: chain-shard 1.1s cubic-bezier(0.2, 0.7, 0.4, 1) both;
+}
+@keyframes chain-shard {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
+    opacity: 0;
+  }
+}
+.chain-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.14) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: chain-shimmer 2.2s linear infinite;
+}
+@keyframes chain-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+.chain-medal {
+  animation: chain-spin 9s linear infinite;
+}
+@keyframes chain-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Faza ────────────────────────────────────────────────────────────── */
+.faza-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(rgba(250, 204, 21, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(250, 204, 21, 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse at 50% 60%, #000 30%, transparent 75%);
+  animation: faza-grid 2.5s linear infinite;
+}
+@keyframes faza-grid {
+  to {
+    background-position: 0 34px;
+  }
+}
+.faza-runner {
+  transition: inset-inline-start 0.45s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.faza-orb {
+  animation: faza-orb 0.5s ease-in-out infinite alternate;
+}
+@keyframes faza-orb {
+  to {
+    transform: scale(1.18);
+    filter: brightness(1.4);
+  }
+}
+.faza-trail {
+  animation: faza-trail 0.8s linear infinite;
+  background-size: 40px 100%;
+}
+@keyframes faza-trail {
+  to {
+    background-position: -40px 0;
+  }
+}
+.faza-bolt {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: faza-bolt 0.9s ease-out both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes faza-bolt {
+  20% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+.faza-charge {
+  animation: faza-charge 1.2s ease-in-out infinite;
+}
+@keyframes faza-charge {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(250, 204, 21, 0);
+  }
+}
+
+/* ── Victory ─────────────────────────────────────────────────────────── */
+.duel-victory {
+  animation: duel-fade 0.8s ease both;
+}
+@keyframes duel-fade {
+  from {
+    opacity: 0;
+  }
+}
+.duel-camera {
+  animation: duel-camera 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes duel-camera {
+  0% {
+    transform: scale(1.55) translateY(14%);
+    filter: blur(3px) brightness(0.5);
+  }
+  40% {
+    filter: none;
+  }
+  100% {
+    transform: none;
+  }
+}
+.duel-rays {
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  background: repeating-conic-gradient(from 0deg, var(--ray, rgba(247, 201, 72, 0.16)) 0deg 7deg, transparent 7deg 20deg);
+  mask-image: radial-gradient(circle, #000 15%, transparent 60%);
+  animation: chain-spin 24s linear infinite;
+}
+.duel-firework {
+  position: absolute;
+  pointer-events: none;
+}
+.duel-firework i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: 0 0 12px var(--c);
+  opacity: 0;
+  animation: duel-spark 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  animation-delay: var(--delay, 0s);
+}
+.duel-podium {
+  transform-origin: 50% 100%;
+  animation: duel-podium 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes duel-podium {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+.duel-title-shine {
+  background: linear-gradient(100deg, #f7c948 20%, #fff6d5 45%, #ff9f43 60%, #f7c948 80%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: chain-shimmer 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .duel-cloud,
+  .duel-ember,
+  .duel-stars,
+  .faza-grid,
+  .duel-rays,
+  .duel-firework i,
+  .chain-medal,
+  .castle-flag,
+  .castle-smoke {
+    animation: none !important;
+  }
+}
