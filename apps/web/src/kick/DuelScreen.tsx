@@ -14,6 +14,13 @@ export function DuelScreen() {
   const [now, setNow] = useState(() => Date.now());
   const [error, setError] = useState('');
   useWakeLock(true);
+  // The broadcast sizes are for a 1080p OBS source; a phone or a small window gets the compact layout.
+  const [wide, setWide] = useState(() => window.innerWidth >= 900);
+  useEffect(() => {
+    const on = () => setWide(window.innerWidth >= 900);
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
   useEffect(() => {
     if (!SYNC_CODE_RE.test(code)) return setError('الرابط ناقص الكود — انسخه من صفحة التحكم');
     const sock: Socket<DuelServerToClientEvents, DuelClientToServerEvents> = io(`${SERVER_URL}/duel-sync`);
@@ -35,7 +42,7 @@ export function DuelScreen() {
       <Background3D />
       <div className="relative grid min-h-[calc(100dvh-3rem)] place-items-center">
         {s ? (
-          <DuelArena s={s} now={now - offset} big />
+          <DuelArena s={s} now={now - offset} big={wide} sound />
         ) : (
           <div className="grid min-h-[80dvh] place-items-center text-center">
             <div>
