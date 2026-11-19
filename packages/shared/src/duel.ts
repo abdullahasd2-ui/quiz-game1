@@ -49,6 +49,10 @@ export type DuelQuestion = { text: string; options: string[]; correctIndex: numb
 
 export type DuelPlayer = { team: DuelTeam; name: string; score: number };
 
+/** A team's totals over the game: answers sent, right ones, questions where its chat was the fastest, best share. */
+export type DuelTeamStats = { answered: number; right: number; stars: number; best: number; questions: number };
+const noStats = (): DuelTeamStats => ({ answered: 0, right: 0, stars: 0, best: 0, questions: 0 });
+
 export type DuelRoundResult = {
   /** Share (0–100) of each team's players who answered right (the chain: of those who voted). */
   pct: Record<DuelTeam, number>;
@@ -101,6 +105,8 @@ export type DuelState = {
    * (the team of the captain the streamer picks from the chat); «دخول» puts them on the smaller team.
    */
   single?: boolean;
+  /** Each team's running totals for its stats board. */
+  stats?: Record<DuelTeam, DuelTeamStats>;
   /** «بث واحد»: the red team's captain (one of the chat), picked by the streamer in the lobby. */
   captain?: string | null;
 };
@@ -115,6 +121,7 @@ export function newDuel(channels: Record<DuelTeam, string>, settings: DuelSettin
   return {
     single,
     captain: null,
+    stats: { a: noStats(), b: noStats() },
     session,
     phase: 'lobby',
     settings,
@@ -252,7 +259,15 @@ function endRound(s: DuelState, now: number, raceWinner?: DuelTeam): DuelState {
   const share = (t: DuelTeam) => (size[t] ? Math.round((right[t] / size[t]) * 100) : 0);
   const pct = { a: share('a'), b: share('b') };
   const res: DuelRoundResult = { pct, right, voters, star };
-  let next: DuelState = { ...s, players, phase: 'result', rounds: s.rounds + 1 };
+  // The stats boards: only the teams that could answer this question count it.
+  const was = s.stats ?? { a: noStats(), b: noStats() };
+  const stats = { ...was };
+  for (const t of DUEL_TEAMS) {
+    if (s.settings.mode === 'chain' && r.turn !== t) continue;
+    const share = s.settings.mode === 'chain' ? (voters[t] ? Math.round((right[t] / voters[t]) * 100) : 0) : pct[t];
+    stats[t] = { answered: was[t].answered + voters[t], right: was[t].right + right[t], stars: was[t].stars + (star[t] ? 1 : 0), best: Math.max(was[t].best, share), questions: was[t].questions + 1 };
+  }
+  let next: DuelState = { ...s, players, stats, phase: 'result', rounds: s.rounds + 1 };
   const { mode } = s.settings;
 
   if (mode === 'castle') {

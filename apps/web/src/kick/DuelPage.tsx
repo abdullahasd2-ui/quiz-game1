@@ -145,7 +145,8 @@ export function DuelPage() {
   const ready = state && (state.single ? Boolean(state.captain) && teamSize(state, 'a') > 0 : state.test || (teamSize(state, 'a') > 0 && teamSize(state, 'b') > 0));
 
   return (
-    <div className="min-h-dvh bg-q-bg text-white" dir="rtl">
+    <div className="relative isolate min-h-dvh bg-q-bg text-white" dir="rtl">
+      <div className="q-aurora" aria-hidden />
       <Background3D />
       <main className="relative mx-auto max-w-5xl px-4 py-6">
         <div className="mb-5 flex items-center justify-between gap-2">

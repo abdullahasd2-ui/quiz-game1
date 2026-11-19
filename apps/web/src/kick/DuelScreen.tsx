@@ -5,6 +5,10 @@ import { SERVER_URL } from '@/lib/server';
 import { Background3D } from '@/game/fx/Background3D';
 import { useWakeLock } from '@/lib/hotkeys';
 import { DuelArena } from './DuelParts';
+import { QrCode } from '@/lib/QrCode';
+
+/** The iPhone app on the App Store: the broadcast shows its QR so viewers can get it. */
+export const APP_STORE_URL = 'https://apps.apple.com/sa/app/%D8%AC%D8%A7%D9%88%D8%A8-%D8%A3%D9%88-%D8%A8%D8%A7%D8%AF%D9%84/id6818460065?l=ar';
 
 /** «تحدي القنوات»: the page both streamers add to OBS. Shows what the host's control page publishes. */
 export function DuelScreen() {
@@ -38,7 +42,8 @@ export function DuelScreen() {
   }, [code]);
   const s = view?.state ?? null;
   return (
-    <div className="min-h-dvh overflow-hidden bg-q-bg p-6 text-white" dir="rtl">
+    <div className="relative isolate min-h-dvh overflow-hidden bg-q-bg p-6 text-white" dir="rtl">
+      <div className="q-aurora" aria-hidden />
       <Background3D />
       <div className="relative grid min-h-[calc(100dvh-3rem)] place-items-center">
         {s ? (
@@ -51,6 +56,10 @@ export function DuelScreen() {
             </div>
           </div>
         )}
+      </div>
+      {/* The app's QR, always in the corner (small, out of the game's way). */}
+      <div className="fixed bottom-4 left-4 z-20 rounded-2xl border border-white/15 bg-black/60 p-2 backdrop-blur">
+        <QrCode text={APP_STORE_URL} label="📱 حمّل تطبيق جاوب أو بادل" className={wide ? 'w-32' : 'w-20'} />
       </div>
     </div>
   );

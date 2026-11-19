@@ -7,6 +7,7 @@ import { FazaWorld } from './duel/FazaWorld';
 import { useDuelSounds } from './duel/useDuelSounds';
 import { teamLabel } from './duel/common';
 import { Victory } from './duel/Victory';
+import { TeamBoard } from './duel/TeamBoard';
 import './duel/duel.css';
 
 /** Each mode's frame for the question card: stone and gold for the castle, steel for the chain, electric for the faza. */
@@ -38,8 +39,8 @@ export function DuelArena({ s, now, big = false, sound = false }: { s: DuelState
       </div>
     );
   }
-  return (
-    <div className={cn('mx-auto flex w-full flex-col gap-4', big ? 'max-w-[1500px]' : 'max-w-4xl')}>
+  const main = (
+    <div className={cn('mx-auto flex w-full min-w-0 flex-col gap-4', big ? 'max-w-[1500px]' : 'max-w-4xl')}>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <TeamCard s={s} t="a" big={big} />
         <div className="text-center">
@@ -57,6 +58,22 @@ export function DuelArena({ s, now, big = false, sound = false }: { s: DuelState
 
       {s.phase === 'lobby' && <JoinHint s={s} big={big} />}
       {(s.phase === 'question' || s.phase === 'result') && r && <QuestionCard s={s} now={now} big={big} />}
+      {/* The host's page: the two boards under the game. */}
+      {!big && (
+        <div className="grid grid-cols-2 gap-3">
+          <TeamBoard s={s} t="a" big={false} />
+          <TeamBoard s={s} t="b" big={false} />
+        </div>
+      )}
+    </div>
+  );
+  if (!big) return main;
+  // The broadcast: each team's board on its own side (blue on the right, red on the left).
+  return (
+    <div className="mx-auto grid w-full max-w-[1880px] grid-cols-[minmax(0,270px)_minmax(0,1fr)_minmax(0,270px)] items-start gap-5">
+      <TeamBoard s={s} t="a" big />
+      {main}
+      <TeamBoard s={s} t="b" big />
     </div>
   );
 }
