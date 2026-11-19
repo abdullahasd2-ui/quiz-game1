@@ -769,6 +769,28 @@ export function KickQuizPage() {
                 <QuizHowToModal open={modeHow} onClose={() => setModeHow(false)} forStreamer variant={variant} pack={Boolean(pack)} title={`📖 طريقة لعب «${streamLabels(variant).title}»`} />
               </div>
 
+              {/* «تحدي القنوات» is its own game (its own page), so it sits apart from the modes above. */}
+              <div className="relative">
+                <div className="mb-2 flex items-center gap-2 text-xs font-black text-white/50">
+                  <span className="h-px flex-1 bg-white/10" />
+                  أو العب ضد شات ثاني
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+                <a
+                  href="/kick/duel"
+                  className="group flex items-center gap-3 rounded-2xl border-2 border-white/15 bg-linear-to-l from-sky-600/30 via-q-panel to-rose-600/30 p-3 shadow-[0_10px_30px_-12px_rgba(168,85,247,0.7)] transition-transform hover:-translate-y-0.5"
+                >
+                  <span className="text-4xl transition-transform group-hover:scale-110">⚔️</span>
+                  <span className="flex-1 text-start leading-tight">
+                    <span className="block text-lg font-black text-white">
+                      تحدي القنوات <span className="ms-1 rounded-full bg-q-gold px-1.5 text-[10px] text-black">جديد</span>
+                    </span>
+                    <span className="mt-0.5 block text-[11px] font-bold text-white/65">بثين ضد بعض، أو شاتك ينقسم فريقين · 🏰 القلعة · ⚡ الفزعة · ⛓️ السلسلة</span>
+                  </span>
+                  <span className="text-white/50 transition-transform group-hover:-translate-x-1">←</span>
+                </a>
+              </div>
+
               {pack ? null : variant === 'list' ? (
                 <div className="space-y-4">
                   <div>
