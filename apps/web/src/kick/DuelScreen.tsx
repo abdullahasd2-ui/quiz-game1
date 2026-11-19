@@ -58,9 +58,11 @@ export function DuelScreen() {
         )}
       </div>
       {/* The app's QR, always in the corner (small, out of the game's way). */}
-      <div className="fixed bottom-4 left-4 z-20 rounded-2xl border border-white/15 bg-black/60 p-2 backdrop-blur">
-        <QrCode text={APP_STORE_URL} label="📱 حمّل تطبيق جاوب أو بادل" className={wide ? 'w-32' : 'w-20'} />
-      </div>
+      {wide && (
+        <div className="fixed bottom-4 left-4 z-20 rounded-2xl border border-white/15 bg-black/60 p-2 backdrop-blur">
+          <QrCode text={APP_STORE_URL} label="📱 حمّل تطبيق جاوب أو بادل" className="w-32" />
+        </div>
+      )}
     </div>
   );
 }

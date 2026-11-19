@@ -7,6 +7,7 @@ import { teamSize, type DuelState, type DuelTeam } from '@quiz/shared';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { HEX, sparks, Sky, teamLabel } from './common';
+import { Castle3D, use3D } from './Castle3D';
 
 /** 0 intact · 1 cracked · 2 a tower top falls, fire · 3 both tops, smoke · 4 fallen. */
 export function damageLevel(hp: number, max: number) {
@@ -204,7 +205,47 @@ export function CastleWorld({ s, big }: { s: DuelState; big: boolean }) {
   }, []);
 
   const torches = (t: DuelTeam) => Math.min(5, Math.floor(((max - s.hp[t === 'a' ? 'b' : 'a']) / max) * 5.01));
-  const h = big ? 'h-[min(46vh,440px)]' : 'h-56 sm:h-64';
+  const three = use3D();
+  const h = big ? (three ? 'h-[min(52vh,520px)]' : 'h-[min(46vh,440px)]') : 'h-56 sm:h-64';
+  const now = Date.now();
+  if (three) {
+    // The 3D battlefield; life bars and damage numbers stay as sharp HTML on top of it.
+    return (
+      <div className={cn('duel-stage border border-white/10 bg-[#0b0a26]', h)}>
+        <Castle3D
+          big={big}
+          input={{
+            hp: s.hp,
+            max,
+            built: { a: buildLevel(sizes.a, playing), b: buildLevel(sizes.b, playing) },
+            torches: { a: torches('a'), b: torches('b') },
+            gateOpen: { a: now < gate.a, b: now < gate.b },
+            alert: s.phase === 'question',
+            heat,
+            hitKey: res ? resultKey : null,
+            dealt: { a: res?.damage?.a ?? 0, b: res?.damage?.b ?? 0 },
+            winner: null,
+          }}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_55%,rgba(5,4,18,0.65))]" />
+        {(['a', 'b'] as const).map((t) => {
+          const taken = res?.damage?.[t === 'a' ? 'b' : 'a'] ?? 0;
+          return (
+            <div key={t} className={cn('pointer-events-none absolute bottom-[3%] h-full w-[44%]', t === 'a' ? 'right-[3%]' : 'left-[3%]')}>
+              {taken > 0 && (
+                <div key={resultKey} className={cn('absolute inset-x-0 top-[12%] text-center font-black text-q-red drop-shadow-[0_3px_0_#000]', big ? 'text-6xl' : 'text-3xl')}>
+                  <span className="duel-float-up inline-block" dir="ltr" style={{ ['--delay' as string]: '0.9s' }}>
+                    💥 −{taken}
+                  </span>
+                </div>
+              )}
+              <LifeBar t={t} hp={s.hp[t]} max={max} big={big} label={teamLabel(s, t)} />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className={cn('duel-stage border border-white/10', h)} style={{ ['--heat' as string]: heat, ['--dusk' as string]: dusk }}>

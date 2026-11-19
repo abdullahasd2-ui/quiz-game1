@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { Confetti } from '@/game/fx/Confetti';
 import { cn } from '@/lib/utils';
 import { Castle } from './CastleWorld';
+import { Castle3D, use3D } from './Castle3D';
 import { HEX, sparks, teamLabel } from './common';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -40,13 +41,40 @@ export function Victory({ s, big }: { s: DuelState; big: boolean }) {
   const color = w ? HEX[w].light : '#f7c948';
   const mode = s.settings.mode;
   const headline = !w ? 'تعادل الشاتين!' : mode === 'castle' ? (s.hp[w === 'a' ? 'b' : 'a'] <= 0 ? 'سقطت قلعة الخصم!' : 'انتهى الحصار!') : mode === 'faza' ? 'فزعة الانتصار!' : 'السلسلة الذهبية!';
+  const three = use3D() && mode === 'castle';
   return (
     <div className={cn('duel-victory duel-stage relative border-2 bg-[#07061a] text-center', big ? 'p-8' : 'p-4')} style={{ borderColor: `${color}88`, boxShadow: `0 0 80px -20px ${color}` }}>
-      <div className="duel-rays" style={{ ['--ray' as string]: `${color}2a` }} />
-      <Fireworks count={big ? 7 : 4} colors={[color, '#f7c948', '#ff9f43', '#fff']} />
+      {three ? (
+        <>
+          {/* The 3D battlefield is the scene itself: the camera circles the winner while its gate opens in gold light. */}
+          <Castle3D
+            big={big}
+            victory
+            className="absolute inset-0 -z-10 h-full w-full"
+            input={{
+              hp: s.hp,
+              max: s.settings.castleHp,
+              built: { a: 4, b: 4 },
+              torches: { a: w === 'a' ? 5 : 2, b: w === 'b' ? 5 : 2 },
+              gateOpen: { a: w === 'a', b: w === 'b' },
+              alert: false,
+              heat: 0,
+              hitKey: null,
+              dealt: { a: 0, b: 0 },
+              winner: s.winner === 'draw' ? 'draw' : w,
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(7,6,26,0.55),transparent_30%,transparent_45%,rgba(7,6,26,0.85)_75%)]" />
+        </>
+      ) : (
+        <>
+          <div className="duel-rays" style={{ ['--ray' as string]: `${color}2a` }} />
+          <Fireworks count={big ? 7 : 4} colors={[color, '#f7c948', '#ff9f43', '#fff']} />
+        </>
+      )}
       {w && <Confetti big={big} />}
 
-      <div className="duel-camera relative">
+      <div className={cn('relative', !three && 'duel-camera')}>
         <div className={cn('font-black tracking-widest text-white/60', big ? 'text-2xl' : 'text-xs')}>{headline}</div>
         <div className={cn('q-display duel-title-shine leading-tight', big ? 'text-8xl' : 'text-4xl')}>
           {w ? (
@@ -58,7 +86,8 @@ export function Victory({ s, big }: { s: DuelState; big: boolean }) {
           )}
         </div>
 
-        {mode === 'castle' && (
+        {three && <div className={big ? 'h-[min(40vh,420px)]' : 'h-44'} />}
+        {mode === 'castle' && !three && (
           <div className={cn('relative mx-auto mt-2 grid grid-cols-[1fr_1.6fr_1fr] items-end', big ? 'h-80 max-w-5xl' : 'h-40')}>
             {/* Loser (small, falling) · winner (big, gate wide open, gold) · loser */}
             {w ? (

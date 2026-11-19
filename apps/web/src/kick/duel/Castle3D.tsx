@@ -1,0 +1,59 @@
+// The React side of the 3D castle: loads three.js only when it is needed (its own chunk), keeps one scene per
+// mounted stage, and feeds it the game on every change. Without WebGL (or with reduced motion) it returns null,
+// and the caller shows the drawn (SVG) castles instead.
+import { useEffect, useRef, useState } from 'react';
+import type { CastleScene, CastleSceneInput } from './three/scene';
+
+let support: boolean | null = null;
+export function use3D() {
+  const [ok, setOk] = useState<boolean | null>(support);
+  useEffect(() => {
+    if (support !== null) return;
+    void import('./three/scene').then((m) => {
+      support = m.canRender3D();
+      setOk(support);
+    });
+  }, []);
+  return ok;
+}
+
+export function Castle3D({ input, big, victory = false, className }: { input: CastleSceneInput; big: boolean; victory?: boolean; className?: string }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const scene = useRef<CastleScene | null>(null);
+  const latest = useRef(input);
+  latest.current = input;
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let gone = false;
+    let ro: ResizeObserver | null = null;
+    void import('./three/scene').then(({ CastleScene }) => {
+      if (gone || !canvas.current) return;
+      try {
+        const s = new CastleScene(canvas.current, { quality: big ? 'high' : 'low', victory });
+        scene.current = s;
+        s.update(latest.current);
+        const el = canvas.current;
+        const fit = () => s.resize(el.clientWidth, el.clientHeight);
+        fit();
+        ro = new ResizeObserver(fit);
+        ro.observe(el);
+      } catch {
+        setFailed(true);
+      }
+    });
+    return () => {
+      gone = true;
+      ro?.disconnect();
+      scene.current?.dispose();
+      scene.current = null;
+    };
+  }, [big, victory]);
+
+  useEffect(() => {
+    scene.current?.update(input);
+  }, [input]);
+
+  if (failed) return null;
+  return <canvas ref={canvas} className={className ?? 'absolute inset-0 h-full w-full'} aria-hidden />;
+}
