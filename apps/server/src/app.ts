@@ -22,6 +22,7 @@ import { KickChatHub, resolveChatroomFromKick } from './kick/chat';
 import { kickPusher } from './kick/pusher';
 import { kickSlugs } from '@quiz/shared';
 import { attachKickSync } from './kick/sync';
+import { attachDuelSync } from './kick/duelSync';
 import { createStreamRecorder } from './kick/streamStats';
 import { db } from './db/client';
 import { kickLinks } from './db/schema';
@@ -51,6 +52,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   attachKickRelay(game.io, kickHub);
   const recordStream = createStreamRecorder((err) => app.log.warn({ err }, 'kick stream stats'));
   const kickSync = attachKickSync(game.io, { onState: (st) => void recordStream(st) });
+  attachDuelSync(game.io);
   app.addHook('onClose', async () => kickHub.closeAll());
   await app.register(kickQuestionRoutes);
   // The chat room id of a Kick channel, for the stream page: Kick lets the server look a channel up but often refuses

@@ -54,6 +54,7 @@ import { LetterGrid, ListLive, ListResult, UnknownAnswers, usedLetters } from '.
 import { QuizHowToButton, QuizHowToModal } from './QuizHowTo';
 import { ModeHowPill } from '@/game/screens/HomeScreen';
 import { VideoGuideButton } from './VideoGuide';
+import { findChatroom } from './useKickChat';
 import { HotBadge, usePopular } from '@/game/popular';
 import { StreamQuick } from '@/quick/StreamQuick';
 import { useCardSpotlight } from '@/lib/spotlight';
@@ -107,35 +108,6 @@ function ControlDock({ phase, counter, joined, answered, left, go }: { phase: st
       )}
     </div>
   );
-}
-
-/** The channel's chat room, looked up from the streamer's browser (each spelling of the name, both Kick endpoints). */
-async function findChatroom(slugs: string[]): Promise<{ slug: string; id: number } | null> {
-  for (const slug of slugs) {
-    for (const path of ['api/v2/channels', 'api/v1/channels']) {
-      try {
-        const res = await fetch(`https://kick.com/${path}/${encodeURIComponent(slug)}`, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(6000) });
-        if (!res.ok) continue;
-        const id = ((await res.json()) as { chatroom?: { id?: number } }).chatroom?.id;
-        if (Number.isInteger(id)) return { slug, id: id! };
-      } catch {
-        // Blocked (Kick's API does not answer other sites), offline or not found: try the next way.
-      }
-    }
-  }
-  // Kick's API refuses other websites in a browser, but answers our server: it only looks the number up, and the
-  // browser still opens the chat itself.
-  for (const slug of slugs) {
-    try {
-      const res = await fetch(`${SERVER_URL}/api/kick/chatroom/${encodeURIComponent(slug)}`, { signal: AbortSignal.timeout(12000) });
-      if (!res.ok) continue;
-      const { id } = (await res.json()) as { id?: number };
-      if (Number.isInteger(id)) return { slug, id: id! };
-    } catch {
-      // Try the next spelling.
-    }
-  }
-  return null;
 }
 
 const LINK_KEY = 'jab:kick:linked';
@@ -599,6 +571,16 @@ export function KickQuizPage() {
             <QuizHowToButton forStreamer fancy />
             <VideoGuideButton />
           </div>
+          <a
+            href="/kick/duel"
+            className="mb-5 flex items-center justify-center gap-3 rounded-2xl border-2 border-white/15 bg-linear-to-l from-sky-600/30 via-q-panel to-rose-600/30 px-4 py-3 text-center shadow-[0_10px_30px_-12px_rgba(168,85,247,0.7)] transition-transform hover:-translate-y-0.5"
+          >
+            <span className="text-3xl">⚔️</span>
+            <span className="text-start leading-tight">
+              <span className="block text-base font-black text-white">تحدي القنوات <span className="ms-1 rounded-full bg-q-gold px-1.5 text-[10px] text-black">جديد</span></span>
+              <span className="block text-[11px] font-bold text-white/65">ستريمرين، وكل شات فريق: القلعة · الفزعة · السلسلة</span>
+            </span>
+          </a>
           <div className="q-card">
             {canLink && !linked && (
               <a href={`${SERVER_URL}/api/kick/login?next=quiz`} className="q-btn-gold mb-3 block text-center">
