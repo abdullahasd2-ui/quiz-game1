@@ -76,7 +76,7 @@ export function QuestionScreen({ view, deadline }: { view: RoomView; deadline: n
         </div>
         <div className="mb-2 inline-block rounded-lg border border-q-cyan/30 bg-q-cyan/15 px-2.5 py-0.5 text-xs font-bold text-q-cyan">{q.points} نقطة</div>
         <div className="text-[17px] leading-relaxed font-bold">{q.text}</div>
-        <QuestionImage url={q.imageUrl} type={q.type} revealed={view.phase === 'result'} />
+        <QuestionImage url={(view.phase === 'result' && view.result?.revealUrl) || q.imageUrl} type={q.type} revealed={view.phase === 'result'} />
       </div>
 
       {view.phase === 'action' &&
@@ -220,7 +220,7 @@ export function TvQuestionScreen({ view, deadline }: { view: RoomView; deadline:
           <span className="rounded-full bg-q-cyan/15 px-4 py-1 text-base font-black text-q-cyan sm:text-lg">{q.points} نقطة</span>
         </div>
         <div className="text-2xl leading-normal font-black sm:text-4xl lg:text-5xl">{q.text}</div>
-        <QuestionImage url={q.imageUrl} type={q.type} revealed={view.phase === 'result'} large />
+        <QuestionImage url={(view.phase === 'result' && view.result?.revealUrl) || q.imageUrl} type={q.type} revealed={view.phase === 'result'} large />
         <div className="mt-4 grid grid-cols-2 gap-2.5">
           {q.options.map((opt, i) => (
             <div key={i} className={cn('flex items-center gap-3 rounded-2xl border-2 bg-q-bg/80 p-3.5 text-start text-lg font-black transition-all sm:p-5 sm:text-2xl', optionTone(view, i, null))}>

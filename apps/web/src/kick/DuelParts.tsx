@@ -140,7 +140,8 @@ function QuestionCard({ s, now, big }: { s: DuelState; now: number; big: boolean
           <div className="h-full rounded-full bg-linear-to-l from-q-orange to-q-gold transition-[width] duration-500" style={{ width: `${frac * 100}%` }} />
         </div>
       )}
-      {q.imageUrl && <QuestionImage url={q.imageUrl} type={(q.type ?? 'image') as QuestionType} revealed={Boolean(res)} large={big} />}
+      {/* At the result: the blur clears and «zoom» / «reveal» questions swap to the full picture. */}
+      {(q.imageUrl || (res && q.revealUrl)) && <QuestionImage url={res && q.revealUrl ? q.revealUrl : q.imageUrl!} type={(q.type ?? 'image') as QuestionType} revealed={Boolean(res)} large={big} />}
       <div className={cn('mb-3 text-center font-black leading-snug', big ? 'text-5xl' : 'text-xl')}>{q.text}</div>
       <div className="grid grid-cols-2 gap-2">
         {q.options.map((o, i) => (
