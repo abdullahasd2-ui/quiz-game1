@@ -320,7 +320,8 @@ export function duelTop(s: DuelState, team: DuelTeam, n = 3): DuelPlayer[] {
 /** What the broadcast may see: during the question, no right answer and no one's pick. */
 export function duelPublicView(s: DuelState): DuelState {
   if (s.phase !== 'question' || !s.round) return s;
-  const { correctIndex: _c, ...q } = s.round.question;
+  // The full picture of a «zoom» / «reveal» question stays hidden until the result too.
+  const { correctIndex: _c, revealUrl: _r, ...q } = s.round.question;
   const answers = Object.fromEntries(Object.keys(s.round.answers).map((k) => [k, { pick: -1, at: 0 }]));
   return { ...s, round: { ...s.round, question: { ...q, correctIndex: -1 }, answers } };
 }

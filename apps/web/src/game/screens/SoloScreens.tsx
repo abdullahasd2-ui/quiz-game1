@@ -366,7 +366,7 @@ function SoloQuestion({ view, deadline }: { view: SoloView; deadline: number | n
         </div>
         <div className="mb-2 inline-block rounded-lg border border-q-cyan/30 bg-q-cyan/15 px-2.5 py-0.5 text-xs font-bold text-q-cyan">{q.points} نقطة</div>
         <div className={cn('leading-relaxed font-bold', isTv ? 'text-2xl sm:text-4xl' : 'text-[17px]')}>{q.text}</div>
-        <QuestionImage url={q.imageUrl} type={q.type} revealed={view.phase === 'result'} large={isTv} />
+        <QuestionImage url={(view.phase === 'result' && view.result?.revealUrl) || q.imageUrl} type={q.type} revealed={view.phase === 'result'} large={isTv} />
       </div>
 
       {view.phase === 'action' &&

@@ -153,3 +153,14 @@ describe('team stats boards', () => {
     expect(s.stats?.b).toEqual({ answered: 1, right: 1, stars: 1, best: 100, questions: 1 });
   });
 });
+
+describe('pictures on the broadcast', () => {
+  it('the full picture of a zoom question is hidden until the result', () => {
+    let s = newDuel({ a: 'x', b: 'y' }, DUEL_DEFAULTS, 's', true);
+    s = duelDeal(s, { text: 'q', options: ['a', 'b', 'c', 'd'], correctIndex: 0, points: 100, type: 'zoom', imageUrl: '/u/teaser.webp', revealUrl: '/u/full.webp' }, 0);
+    expect(duelPublicView(s).round?.question.revealUrl).toBeUndefined();
+    expect(duelPublicView(s).round?.question.imageUrl).toBe('/u/teaser.webp');
+    s = duelTick(s, s.round!.endsAt);
+    expect(duelPublicView(s).round?.question.revealUrl).toBe('/u/full.webp');
+  });
+});
