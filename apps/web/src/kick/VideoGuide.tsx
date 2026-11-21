@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { serverUrl } from '@/lib/server';
 
@@ -13,8 +14,6 @@ type Props = {
   src?: string;
   title?: string;
   caption?: string;
-  /** Show the App Store QR under the video. */
-  appQr?: boolean;
 };
 
 /** «🎬 شاهد الشرح»: opens a video in a window over the page (Esc or a tap outside closes it). */
@@ -24,7 +23,6 @@ export function VideoGuideButton({
   src = GUIDE_VIDEO,
   title = '🎬 شرح اللعب في البث',
   caption = 'كيف تبدأ البث وتلعب «جاوب أو بادل» مع الشات. والتفاصيل كاملة في «طريقة اللعب».',
-  appQr = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -43,12 +41,20 @@ export function VideoGuideButton({
       >
         {label}
       </button>
-      {open && (
-        <div className="fixed inset-0 z-[95] grid place-items-center bg-black/80 p-3 backdrop-blur-sm" onClick={() => setOpen(false)} role="dialog" aria-modal aria-label={title}>
+      {open && createPortal(
+        // On <body> (above every page layer and corner button), inside the iPhone/Android safe areas.
+        <div
+          className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-black/85 px-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-[calc(env(safe-area-inset-bottom)+0.75rem)] backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+          role="dialog"
+          aria-modal
+          aria-label={title}
+          dir="rtl"
+        >
           <div className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-2 flex items-center justify-between text-sm">
               <span className="font-black text-q-gold">{title}</span>
-              <button type="button" onClick={() => setOpen(false)} className="rounded-full px-3 py-1 text-white/70 hover:bg-white/10 hover:text-white" aria-label="إغلاق">
+              <button type="button" onClick={() => setOpen(false)} className="min-h-11 shrink-0 rounded-full border border-white/20 bg-white/10 px-4 font-black text-white hover:bg-white/20" aria-label="إغلاق">
                 ✕ إغلاق
               </button>
             </div>
@@ -60,23 +66,14 @@ export function VideoGuideButton({
               autoPlay
               playsInline
               preload="metadata"
-              className="aspect-video w-full rounded-2xl border border-white/10 bg-black shadow-2xl"
+              className="aspect-video max-h-[calc(100dvh-9rem)] w-full rounded-2xl border border-white/10 bg-black shadow-2xl"
             >
               متصفحك ما يعرض الفيديو.
             </video>
             <p className="mt-2 text-center text-xs text-white/60">{caption}</p>
-            {appQr && (
-              <div className="mx-auto mt-3 flex w-fit items-center gap-3 rounded-2xl border border-white/15 bg-q-bg/85 p-2.5 pe-4">
-                <img src={serverUrl('/app-qr.svg')} alt="رمز QR لتحميل التطبيق من App Store" className="size-20 rounded-lg bg-white p-1.5" />
-                <div>
-                  <div className="text-sm font-black text-white/90">📱 حمّل التطبيق</div>
-                  <div className="text-xs font-bold text-white/50">امسح الرمز · App Store</div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }

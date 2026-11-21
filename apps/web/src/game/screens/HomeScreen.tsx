@@ -338,7 +338,6 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
             src={GAME_VIDEO}
             title="🎬 جاوب أو بادل في 90 ثانية"
             caption="كيف تنشئ غرفة، وتختار الفئات، وتجاوب أو تبادل مع خصمك. والتفاصيل كاملة في «طريقة اللعب»."
-            appQr
           />
           <button type="button" className="q-chip" onClick={() => (setTab('join'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             🔗 عندي كود
