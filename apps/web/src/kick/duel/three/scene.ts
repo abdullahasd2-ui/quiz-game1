@@ -6,9 +6,9 @@
 //   the damage a team dealt → its torches of glory light up; the closer a castle is to falling → the redder the sky;
 //   the end → the camera circles the winner, its gate opens wide in gold light, fireworks; the loser's castle sinks in dust.
 import * as THREE from 'three';
-import { buildCastle, waveBanners, type CastleParts } from './castle';
-import { groundTexture } from './textures';
+import { aimChains, BRIDGE_UP, buildCastle, waveBanners, waveDrapes, type CastleParts } from './castle';
 import { Particles, softTexture } from './particles';
+import { World } from './world';
 
 export type Side = 'a' | 'b';
 export type CastleSceneInput = {
@@ -79,6 +79,7 @@ export class CastleScene {
   private readonly still: boolean;
   private readonly glowTex = softTexture(0.02);
   private readonly quality: 'high' | 'low';
+  private readonly env: World;
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
@@ -95,7 +96,7 @@ export class CastleScene {
     r.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const s = this.scene;
-    s.fog = new THREE.FogExp2('#221a52', 0.013);
+    s.fog = new THREE.FogExp2('#221a52', 0.0115);
 
     // Sky dome, stars and the moon.
     this.sky = new THREE.ShaderMaterial({ vertexShader: SKY_VERT, fragmentShader: SKY_FRAG, uniforms: { uHeat: { value: 0 }, uWin: { value: 0 } }, side: THREE.BackSide, depthWrite: false, fog: false });
@@ -135,22 +136,7 @@ export class CastleScene {
     s.add(moon);
     s.add(this.flash);
 
-    // Ground: a wide hill and distant mountains.
-    const gtex = groundTexture();
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(260, 260, 90, 90), new THREE.MeshStandardMaterial({ map: gtex, roughness: 1, color: '#c4c0ee' }));
-    ground.rotation.x = -Math.PI / 2;
-    const gp = ground.geometry.attributes.position as THREE.BufferAttribute;
-    for (let i = 0; i < gp.count; i++) {
-      const x = gp.getX(i);
-      const y = gp.getY(i);
-      const d = Math.hypot(x, y);
-      // Flat where the castles stand, rolling further out.
-      const flat = Math.min(1, Math.max(0, (d - 18) / 30));
-      gp.setZ(i, (Math.sin(x * 0.08) * Math.cos(y * 0.07) * 2.2 + Math.sin(x * 0.21 + y * 0.13) * 0.8) * flat - Math.max(0, d - 26) * 0.04);
-    }
-    ground.geometry.computeVertexNormals();
-    ground.receiveShadow = true;
-    s.add(ground);
+    // Distant mountains (the ground and everything on it is the World, added with the castles).
     const mountainMat = new THREE.MeshStandardMaterial({ color: '#211a4a', roughness: 1, flatShading: true });
     for (let i = 0; i < 14; i++) {
       const h = 9 + Math.random() * 13;
@@ -168,6 +154,11 @@ export class CastleScene {
     this.castles.b.root.position.set(-10.5, 0, 0);
     this.castles.b.root.rotation.y = 0.42;
     s.add(this.castles.a.root, this.castles.b.root);
+    this.env = new World(
+      (['a', 'b'] as const).map((t) => ({ position: this.castles[t].root.position.clone(), rotY: this.castles[t].root.rotation.y })),
+      opts.quality,
+    );
+    s.add(this.env.group);
     this.torchLight = { a: new THREE.PointLight('#ff9a3c', 0, 10, 2), b: new THREE.PointLight('#ff9a3c', 0, 10, 2) };
     for (const t of ['a', 'b'] as const) {
       this.torchLight[t].position.set(0, 3.6, 4.2);
@@ -199,7 +190,7 @@ export class CastleScene {
     this.camera.fov = w / h < 1.2 ? 58 : w / h < 1.7 ? 46 : 38;
     this.camera.updateProjectionMatrix();
     const px = h * this.renderer.getPixelRatio() * 0.9;
-    for (const p of [this.fire, this.smoke, this.sparks, this.dust]) p.setScale(px);
+    for (const p of [this.fire, this.smoke, this.sparks, this.dust, this.env.spray, this.env.mist]) p.setScale(px);
   }
 
   update(input: CastleSceneInput) {
@@ -296,7 +287,14 @@ export class CastleScene {
       // Gate: doors swing open on their hinges, then the portcullis rises.
       const open = inp.gateOpen[side] || win === side ? 1 : 0;
       this.gate[side] = damp(this.gate[side], open, open ? 2.6 : 3.4, dt);
-      const g = ease(Math.min(1, this.gate[side]));
+      // First the drawbridge comes down on its chains (the winches turn), then the doors swing and the portcullis rises.
+      const gv = Math.min(1, this.gate[side]);
+      const b = ease(Math.min(1, gv * 1.6));
+      const g = ease(Math.max(0, Math.min(1, (gv - 0.35) / 0.65)));
+      const before = c.bridge.rotation.x;
+      c.bridge.rotation.x = -BRIDGE_UP * (1 - b);
+      for (const [k, w] of c.wheels.entries()) w.rotation.z += (c.bridge.rotation.x - before) * 6 * (k ? -1 : 1);
+      aimChains(c);
       c.doors[0].rotation.y = -g * 1.65;
       c.doors[1].rotation.y = g * 1.65;
       c.portcullis.position.y = 0.5 + Math.max(0, g * 1.25 - 0.25) * 1.6;
@@ -336,6 +334,7 @@ export class CastleScene {
         c.root.position.x = (side === 'a' ? 10.5 : -10.5) + Math.sin(this.t * 60) * 0.18 * k;
       }
       waveBanners(c.banners, this.t, inp.alert ? 1.4 : 1);
+      waveDrapes(c.drapes, this.t, inp.alert ? 1.4 : 1);
     }
 
     // Fireballs along their arc, with a trail.
@@ -401,6 +400,7 @@ export class CastleScene {
     }
 
     for (const p of [this.fire, this.smoke, this.sparks, this.dust]) p.update(dt);
+    this.env.update(this.t, dt, inp.alert ? 1 : 0);
     this.flash.intensity = damp(this.flash.intensity, 0, 7, dt);
     this.sky.uniforms.uHeat!.value = damp(this.sky.uniforms.uHeat!.value as number, inp.heat, 1, dt);
     this.sky.uniforms.uWin!.value = damp(this.sky.uniforms.uWin!.value as number, win ? 0.55 : 0, 0.7, dt);
@@ -444,7 +444,7 @@ export class CastleScene {
 
   dispose() {
     cancelAnimationFrame(this.frame);
-    for (const p of [this.fire, this.smoke, this.sparks, this.dust]) p.dispose();
+    for (const p of [this.fire, this.smoke, this.sparks, this.dust, this.env.spray, this.env.mist]) p.dispose();
     this.scene.traverse((o) => {
       const m = o as THREE.Mesh;
       m.geometry?.dispose();

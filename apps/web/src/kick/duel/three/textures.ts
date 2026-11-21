@@ -50,6 +50,34 @@ export function stoneCanvas() {
       g.fillStyle = `rgba(${rnd() > 0.5 ? '255,255,255' : '0,0,0'},${rnd() * 0.08})`;
       g.fillRect(rnd() * 512, rnd() * 512, 2, 2);
     }
+    // Chipped corners and cracks.
+    g.strokeStyle = 'rgba(0,0,0,0.35)';
+    for (let i = 0; i < 26; i++) {
+      let x = rnd() * 512;
+      let y = rnd() * 512;
+      g.lineWidth = 0.8 + rnd();
+      g.beginPath();
+      g.moveTo(x, y);
+      for (let k = 0; k < 4; k++) g.lineTo((x += rnd() * 16 - 8), (y += rnd() * 14));
+      g.stroke();
+    }
+    // Rain streaks: darker vertical grime under the joints.
+    for (let i = 0; i < 70; i++) {
+      const x = rnd() * 512;
+      const y = rnd() * 512;
+      const grad = g.createLinearGradient(0, y, 0, y + 60 + rnd() * 80);
+      grad.addColorStop(0, 'rgba(10,12,20,0.22)');
+      grad.addColorStop(1, 'rgba(10,12,20,0)');
+      g.fillStyle = grad;
+      g.fillRect(x, y, 3 + rnd() * 6, 140);
+    }
+    // Moss in a few joints.
+    for (let i = 0; i < 90; i++) {
+      g.fillStyle = `hsla(${95 + rnd() * 40}, 35%, ${22 + rnd() * 12}%, ${0.25 + rnd() * 0.3})`;
+      g.beginPath();
+      g.arc(rnd() * 512, (Math.floor(rnd() * 10) + 1) * 51.2 - 2, 2 + rnd() * 6, 0, Math.PI * 2);
+      g.fill();
+    }
   });
 }
 
@@ -112,13 +140,75 @@ export function woodTexture() {
 /** The ground: dark grass and dirt, softly noisy. */
 export function groundTexture() {
   const c = canvas(512, 512, (g, rnd) => {
-    g.fillStyle = '#2c2a46';
+    g.fillStyle = '#25303a';
     g.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 9000; i++) {
-      const l = 14 + rnd() * 16;
-      g.fillStyle = `hsla(${240 + rnd() * 50}, 25%, ${l}%, 0.5)`;
-      g.fillRect(rnd() * 512, rnd() * 512, 2 + rnd() * 3, 2 + rnd() * 3);
+    // Large soft patches: grass and bare earth.
+    for (let i = 0; i < 60; i++) {
+      const x = rnd() * 512;
+      const y = rnd() * 512;
+      const r = 30 + rnd() * 70;
+      const grad = g.createRadialGradient(x, y, 0, x, y, r);
+      const earth = rnd() > 0.65;
+      grad.addColorStop(0, earth ? 'rgba(60,48,62,0.5)' : `hsla(${150 + rnd() * 40}, 30%, ${20 + rnd() * 8}%, 0.55)`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = grad;
+      g.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    for (let i = 0; i < 14000; i++) {
+      const l = 14 + rnd() * 20;
+      g.fillStyle = `hsla(${rnd() > 0.7 ? 250 + rnd() * 30 : 140 + rnd() * 50}, 28%, ${l}%, 0.5)`;
+      g.fillRect(rnd() * 512, rnd() * 512, 1 + rnd() * 2, 2 + rnd() * 4);
     }
   }, 5);
   return texture(c, [12, 12]);
+}
+
+/** Cobblestones for the roads and the plaza: rounded stones of varied size, dark joints, a little moss. */
+export function cobbleTexture(repeat: [number, number]) {
+  const c = canvas(512, 512, (g, rnd) => {
+    g.fillStyle = '#1b1a26';
+    g.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 520; i++) {
+      const x = rnd() * 512;
+      const y = rnd() * 512;
+      const r = 9 + rnd() * 13;
+      const l = 30 + rnd() * 22;
+      for (const [dx, dy] of [[0, 0], [512, 0], [-512, 0], [0, 512], [0, -512]] as const) {
+        const grad = g.createRadialGradient(x + dx - r * 0.3, y + dy - r * 0.3, 1, x + dx, y + dy, r);
+        grad.addColorStop(0, `hsl(${235 + rnd() * 30}, 8%, ${l + 10}%)`);
+        grad.addColorStop(1, `hsl(${235 + rnd() * 30}, 8%, ${l - 12}%)`);
+        g.fillStyle = grad;
+        g.beginPath();
+        g.ellipse(x + dx, y + dy, r, r * (0.75 + rnd() * 0.25), rnd() * 3, 0, Math.PI * 2);
+        g.fill();
+      }
+    }
+    for (let i = 0; i < 160; i++) {
+      g.fillStyle = `hsla(${100 + rnd() * 30}, 35%, 22%, ${0.2 + rnd() * 0.25})`;
+      g.fillRect(rnd() * 512, rnd() * 512, 2 + rnd() * 5, 2 + rnd() * 5);
+    }
+  }, 19);
+  return { map: texture(c, repeat), bump: texture(c, repeat, false) };
+}
+
+/** Plain planks for the drawbridge deck: long boards, iron straps. */
+export function planksTexture() {
+  const c = canvas(256, 256, (g, rnd) => {
+    for (let i = 0; i < 8; i++) {
+      g.fillStyle = `hsl(26, ${35 + rnd() * 12}%, ${16 + rnd() * 9}%)`;
+      g.fillRect(0, i * 32, 256, 31);
+      for (let k = 0; k < 14; k++) {
+        g.strokeStyle = `rgba(0,0,0,${0.12 + rnd() * 0.2})`;
+        g.beginPath();
+        const y = i * 32 + rnd() * 30;
+        g.moveTo(0, y);
+        g.bezierCurveTo(90, y + rnd() * 4 - 2, 170, y + rnd() * 4 - 2, 256, y + rnd() * 3);
+        g.stroke();
+      }
+    }
+    g.fillStyle = '#26262e';
+    g.fillRect(30, 0, 12, 256);
+    g.fillRect(214, 0, 12, 256);
+  }, 23);
+  return texture(c, [1, 2]);
 }
