@@ -440,7 +440,7 @@ export class World {
     for (const z of [-2.8, 0.2, 3.2, 5.6]) for (const x of [-3.2, 3.2]) shrubSpots[1].push({ x, z, rot: rnd() * 6, s: 0.7 + rnd() * 0.3 });
     for (const [k, list] of shrubSpots.entries()) {
       const sh = shrub(300 + k, k === 1);
-      const mat = windy(new THREE.MeshStandardMaterial({ map: sh.tex, alphaTest: 0.45, side: THREE.DoubleSide, color: '#c6d6bc', roughness: 0.85, emissive: '#0c1a10', emissiveIntensity: 0.4 }), { bend: 0.12, flutter: 0.015, time, key: `shrub${k}` });
+      const mat = windy(new THREE.MeshStandardMaterial({ map: sh.tex, alphaTest: 0.45, alphaToCoverage: true, side: THREE.DoubleSide, color: '#c6d6bc', roughness: 0.85, emissive: '#0c1a10', emissiveIntensity: 0.4 }), { bend: 0.12, flutter: 0.015, time, key: `shrub${k}` });
       const im = this.instance(sh.geo, mat, list, hi);
       im.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: sh.tex, alphaTest: 0.45 });
     }
@@ -489,7 +489,7 @@ export class World {
       ivySpots.push({ x: x + Math.cos(a) * s * 0.7, z: z + Math.abs(Math.sin(a)) * s * 0.6 + 1, rot: rnd() * 6, s: 0.8 + rnd() * 0.8 });
       ivySpots[ivySpots.length - 1]!.rot = y; // carried in rot: the ledge height
     }
-    const ivyMat = windy(new THREE.MeshStandardMaterial({ map: ivy.tex, alphaTest: 0.45, side: THREE.DoubleSide, color: '#a9c49a', roughness: 0.85 }), { bend: 0.1, flutter: 0.02, time, key: 'ivy' });
+    const ivyMat = windy(new THREE.MeshStandardMaterial({ map: ivy.tex, alphaTest: 0.45, alphaToCoverage: true, side: THREE.DoubleSide, color: '#a9c49a', roughness: 0.85 }), { bend: 0.1, flutter: 0.02, time, key: 'ivy' });
     const ivyMesh = new THREE.InstancedMesh(ivy.geo, ivyMat, ivySpots.length);
     ivySpots.forEach((p, i) => ivyMesh.setMatrixAt(i, new THREE.Matrix4().compose(new THREE.Vector3(p.x, base - 1 + p.rot + (rnd() - 0.5) * 3, p.z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() - 0.5, rnd() * 6, 0)), new THREE.Vector3(p.s!, p.s! * 1.4, p.s!))));
     g.add(ivyMesh);

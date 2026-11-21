@@ -7,11 +7,16 @@ function seeded(seed: number) {
   return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
 }
 
+const TEX_SCALE = 2;
+
 function canvas(w: number, h: number, draw: (g: CanvasRenderingContext2D, rnd: () => number) => void, seed = 7) {
+  // Drawn at twice the design size: crisp up close on Retina screens, sharp enough for the derived normal maps.
   const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  draw(c.getContext('2d')!, seeded(seed));
+  c.width = w * TEX_SCALE;
+  c.height = h * TEX_SCALE;
+  const g = c.getContext('2d')!;
+  g.scale(TEX_SCALE, TEX_SCALE);
+  draw(g, seeded(seed));
   return c;
 }
 
@@ -19,7 +24,7 @@ function texture(c: HTMLCanvasElement, repeat: [number, number], color = true) {
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(...repeat);
-  t.anisotropy = 4;
+  t.anisotropy = 8;
   if (color) t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }

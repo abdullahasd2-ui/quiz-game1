@@ -227,7 +227,7 @@ export function CastleWorld({ s, big }: { s: DuelState; big: boolean }) {
             winner: null,
           }}
         />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_55%,rgba(5,4,18,0.65))]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_55%,rgba(5,4,18,0.35))]" />
         {(['a', 'b'] as const).map((t) => {
           const taken = res?.damage?.[t === 'a' ? 'b' : 'a'] ?? 0;
           return (

@@ -13,12 +13,14 @@ const seeded = (seed: number) => {
 
 function canvasTex(w: number, h: number, draw: (g: CanvasRenderingContext2D, rnd: () => number) => void, seed: number, color = true) {
   const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  draw(c.getContext('2d')!, seeded(seed));
+  c.width = w * 2;
+  c.height = h * 2;
+  const g = c.getContext('2d')!;
+  g.scale(2, 2);
+  draw(g, seeded(seed));
   const t = new THREE.CanvasTexture(c);
   if (color) t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
+  t.anisotropy = 8;
   return t;
 }
 
@@ -384,7 +386,7 @@ export function treeKit(kind: TreeKind, time: { value: number }): TreeKit {
   });
   const leafColor = { oak: '#b9d0a8', olive: '#c9d4c0', pine: '#a9c4b4', cypress: '#9ab8a6', palm: '#c4d6a8' }[kind];
   const leaves = windy(
-    new THREE.MeshStandardMaterial({ map: tex, alphaTest: 0.42, side: THREE.DoubleSide, color: leafColor, roughness: 0.82, emissive: '#0c1a10', emissiveIntensity: 0.5 }),
+    new THREE.MeshStandardMaterial({ map: tex, alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, color: leafColor, roughness: 0.82, emissive: '#0c1a10', emissiveIntensity: 0.5 }),
     { bend: kind === 'palm' ? 0.006 : kind === 'cypress' ? 0.0028 : 0.0035, flutter: kind === 'palm' ? 0.035 : 0.022, time, key: `leaves-${kind}` },
   );
   const depth = windy(new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.42 }), { bend: kind === 'palm' ? 0.006 : 0.0035, flutter: 0, time, key: `depth-${kind}` });

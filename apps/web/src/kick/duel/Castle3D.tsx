@@ -30,7 +30,9 @@ export function Castle3D({ input, big, victory = false, className }: { input: Ca
     void import('./three/scene').then(({ CastleScene }) => {
       if (gone || !canvas.current) return;
       try {
-        const s = new CastleScene(canvas.current, { quality: big ? 'high' : 'low', victory });
+        // Strong devices get the full scene even off the broadcast screen (an iPad, a desktop host page).
+        const strong = big || (navigator.hardwareConcurrency ?? 4) >= 6;
+        const s = new CastleScene(canvas.current, { quality: strong ? 'high' : 'low', victory });
         scene.current = s;
         s.update(latest.current);
         const el = canvas.current;
