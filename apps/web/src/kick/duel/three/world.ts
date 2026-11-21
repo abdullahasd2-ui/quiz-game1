@@ -84,6 +84,7 @@ export class World {
     const iron = new THREE.MeshStandardMaterial({ color: '#2b2a33', metalness: 0.75, roughness: 0.42 });
     const brass = new THREE.MeshStandardMaterial({ color: '#c9973e', metalness: 0.9, roughness: 0.35 });
     const gold = new THREE.MeshStandardMaterial({ color: '#e8b64c', metalness: 0.9, roughness: 0.3, emissive: '#3a2200', emissiveIntensity: 0.4 });
+    const copingMat = new THREE.MeshStandardMaterial({ color: '#6f6a82', roughness: 0.9, normalMap: st.normal });
     const cob = cobbleTexture([1, 1]);
     const road = new THREE.MeshStandardMaterial({ map: cob.map, normalMap: cob.normal, normalScale: new THREE.Vector2(1, 1), roughness: 0.88, color: '#c4c0d6' });
     this.lanternMat = new THREE.MeshStandardMaterial({ color: '#2a1a08', emissive: '#ffb35c', emissiveIntensity: 2.2 });
@@ -120,7 +121,7 @@ export class World {
       wall.position.set(c.position.x, -0.42, c.position.z);
       wall.receiveShadow = true;
       g.add(wall);
-      const coping = new THREE.Mesh(new THREE.TorusGeometry(MOAT.inner + 0.02, 0.12, 6, hi ? 96 : 48), dressed);
+      const coping = new THREE.Mesh(new THREE.TorusGeometry(MOAT.inner + 0.02, 0.12, 6, hi ? 96 : 48), copingMat);
       coping.rotation.x = Math.PI / 2;
       coping.scale.z = 0.55;
       coping.position.set(c.position.x, 0.06, c.position.z);
@@ -672,14 +673,14 @@ export class World {
     g.position.copy(at);
     g.castShadow = true;
     this.group.add(g);
-    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: '#ffb060', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.75 }));
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: '#ffb060', blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.4 }));
     s.position.set(at.x, at.y + 0.2, at.z);
-    s.scale.setScalar(1.7);
+    s.scale.setScalar(0.9);
     this.group.add(s);
-    this.lanternGlows.push({ s, base: 0.75, ph: rnd() * 10 });
+    this.lanternGlows.push({ s, base: 0.4, ph: rnd() * 10 });
     if (ground) {
       const gy = heightAt(at.x, at.z);
-      const pool = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), new THREE.MeshBasicMaterial({ map: glow, color: '#ff9a4a', transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending, depthWrite: false }));
+      const pool = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), new THREE.MeshBasicMaterial({ map: glow, color: '#ff9a4a', transparent: true, opacity: 0.13, blending: THREE.AdditiveBlending, depthWrite: false }));
       pool.rotation.x = -Math.PI / 2;
       pool.position.set(at.x, Math.max(gy, MOAT_Y) + 0.07, at.z);
       this.group.add(pool);
@@ -859,7 +860,7 @@ export class World {
     for (const l of this.lanternGlows) {
       const f = 0.85 + Math.sin(t * 7.3 + l.ph) * 0.06 + Math.sin(t * 13.1 + l.ph * 2) * 0.05 + (Math.random() - 0.5) * 0.05;
       (l.s.material as THREE.SpriteMaterial).opacity = l.base * f;
-      l.s.scale.setScalar(1.7 * (0.95 + f * 0.08));
+      l.s.scale.setScalar(0.9 * (0.95 + f * 0.08));
     }
     this.lanternMat.emissiveIntensity = 2.1 + Math.sin(t * 9.1) * 0.15 + Math.sin(t * 17.3) * 0.1;
     for (const [i, { l, base }] of this.lights.entries()) l.intensity = base * (0.9 + Math.sin(t * 8 + i * 3) * 0.06 + Math.random() * 0.05);
