@@ -72,11 +72,11 @@ const WATER_FRAG = /* glsl */ `
     vec3 N = normalize(vec3(g.x * 0.07, 1., g.y * 0.07));
     vec3 V = normalize(cameraPosition - vW);
     float fres = pow(1. - max(dot(N, V), 0.), 3.);
-    vec3 col = mix(uDeep, uSky, 0.18 + fres * 0.8);
+    vec3 col = mix(uDeep, uSky, 0.12 + fres * 0.5);
     vec3 L = normalize(vec3(-0.2, 0.33, -1.));
     vec3 R = reflect(-V, N);
     float spec = pow(max(dot(R, L), 0.), 220.) * 3.0 + pow(max(dot(R, L), 0.), 30.) * 0.15;
-    col += vec3(1., 0.93, 0.8) * spec + uGlow * (0.12 + fres * 0.25);
+    col += vec3(1., 0.93, 0.8) * spec + uGlow * (0.06 + fres * 0.12);
     gl_FragColor = vec4(col, uOpacity);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
@@ -87,7 +87,7 @@ function water(time: { value: number }, glow = '#2b2a6a', opacity = 0.93) {
   return new THREE.ShaderMaterial({
     vertexShader: WATER_VERT,
     fragmentShader: WATER_FRAG,
-    uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: time, uDeep: { value: new THREE.Color('#070b22') }, uSky: { value: new THREE.Color('#4b3f95') }, uGlow: { value: new THREE.Color(glow) }, uOpacity: { value: opacity } }]),
+    uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: time, uDeep: { value: new THREE.Color('#070b22') }, uSky: { value: new THREE.Color('#352d6e') }, uGlow: { value: new THREE.Color(glow) }, uOpacity: { value: opacity } }]),
     transparent: opacity < 1,
     fog: true,
   });
@@ -248,12 +248,13 @@ export class World {
 
     // ── Materials ──
     const stone = new THREE.MeshStandardMaterial({ color: '#77748f', roughness: 0.95, flatShading: true });
-    const stoneLight = new THREE.MeshStandardMaterial({ color: '#a7a3bd', roughness: 0.85 });
+    const stoneLight = new THREE.MeshStandardMaterial({ color: '#8e8aa6', roughness: 0.85 });
     const iron = new THREE.MeshStandardMaterial({ color: '#2d2c36', metalness: 0.7, roughness: 0.45 });
     const gold = new THREE.MeshStandardMaterial({ color: '#e8b64c', metalness: 0.9, roughness: 0.3, emissive: '#3a2200', emissiveIntensity: 0.4 });
     const cob = cobbleTexture([1, 1]);
     const road = new THREE.MeshStandardMaterial({ map: cob.map, bumpMap: cob.bump, bumpScale: 0.8, roughness: 0.9, color: '#b4b0cc' });
     this.lanternMat = new THREE.MeshStandardMaterial({ color: '#2a1a08', emissive: '#ffb35c', emissiveIntensity: 2.2 });
+    const curbMat = new THREE.MeshStandardMaterial({ color: '#5a5770', roughness: 0.95 });
     const moatWater = shareTime(water(time, '#2b2a6a'), time);
 
     // ── Moats, landings and the roads ──
@@ -272,7 +273,7 @@ export class World {
       bed.position.set(c.position.x, 0.03, c.position.z);
       g.add(bed);
       for (const r of [6.55, 8.05]) {
-        const curb = new THREE.Mesh(new THREE.TorusGeometry(r, 0.14, 5, hi ? 96 : 48), stoneLight);
+        const curb = new THREE.Mesh(new THREE.TorusGeometry(r, 0.11, 5, hi ? 96 : 48), curbMat);
         curb.rotation.x = Math.PI / 2;
         curb.scale.z = 0.7;
         curb.position.set(c.position.x, 0.12, c.position.z);
@@ -467,7 +468,7 @@ export class World {
       const z = 30 - rnd() * 130;
       if (!allowed(x, z, 0.6)) continue;
       // Thicker woods behind the castles and at the sides, thinner in the open middle.
-      const keep = Math.abs(x) > 16 || z < -12 ? 1 : 0.3;
+      const keep = Math.abs(x) > 18 || z < -16 ? 1 : 0.12;
       if (rnd() > keep) continue;
       (rnd() < 0.62 ? pineM : oakM).push({ x, z, rot: rnd() * 6.28 });
     }
@@ -479,12 +480,10 @@ export class World {
       if (allowed(p.x, p.z, -0.6)) cypress.push({ x: p.x, z: p.z, rot: rnd() * 6 });
     }
     const palms: Place[] = [
-      { x: -4.6, z: 9.0, rot: 2.6 },
-      { x: 4.6, z: 9.4, rot: 0.4 },
-      { x: -4.2, z: 13.3, rot: 3.6 },
-      { x: 4.4, z: 13.6, rot: -0.6 },
       { x: -3.4, z: -5.6, rot: 2.2 },
       { x: 3.4, z: -5.4, rot: 0.9 },
+      { x: -4.0, z: -2.0, rot: 2.8 },
+      { x: 4.0, z: -1.6, rot: 0.3 },
       { x: -11.5, z: -48, rot: 1.4 },
       { x: -5, z: -47, rot: 0.2 },
     ];
