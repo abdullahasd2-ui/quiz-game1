@@ -72,3 +72,4 @@ scripts/appstore-promo/mix-*.wav
 scripts/appstore-promo/*.mp4
 scripts/appstore-promo/*.png
 scripts/appstore-promo/assets/*.png
+scripts/appstore-promo/mix.wav
