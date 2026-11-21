@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{--bg:#07071a;--gold:#f7c948;--orange:#ff6b35;--cyan:#38bdf8;--purple:#a855f7;--pink:#f472b6;--live:#53fc18;--red:#e74c3c}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);font-family:Tajawal,sans-serif;color:#fff}
+  .layer{position:absolute;inset:0;overflow:hidden}
+  #stage{overflow:hidden;contain:paint}
+  #bg{background:radial-gradient(80% 40% at 50% 0%,#123d1a 0%,transparent 60%),radial-gradient(80% 45% at 50% 100%,#2a1460 0%,transparent 65%),var(--bg)}
+  .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 2px,transparent 2px 5px);pointer-events:none}
+  .cap{position:absolute;z-index:6;left:50px;right:50px;text-align:center;font:400 88px/1.15 Lalezar;text-shadow:0 8px 0 rgba(0,0,0,.5)}
+  .cap small{display:block;font:800 44px/1.4 Tajawal;color:#ffffffe0;text-shadow:0 3px 0 rgba(0,0,0,.5);margin-top:10px}
+  .grad{background:linear-gradient(90deg,var(--live),var(--cyan),var(--purple));-webkit-background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 8px 0 rgba(0,0,0,.45))}
+  .gold{background:linear-gradient(90deg,var(--orange),var(--gold));-webkit-background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 8px 0 rgba(0,0,0,.45))}
+  .live{color:var(--live)}
+  /* the stream window */
+  .win{position:absolute;left:30px;width:1020px;border-radius:30px;overflow:hidden;background:#000;border:3px solid rgba(83,252,24,.55);box-shadow:0 40px 100px -20px #000,0 0 80px -20px rgba(83,252,24,.6)}
+  .win img{position:absolute;max-width:none}
+  .badge{position:absolute;z-index:3;top:18px;right:18px;display:flex;align-items:center;gap:10px;padding:8px 18px;border-radius:12px;background:#e11d48;font:900 32px Tajawal;box-shadow:0 8px 20px rgba(0,0,0,.6)}
+  .badge i{width:14px;height:14px;border-radius:50%;background:#fff}
+  .viewers{position:absolute;z-index:3;top:18px;left:18px;padding:8px 16px;border-radius:12px;background:rgba(0,0,0,.65);font:800 30px Tajawal}
+  /* chat */
+  .chat{position:absolute;left:30px;width:1020px;border-radius:30px;overflow:hidden;background:rgba(14,14,30,.94);border:2px solid rgba(255,255,255,.12);box-shadow:0 30px 80px -20px #000}
+  .chat .hd{height:78px;display:flex;align-items:center;gap:14px;padding:0 30px;font:900 36px Tajawal;border-bottom:2px solid rgba(255,255,255,.08)}
+  .chat .hd b{color:var(--live)}
+  .msg{position:absolute;left:30px;right:30px;font:800 50px/1.3 Tajawal;white-space:nowrap}
+  .msg .u{font-weight:900}
+  .msg .t{color:#fff}
+  .msg .t.cmd{display:inline-block;padding:2px 18px;border-radius:12px;background:rgba(83,252,24,.16);color:var(--live)}
+  .laptop{position:absolute;left:0;top:0;transform-origin:0 0}
+  .laptop .lid{padding:16px 16px 22px;border-radius:24px 24px 8px 8px;background:linear-gradient(#26263f,#111126);box-shadow:0 0 0 2px rgba(255,255,255,.12),0 60px 120px -30px rgba(0,0,0,.95)}
+  .laptop .scr{position:relative;width:1280px;height:900px;border-radius:8px;overflow:hidden}
+  .laptop .scr img{position:absolute;left:0;top:0;width:1280px}
+  .laptop .base{margin:0 -90px;height:28px;border-radius:0 0 34px 34px;background:linear-gradient(#3a3a58,#17172b)}
+  .ring{position:absolute;z-index:5;border-radius:20px;border:7px solid var(--gold);box-shadow:0 0 0 9px rgba(247,201,72,.2),0 0 60px rgba(247,201,72,.75)}
+  .tag{position:absolute;z-index:7;left:50%;padding:16px 40px;border-radius:999px;font:400 66px/1 Lalezar;white-space:nowrap;box-shadow:0 24px 70px -15px rgba(0,0,0,.9)}
+  .chip{position:absolute;z-index:6;display:flex;align-items:center;gap:16px;padding:22px 36px;border-radius:999px;font:900 50px Tajawal;white-space:nowrap;background:rgba(15,15,40,.95);border:3px solid rgba(255,255,255,.18);box-shadow:0 24px 60px -15px rgba(0,0,0,.9)}
+  .conf{position:absolute;z-index:6;width:22px;height:36px;border-radius:5px}
+  .flash{position:absolute;inset:0;background:#fff;pointer-events:none;opacity:0}
+  .vignette{position:absolute;inset:0;background:radial-gradient(130% 85% at 50% 50%,transparent 55%,rgba(0,0,0,.6));pointer-events:none}
+  .word{display:inline-block}
+</style>
+</head>
+<body>
+<script src="data.js"></script>
+<div id="stage" class="layer">
+  <div id="bg" class="layer"></div>
+  <div id="scenes" class="layer"></div>
+  <div id="fx" class="layer"><div class="flash" id="flash"></div></div>
+  <div class="scan"></div>
+  <div class="vignette"></div>
+</div>
+<script>
+const W = 1080, H = 1920;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = {
+  io: (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
+  out: (k) => 1 - Math.pow(1 - k, 3),
+  back: (k) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+};
+const P = (t, a, d, e = ease.out) => e(clamp((t - a) / d));
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
+const SHOTS = window.SHOTS;
+const EVENTS = [], FLASHES = [];
+const cue = (t, s, v = 1) => EVENTS.push({ t: +t.toFixed(3), s, v });
+const flashAt = (t, k = 0.5) => FLASHES.push([t, k]);
+const scenes = [];
+let cursor = 0;
+function scene(key, len, build) {
+  const root = el('div', 'layer', document.getElementById('scenes'));
+  const s = { key, start: cursor, end: cursor + len, len, root };
+  cursor += len;
+  s.update = build(s, root, (lt) => s.start + lt);
+  scenes.push(s);
+}
+const caption = (root, html, top) => { const c = el('div', 'cap', root, html); c.style.top = top + 'px'; return c; };
+const show = (e, lt, a, d = 0.35, dy = 50) => { const k = P(lt, a, d); e.style.opacity = k; e.style.transform = `translateY(${lerp(dy, 0, ease.out(k))}px)`; };
+const COLORS = ['#53fc18', '#38bdf8', '#f472b6', '#f7c948', '#ff9f43', '#a78bfa', '#5eead4'];
+
+/** The live window: a crop of a broadcast screenshot (x,y,w in screen pixels) that can pan and zoom. */
+function streamWin(root, names, top, height) {
+  const w = el('div', 'win', root);
+  w.style.top = top + 'px'; w.style.height = height + 'px';
+  const imgs = {};
+  for (const n of names) { const im = el('img', null, w); im.src = `shots/${n}.${n.startsWith('duel') ? 'png' : 'jpg'}`; im.style.opacity = 0; imgs[n] = im; }
+  el('div', 'badge', w, '<i></i>LIVE');
+  const vw = el('div', 'viewers', w, '👁 1.2K');
+  return {
+    w,
+    show(name, crop, o = 1) {
+      for (const n of names) imgs[n].style.opacity = typeof name === 'string' ? (n === name ? 1 : 0) : name[n] || 0;
+      const s = 1020 / crop.w;
+      for (const n of names) { const sh = SHOTS[n] || { w: 1920 }; imgs[n].style.width = sh.w * s + 'px'; imgs[n].style.left = -crop.x * s + 'px'; imgs[n].style.top = -crop.y * s + 'px'; }
+      w.style.opacity = o;
+    },
+    viewers: (n) => (vw.textContent = `👁 ${n}`),
+  };
+}
+/** The chat: lines come in from the bottom and push the older ones up. */
+function chatBox(root, top, height, lines) {
+  const c = el('div', 'chat', root);
+  c.style.top = top + 'px'; c.style.height = height + 'px';
+  el('div', 'hd', c, '💬 <b>الشات</b> · مباشر');
+  const els = lines.map(([u, t, cmd], i) => el('div', 'msg', c, `<span class="u" style="color:${COLORS[i % COLORS.length]}">${u}:</span> <span class="t${cmd ? ' cmd' : ''}">${t}</span>`));
+  return (lt, at, step = 0.28) => {
+    // number of lines shown so far
+    const n = lines.length;
+    for (let i = 0; i < n; i++) {
+      const a = at + i * step;
+      const shown = lt >= a;
+      const newer = Math.max(0, Math.min(n, Math.floor((lt - at) / step) + 1)) - 1 - i; // lines after this one
+      const y = height - 80 - newer * 70 - (1 - P(lt, a, 0.18)) * -40;
+      els[i].style.top = y + 'px';
+      els[i].style.opacity = shown ? (y < 90 ? 0 : P(lt, a, 0.18)) : 0;
+    }
+  };
+}
+function confetti(root, n = 80) {
+  return Array.from({ length: n }, (_, i) => { const c = el('div', 'conf', root); c.style.background = ['#f7c948', '#ff6b35', '#38bdf8', '#a855f7', '#53fc18', '#f472b6'][i % 6]; return { c, x: (i * 41) % W, d: ((i * 13) % 10) / 10, v: 600 + ((i * 29) % 700), r: (i * 47) % 360 }; });
+}
+const rain = (list, u0) => { for (const q of list) { const u = u0 - q.d * 0.5; q.c.style.opacity = u > 0 ? 1 : 0; q.c.style.transform = `translate(${q.x + Math.sin(u * 3 + q.r) * 60}px,${-60 + Math.max(0, u) * q.v * 0.7}px) rotate(${q.r + u * 400}deg)`; } };
+// Crops of the broadcast screen (1920×1080): the main panel, and the side ranking.
+const MAIN = { x: 690, y: 34, w: 860, h: 640 };
+
+// ═════════ 1. Hook ═════════
+scene('hook', 3.2, (s, root, T) => {
+  const box = el('div', 'cap', root); box.style.top = '330px'; box.style.fontSize = '118px';
+  const words = ['تخيّل', 'متابعينك', 'يشاركونك', 'التحدي', 'مباشرة!'];
+  const spans = words.map((w, i) => { const sp = el('span', 'word', box, w); if (i >= 3) sp.className = 'word gold'; box.appendChild(document.createTextNode(' ')); if (i === 1 || i === 2) el('br', null, box); return sp; });
+  const lines = [['فهد', 'دخول', 1], ['سارة', 'دخول', 1], ['نواف', 'دخول', 1], ['ريم', 'دخول', 1], ['خالد', 'دخول', 1], ['هند', 'دخول', 1], ['ماجد', 'دخول', 1], ['abdullah7', 'دخول', 1]];
+  const chat = chatBox(root, 1100, 640, lines);
+  const times = [0, 0.38, 0.78, 1.25, 1.7];
+  times.forEach((t, i) => cue(T(t), i === 4 ? 'impact' : 'hit', i === 4 ? 1 : 0.7));
+  flashAt(T(1.7), 0.5); lines.forEach((_, i) => cue(T(0.3 + i * 0.3), 'pop', 0.35));
+  return (t) => {
+    const lt = t - s.start;
+    spans.forEach((sp, i) => { const k = i === 0 ? Math.max(0.6, P(lt, 0, 0.25, ease.back)) : P(lt, times[i], 0.25, ease.back); sp.style.opacity = i === 0 ? 1 : P(lt, times[i], 0.06); sp.style.transform = `scale(${lerp(2.3, 1, k)})`; });
+    chat(lt, 0.3, 0.3);
+  };
+});
+
+// ═════════ 2. Logo ═════════
+scene('logo', 2.6, (s, root, T) => {
+  const logo = el('img', null, root); logo.src = 'assets/wordmark-t.png'; Object.assign(logo.style, { position: 'absolute', width: '760px', left: '160px', top: '360px' });
+  const t1 = caption(root, '<span class="grad">العبها مع شات Kick</span><small>المشاهدين يدخلون ويجاوبون من الشات</small>', 1180);
+  cue(T(0), 'impact'); cue(T(0.05), 'sparkle'); flashAt(T(0), 0.55);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0, 0.6, ease.back); logo.style.transform = `scale(${lerp(1.7, 1, k)}) rotate(${lerp(8, 0, k)}deg)`; logo.style.opacity = P(lt, 0, 0.08);
+    show(t1, lt, 0.5);
+  };
+});
+
+// ═════════ 3. The streamer's page ═════════
+scene('start', 4.4, (s, root, T) => {
+  const cap = caption(root, 'اكتب اسم قناتك<small>وابدأ البث من صفحة الستريمر</small>', 120);
+  const lap = el('div', 'laptop', root);
+  const lid = el('div', 'lid', lap); const scr = el('div', 'scr', lid); el('div', 'base', lap).appendChild(document.createElement('i'));
+  const im = el('img', null, scr); im.src = 'shots/k-start.jpg';
+  const ring = el('div', 'ring', root);
+  cue(T(0), 'whoosh'); cue(T(1.6), 'pop'); cue(T(2.6), 'click');
+  return (t) => {
+    const lt = t - s.start;
+    // Zoom from the whole laptop into the channel field.
+    const z = P(lt, 0.6, 2.0, ease.io);
+    const b = SHOTS['k-start'].boxes.name;
+    const fx = b.x + b.w / 2, fy = b.y + b.h / 2 + 40;
+    const sc = lerp(1.1, 1.6, z);
+    const ox = lerp(W / 2 - (16 + fx) * 1.1, W / 2 - (16 + fx) * sc, z), oy = lerp(1050 - (16 + fy) * 1.1, 1050 - (16 + fy) * sc, z);
+    lap.style.transform = `translate(${ox}px,${oy}px) scale(${sc})`; lap.style.opacity = P(lt, 0, 0.2);
+    const k = P(lt, 1.6, 0.3);
+    ring.style.left = ox + (16 + b.x) * sc - 12 + 'px'; ring.style.top = oy + (16 + b.y) * sc - 12 + 'px'; ring.style.width = b.w * sc + 24 + 'px'; ring.style.height = b.h * sc + 24 + 'px'; ring.style.opacity = k;
+    show(cap, lt, 0.15);
+  };
+});
+
+// ═════════ 4. Viewers join ═════════
+scene('join', 5.4, (s, root, T) => {
+  const cap = caption(root, 'المشاهدين يكتبون <span class="live">«دخول»</span><small>وكل واحد يلعب ونقاطه لحاله</small>', 90);
+  const win = streamWin(root, ['k-screen-lobby0', 'k-screen-lobby'], 300, 700);
+  const lines = [['فهد', 'دخول', 1], ['سارة', 'دخول', 1], ['نواف', 'دخول', 1], ['ريم', 'دخول', 1], ['خالد', 'دخول', 1], ['هند', 'دخول', 1], ['ماجد', 'دخول', 1]];
+  const chat = chatBox(root, 1060, 620, lines);
+  const tag = el('div', 'tag', root, '📺 شاشة البث تنحط في OBS'); tag.style.background = 'rgba(10,10,30,.95)'; tag.style.border = '4px solid #53fc18'; tag.style.fontSize = '56px';
+  cue(T(0), 'whoosh'); lines.forEach((_, i) => cue(T(0.6 + i * 0.4), 'pop', 0.5)); cue(T(3.9), 'stamp');
+  return (t) => {
+    const lt = t - s.start;
+    const crop = { x: 384, y: 34, w: 1000 };
+    win.show(lt < 2.6 ? 'k-screen-lobby0' : { 'k-screen-lobby0': 1 - P(lt, 2.6, 0.4), 'k-screen-lobby': P(lt, 2.6, 0.4) }, crop, P(lt, 0, 0.25));
+    win.viewers(`${(1.2 + 0.05 * Math.floor(lt * 2)).toFixed(2)}K`);
+    chat(lt, 0.6, 0.4);
+    show(cap, lt, 0.1);
+    const k = P(lt, 3.9, 0.4, ease.back); tag.style.opacity = P(lt, 3.9, 0.1) * (1 - P(lt, 5.1, 0.3)); tag.style.top = '960px'; tag.style.transform = `translateX(-50%) scale(${lerp(1.8, 1, k)})`;
+  };
+});
+
+// ═════════ 5. The modes ═════════
+scene('modes', 4.4, (s, root, T) => {
+  const cap = caption(root, 'اختر الطور<small>والفئات ووقت الإجابة من صفحتك</small>', 110);
+  const lap = el('div', 'laptop', root);
+  const lid = el('div', 'lid', lap); const scr = el('div', 'scr', lid);
+  const im = el('img', null, scr); im.src = 'shots/k-host-modes.jpg';
+  const chips = [['🔄', 'جاوب أو بادل'], ['🔀', 'جاوب أو اقلب'], ['↩️', 'جاوب أو بادل أو اعكس'], ['⏱️', 'عدّها'], ['📦', 'خبّي أو اكشف']].map(([i, n]) => el('div', 'chip', root, `<span>${i}</span>${n}`));
+  cue(T(0), 'whoosh'); chips.forEach((_, i) => cue(T(0.9 + i * 0.32), 'pop', 0.6));
+  return (t) => {
+    const lt = t - s.start;
+    const sc = 0.95;
+    lap.style.transform = `translate(${W / 2 - 656 * sc}px,${lerp(520, 380, P(lt, 0, 0.8, ease.out))}px) scale(${sc})`; lap.style.opacity = P(lt, 0, 0.2) * (1 - 0.6 * P(lt, 0.8, 0.4));
+    chips.forEach((c, i) => {
+      const a = 0.9 + i * 0.32, k = P(lt, a, 0.45, ease.back);
+      c.style.left = '50%'; c.style.top = 560 + i * 170 + 'px';
+      c.style.opacity = P(lt, a, 0.12); c.style.transform = `translateX(-50%) scale(${lerp(0.4, 1, k)}) rotate(${(i % 2 ? 1 : -1) * lerp(10, 0, k)}deg)`;
+    });
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 6. The board on the broadcast ═════════
+scene('board', 3.6, (s, root, T) => {
+  const cap = caption(root, 'السؤال يطلع على البث<small>من اللوحة: 100 سهل … 500 صعب</small>', 110);
+  const win = streamWin(root, ['k-screen-board'], 420, 760);
+  cue(T(0), 'whoosh'); cue(T(1.4), 'click');
+  return (t) => {
+    const lt = t - s.start;
+    const z = P(lt, 0, 3.6, ease.io);
+    win.show('k-screen-board', { x: lerp(640, 680, z), y: lerp(40, 70, z), w: lerp(900, 820, z) }, P(lt, 0, 0.25));
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 7. The streamer answers first ═════════
+scene('streamer', 4.0, (s, root, T) => {
+  const cap = caption(root, 'الستريمر يجاوب أول<small>واختياره مخفي عن الشات 🤫</small>', 110);
+  const lap = el('div', 'laptop', root);
+  const lid = el('div', 'lid', lap); const scr = el('div', 'scr', lid);
+  const im = el('img', null, scr); im.src = 'shots/k-host-streamer.jpg';
+  cue(T(0), 'whoosh'); cue(T(2.4), 'click');
+  return (t) => {
+    const lt = t - s.start;
+    const sc = lerp(1.25, 1.75, P(lt, 0, 4, ease.io));
+    lap.style.transform = `translate(${W / 2 - (16 + 860) * sc}px,${1000 - (16 + 470) * sc}px) scale(${sc})`; lap.style.opacity = P(lt, 0, 0.2);
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 8. The chat chooses ═════════
+scene('choose', 5.0, (s, root, T) => {
+  const cap = caption(root, '<span class="live">1</span> يجاوب بنفسه · <span class="gold">2</span> يبادل مع الستريمر', 70); cap.style.fontSize = '74px';
+  const win = streamWin(root, ['k-screen-choose', 'k-screen-choose2'], 260, 640);
+  const lines = [['فهد', '1', 1], ['سارة', '2', 1], ['نواف', '1', 1], ['ريم', '1', 1], ['خالد', '2', 1], ['هند', '1', 1], ['ماجد', '1', 1]];
+  const chat = chatBox(root, 960, 640, lines);
+  cue(T(0), 'whoosh'); lines.forEach((_, i) => cue(T(0.5 + i * 0.36), 'pop', 0.5));
+  return (t) => {
+    const lt = t - s.start;
+    win.show(lt < 2.2 ? 'k-screen-choose' : { 'k-screen-choose': 1 - P(lt, 2.2, 0.4), 'k-screen-choose2': P(lt, 2.2, 0.4) }, MAIN, P(lt, 0, 0.25));
+    chat(lt, 0.5, 0.36);
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 9. The answers ═════════
+scene('answer', 5.0, (s, root, T) => {
+  const cap = caption(root, 'جاوب بالرقم… أو اكتب الجواب<small>أول جواب صح ياخذ ⚡ أسرع جواب</small>', 70); cap.style.fontSize = '78px';
+  const win = streamWin(root, ['k-screen-answer', 'k-screen-answer2'], 320, 640);
+  const lines = [['فهد', 'الدنمارك', 1], ['نواف', '2', 1], ['ريم', '3', 1], ['هند', 'الدنمارك', 1], ['ماجد', '1', 1]];
+  const chat = chatBox(root, 1020, 600, lines);
+  cue(T(0), 'whoosh'); lines.forEach((_, i) => cue(T(0.5 + i * 0.45), i ? 'pop' : 'ding', 0.6));
+  return (t) => {
+    const lt = t - s.start;
+    win.show(lt < 1.8 ? 'k-screen-answer' : { 'k-screen-answer': 1 - P(lt, 1.8, 0.3), 'k-screen-answer2': P(lt, 1.8, 0.3) }, MAIN, P(lt, 0, 0.25));
+    chat(lt, 0.5, 0.45);
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 10. Result ═════════
+scene('result', 4.6, (s, root, T) => {
+  const cap = caption(root, 'تطلع النتيجة <span class="gold">والترتيب</span><small>اللي بادل وطلع جواب الستريمر صح ياخذ دبل 🔥</small>', 90);
+  const win = streamWin(root, ['k-screen-result'], 400, 760);
+  cue(T(0), 'whoosh'); cue(T(0.6), 'impact'); cue(T(0.65), 'ding'); flashAt(T(0.6), 0.4);
+  return (t) => {
+    const lt = t - s.start;
+    const z = P(lt, 0.8, 2.5, ease.io);
+    win.show('k-screen-result', { x: lerp(380, 380, z), y: lerp(30, 60, z), w: lerp(1180, 820, z) }, P(lt, 0, 0.2));
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 11. Podium ═════════
+scene('podium', 3.8, (s, root, T) => {
+  const cap = caption(root, 'وفي النهاية<br><span class="gold">منصة التتويج 🏆</span>', 100);
+  const win = streamWin(root, ['k-screen-podium'], 520, 720);
+  const conf = confetti(root, 90);
+  cue(T(0), 'whoosh'); cue(T(0.5), 'impact'); cue(T(0.6), 'sparkle'); flashAt(T(0.5), 0.5);
+  return (t) => {
+    const lt = t - s.start;
+    win.show('k-screen-podium', { x: 680, y: 30, w: lerp(860, 780, P(lt, 0, 3.8, ease.io)) }, P(lt, 0, 0.2));
+    show(cap, lt, 0.1);
+    rain(conf, lt - 0.5);
+  };
+});
+
+// ═════════ 12. Channel duel ═════════
+scene('duel', 6.2, (s, root, T) => {
+  const cap = caption(root, '⚔️ <span class="grad">تحدي القنوات</span><small>شاتك ضد شات ستريمر ثاني</small>', 90);
+  const win = streamWin(root, ['duel-castle-3b-hit-0', 'duel-chain-3b-hit-0', 'duel-faza-3-hit-0', 'duel-castle-8-win-b'], 430, 600);
+  const tags = [['🏰 القلعة', 'أجوبتكم الصح تضرب قلعة الخصم'], ['⛓️ السلسلة', 'كل جواب صح يكبّر السلسلة ويضاعف النقاط'], ['⚡ الفزعة', 'أول شات يوصل للهدف ياخذ الجولة']].map(([h, d]) => { const e = caption(root, `<span class="gold">${h}</span><small>${d}</small>`, 1120); return e; });
+  const per = 1.55;
+  cue(T(0), 'whoosh'); [0, 1, 2, 3].forEach((i) => { cue(T(0.1 + i * per), 'whoosh', 0.7); flashAt(T(0.1 + i * per), 0.25); }); cue(T(0.5), 'impact'); cue(T(3 * per + 0.3), 'sparkle');
+  return (t) => {
+    const lt = t - s.start;
+    const i = clamp(Math.floor((lt - 0.1) / per), 0, 3);
+    const name = ['duel-castle-3b-hit-0', 'duel-chain-3b-hit-0', 'duel-faza-3-hit-0', 'duel-castle-8-win-b'][i];
+    const u = (lt - 0.1 - i * per) / per;
+    win.show(name, { x: lerp(300, 330, u), y: i === 3 ? 110 : 150, w: lerp(1320, 1260, u) }, P(lt, 0, 0.2));
+    tags.forEach((e, k) => { e.style.opacity = k === Math.min(i, 2) && i < 3 ? P(lt, 0.25 + k * per, 0.2) : i === 3 && k === 0 ? 0 : 0; e.style.transform = `translateY(${lerp(40, 0, P(lt, 0.25 + k * per, 0.3))}px)`; });
+    show(cap, lt, 0.1);
+  };
+});
+
+// ═════════ 13. End ═════════
+scene('end', 6.2, (s, root, T) => {
+  const t1 = caption(root, 'حوّل بثك إلى<br><span class="gold">تحدي!</span>', 90); t1.style.fontSize = '120px';
+  const logo = el('img', null, root); logo.src = 'assets/wordmark-t.png'; Object.assign(logo.style, { position: 'absolute', width: '420px', left: '330px', top: '450px' });
+  const qrBox = el('div', null, root); Object.assign(qrBox.style, { position: 'absolute', left: '305px', top: '960px', width: '470px', height: '470px', background: '#fff', borderRadius: '40px', padding: '24px', boxShadow: '0 0 0 10px rgba(83,252,24,.9),0 40px 120px -20px rgba(83,252,24,.7)' });
+  const qr = el('img', null, qrBox); qr.src = 'assets/qr.svg'; Object.assign(qr.style, { width: '100%', height: '100%', display: 'block' });
+  const t2 = caption(root, '<span class="grad">مع جاوب أو بادل</span>', 1480); t2.style.fontSize = '84px';
+  const url = caption(root, '<small style="direction:ltr;font-size:54px;color:#fff">jawabbadel.com/kick/quiz</small>', 1620);
+  cue(T(0), 'whoosh'); cue(T(0.1), 'impact'); cue(T(0.9), 'stamp'); cue(T(1.4), 'sparkle'); flashAt(T(0.1), 0.45);
+  return (t) => {
+    const lt = t - s.start;
+    const k0 = P(lt, 0, 0.5, ease.back); t1.style.opacity = P(lt, 0, 0.1); t1.style.transform = `scale(${lerp(1.5, 1, k0)})`;
+    const k = P(lt, 0.4, 0.6, ease.back); logo.style.opacity = P(lt, 0.4, 0.1); logo.style.transform = `scale(${lerp(0.4, 1, k) + 0.015 * Math.sin(lt * 3)})`;
+    const k2 = P(lt, 0.9, 0.5, ease.back); qrBox.style.opacity = P(lt, 0.9, 0.1); qrBox.style.transform = `scale(${lerp(0.4, 1, k2)}) rotate(${lerp(-10, 0, k2)}deg)`;
+    show(t2, lt, 1.4); show(url, lt, 1.7);
+  };
+});
+
+const TOTAL = cursor;
+const flashEl = document.getElementById('flash');
+function render(t) {
+  let fl = 0;
+  for (const [a, k] of FLASHES) if (t >= a) fl = Math.max(fl, k * Math.exp(-(t - a) * 9));
+  flashEl.style.opacity = fl;
+  for (const s of scenes) {
+    const on = t >= s.start - 0.2 && t < s.end + 0.2;
+    s.root.style.display = on ? 'block' : 'none';
+    if (!on) continue;
+    const fadeIn = s.start === 0 ? 1 : clamp((t - (s.start - 0.2)) / 0.2);
+    const fadeOut = s === scenes[scenes.length - 1] ? 1 : clamp((s.end + 0.2 - t) / 0.2);
+    s.root.style.opacity = Math.min(fadeIn, fadeOut);
+    s.update(t);
+  }
+}
+window.render = render;
+window.TIMELINE = { total: TOTAL, events: EVENTS.sort((a, b) => a.t - b.t), voice: [], scenes: scenes.map((s) => ({ key: s.key, start: s.start, end: s.end })) };
+render(0);
+</script>
+</body>
+</html>
