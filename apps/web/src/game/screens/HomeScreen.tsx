@@ -742,7 +742,7 @@ function HowToPlay({ open, onClose, variant }: { open: boolean; onClose: () => v
     <Modal open={open} onClose={onClose}>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-[17px] font-black text-q-purple">📖 {mode ? `طريقة لعب «${mode.title}»` : 'طريقة اللعب'}</h2>
-        <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
+        <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-xl font-black text-white" aria-label="إغلاق">
           ✕
         </button>
       </div>
