@@ -86,6 +86,12 @@ export class CastleScene {
   private readonly still: boolean;
   private readonly glowTex = softTexture(0.02);
   private readonly quality: 'high' | 'low';
+  private dpr = 1;
+  private dprMax = 1;
+  private aspect = 16 / 9;
+  private frameAvg = 16;
+  private govern = 0;
+  private size = { w: 1, h: 1 };
   private readonly env: World;
 
   constructor(
@@ -94,16 +100,20 @@ export class CastleScene {
   ) {
     this.quality = opts.quality;
     this.still = Boolean(opts.still);
-    const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: opts.quality === 'high', alpha: false, powerPreference: 'high-performance' }));
-    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, opts.quality === 'high' ? 1.5 : 1));
+    // Always multisampled, and at the screen's real pixel density (a Retina iPad draws twice as many pixels), capped so a
+    // 4K display does not melt the GPU. A frame-time governor then trims or restores resolution to hold the frame rate.
+    const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' }));
+    this.dprMax = Math.min(window.devicePixelRatio || 1, opts.quality === 'high' ? 2 : 2);
+    this.dpr = this.dprMax;
+    r.setPixelRatio(this.dpr);
     r.outputColorSpace = THREE.SRGBColorSpace;
     r.toneMapping = THREE.ACESFilmicToneMapping;
-    r.toneMappingExposure = 1.05;
+    r.toneMappingExposure = 1.3;
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const s = this.scene;
-    s.fog = new THREE.FogExp2('#221a52', 0.0115);
+    s.fog = new THREE.FogExp2('#2a2160', 0.0068);
 
     // Sky dome, stars and the moon.
     this.sky = new THREE.ShaderMaterial({ vertexShader: SKY_VERT, fragmentShader: SKY_FRAG, uniforms: { uHeat: { value: 0 }, uWin: { value: 0 } }, side: THREE.BackSide, depthWrite: false, fog: false });
@@ -126,16 +136,16 @@ export class CastleScene {
     s.add(halo);
 
     // Light: cool moonlight with soft shadows, a purple sky fill, and a flash for explosions.
-    s.add(new THREE.HemisphereLight('#7d70d8', '#2a2140', 1.1));
-    const moon = (this.moon = new THREE.DirectionalLight('#d2dbff', 2.3));
+    s.add(new THREE.HemisphereLight('#9a8fe8', '#3a3050', 1.5));
+    const moon = (this.moon = new THREE.DirectionalLight('#dfe6ff', 2.8));
     moon.position.set(-14, 26, 18);
     moon.castShadow = true;
-    moon.shadow.mapSize.setScalar(opts.quality === 'high' ? 2048 : 1024);
+    moon.shadow.mapSize.setScalar(opts.quality === 'high' ? 4096 : 2048);
     const sc = moon.shadow.camera;
-    sc.left = -24;
-    sc.right = 24;
-    sc.top = 18;
-    sc.bottom = -10;
+    sc.left = -22;
+    sc.right = 22;
+    sc.top = 16;
+    sc.bottom = -12;
     sc.near = 1;
     sc.far = 80;
     moon.shadow.bias = -0.0005;
@@ -147,7 +157,7 @@ export class CastleScene {
     const dusk = new THREE.DirectionalLight('#ff9a6a', 0.55);
     dusk.position.set(25, 10, -60);
     s.add(dusk);
-    s.environmentIntensity = 0.42;
+    s.environmentIntensity = 0.6;
 
     // The two castles, turned a little toward each other. Blue stands on the right of the screen.
     this.castles = { a: buildCastle(TEAM.a, opts.quality), b: buildCastle(TEAM.b, opts.quality) };
@@ -181,11 +191,26 @@ export class CastleScene {
     }
     this.camera.position.set(0, 26, 60);
     this.loop = this.loop.bind(this);
+    // Every texture filtered at the GPU's best anisotropy: stone joints and cobbles stay sharp at grazing angles.
+    const aniso = r.capabilities.getMaxAnisotropy();
+    s.traverse((o) => {
+      const mat = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
+      for (const m of Array.isArray(mat) ? mat : mat ? [mat] : []) {
+        const mm = m as THREE.MeshStandardMaterial;
+        for (const t of [mm.map, mm.normalMap, mm.roughnessMap, mm.bumpMap]) {
+          if (t && t.anisotropy < aniso) {
+            t.anisotropy = aniso;
+            t.needsUpdate = true;
+          }
+        }
+      }
+    });
     if (opts.quality === 'high') {
       // Bloom: lanterns, windows, fire and the moon's glitter on the water bleed light the way a lens sees them.
-      const composer = new EffectComposer(r);
+      // Multisampled target, so the bloom path keeps clean edges too.
+      const composer = new EffectComposer(r, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
       composer.addPass(new RenderPass(s, this.camera));
-      const bloom = new UnrealBloomPass(new THREE.Vector2(512, 288), 0.55, 0.55, 0.82);
+      const bloom = new UnrealBloomPass(new THREE.Vector2(512, 288), 0.38, 0.4, 0.92);
       composer.addPass(bloom);
       composer.addPass(new OutputPass());
       this.composer = {
@@ -203,11 +228,14 @@ export class CastleScene {
 
   resize(w: number, h: number) {
     if (!w || !h) return;
+    this.size = { w, h };
     this.renderer.setSize(w, h, false);
     this.composer?.setSize(w, h);
     this.camera.aspect = w / h;
     // Narrow screens see the whole battlefield: a wider lens.
-    this.camera.fov = w / h < 1.2 ? 58 : w / h < 1.7 ? 46 : 38;
+    // One lens everywhere; the camera moves in or out (see updateCamera) so both castles fill the frame's width.
+    this.camera.fov = w / h < 1 ? 50 : 40;
+    this.aspect = w / h;
     this.camera.updateProjectionMatrix();
     const px = h * this.renderer.getPixelRatio() * 0.9;
     for (const p of [this.fire, this.smoke, this.sparks, this.dust, this.env.spray, this.env.mist]) p.setScale(px);
@@ -283,7 +311,20 @@ export class CastleScene {
   private loop(now: number) {
     this.frame = requestAnimationFrame(this.loop);
     if (document.hidden) return;
-    const dt = Math.min(0.05, (now - this.last) / 1000);
+    const raw = now - this.last;
+    const dt = Math.min(0.05, raw / 1000);
+    // Resolution governor: drop density when frames run long, restore it when there is headroom.
+    this.frameAvg = this.frameAvg * 0.95 + Math.min(raw, 100) * 0.05;
+    this.govern += raw;
+    if (this.govern > 2000) {
+      this.govern = 0;
+      const next = this.frameAvg > 24 ? Math.max(1, this.dpr - 0.25) : this.frameAvg < 14 ? Math.min(this.dprMax, this.dpr + 0.25) : this.dpr;
+      if (next !== this.dpr) {
+        this.dpr = next;
+        this.renderer.setPixelRatio(next);
+        this.resize(this.size.w, this.size.h);
+      }
+    }
     this.last = now;
     this.t += dt;
     const inp = this.input;
@@ -465,7 +506,11 @@ export class CastleScene {
       const intro = Math.min(1, this.t / 2.8);
       const e = ease(intro);
       const push = inp.alert ? 1 : 0;
-      pos.set(Math.sin(this.t * 0.11) * 1.4, THREE.MathUtils.lerp(24, 6.6 - push * 0.5, e), THREE.MathUtils.lerp(62, 23.5 - push * 2, e));
+      // Frame the two castles (centres ±10.5, bodies ±14.5) edge to edge, whatever the frame's shape.
+      const tanH = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * this.aspect;
+      const dist = THREE.MathUtils.clamp(14.8 / tanH, 17, 34);
+      look.y = 2.7;
+      pos.set(Math.sin(this.t * 0.11) * 1.2, THREE.MathUtils.lerp(24, 4.4 + dist * 0.09 - push * 0.4, e), THREE.MathUtils.lerp(62, dist - push * 1.6, e));
       // Follow the flying fireballs a little.
       if (this.shots.length) look.x = this.shots[0]!.ball.position.x * 0.25;
     }
