@@ -12,7 +12,7 @@ fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive:
   await Promise.all(Array.from({ length: JOBS }, async (_, j) => {
     const a = j * per, b = Math.min(frames, a + per);
     const page = await browser.newPage({ viewport: { width: VW, height: VH } });
-    await page.goto(`file://${__dirname}/stage.html?cut=${CUT}`);
+    await page.goto(`file://${__dirname}/stage.html?cut=${CUT}&shots=${process.env.SHOTS || 'site'}`);
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => Promise.all([...document.images].map((i) => (i.complete ? 0 : new Promise((r) => (i.onload = i.onerror = r))))));
     await page.waitForTimeout(500);

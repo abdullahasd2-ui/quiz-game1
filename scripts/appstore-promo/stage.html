@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<script src="data.js"></script>
+<script>document.write('<script src="' + (new URLSearchParams(location.search).get('shots') === 'app' ? 'data-app.js' : 'data.js') + '"><\/script>')</script>
 <div id="bg"><div class="base"></div><div class="floor" id="floor"></div></div>
 <div id="box"><div id="scenes" class="layer"></div></div>
 <div id="flash"></div>
@@ -57,6 +57,10 @@ const ease = {
 const P = (t, a, d, e = ease.out) => e(clamp((t - a) / d));
 const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
 const SHOTS = window.SHOTS;
+// Shots from the iPhone app (430×932) or the website (390×844): screens are drawn at the shot's own size, then
+// scaled so they take the same room on the stage.
+const DIR = Q.get('shots') === 'app' ? 'shots-app' : 'shots';
+const SW = SHOTS.choose.w, SH = SHOTS.choose.h, K = 844 / SH;
 const EVENTS = [], FLASHES = [];
 let DROP = 2.6;
 const cue = (t, s, v = 1) => EVENTS.push({ t: +t.toFixed(3), s, v });
@@ -89,12 +93,14 @@ function scene(key, len, build) {
 /** A floating game screen (no device bezel). `place` sets centre x/y, scale, 3D tilt. */
 function screen(root, names) {
   const s = el('div', 'scr', root);
+  s.style.width = SW + 'px'; s.style.height = SH + 'px';
   const imgs = {};
-  for (const n of names) { const im = el('img', null, s); im.src = `shots/${n}.jpg`; im.style.opacity = 0; imgs[n] = im; }
+  for (const n of names) { const im = el('img', null, s); im.src = `${DIR}/${n}.jpg`; im.style.width = SW + 'px'; im.style.height = SH + 'px'; im.style.opacity = 0; imgs[n] = im; }
   const gl = el('div', 'glare', s);
   return {
     show(w) { for (const n of names) imgs[n].style.opacity = typeof w === 'string' ? (n === w ? 1 : 0) : w[n] || 0; },
-    place({ x, y, s: sc, ry = 0, rx = 0, rz = 0, o = 1, px = 195, py = 422 }, t = 0) {
+    place({ x, y, s: sc, ry = 0, rx = 0, rz = 0, o = 1, px = SW / 2, py = SH / 2 }, t = 0) {
+      sc *= K;
       s.style.transformOrigin = `${px}px ${py}px`;
       s.style.transform = `translate(${x - px}px,${y - py}px) perspective(1800px) rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${sc})`;
       s.style.opacity = o;
@@ -103,7 +109,7 @@ function screen(root, names) {
   };
 }
 // Where a box of a shot is on the stage, for a screen placed with {x,y,s,px,py} and no tilt.
-const at = (name, key, f) => { const b = SHOTS[name].boxes[key]; const px = f.px ?? 195, py = f.py ?? 422; return [f.x + (b.x + b.w / 2 - px) * f.s, f.y + (b.y + b.h / 2 - py) * f.s, b.w * f.s, b.h * f.s]; };
+const at = (name, key, f) => { const b = SHOTS[name].boxes[key]; const px = f.px ?? SW / 2, py = f.py ?? SH / 2, s = f.s * K; return [f.x + (b.x + b.w / 2 - px) * s, f.y + (b.y + b.h / 2 - py) * s, b.w * s, b.h * s]; };
 function text(root, cls, html, x, y) { const e = el('div', cls, root, html); e.style.left = x - 1600 + 'px'; e.style.width = '3200px'; e.style.top = y + 'px'; return e; }
 const showT = (e, lt, a, d = 0.35, dy = 40) => { const k = P(lt, a, d); e.style.opacity = k; e.style.transform = `translateY(${lerp(dy, 0, k)}px)`; };
 function confetti(root, n) { return Array.from({ length: n }, (_, i) => { const c = el('div', 'conf', root); c.style.background = ['#f7c948', '#ff6b35', '#38bdf8', '#a855f7', '#27ae60', '#f472b6'][i % 6]; return { c, x: (i * 53) % W, d: ((i * 13) % 10) / 10, v: 500 + ((i * 29) % 600), r: (i * 47) % 360 }; }); }

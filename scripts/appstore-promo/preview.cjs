@@ -4,7 +4,7 @@ const CUT = process.env.CUT || 'master', VW = +(process.env.VW || 1920), VH = +(
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: VW, height: VH } });
   const errs = []; p.on('pageerror', (e) => errs.push(e.message));
-  await p.goto(`file://${__dirname}/stage.html?cut=${CUT}`); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
+  await p.goto(`file://${__dirname}/stage.html?cut=${CUT}&shots=${process.env.SHOTS || 'site'}`); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(800);
   const tl = await p.evaluate(() => window.TIMELINE);
   require('fs').writeFileSync(`${__dirname}/timeline-${CUT}.json`, JSON.stringify(tl, null, 1));
   console.log(CUT, 'total', tl.total.toFixed(2), tl.scenes.map((s) => `${s.key}@${s.start.toFixed(1)}`).join(' '));
