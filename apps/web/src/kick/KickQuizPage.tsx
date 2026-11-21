@@ -1,3 +1,4 @@
+import './stream.css';
 import {
   chatMessage,
   kickPlayer,
@@ -1017,7 +1018,7 @@ export function KickQuizPage() {
               </div>
               <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
               <AboutBadge q={q} />
-              <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+              <div key={q.text} className="kq-host-q mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
               <div className="mb-1 text-center text-xs text-white/60">جاوب: اضغط {q.faces ? 'الشخص' : 'الخيار'} اللي تبيه</div>
               {q.faces ? (
                 <FaceGrid q={q} now={now} onPick={(i) => act({ type: 'answer', index: i })} />
@@ -1060,7 +1061,7 @@ export function KickQuizPage() {
             <div className="py-2 text-center">
               <div className="mb-1 text-sm text-q-gold">{q.points} نقطة{q.categoryName ? ` · ${q.categoryName}` : ''}</div>
               <QuestionImage url={q.imageUrl} type={q.type ?? 'text'} large />
-              <div className="mb-3 text-2xl font-black leading-snug">{q.text}</div>
+              <div key={q.text} className="kq-host-q mb-3 text-2xl font-black leading-snug">{q.text}</div>
               <div className="mx-auto mb-2 max-w-sm space-y-1 rounded-xl bg-q-panel p-3 text-lg">
                 <div>اكتبوا <b className="text-q-gold">1</b> = جاوب</div>
                 <div>اكتبوا <b className="text-q-cyan">2</b> = {L.withStreamer}</div>
@@ -1109,7 +1110,7 @@ export function KickQuizPage() {
                       <LetterGrid active={q.listLetter} used={usedLetters(state.used)} small />
                     </div>
                   )}
-                  <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+                  <div key={q.text} className="kq-host-q mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
                   {state.phase === 'answer' ? <ListLive state={state} /> : <ListResult state={state} />}
                   <UnknownAnswers state={state} onJudge={(key, accept) => ref.current && set(judgeUnknown(ref.current, key, accept))} />
                 </div>
@@ -1126,7 +1127,7 @@ export function KickQuizPage() {
                 <>
                 <QuestionImage url={result && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type ?? 'text'} revealed={Boolean(result)} large />
                 <AboutBadge q={q} />
-                <div className="mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
+                <div key={q.text} className="kq-host-q mb-4 text-center text-2xl font-black leading-snug">{q.text}</div>
                 {q.faces ? (
                   <FaceGrid q={q} answerAt={r.answerAt} now={now} correct={result ? result.correctIndex : null} mine={r.streamer?.pick ?? null} />
                 ) : (
@@ -1135,9 +1136,9 @@ export function KickQuizPage() {
                     const right = result && i === result.correctIndex;
                     const streamerPicked = result && result.streamerPick === i;
                     return (
-                      <div key={i} className={cn('flex items-center gap-2 rounded-xl border-2 p-3 text-start text-lg font-black', right ? 'border-q-green bg-q-green/15' : streamerPicked ? 'border-q-red bg-q-red/15' : 'border-q-line bg-q-panel')}>
-                        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-q-gold/15 text-q-gold">{i + 1}</span>
-                        {o}
+                      <div key={`${q.text}-${i}`} style={{ '--i': i } as React.CSSProperties} className={cn('kq-opt text-lg', right ? 'right' : streamerPicked ? 'ring-2 ring-q-red' : result && 'dim')}>
+                        <span className="n">{i + 1}</span>
+                        <span className="min-w-0 flex-1">{o}</span>
                       </div>
                     );
                   })}

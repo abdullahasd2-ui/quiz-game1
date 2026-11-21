@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{--gold:#f7c948;--orange:#ff6b35;--cyan:#38bdf8;--purple:#a855f7;--pink:#f472b6;--green:#27ae60;--red:#e74c3c}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100vw;height:100vh;overflow:hidden;background:#06051a;font-family:Tajawal,sans-serif;color:#fff}
+  /* The background fills any frame; the 1920×1080 content box is scaled to fit inside it (safe area). */
+  #bg{position:absolute;inset:0;overflow:hidden}
+  #bg .base{position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 120%,#1b0f4a 0%,transparent 70%),radial-gradient(60% 60% at 50% -20%,#2a1460 0%,transparent 70%),#06051a}
+  .beam{position:absolute;top:-20%;width:34vw;height:150%;transform-origin:50% 0;background:linear-gradient(to bottom,rgba(168,85,247,.32),rgba(56,189,248,.08) 60%,transparent);filter:blur(18px);mix-blend-mode:screen}
+  .floor{position:absolute;left:-20%;right:-20%;bottom:-8%;height:42%;background:repeating-linear-gradient(90deg,rgba(168,85,247,.16) 0 2px,transparent 2px 120px),repeating-linear-gradient(0deg,rgba(56,189,248,.12) 0 2px,transparent 2px 70px);transform:perspective(700px) rotateX(62deg);transform-origin:50% 100%;mask-image:linear-gradient(to top,#000 10%,transparent 90%)}
+  .dust{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.5;box-shadow:0 0 8px #a5f3fc}
+  #box{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden}
+  .h,.s,.chip,.pill,.stamp{direction:rtl}
+  #bg{contain:paint}
+  .layer{position:absolute;inset:0}
+  .scr{position:absolute;left:0;top:0;width:390px;height:844px;transform-origin:0 0;border-radius:44px;overflow:hidden;background:#07071a;box-shadow:0 0 0 2px rgba(255,255,255,.18),0 50px 120px -30px rgba(0,0,0,.95),0 0 120px -30px rgba(168,85,247,.75)}
+  .scr img{position:absolute;inset:0;width:390px;height:844px}
+  .scr .glare{position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.12) 45%,transparent 55%);background-size:300% 100%}
+  .tv{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;border-radius:22px;overflow:hidden;box-shadow:0 0 0 2px rgba(255,255,255,.16),0 60px 140px -30px #000,0 0 140px -30px rgba(56,189,248,.7)}
+  .tv img{position:absolute;inset:0;width:1280px;height:720px}
+  .h{position:absolute;font:400 118px/1.12 Lalezar;text-align:center;white-space:nowrap;text-shadow:0 8px 0 rgba(0,0,0,.45)}
+  .s{position:absolute;font:800 46px/1.35 Tajawal;color:#ffffffd8;text-align:center;white-space:nowrap}
+  .grad{background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));-webkit-background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 8px 0 rgba(0,0,0,.45))}
+  .gold{background:linear-gradient(90deg,var(--orange),var(--gold));-webkit-background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 8px 0 rgba(0,0,0,.45))}
+  .chip{position:absolute;display:flex;align-items:center;gap:14px;padding:16px 32px;border-radius:999px;font:900 44px Tajawal;white-space:nowrap;background:rgba(15,13,44,.92);border:2px solid rgba(255,255,255,.18);box-shadow:0 20px 50px -15px #000}
+  .pill{position:absolute;padding:14px 34px;border-radius:999px;font:400 56px/1 Lalezar;white-space:nowrap;box-shadow:0 20px 60px -15px #000}
+  .stamp{position:absolute;padding:18px 44px;border-radius:30px;font:400 96px/1 Lalezar;white-space:nowrap;box-shadow:0 30px 80px -20px #000}
+  .num{position:absolute;font:400 230px/1 Lalezar;direction:ltr;text-shadow:0 14px 0 rgba(0,0,0,.5)}
+  .ring{position:absolute;border-radius:18px;border:6px solid var(--gold);box-shadow:0 0 0 8px rgba(247,201,72,.2),0 0 50px rgba(247,201,72,.75)}
+  .tap{position:absolute;border-radius:50%;border:7px solid #fff;transform:translate(-50%,-50%)}
+  .conf{position:absolute;width:18px;height:30px;border-radius:4px}
+  #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+  .vignette{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.65));pointer-events:none}
+</style>
+</head>
+<body>
+<script>document.write('<script src="' + (new URLSearchParams(location.search).get('shots') === 'app' ? 'data-app.js' : 'data.js') + '"><\/script>')</script>
+<div id="bg"><div class="base"></div><div class="floor" id="floor"></div></div>
+<div id="box"><div id="scenes" class="layer"></div></div>
+<div id="flash"></div>
+<div class="vignette"></div>
+<script>
+const Q = new URLSearchParams(location.search);
+const CUT = Q.get('cut') || 'master';
+const W = 1920, H = 1080;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = {
+  io: (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
+  out: (k) => 1 - Math.pow(1 - k, 3),
+  back: (k) => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+};
+const P = (t, a, d, e = ease.out) => e(clamp((t - a) / d));
+const el = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; };
+const SHOTS = window.SHOTS;
+// Shots from the iPhone app (430×932) or the website (390×844): screens are drawn at the shot's own size, then
+// scaled so they take the same room on the stage.
+const DIR = Q.get('shots') === 'app' ? 'shots-app' : 'shots';
+const SW = SHOTS.choose.w, SH = SHOTS.choose.h, K = 844 / SH;
+const EVENTS = [], FLASHES = [];
+let DROP = 2.6;
+const cue = (t, s, v = 1) => EVENTS.push({ t: +t.toFixed(3), s, v });
+const flashAt = (t, k = 0.5) => FLASHES.push([t, k]);
+
+// Fit the 1920×1080 box inside any frame (1920×1080, 1920×886, 1600×1200…).
+const box = document.getElementById('box');
+const fit = Math.min(innerWidth / W, innerHeight / H);
+box.style.transform = `translate(-50%,-50%) scale(${fit})`;
+
+// Background: moving spotlights, dust, the floor grid.
+const bg = document.getElementById('bg');
+const beams = [0, 1, 2, 3].map((i) => { const b = el('div', 'beam', bg); b.style.left = `${8 + i * 24}vw`; return b; });
+const dust = Array.from({ length: 40 }, (_, i) => { const d = el('div', 'dust', bg); return { d, x: (i * 37) % 100, y: (i * 61) % 100, v: 1 + (i % 5) * 0.6 }; });
+function bgUpdate(t) {
+  beams.forEach((b, i) => (b.style.transform = `rotate(${Math.sin(t * 0.6 + i * 1.7) * 18 + (i < 2 ? -12 : 12)}deg)`));
+  dust.forEach((q) => { q.d.style.left = q.x + Math.sin(t * 0.3 + q.y) * 2 + 'vw'; q.d.style.top = ((q.y - t * q.v) % 100 + 100) % 100 + 'vh'; });
+  document.getElementById('floor').style.backgroundPosition = `0 ${t * 40}px`;
+}
+
+const scenes = [];
+let cursor = 0;
+function scene(key, len, build) {
+  const root = el('div', 'layer', document.getElementById('scenes'));
+  const s = { key, start: cursor, end: cursor + len, len, root };
+  cursor += len;
+  s.update = build(s, root, (lt) => s.start + lt);
+  scenes.push(s);
+}
+/** A floating game screen (no device bezel). `place` sets centre x/y, scale, 3D tilt. */
+function screen(root, names) {
+  const s = el('div', 'scr', root);
+  s.style.width = SW + 'px'; s.style.height = SH + 'px';
+  const imgs = {};
+  for (const n of names) { const im = el('img', null, s); im.src = `${DIR}/${n}.jpg`; im.style.width = SW + 'px'; im.style.height = SH + 'px'; im.style.opacity = 0; imgs[n] = im; }
+  const gl = el('div', 'glare', s);
+  return {
+    show(w) { for (const n of names) imgs[n].style.opacity = typeof w === 'string' ? (n === w ? 1 : 0) : w[n] || 0; },
+    place({ x, y, s: sc, ry = 0, rx = 0, rz = 0, o = 1, px = SW / 2, py = SH / 2 }, t = 0) {
+      sc *= K;
+      s.style.transformOrigin = `${px}px ${py}px`;
+      s.style.transform = `translate(${x - px}px,${y - py}px) perspective(1800px) rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${sc})`;
+      s.style.opacity = o;
+      gl.style.backgroundPosition = `${100 - ((t * 25) % 300)}% 0`;
+    },
+  };
+}
+// Where a box of a shot is on the stage, for a screen placed with {x,y,s,px,py} and no tilt.
+const at = (name, key, f) => { const b = SHOTS[name].boxes[key]; const px = f.px ?? SW / 2, py = f.py ?? SH / 2, s = f.s * K; return [f.x + (b.x + b.w / 2 - px) * s, f.y + (b.y + b.h / 2 - py) * s, b.w * s, b.h * s]; };
+function text(root, cls, html, x, y) { const e = el('div', cls, root, html); e.style.left = x - 1600 + 'px'; e.style.width = '3200px'; e.style.top = y + 'px'; return e; }
+const showT = (e, lt, a, d = 0.35, dy = 40) => { const k = P(lt, a, d); e.style.opacity = k; e.style.transform = `translateY(${lerp(dy, 0, k)}px)`; };
+function confetti(root, n) { return Array.from({ length: n }, (_, i) => { const c = el('div', 'conf', root); c.style.background = ['#f7c948', '#ff6b35', '#38bdf8', '#a855f7', '#27ae60', '#f472b6'][i % 6]; return { c, x: (i * 53) % W, d: ((i * 13) % 10) / 10, v: 500 + ((i * 29) % 600), r: (i * 47) % 360 }; }); }
+const rain = (list, u0) => { for (const q of list) { const u = u0 - q.d * 0.5; q.c.style.opacity = u > 0 ? 1 : 0; q.c.style.transform = `translate(${q.x + Math.sin(u * 3 + q.r) * 60}px,${-60 + Math.max(0, u) * q.v * 0.7}px) rotate(${q.r + u * 400}deg)`; } };
+function ring(root) { const r = el('div', 'ring', root); return (x, y, w, h, o) => { r.style.left = x - w / 2 - 10 + 'px'; r.style.top = y - h / 2 - 10 + 'px'; r.style.width = w + 20 + 'px'; r.style.height = h + 20 + 'px'; r.style.opacity = o; r.style.transform = `scale(${lerp(1.2, 1, ease.out(clamp(o)))})`; }; }
+function tapFx(root) { const r = el('div', 'tap', root); return (x, y, lt, at) => { const k = P(lt, at, 0.45); r.style.left = x + 'px'; r.style.top = y + 'px'; r.style.width = r.style.height = lerp(30, 200, k) + 'px'; r.style.opacity = lt > at ? 1 - k : 0; }; }
+
+// ═══════════ Scenes ═══════════
+const S = {};
+S.hook = (len) => scene('hook', len, (s, root, T) => {
+  // A burst of light, the logo assembles, then the question.
+  const glow = el('div', null, root); Object.assign(glow.style, { position: 'absolute', left: '660px', top: '140px', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(168,85,247,.85),rgba(56,189,248,.3) 45%,transparent 70%)', filter: 'blur(10px)' });
+  const logo = el('img', null, root); logo.src = 'assets/wordmark-t.png'; Object.assign(logo.style, { position: 'absolute', width: '600px', left: '660px', top: '90px' });
+  const h = text(root, 'h', 'هل أنت <span class="gold">مستعد للتحدي؟</span>', W / 2, 760);
+  const q = Math.min(2.4, len * 0.55);
+  DROP = T(1.2);
+  cue(T(0), 'riser'); cue(T(1.2), 'impact'); cue(T(1.25), 'sparkle'); cue(T(q), 'hit'); flashAt(T(1.2), 0.7);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0.15, 1.05, ease.back);
+    logo.style.opacity = lt < 0.15 ? 0 : 1;
+    logo.style.transform = `perspective(1200px) rotateY(${lerp(-90, 0, P(lt, 0.15, 1.05, ease.out))}deg) scale(${lerp(0.4, 1, k)})`;
+    glow.style.opacity = P(lt, 0, 1.2) * (0.6 + 0.2 * Math.sin(lt * 4));
+    glow.style.transform = `scale(${lerp(0.2, 1.1, P(lt, 0, 1.3))})`;
+    const k2 = P(lt, q, 0.45, ease.back); h.style.opacity = P(lt, q, 0.1); h.style.transform = `scale(${lerp(1.6, 1, k2)})`;
+  };
+});
+
+S.identity = (len) => scene('identity', len, (s, root, T) => {
+  // Three real screens float in a 3D arc: the home page, the modes, a question.
+  const a = screen(root, ['home-hero']), b = screen(root, ['choose']), c = screen(root, ['home-modes']);
+  const h = text(root, 'h', '<span class="grad">جاوب بنفسك… أو بادل!</span>', W / 2, 60); h.style.fontSize = '96px';
+  cue(T(0), 'whoosh'); cue(T(0.4), 'whoosh', 0.6);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0, 1.2, ease.out), sw = Math.sin(lt * 0.5) * 3;
+    b.place({ x: W / 2, y: 620, s: lerp(0.6, 1.02, k), ry: sw, o: P(lt, 0, 0.3) }, lt); b.show('choose');
+    a.place({ x: lerp(W / 2, 1460, k), y: 650, s: 0.86, ry: -28 + sw, o: P(lt, 0.3, 0.4) }, lt); a.show('home-hero');
+    c.place({ x: lerp(W / 2, 460, k), y: 650, s: 0.86, ry: 28 + sw, o: P(lt, 0.3, 0.4) }, lt); c.show('home-modes');
+    showT(h, lt, 0.6);
+  };
+});
+
+S.create = (len) => scene('create', len, (s, root, T) => {
+  // Make a room, friends join with the code or the QR, two teams.
+  const a = screen(root, ['lobby-wait']), b = screen(root, ['lobby-full']);
+  const h = text(root, 'h', 'غرفة · كود · <span class="gold">فريقين</span>', W / 2, 60); h.style.fontSize = '92px';
+  const r = ring(root);
+  const tg = el('div', 'pill', root, '📱 جوال  ·  📺 تلفاز'); Object.assign(tg.style, { background: 'rgba(15,13,44,.92)', border: '3px solid #38bdf8', left: '760px', top: '960px', fontSize: '48px' });
+  cue(T(0), 'whoosh'); cue(T(0.9), 'pop'); cue(T(1.9), 'whoosh', 0.7); cue(T(2.6), 'pop');
+  return (t) => {
+    const lt = t - s.start;
+    const fa = { x: lerp(W / 2, 640, P(lt, 1.6, 0.6, ease.io)), y: 600, s: 1.0 };
+    a.place({ ...fa, ry: lerp(0, -14, P(lt, 1.6, 0.6)), o: P(lt, 0, 0.25) }, lt); a.show('lobby-wait');
+    const [x, y, w, hh] = at('lobby-wait', 'code', fa); r(x, y, w, hh, P(lt, 0.9, 0.3) * (1 - P(lt, 1.6, 0.3)));
+    b.place({ x: lerp(W + 400, 1280, P(lt, 1.8, 0.6, ease.out)), y: 600, s: 1.0, ry: 14, o: P(lt, 1.8, 0.2) }, lt); b.show('lobby-full');
+    showT(h, lt, 0.2); showT(tg, lt, 2.6);
+  };
+});
+
+S.cats = (len) => scene('cats', len, (s, root, T) => {
+  // Categories rain in around the real category screen; then the board with its points.
+  const sc = screen(root, ['cats-top', 'board']);
+  const names = [['🏺', 'تاريخ'], ['🗺️', 'جغرافيا'], ['⚽', 'كرة قدم'], ['🚩', 'أعلام دول'], ['🚗', 'سيارات'], ['🧩', 'مسيرة لاعب'], ['🔍', 'اكتشف الصورة'], ['🔎', 'اكتشف الزوم']];
+  const chips = names.map(([i, n]) => el('div', 'chip', root, `<span>${i}</span>${n}`));
+  const nums = [100, 200, 300, 400, 500].map((n, i) => { const e = el('div', 'num', root, n); e.style.color = ['#27ae60', '#3b82f6', '#f7c948', '#ff6b35', '#e74c3c'][i]; return e; });
+  const h = text(root, 'h', 'فئات <span class="gold">ومستويات</span>', W / 2, 50); h.style.fontSize = '92px';
+  cue(T(0), 'whoosh'); names.forEach((_, i) => cue(T(0.3 + i * 0.16), 'pop', 0.5)); [0, 1, 2, 3, 4].forEach((i) => cue(T(2.7 + i * 0.28), 'tick', 0.7 + i * 0.1));
+  return (t) => {
+    const lt = t - s.start;
+    sc.place({ x: W / 2, y: 610, s: 1.0, ry: Math.sin(lt * 0.6) * 4, o: P(lt, 0, 0.25) }, lt);
+    sc.show(lt < 2.4 ? 'cats-top' : { 'cats-top': 1 - P(lt, 2.4, 0.3), board: P(lt, 2.4, 0.3) });
+    chips.forEach((c, i) => {
+      const a = 0.3 + i * 0.16, k = P(lt, a, 0.45, ease.back);
+      const left = i % 2 === 0; const row = Math.floor(i / 2);
+      c.style.left = (left ? 1230 + (row % 2) * 70 : 180 + (row % 2 ? 0 : 70)) + 'px';
+      c.style.top = 250 + row * 170 + 'px';
+      c.style.opacity = P(lt, a, 0.1) * (1 - P(lt, 2.3, 0.3));
+      c.style.transform = `translateX(${(left ? 1 : -1) * lerp(300, 0, k)}px) scale(${lerp(0.6, 1, k)})`;
+    });
+    nums.forEach((e, i) => {
+      const a = 2.7 + i * 0.28;
+      e.style.left = (i % 2 ? 1320 : 270) + 'px'; e.style.top = 230 + i * 150 + 'px';
+      e.style.fontSize = '150px';
+      e.style.opacity = P(lt, a, 0.1);
+      e.style.transform = `scale(${lerp(1.8, 1, P(lt, a, 0.35, ease.back))})`;
+    });
+    showT(h, lt, 0.1);
+  };
+});
+
+S.modes = (len) => scene('modes', len, (s, root, T) => {
+  // The modes, each on its real screen, sliding past like cards.
+  const list = [['flip-choose', '🔀 جاوب أو اقلب', '#a855f7'], ['triple-choose', '↩️ جاوب أو بادل أو اعكس', '#f7c948'], ['list-play', '⏱️ عدّها', '#f472b6'], ['solo-swap', '🙋 فردي', '#38bdf8']];
+  const items = list.map(([n, title, col]) => { const sc = screen(root, [n]); sc.show(n); const p = el('div', 'pill', root, title); p.style.background = 'rgba(12,10,36,.95)'; p.style.border = `4px solid ${col}`; p.style.color = col; return { sc, p }; });
+  const h = text(root, 'h', '<span class="grad">أطوار كثيرة</span>', W / 2, 40); h.style.fontSize = '92px';
+  const per = (len - 0.4) / list.length;
+  list.forEach((_, i) => { cue(T(0.1 + i * per), 'whoosh', 0.8); cue(T(0.35 + i * per), 'pop'); });
+  return (t) => {
+    const lt = t - s.start;
+    showT(h, lt, 0);
+    items.forEach((it, i) => {
+      // Carousel: the current card in the centre, the others to the sides, smaller and turned.
+      // Each card holds in the centre, then the carousel turns to the next one.
+      const c = Math.max(0, (lt - 0.1) / per), base = Math.floor(c), frac = c - base;
+      const pos = Math.min(base + ease.io(clamp((frac - 0.72) / 0.28)), list.length - 1) - i; // 0 = centre
+      const x = W / 2 - pos * 560, k = Math.max(0, 1 - Math.abs(pos) * 0.45);
+      it.sc.place({ x, y: 620, s: 0.7 + 0.3 * k, ry: pos * 32, o: clamp(1.3 - Math.abs(pos) * 0.55) }, lt);
+      it.sc.show(list[i][0]);
+      it.p.style.left = '50%'; it.p.style.top = '960px';
+      const on = Math.abs(pos) < 0.5;
+      it.p.style.opacity = on ? 1 - Math.abs(pos) * 2 : 0;
+      it.p.style.transform = `translateX(-50%) scale(${on ? 1 : 0.8})`;
+    });
+  };
+});
+
+S.picture = (len) => scene('picture', len, (s, root, T) => {
+  // Picture questions: blurred, then revealed.
+  const sc = screen(root, ['picture', 'picture-result']);
+  const h = text(root, 'h', 'أسئلة <span class="gold">صور</span>', W / 2, 60); h.style.fontSize = '92px';
+  cue(T(0), 'whoosh'); cue(T(1.5), 'sparkle'); flashAt(T(1.5), 0.35);
+  return (t) => {
+    const lt = t - s.start;
+    sc.place({ x: W / 2, y: 620, s: lerp(1.05, 1.15, P(lt, 0, len)), ry: Math.sin(lt) * 3, o: P(lt, 0, 0.25) }, lt);
+    sc.show(lt < 1.5 ? 'picture' : { picture: 1 - P(lt, 1.5, 0.3), 'picture-result': P(lt, 1.5, 0.3) });
+    showT(h, lt, 0.1);
+  };
+});
+
+S.play = (len) => scene('play', len, (s, root, T) => {
+  // The duel: pick the 300 on the board, the secret choice (بادل), the opponent answers against the clock.
+  const sc = screen(root, ['board', 'choose', 'swapped']);
+  const opp = screen(root, ['options']);
+  const r = ring(root), tp = tapFx(root);
+  const st = el('div', 'stamp', root, '🔄 بادل!'); st.style.background = 'linear-gradient(135deg,#e74c3c,#c0392b)';
+  const h1 = text(root, 'h', 'اختار سؤالك', W / 2, 60), h2 = text(root, 'h', 'جاوب بنفسك… أو <span class="gold">بادل جواب خصمك</span>', W / 2, 60), h3 = text(root, 'h', 'والوقت <span class="gold">يركض!</span>', W / 2, 60);
+  [h1, h2, h3].forEach((e) => (e.style.fontSize = '92px'));
+  cue(T(0), 'whoosh'); cue(T(1.0), 'click'); cue(T(1.5), 'whoosh', 0.6); cue(T(3.1), 'click'); cue(T(3.3), 'stamp'); cue(T(4.4), 'whoosh'); [5.0, 5.5, 6.0, 6.5].forEach((x) => cue(T(x), 'tick'));
+  return (t) => {
+    const lt = t - s.start;
+    const left = P(lt, 4.3, 0.6, ease.io);
+    const f = { x: lerp(W / 2, 600, left), y: 610, s: 1.08 };
+    sc.place({ ...f, ry: lerp(0, -16, left), o: P(lt, 0, 0.25) }, lt);
+    sc.show(lt < 1.4 ? 'board' : lt < 3.1 ? { board: 1 - P(lt, 1.4, 0.25), choose: P(lt, 1.4, 0.25) } : { choose: 1 - P(lt, 3.1, 0.2), swapped: P(lt, 3.1, 0.2) });
+    if (lt < 1.4) { const [x, y, w, hh] = at('board', 'cell', f); r(x, y, w, hh, P(lt, 0.5, 0.3)); tp(x, y, lt, 1.0); }
+    else if (lt < 3.4) { const [x, y, w, hh] = at('choose', 'swap', f); r(x, y, w, hh, P(lt, 2.3, 0.3) * (1 - P(lt, 3.2, 0.2))); tp(x, y, lt, 3.1); }
+    else r(0, 0, 0, 0, 0);
+    const k = P(lt, 3.3, 0.4, ease.back); st.style.opacity = P(lt, 3.3, 0.1) * (1 - P(lt, 4.3, 0.3)); st.style.left = f.x - 230 + 'px'; st.style.top = '820px'; st.style.transform = `rotate(-6deg) scale(${lerp(2, 1, k)})`;
+    opp.place({ x: lerp(W + 400, 1320, P(lt, 4.4, 0.6, ease.out)), y: 610, s: 1.08, ry: 16, o: P(lt, 4.4, 0.2) }, lt); opp.show('options');
+    h1.style.opacity = P(lt, 0.1, 0.25) * (1 - P(lt, 1.4, 0.2)); h2.style.opacity = P(lt, 1.5, 0.25) * (1 - P(lt, 4.3, 0.2)); h3.style.opacity = P(lt, 4.5, 0.25);
+  };
+});
+
+S.result = (len) => scene('result', len, (s, root, T) => {
+  // The result: the swap paid double. Then the streak.
+  const sc = screen(root, ['result']);
+  const st = el('div', 'stamp', root, '+600'); st.style.direction = 'ltr'; st.style.font = '900 120px Tajawal'; st.style.background = 'linear-gradient(135deg,#27ae60,#1e8449)';
+  const conf = confetti(root, 90);
+  const h = text(root, 'h', 'بادلت صح؟ <span class="gold">النقاط دبل!</span>', W / 2, 60); h.style.fontSize = '92px';
+  cue(T(0), 'whoosh'); cue(T(0.7), 'impact'); cue(T(0.75), 'ding'); cue(T(0.9), 'sparkle'); flashAt(T(0.7), 0.55);
+  return (t) => {
+    const lt = t - s.start;
+    sc.place({ x: W / 2, y: 610, s: lerp(1.0, 1.1, P(lt, 0, len)), ry: Math.sin(lt * 0.8) * 3, o: P(lt, 0, 0.25) }, lt); sc.show('result');
+    const k = P(lt, 0.7, 0.45, ease.back); st.style.opacity = P(lt, 0.7, 0.1); st.style.left = '1190px'; st.style.top = '700px'; st.style.transform = `rotate(-5deg) scale(${lerp(2.4, 1, k) + 0.03 * Math.sin(lt * 6)})`;
+    rain(conf, lt - 0.7);
+    showT(h, lt, 0.1);
+  };
+});
+
+S.tv = (len) => scene('tv', len, (s, root, T) => {
+  // On the TV with phones as controllers.
+  const tv = el('div', 'tv', root); ['tv-board', 'tv-question'].forEach((n) => { const im = el('img', null, tv); im.src = `shots/${n}.jpg`; });
+  const a = screen(root, ['choose']), b = screen(root, ['options']);
+  const h = text(root, 'h', 'العبوها على <span class="gold">التلفاز</span>', W / 2, 40); h.style.fontSize = '88px';
+  cue(T(0), 'whoosh'); cue(T(1.4), 'whoosh', 0.6);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0, 0.8, ease.out);
+    tv.style.transform = `translate(${W / 2 - 640 * 0.95}px,${lerp(300, 200, k)}px) scale(0.95) perspective(2000px) rotateX(${lerp(14, 4, k)}deg)`;
+    tv.style.opacity = P(lt, 0, 0.25);
+    tv.children[0].style.opacity = 1 - P(lt, 1.4, 0.3); tv.children[1].style.opacity = P(lt, 1.4, 0.3);
+    a.place({ x: lerp(-200, 220, P(lt, 0.8, 0.5, ease.back)), y: 760, s: 0.55, rz: -8, o: P(lt, 0.8, 0.2) }, lt); a.show('choose');
+    b.place({ x: lerp(W + 200, 1700, P(lt, 1.0, 0.5, ease.back)), y: 760, s: 0.55, rz: 8, o: P(lt, 1.0, 0.2) }, lt); b.show('options');
+    showT(h, lt, 0.1);
+  };
+});
+
+S.final = (len) => scene('final', len, (s, root, T) => {
+  const sc = screen(root, ['final']);
+  const conf = confetti(root, 120);
+  const h = text(root, 'h', '<span class="gold">والفوز لفريقك! 🏆</span>', W / 2, 60); h.style.fontSize = '96px';
+  cue(T(0), 'whoosh'); cue(T(0.5), 'impact'); cue(T(0.6), 'sparkle'); flashAt(T(0.5), 0.5);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0, 0.8, ease.back);
+    sc.place({ x: W / 2, y: 620, s: lerp(0.7, 1.08, k), rz: lerp(6, 0, k), o: P(lt, 0, 0.2) }, lt); sc.show('final');
+    rain(conf, lt - 0.5);
+    showT(h, lt, 0.2);
+  };
+});
+
+S.end = (len, cta) => scene('end', len, (s, root, T) => {
+  const glow = el('div', null, root); Object.assign(glow.style, { position: 'absolute', left: '610px', top: '60px', width: '700px', height: '700px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(247,201,72,.45),rgba(168,85,247,.25) 45%,transparent 70%)', filter: 'blur(12px)' });
+  const logo = el('img', null, root); logo.src = 'assets/wordmark-t.png'; Object.assign(logo.style, { position: 'absolute', width: '560px', left: '680px', top: '100px' });
+  const h = text(root, 'h', 'جاوب أو بادل… <span class="gold">التحدي يبدأ منك!</span>', W / 2, 720); h.style.fontSize = '96px';
+  const c = cta ? el('div', 'pill', root, '📱 حمّل اللعبة مجانًا') : null;
+  if (c) Object.assign(c.style, { background: 'linear-gradient(90deg,#ff6b35,#f7c948)', color: '#140a00', left: '50%', top: '880px', font: '900 52px Tajawal', padding: '22px 54px' });
+  cue(T(0), 'whoosh'); cue(T(0.15), 'impact'); cue(T(0.9), 'sparkle'); flashAt(T(0.15), 0.45);
+  return (t) => {
+    const lt = t - s.start;
+    const k = P(lt, 0, 0.8, ease.back);
+    logo.style.opacity = P(lt, 0, 0.1); logo.style.transform = `scale(${lerp(1.5, 1, k) + 0.012 * Math.sin(lt * 2.5)})`;
+    glow.style.opacity = P(lt, 0, 0.6) * (0.75 + 0.2 * Math.sin(lt * 3));
+    showT(h, lt, 0.7);
+    if (c) { const k2 = P(lt, 1.3, 0.45, ease.back); c.style.opacity = P(lt, 1.3, 0.1); c.style.transform = `translateX(-50%) scale(${lerp(0.5, 1, k2) * (1 + 0.025 * Math.sin(lt * 5))})`; }
+  };
+});
+
+// ═══════════ The two cuts ═══════════
+if (CUT === 'store') {
+  // App Store preview: 15–30 s. Gameplay first, little text, no call to action.
+  // Under 30 s, everything a new player needs: the idea, rooms and teams, categories and points, a real round
+  // (pick, secret choice, answer against the clock, result), the modes and the winner.
+  S.hook(2.4); S.create(3.4); S.cats(4.0); S.play(7.0); S.result(3.0); S.modes(5.6); S.final(2.4); S.end(2.0, false);
+} else {
+  S.hook(4.6); S.identity(4.6); S.create(4.0); S.cats(4.6); S.play(7.6); S.result(3.6); S.picture(3.2); S.modes(7.4); S.tv(3.6); S.final(3.4); S.end(8.2, true);
+}
+const TOTAL = cursor;
+
+const flashEl = document.getElementById('flash');
+function render(t) {
+  bgUpdate(t);
+  let fl = 0;
+  for (const [a, k] of FLASHES) if (t >= a) fl = Math.max(fl, k * Math.exp(-(t - a) * 9));
+  flashEl.style.opacity = fl;
+  for (const s of scenes) {
+    const on = t >= s.start - 0.25 && t < s.end + 0.25;
+    s.root.style.display = on ? 'block' : 'none';
+    if (!on) continue;
+    const fadeIn = s.start === 0 ? 1 : clamp((t - (s.start - 0.25)) / 0.25);
+    const fadeOut = s === scenes[scenes.length - 1] ? 1 : clamp((s.end + 0.25 - t) / 0.25);
+    s.root.style.opacity = Math.min(fadeIn, fadeOut);
+    s.update(t);
+  }
+  // Fade to the background at the very end.
+}
+window.render = render;
+window.TIMELINE = { total: TOTAL, drop: DROP, events: EVENTS.sort((a, b) => a.t - b.t), voice: [], scenes: scenes.map((s) => ({ key: s.key, start: s.start, end: s.end })) };
+render(0);
+</script>
+</body>
+</html>
