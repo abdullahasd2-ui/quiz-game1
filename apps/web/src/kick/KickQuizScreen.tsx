@@ -6,7 +6,7 @@ import { unlockAudio } from '@/game/fx/sound';
 import { useStreamFx } from './useStreamFx';
 import { io, type Socket } from 'socket.io-client';
 import { QuestionImage } from '@/game/ui';
-import { SERVER_URL } from '@/lib/server';
+import { SERVER_URL, serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { Background3D } from '@/game/fx/Background3D';
 import { outcomeLabel } from './KickQuizPage';
@@ -430,7 +430,7 @@ function ScoreCard({ state, who }: { state: StreamState; who: string }) {
 function AppQr() {
   return (
     <div className="pointer-events-none fixed bottom-4 left-4 z-20 flex flex-col items-center gap-1.5 rounded-2xl border border-white/15 bg-q-bg/85 p-3.5 shadow-lg backdrop-blur">
-      <img src="/app-qr.svg" alt="" className="size-42 rounded-lg bg-white p-2" />
+      <img src={serverUrl('/app-qr.svg')} alt="" className="size-42 rounded-lg bg-white p-2" />
       <div className="text-base font-black text-white/85">📱 حمّل اللعبة</div>
       <div className="text-sm font-bold text-white/50">App Store</div>
     </div>
