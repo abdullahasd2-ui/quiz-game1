@@ -124,8 +124,9 @@ S.hook = (len) => scene('hook', len, (s, root, T) => {
   const glow = el('div', null, root); Object.assign(glow.style, { position: 'absolute', left: '660px', top: '140px', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(168,85,247,.85),rgba(56,189,248,.3) 45%,transparent 70%)', filter: 'blur(10px)' });
   const logo = el('img', null, root); logo.src = 'assets/wordmark-t.png'; Object.assign(logo.style, { position: 'absolute', width: '600px', left: '660px', top: '90px' });
   const h = text(root, 'h', 'هل أنت <span class="gold">مستعد للتحدي؟</span>', W / 2, 760);
+  const q = Math.min(2.4, len * 0.55);
   DROP = T(1.2);
-  cue(T(0), 'riser'); cue(T(1.2), 'impact'); cue(T(1.25), 'sparkle'); cue(T(2.4), 'hit'); flashAt(T(1.2), 0.7);
+  cue(T(0), 'riser'); cue(T(1.2), 'impact'); cue(T(1.25), 'sparkle'); cue(T(q), 'hit'); flashAt(T(1.2), 0.7);
   return (t) => {
     const lt = t - s.start;
     const k = P(lt, 0.15, 1.05, ease.back);
@@ -133,7 +134,7 @@ S.hook = (len) => scene('hook', len, (s, root, T) => {
     logo.style.transform = `perspective(1200px) rotateY(${lerp(-90, 0, P(lt, 0.15, 1.05, ease.out))}deg) scale(${lerp(0.4, 1, k)})`;
     glow.style.opacity = P(lt, 0, 1.2) * (0.6 + 0.2 * Math.sin(lt * 4));
     glow.style.transform = `scale(${lerp(0.2, 1.1, P(lt, 0, 1.3))})`;
-    const k2 = P(lt, 2.4, 0.45, ease.back); h.style.opacity = P(lt, 2.4, 0.1); h.style.transform = `scale(${lerp(1.6, 1, k2)})`;
+    const k2 = P(lt, q, 0.45, ease.back); h.style.opacity = P(lt, q, 0.1); h.style.transform = `scale(${lerp(1.6, 1, k2)})`;
   };
 });
 
@@ -245,7 +246,7 @@ S.play = (len) => scene('play', len, (s, root, T) => {
   const opp = screen(root, ['options']);
   const r = ring(root), tp = tapFx(root);
   const st = el('div', 'stamp', root, '🔄 بادل!'); st.style.background = 'linear-gradient(135deg,#e74c3c,#c0392b)';
-  const h1 = text(root, 'h', 'اختار سؤالك', W / 2, 60), h2 = text(root, 'h', 'قرارك <span class="gold">سري</span>', W / 2, 60), h3 = text(root, 'h', 'والوقت <span class="gold">يركض!</span>', W / 2, 60);
+  const h1 = text(root, 'h', 'اختار سؤالك', W / 2, 60), h2 = text(root, 'h', 'جاوب بنفسك… أو <span class="gold">بادل جواب خصمك</span>', W / 2, 60), h3 = text(root, 'h', 'والوقت <span class="gold">يركض!</span>', W / 2, 60);
   [h1, h2, h3].forEach((e) => (e.style.fontSize = '92px'));
   cue(T(0), 'whoosh'); cue(T(1.0), 'click'); cue(T(1.5), 'whoosh', 0.6); cue(T(3.1), 'click'); cue(T(3.3), 'stamp'); cue(T(4.4), 'whoosh'); [5.0, 5.5, 6.0, 6.5].forEach((x) => cue(T(x), 'tick'));
   return (t) => {
@@ -331,7 +332,9 @@ S.end = (len, cta) => scene('end', len, (s, root, T) => {
 // ═══════════ The two cuts ═══════════
 if (CUT === 'store') {
   // App Store preview: 15–30 s. Gameplay first, little text, no call to action.
-  S.hook(3.2); S.play(7.2); S.result(3.4); S.picture(3.0); S.modes(6.0); S.end(6.0, false);
+  // Under 30 s, everything a new player needs: the idea, rooms and teams, categories and points, a real round
+  // (pick, secret choice, answer against the clock, result), the modes and the winner.
+  S.hook(2.4); S.create(3.4); S.cats(4.0); S.play(7.0); S.result(3.0); S.modes(5.6); S.final(2.4); S.end(2.0, false);
 } else {
   S.hook(4.6); S.identity(4.6); S.create(4.0); S.cats(4.6); S.play(7.6); S.result(3.6); S.picture(3.2); S.modes(7.4); S.tv(3.6); S.final(3.4); S.end(8.2, true);
 }
