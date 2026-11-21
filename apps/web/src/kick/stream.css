@@ -1,0 +1,430 @@
+/* The broadcast screen (/kick/quiz/screen) and the streamer's page: the same identity (dark violet, gold, cyan),
+   raised to a broadcast look. Only transform / opacity / filter / box-shadow are animated. */
+
+/* ── Panels ─────────────────────────────────────────────────────────────── */
+.kq-stage {
+  position: relative;
+  isolation: isolate;
+  border-radius: 1.75rem;
+  padding: clamp(1rem, 1.6vw, 2rem);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(22, 19, 52, 0.94), rgba(11, 10, 30, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 30px 80px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+/* A thin gradient frame that slowly travels round the panel. */
+.kq-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(from var(--kq-a, 0deg), rgba(56, 189, 248, 0.55), rgba(168, 85, 247, 0.15), rgba(247, 201, 72, 0.55), rgba(168, 85, 247, 0.15), rgba(56, 189, 248, 0.55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: kq-frame 12s linear infinite;
+}
+@property --kq-a {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes kq-frame {
+  to {
+    --kq-a: 360deg;
+  }
+}
+/* Light sweep across a panel when its content changes. */
+.kq-sweep {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.09) 48%, transparent 60%);
+  background-size: 260% 100%;
+  animation: kq-sweep 1.3s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+@keyframes kq-sweep {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -130% 0;
+  }
+}
+.kq-side {
+  position: relative;
+  border-radius: 1.4rem;
+  padding: 1rem 1.1rem;
+  background: linear-gradient(180deg, rgba(20, 18, 46, 0.92), rgba(12, 11, 30, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 20px 60px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* ── HUD bar ────────────────────────────────────────────────────────────── */
+.kq-hud {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 999px;
+  padding: 0.45rem 0.6rem 0.45rem 1rem;
+  background: linear-gradient(90deg, rgba(12, 11, 30, 0.85), rgba(25, 20, 60, 0.85));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+}
+.kq-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: linear-gradient(90deg, #e11d48, #f43f5e);
+  box-shadow: 0 0 18px -4px rgba(244, 63, 94, 0.9);
+}
+.kq-live i {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #fff;
+  animation: kq-blink 1.2s ease-in-out infinite;
+}
+@keyframes kq-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+.kq-progress {
+  position: relative;
+  height: 0.45rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.kq-progress > span {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f7c948, #ff9f43, #ff6b35);
+  box-shadow: 0 0 14px rgba(247, 201, 72, 0.7);
+  transition: width 0.8s cubic-bezier(0.3, 1, 0.3, 1);
+}
+
+/* ── The question and its options ───────────────────────────────────────── */
+.kq-q {
+  animation: kq-q-in 0.75s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+@keyframes kq-q-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    filter: blur(8px);
+  }
+}
+.kq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.95rem;
+  font-weight: 900;
+  color: #f7c948;
+  background: linear-gradient(90deg, rgba(247, 201, 72, 0.18), rgba(255, 107, 53, 0.12));
+  box-shadow: inset 0 0 0 1px rgba(247, 201, 72, 0.35);
+  animation: kq-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+@keyframes kq-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+.kq-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: 1.1rem;
+  padding: 0.95rem 1.1rem;
+  font-weight: 900;
+  text-align: start;
+  background: linear-gradient(180deg, rgba(34, 30, 72, 0.9), rgba(20, 18, 46, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1.5px rgba(255, 255, 255, 0.09);
+  animation: kq-opt-in 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.09s);
+  transition:
+    transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1),
+    opacity 0.5s,
+    box-shadow 0.5s,
+    filter 0.5s;
+}
+@keyframes kq-opt-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) rotateX(35deg);
+  }
+}
+.kq-opt .n {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.8rem;
+  font-size: 1.25rem;
+  color: #1a1206;
+  background: linear-gradient(135deg, #ffd76a, #f7a83b);
+  box-shadow: 0 6px 16px -6px rgba(247, 201, 72, 0.9);
+}
+.kq-opt.right {
+  transform: scale(1.03);
+  background: linear-gradient(180deg, rgba(22, 101, 52, 0.85), rgba(14, 60, 34, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 2px #34d399,
+    0 0 40px -6px rgba(52, 211, 153, 0.75);
+  animation: kq-right 1.6s ease-in-out 0.2s infinite alternate;
+}
+.kq-opt.right .n {
+  background: linear-gradient(135deg, #a7f3d0, #34d399);
+}
+@keyframes kq-right {
+  to {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 0 0 2px #6ee7b7,
+      0 0 60px -4px rgba(52, 211, 153, 0.95);
+  }
+}
+.kq-opt.dim {
+  opacity: 0.38;
+  filter: saturate(0.4);
+  transform: scale(0.97);
+}
+
+/* ── «1 جاوب / 2 بادل» tiles in the choose step ───────────────────────── */
+.kq-pick {
+  border-radius: 1.2rem;
+  padding: 1rem 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1.5px var(--c, rgba(255, 255, 255, 0.15));
+  animation: kq-opt-in 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.1s);
+}
+.kq-pick b.key {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.9rem;
+  font-size: 1.8rem;
+  color: #0b0a1e;
+  background: var(--c);
+  box-shadow: 0 0 24px -4px var(--c);
+}
+.kq-bar {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.kq-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--c);
+  transition: width 0.6s cubic-bezier(0.3, 1.2, 0.4, 1);
+}
+
+/* ── Timer ring ─────────────────────────────────────────────────────────── */
+.kq-timer {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.kq-timer svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.kq-timer circle.track {
+  stroke: rgba(255, 255, 255, 0.09);
+}
+.kq-timer circle.run {
+  stroke-linecap: round;
+  transition:
+    stroke-dashoffset 0.5s linear,
+    stroke 0.4s;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+.kq-timer.urgent {
+  animation: kq-urgent 0.5s ease-in-out infinite alternate;
+}
+@keyframes kq-urgent {
+  to {
+    transform: scale(1.08);
+  }
+}
+
+/* ── Leaderboard ────────────────────────────────────────────────────────── */
+.kq-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.85rem;
+  padding: 0.45rem 0.6rem;
+  background: rgba(255, 255, 255, 0.035);
+  transition:
+    transform 0.6s cubic-bezier(0.3, 1.2, 0.4, 1),
+    background 0.4s;
+  animation: kq-row-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+@keyframes kq-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+.kq-row .rank {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 0.6rem;
+  font-weight: 900;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.07);
+}
+.kq-row.r1 {
+  background: linear-gradient(90deg, rgba(247, 201, 72, 0.22), rgba(247, 201, 72, 0.05));
+  box-shadow: inset 0 0 0 1px rgba(247, 201, 72, 0.45);
+}
+.kq-row.r1 .rank {
+  background: linear-gradient(135deg, #ffe27a, #f7a83b);
+  color: #2a1a00;
+}
+.kq-row.r2 .rank {
+  background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+  color: #111;
+}
+.kq-row.r3 .rank {
+  background: linear-gradient(135deg, #fdba74, #c2410c);
+  color: #1b0a00;
+}
+.kq-row.up {
+  animation: kq-up 1.4s ease-out both;
+}
+@keyframes kq-up {
+  0% {
+    background: rgba(52, 211, 153, 0.35);
+  }
+}
+.kq-delta {
+  display: inline-block;
+  animation: kq-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation-delay: 0.5s;
+}
+.kq-chip {
+  animation: kq-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+/* ── Lobby: the call to join ────────────────────────────────────────────── */
+.kq-join {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 1.4rem;
+  padding: 0.7rem 1.4rem;
+  background: linear-gradient(90deg, rgba(83, 252, 24, 0.16), rgba(56, 189, 248, 0.12));
+  box-shadow:
+    inset 0 0 0 1.5px rgba(83, 252, 24, 0.45),
+    0 0 40px -10px rgba(83, 252, 24, 0.6);
+  animation: kq-breathe 2.4s ease-in-out infinite;
+}
+@keyframes kq-breathe {
+  50% {
+    transform: scale(1.04);
+    box-shadow:
+      inset 0 0 0 1.5px rgba(83, 252, 24, 0.7),
+      0 0 60px -6px rgba(83, 252, 24, 0.8);
+  }
+}
+.kq-count {
+  display: inline-block;
+  animation: kq-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.kq-dots i {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.15rem;
+  border-radius: 999px;
+  background: currentColor;
+  animation: kq-dot 1.2s ease-in-out infinite;
+}
+.kq-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.kq-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes kq-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-0.45rem);
+    opacity: 1;
+  }
+}
+
+/* ── Big moments ────────────────────────────────────────────────────────── */
+.kq-verdict {
+  animation: kq-verdict 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: 0.25s;
+}
+@keyframes kq-verdict {
+  from {
+    opacity: 0;
+    transform: scale(1.6);
+    filter: blur(6px);
+  }
+}
+
+/* The streamer's page: the same panels, a little calmer. */
+.kq-host-q {
+  animation: kq-q-in 0.6s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kq-stage::before,
+  .kq-live i,
+  .kq-join,
+  .kq-opt.right,
+  .kq-timer.urgent,
+  .kq-dots i {
+    animation: none !important;
+  }
+}
