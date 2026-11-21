@@ -10,6 +10,9 @@ export type CastleParts = {
   stages: THREE.Object3D[][];
   doors: [THREE.Object3D, THREE.Object3D];
   portcullis: THREE.Object3D;
+  /** Where the doors scrape the ground and where the bridge's tip lands (local), for dust. */
+  doorFoot: THREE.Vector3;
+  bridgeTip: THREE.Vector3;
   /** Window glass: their emissive intensity flickers. */
   windows: THREE.MeshStandardMaterial;
   /** Roofs that fall with the damage, top of the keep last. */
@@ -88,15 +91,80 @@ function battlements(width: number, y: number, z: number, depth: number, mat: TH
   return mesh;
 }
 
+/** A pointed (two-centred) arch outline, from the springing line up; w = span, rise = height of the point above it. */
+function pointedArch(path: THREE.Path | THREE.Shape, cx: number, y0: number, w: number, springH: number, rise: number, reverse = false) {
+  const pts: THREE.Vector2[] = [new THREE.Vector2(cx - w / 2, y0), new THREE.Vector2(cx - w / 2, y0 + springH)];
+  // Each half is an arc whose centre sits on the springing line, offset toward the far side.
+  const r = (w * w) / 4 / (w / 2) / 2 + (rise * rise) / w;
+  const off = r - w / 2;
+  const top = y0 + springH;
+  const n = 14;
+  const a0 = Math.PI;
+  const aTop = Math.PI - Math.acos(Math.min(1, (r - w / 2 + w / 2 - off) / r));
+  for (let i = 1; i <= n; i++) {
+    const a = a0 + ((Math.atan2(rise, -off) - a0) * i) / n;
+    pts.push(new THREE.Vector2(cx + off + Math.cos(a) * r, top + Math.sin(a) * r * (a > Math.PI ? -1 : 1)));
+  }
+  void aTop;
+  const left = pts.slice();
+  const right = left.map((p) => new THREE.Vector2(2 * cx - p.x, p.y)).reverse();
+  const all = [...left, ...right.slice(1)];
+  const seq = reverse ? all.reverse() : all;
+  path.moveTo(seq[0]!.x, seq[0]!.y);
+  for (const p of seq.slice(1)) path.lineTo(p.x, p.y);
+  return seq;
+}
+
+/** A simple semicircular-headed opening outline (for windows). */
+function roundArch(path: THREE.Path | THREE.Shape, w: number, h: number, reverse = false) {
+  const pts: THREE.Vector2[] = [new THREE.Vector2(-w / 2, -h / 2), new THREE.Vector2(-w / 2, h / 2 - w / 2)];
+  for (let i = 1; i < 12; i++) {
+    const a = Math.PI - (i / 12) * Math.PI;
+    pts.push(new THREE.Vector2(Math.cos(a) * (w / 2), h / 2 - w / 2 + Math.sin(a) * (w / 2)));
+  }
+  pts.push(new THREE.Vector2(w / 2, h / 2 - w / 2), new THREE.Vector2(w / 2, -h / 2));
+  const seq = reverse ? pts.reverse() : pts;
+  path.moveTo(seq[0]!.x, seq[0]!.y);
+  for (const p of seq.slice(1)) path.lineTo(p.x, p.y);
+}
+
+/** Damp and moss creep up the stone from the ground, and dry toward the top: walls look weathered, not new. */
+function weathered(mat: THREE.MeshStandardMaterial, key: string) {
+  mat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWp;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvWp = (modelMatrix * vec4(transformed, 1.)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWp;').replace(
+      '#include <map_fragment>',
+      `#include <map_fragment>
+      float ny = sin(vWp.x * 3.1 + sin(vWp.z * 2.3)) * 0.5 + sin(vWp.z * 4.7 + vWp.x * 1.3) * 0.5;
+      float damp = 1. - smoothstep(0.35, 1.7 + ny * 0.4, vWp.y);
+      diffuseColor.rgb *= 1. - damp * 0.38;
+      diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.72, 0.95, 0.62), damp * smoothstep(-0.2, 0.6, ny) * 0.6);
+      // Sun-bleached upper courses.
+      diffuseColor.rgb *= 1. + smoothstep(3.5, 7., vWp.y) * 0.08;`,
+    );
+  };
+  mat.customProgramCacheKey = () => `weathered-${key}`;
+  return mat;
+}
+
 export function buildCastle(team: { light: string; dark: string }, quality: 'high' | 'low'): CastleParts {
   shared.stone ??= stoneTextures();
   shared.wood ??= woodTexture();
   shared.planks ??= planksTexture();
   shared.chain ??= chainTexture();
   const root = new THREE.Group();
-  const stone = new THREE.MeshStandardMaterial({ map: shared.stone.map, bumpMap: shared.stone.bump, bumpScale: 0.6, roughness: 0.92, metalness: 0.02, color: '#d8d6e8' });
-  const stoneDark = stone.clone();
-  stoneDark.color = new THREE.Color('#9a9ab0');
+  const stone = weathered(new THREE.MeshStandardMaterial({ map: shared.stone.map, normalMap: shared.stone.normal, normalScale: new THREE.Vector2(1.1, 1.1), roughnessMap: shared.stone.rough, roughness: 1, metalness: 0.02, color: '#dcd8ea' }), 'stone');
+  const stoneDark = weathered(stone.clone(), 'stoneDark');
+  stoneDark.color = new THREE.Color('#a19eb6');
+  // Dressed stone for the gate: larger blocks (the texture at a coarser scale), a little paler.
+  const ashlarMap = shared.stone.map.clone();
+  ashlarMap.repeat.set(0.42, 0.42);
+  ashlarMap.needsUpdate = true;
+  const ashlarN = shared.stone.normal.clone();
+  ashlarN.repeat.set(0.42, 0.42);
+  ashlarN.needsUpdate = true;
+  const ashlar = weathered(new THREE.MeshStandardMaterial({ map: ashlarMap, normalMap: ashlarN, normalScale: new THREE.Vector2(1.3, 1.3), roughness: 0.9, color: '#e9e2ef' }), 'ashlar');
+  const carved = new THREE.MeshStandardMaterial({ color: '#d9cfc0', roughness: 0.75 });
   const roof = new THREE.MeshStandardMaterial({ map: roofTexture(team.dark), roughness: 0.55, metalness: 0.15, color: team.light });
   const wood = new THREE.MeshStandardMaterial({ map: shared.wood, roughness: 0.8 });
   const iron = new THREE.MeshStandardMaterial({ color: '#4a4a55', metalness: 0.85, roughness: 0.35 });
@@ -194,15 +262,58 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
   keepRoof.rotation.y = Math.PI / 4;
   keepRoof.position.set(0, 0.5 + 5.2 + 1.3, -0.9);
   keep.add(keepRoof);
-  for (const [x, y] of [
-    [-0.6, 4.2],
-    [0.6, 4.2],
-    [0, 2.6],
-  ] as const) {
-    const w = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.6, 0.06), windows);
-    w.position.set(x, y, -0.9 + 1.42);
-    keep.add(w);
-  }
+  /** A deep-set window: a stone surround with a real opening, the lit glass set back, iron glazing bars, a sill,
+   *  and sometimes a pair of open wooden shutters. */
+  const frameGeos = new Map<string, THREE.BufferGeometry>();
+  const windowAt = (parent: THREE.Object3D, x: number, y: number, z: number, rotY: number, w: number, h: number, shutters: boolean) => {
+    const key = `${w}x${h}`;
+    let fg = frameGeos.get(key);
+    if (!fg) {
+      const outer = new THREE.Shape();
+      roundArch(outer, w + 0.2, h + 0.16);
+      const hole = new THREE.Path();
+      roundArch(hole, w, h, true);
+      outer.holes.push(hole);
+      fg = new THREE.ExtrudeGeometry(outer, { depth: 0.16, bevelEnabled: true, bevelSize: 0.015, bevelThickness: 0.015, bevelSegments: 1, curveSegments: 8 });
+      frameGeos.set(key, fg);
+    }
+    const g = new THREE.Group();
+    const frame = new THREE.Mesh(fg, stoneDark);
+    frame.castShadow = true;
+    g.add(frame);
+    const glassShape = new THREE.Shape();
+    roundArch(glassShape, w, h);
+    const glass = new THREE.Mesh(new THREE.ShapeGeometry(glassShape, 8), windows);
+    glass.position.z = 0.02;
+    g.add(glass);
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.025, h * 0.95, 0.025), iron);
+    bar.position.z = 0.06;
+    g.add(bar);
+    const cross = new THREE.Mesh(new THREE.BoxGeometry(w * 0.95, 0.025, 0.025), iron);
+    cross.position.set(0, -h * 0.08, 0.06);
+    g.add(cross);
+    const sill = new THREE.Mesh(new THREE.BoxGeometry(w + 0.3, 0.07, 0.24), stoneDark);
+    sill.position.set(0, -h / 2 - 0.09, 0.1);
+    sill.castShadow = true;
+    g.add(sill);
+    if (shutters)
+      for (const sg of [-1, 1]) {
+        const sh = new THREE.Mesh(new THREE.BoxGeometry(w / 2, h * 0.82, 0.03), wood);
+        sh.geometry.translate((sg * w) / 4, 0, 0);
+        sh.position.set((sg * (w + 0.2)) / 2, -h * 0.06, 0.18);
+        sh.rotation.y = sg * -2.2;
+        sh.castShadow = true;
+        g.add(sh);
+      }
+    g.position.set(x, y, z);
+    g.rotation.y = rotY;
+    parent.add(g);
+  };
+  windowAt(keep, -0.6, 4.2, -0.9 + 1.33, 0, 0.34, 0.66, false);
+  windowAt(keep, 0.6, 4.2, -0.9 + 1.33, 0, 0.34, 0.66, false);
+  windowAt(keep, 0, 2.5, -0.9 + 1.33, 0, 0.4, 0.75, true);
+  // Side faces of the keep get windows too, and a round rose window high on the back.
+  for (const sx of [-1, 1]) windowAt(keep, sx * 1.33, 3.6, -0.9, (sx * Math.PI) / 2, 0.32, 0.6, sx > 0);
   // Corner pilasters, a corbelled band at the top, arched window heads with sills, and the team crest.
   keep.add(scatter(new THREE.BoxGeometry(0.34, 5.2, 0.34), stoneDark, [-1, 1].flatMap((sx) => [-1, 1].map((sz) => at(sx * 1.42, 0.5 + 2.6, -0.9 + sz * 1.42)))));
   const kband = shadow(new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.22, 3.1), stoneDark));
@@ -215,14 +326,7 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
     corb.push(at(Math.cos(a) * u + Math.sin(a) * 1.5, 0.5 + 5.2 - 0.32, -0.9 + -Math.sin(a) * u + Math.cos(a) * 1.5, a));
   }
   keep.add(scatter(new THREE.BoxGeometry(0.16, 0.22, 0.18), stoneDark, corb));
-  for (const [x, y] of [[-0.6, 4.2], [0.6, 4.2], [0, 2.6]] as const) {
-    const head = new THREE.Mesh(new THREE.CircleGeometry(0.17, 12, 0, Math.PI), windows);
-    head.position.set(x, y + 0.3, -0.9 + 1.42);
-    keep.add(head);
-    const sill = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.07, 0.16), stoneDark);
-    sill.position.set(x, y - 0.33, -0.9 + 1.46);
-    keep.add(sill);
-  }
+
   // The crest: a team shield with a gold rim and a gold star, under the keep's top band.
   const shieldShape = new THREE.Shape();
   shieldShape.moveTo(-0.42, 0.42);
@@ -250,52 +354,164 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
   keep.add(star);
   root.add(keep);
 
-  // Gatehouse: two small towers either side of the gate, a lintel, the doors and the portcullis.
+  // ── The great gate ──
+  // A projecting gatehouse of large dressed blocks with a real pointed arch cut through it, two orders of recessed
+  // archivolts, engaged columns with capitals, a carved band with eight-pointed stars, machicolations and a crenellated
+  // parapet on top; flanking towers rise above it. Behind the arch: an arched tympanum, the two doors and the portcullis.
   const gate = new THREE.Group();
-  for (const x of [-1.25, 1.25]) {
-    const t = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, H + 1.1, quality === 'high' ? 20 : 12), stone));
-    t.position.set(x, 0.5 + (H + 1.1) / 2, S / 2 + 0.15);
-    gate.add(t);
-    const cap = shadow(new THREE.Mesh(new THREE.ConeGeometry(0.78, 1.1, quality === 'high' ? 20 : 12), roof));
-    cap.position.set(x, 0.5 + H + 1.1 + 0.55, S / 2 + 0.15);
-    gate.add(cap);
-    const band = shadow(new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.05, 6, quality === 'high' ? 24 : 12), stoneDark));
-    band.rotation.x = Math.PI / 2;
-    band.position.set(x, 0.5 + H + 0.75, S / 2 + 0.15);
-    gate.add(band);
-    const sl = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.5, 0.04), slit);
-    sl.position.set(x, 0.5 + H * 0.62, S / 2 + 0.15 + 0.68);
-    gate.add(sl);
-    const fin = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), gold);
-    fin.position.set(x, 0.5 + H + 1.1 + 1.12, S / 2 + 0.15);
-    gate.add(fin);
+  const GW = 3.5; // gatehouse width
+  const GH = H + 1.7; // gatehouse height
+  const GD = T + 0.75; // depth
+  const front = S / 2 + T / 2 + 0.38; // the front face
+  const spring = 1.42; // springing height of the arch above the threshold
+  const rise = 0.95;
+  const y0 = 0.5;
+  // One outline running round the wall and in through the arch, so the opening is cut clean to the ground.
+  const archIn = pointedArch(new THREE.Path(), 0, 0, gap, spring, rise);
+  const frontShape = new THREE.Shape([new THREE.Vector2(-GW / 2, 0), ...archIn, new THREE.Vector2(GW / 2, 0), new THREE.Vector2(GW / 2, GH), new THREE.Vector2(-GW / 2, GH)]);
+  const house = shadow(new THREE.Mesh(new THREE.ExtrudeGeometry(frontShape, { depth: GD, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 1, curveSegments: 10 }), ashlar));
+  house.position.set(0, y0, front - GD);
+  gate.add(house);
+  // Two recessed archivolt orders, stepping in toward the doors.
+  for (const [k, inset] of [0.22, 0.42].entries()) {
+    const outerA = pointedArch(new THREE.Path(), 0, 0, gap + 0.5 - inset, spring + 0.25 - inset * 0.3, rise + 0.25 - inset * 0.3);
+    const innerA = pointedArch(new THREE.Path(), 0, 0, gap - inset * 0.25, spring - inset * 0.15, rise - inset * 0.2, true);
+    const o = new THREE.Shape([...outerA, ...innerA]);
+    const ring = shadow(new THREE.Mesh(new THREE.ExtrudeGeometry(o, { depth: 0.14, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02, bevelSegments: 1, curveSegments: 10 }), k ? carved : stoneDark));
+    ring.position.set(0, y0, front - k * 0.12);
+    ring.scale.setScalar(1);
+    gate.add(ring);
   }
-  // Two winch wheels above the arch: they turn while the drawbridge moves.
+  // Voussoirs proud of the face round the arch, a bigger keystone at the top.
+  const vPts: THREE.Vector2[] = [];
+  pointedArch(new THREE.Path(), 0, 0, gap + 0.62, spring + 0.08, rise + 0.32).forEach((p) => vPts.push(p));
+  const vm: THREE.Matrix4[] = [];
+  for (let i = 2; i < vPts.length - 2; i += 2) {
+    const p = vPts[i]!;
+    const q = vPts[i + 1] ?? p;
+    const a = Math.atan2(q.y - p.y, q.x - p.x);
+    const key = Math.abs(p.x) < 0.12 ? 1.45 : 1;
+    vm.push(new THREE.Matrix4().compose(new THREE.Vector3(p.x, y0 + p.y, front + 0.2), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, a + Math.PI / 2)), new THREE.Vector3(key, key, 1)));
+  }
+  gate.add(scatter(new THREE.BoxGeometry(0.34, 0.2, 0.12), carved, vm));
+  // Engaged columns with bases and carved capitals, either side of the arch.
+  for (const sx of [-1, 1]) {
+    const col = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, spring - 0.1, 16), carved));
+    col.position.set(sx * (gap / 2 + 0.36), y0 + 0.1 + (spring - 0.1) / 2, front + 0.08);
+    gate.add(col);
+    const base = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.16, 0.3), carved));
+    base.position.set(sx * (gap / 2 + 0.36), y0 + 0.08, front + 0.08);
+    gate.add(base);
+    const cap = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.12, 0.22, 4).rotateY(Math.PI / 4), carved));
+    cap.position.set(sx * (gap / 2 + 0.36), y0 + spring + 0.06, front + 0.08);
+    gate.add(cap);
+    const abacus = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.06, 0.34), carved);
+    abacus.position.set(sx * (gap / 2 + 0.36), y0 + spring + 0.2, front + 0.08);
+    gate.add(abacus);
+  }
+  // Rusticated quoins on the gatehouse corners.
+  const qm: THREE.Matrix4[] = [];
+  for (let i = 0; i < 8; i++) for (const sx of [-1, 1]) qm.push(at(sx * (GW / 2 - (i % 2 ? 0.2 : 0.26)), y0 + 0.22 + i * (GH / 8), front + 0.03));
+  gate.add(scatter(new THREE.BoxGeometry(0.5, GH / 8 - 0.05, 0.1), stoneDark, qm));
+  // The carved band above the arch: a frieze of eight-pointed stars between two mouldings.
+  const bandY = y0 + spring + rise + 0.55;
+  for (const dy of [-0.2, 0.2]) {
+    const mould = shadow(new THREE.Mesh(new THREE.BoxGeometry(GW + 0.1, 0.08, 0.16), carved));
+    mould.position.set(0, bandY + dy, front + 0.06);
+    gate.add(mould);
+  }
+  const starG = new THREE.Shape();
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2;
+    const r = i % 2 ? 0.07 : 0.13;
+    if (i) starG.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    else starG.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+  }
+  const starGeo = new THREE.ExtrudeGeometry(starG, { depth: 0.04, bevelEnabled: false });
+  const sm2: THREE.Matrix4[] = [];
+  for (let i = -3; i <= 3; i++) sm2.push(at(i * 0.46, bandY, front + 0.03));
+  gate.add(scatter(starGeo, gold, sm2, false));
+  // Machicolations: a gallery of corbels carrying a crenellated parapet that overhangs the gate.
+  const mc: THREE.Matrix4[] = [];
+  for (let i = 0; i < 9; i++) mc.push(at(-GW / 2 + 0.2 + (i * (GW - 0.4)) / 8, y0 + GH - 0.3, front + 0.12));
+  gate.add(scatter(new THREE.BoxGeometry(0.16, 0.36, 0.3), stoneDark, mc));
+  const para = shadow(new THREE.Mesh(new THREE.BoxGeometry(GW + 0.3, 0.42, 0.34), ashlar));
+  para.position.set(0, y0 + GH + 0.08, front + 0.1);
+  gate.add(para);
+  gate.add(battlements(GW + 0.2, y0 + GH + 0.48, front + 0.1, 0.3, ashlar, 0, 0));
+  // Chain holes and the winch wheels on the face, between the band and the gallery.
   const wheels: THREE.Object3D[] = [];
-  for (const x of [-0.55, 0.55]) {
+  const winchY = y0 + GH - 0.85;
+  for (const x of [-0.62, 0.62]) {
+    const holeM = new THREE.Mesh(new THREE.CircleGeometry(0.09, 12), slit);
+    holeM.position.set(x, winchY - 0.3, front + 0.01);
+    gate.add(holeM);
     const w = new THREE.Group();
-    const tire = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.035, 6, 16), iron);
-    w.add(tire);
+    w.add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.035, 6, 18), iron));
     for (let k = 0; k < 3; k++) {
       const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.03, 0.03), iron);
       spoke.rotation.z = (k * Math.PI) / 3;
       w.add(spoke);
     }
-    w.position.set(x, 0.5 + H + 0.32, S / 2 + T / 2 + 0.09);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 8).rotateX(Math.PI / 2), iron);
+    w.add(hub);
+    w.position.set(x * 1.45, winchY, front + 0.12);
     gate.add(w);
     wheels.push(w);
   }
-  // The drawbridge: an oak deck on a pivot at the foot of the gate, two chains to the winches.
+  // Flanking towers: taller, with string courses, slits, and conical roofs.
+  for (const x of [-GW / 2 - 0.35, GW / 2 + 0.35]) {
+    const th = GH + 1.1;
+    const t = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.66, 0.76, th, quality === 'high' ? 24 : 12), stone));
+    t.position.set(x, y0 + th / 2, front - 0.55);
+    gate.add(t);
+    const batter = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.95, 0.7, quality === 'high' ? 24 : 12), stoneDark));
+    batter.position.set(x, y0 + 0.35, front - 0.55);
+    gate.add(batter);
+    for (const yy of [0.34, 0.72]) {
+      const band = shadow(new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.05, 6, quality === 'high' ? 24 : 12), stoneDark));
+      band.rotation.x = Math.PI / 2;
+      band.position.set(x, y0 + th * yy, front - 0.55);
+      gate.add(band);
+    }
+    const ring = shadow(new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.68, 0.3, quality === 'high' ? 24 : 12), stoneDark));
+    ring.position.set(x, y0 + th, front - 0.55);
+    gate.add(ring);
+    const cap = shadow(new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.3, quality === 'high' ? 24 : 12), roof));
+    cap.position.set(x, y0 + th + 0.8, front - 0.55);
+    gate.add(cap);
+    const sl = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.5, 0.04), slit);
+    sl.position.set(x, y0 + th * 0.55, front - 0.55 + 0.74);
+    gate.add(sl);
+    const fin = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 10), gold);
+    fin.position.set(x, y0 + th + 1.48, front - 0.55);
+    gate.add(fin);
+    windowAt(gate, x, y0 + th * 0.86, front - 0.55 + 0.72, 0, 0.18, 0.34, false);
+  }
+  // Behind the arch: an arched tympanum of planks above the doors, then the doors themselves.
+  const tym = new THREE.Shape();
+  pointedArch(tym, 0, 0, gap, spring, rise);
+  tym.closePath();
+  const tymM = new THREE.Mesh(new THREE.ShapeGeometry(tym, 10), wood);
+  tymM.position.set(0, y0, S / 2 - 0.2);
+  gate.add(tymM);
+  // The drawbridge: an oak deck on a pivot at the foot of the gate, two chains up to the winches.
   const bridge = new THREE.Group();
-  bridge.position.set(0, 0.5, S / 2 + 0.8);
-  const BL = 3.9;
-  const deckMesh = shadow(new THREE.Mesh(new THREE.BoxGeometry(gap + 0.2, 0.14, BL), deck));
-  deckMesh.position.set(0, 0.07, BL / 2);
+  bridge.position.set(0, 0.5, front + 0.08);
+  const BL = 4.3;
+  const deckMesh = shadow(new THREE.Mesh(new THREE.BoxGeometry(gap + 0.3, 0.16, BL), deck));
+  deckMesh.position.set(0, 0.08, BL / 2);
   bridge.add(deckMesh);
-  for (const x of [-(gap + 0.2) / 2, (gap + 0.2) / 2]) {
-    const beam = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.22, BL), wood));
-    beam.position.set(x, 0.1, BL / 2);
+  for (const x of [-(gap + 0.3) / 2, (gap + 0.3) / 2]) {
+    const beam = shadow(new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.26, BL), wood));
+    beam.position.set(x, 0.12, BL / 2);
     bridge.add(beam);
+  }
+  // Iron straps across the deck.
+  for (let i = 0; i < 4; i++) {
+    const strap = new THREE.Mesh(new THREE.BoxGeometry(gap + 0.34, 0.03, 0.08), iron);
+    strap.position.set(0, 0.17, 0.4 + i * ((BL - 0.8) / 3));
+    bridge.add(strap);
   }
   bridge.rotation.x = -BRIDGE_UP;
   gate.add(bridge);
@@ -304,41 +520,51 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1, 5, 1, true), chainMat);
     mesh.geometry.translate(0, 0.5, 0);
     gate.add(mesh);
-    return { mesh, from: new THREE.Vector3(sg * 0.55, 0.5 + H + 0.32, S / 2 + T / 2 + 0.12), tip: new THREE.Vector3(sg * ((gap + 0.2) / 2), 0.2, BL - 0.15) };
+    return { mesh, from: new THREE.Vector3(sg * 0.62, winchY - 0.3, front + 0.04), tip: new THREE.Vector3(sg * ((gap + 0.3) / 2), 0.2, BL - 0.15) };
   });
-  const lintel = shadow(new THREE.Mesh(new THREE.BoxGeometry(gap + 0.4, 0.7, T + 0.1), stone));
-  lintel.position.set(0, 0.5 + H - 0.35 + 0.4, S / 2);
-  gate.add(lintel);
-  const arch = shadow(new THREE.Mesh(new THREE.TorusGeometry(gap / 2, 0.14, 8, 24, Math.PI), stoneDark));
-  arch.position.set(0, 0.5 + 1.75, S / 2 + T / 2 + 0.02);
-  gate.add(arch);
-  // Hinged doors: each pivots on its outer edge.
-  const doorGeo = new THREE.BoxGeometry(gap / 2, 1.95, 0.14);
+  // Hinged doors of studded oak with long iron strap hinges and ring pulls; each pivots on its outer edge.
+  const doorH = spring + rise * 0.55;
+  const doorGeo = new THREE.BoxGeometry(gap / 2, doorH, 0.16);
+  const studGeo = new THREE.SphereGeometry(0.022, 6, 4);
   const doors = [-1, 1].map((sgn) => {
     const pivot = new THREE.Group();
     pivot.position.set((sgn * gap) / 2, 0.5, S / 2 + 0.05);
     const d = shadow(new THREE.Mesh(doorGeo, wood));
-    d.position.set((-sgn * gap) / 4, 0.975, 0);
+    d.position.set((-sgn * gap) / 4, doorH / 2, 0);
     pivot.add(d);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.02, 6, 12), iron);
-    ring.position.set(-sgn * (gap / 2 - 0.15), 1.0, 0.09);
+    for (const y of [0.32, doorH * 0.5, doorH - 0.32]) {
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(gap / 2 - 0.08, 0.07, 0.03), iron);
+      strap.position.set((-sgn * gap) / 4 + sgn * 0.02, y, 0.095);
+      pivot.add(strap);
+      const knuckle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.14, 8), iron);
+      knuckle.position.set(sgn * -0.02, y, 0.06);
+      pivot.add(knuckle);
+    }
+    const studs: THREE.Matrix4[] = [];
+    for (let iy = 0; iy < 7; iy++) for (let ix = 0; ix < 3; ix++) studs.push(new THREE.Matrix4().makeTranslation(-sgn * (0.16 + ix * 0.24), 0.18 + iy * ((doorH - 0.36) / 6), 0.09));
+    pivot.add(scatter(studGeo, iron, studs, false));
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.018, 6, 14), iron);
+    ring.position.set(-sgn * (gap / 2 - 0.16), doorH * 0.45, 0.11);
     pivot.add(ring);
     gate.add(pivot);
     return pivot;
   }) as unknown as [THREE.Object3D, THREE.Object3D];
   const portcullis = new THREE.Group();
   for (let i = 0; i < 7; i++) {
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.0, 0.05), iron);
-    bar.position.set(-gap / 2 + 0.12 + (i * (gap - 0.24)) / 6, 1.0, 0);
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.05, 2.2, 0.05), iron);
+    bar.position.set(-gap / 2 + 0.12 + (i * (gap - 0.24)) / 6, 1.1, 0);
     bar.castShadow = true;
     portcullis.add(bar);
+    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.12, 4).rotateX(Math.PI), iron);
+    spike.position.set(bar.position.x, -0.04, 0);
+    portcullis.add(spike);
   }
-  for (let j = 0; j < 4; j++) {
+  for (let j = 0; j < 5; j++) {
     const bar = new THREE.Mesh(new THREE.BoxGeometry(gap - 0.1, 0.05, 0.05), iron);
-    bar.position.set(0, 0.3 + j * 0.5, 0);
+    bar.position.set(0, 0.25 + j * 0.45, 0);
     portcullis.add(bar);
   }
-  portcullis.position.set(0, 0.5, S / 2 + T / 2 - 0.05);
+  portcullis.position.set(0, 0.5, front - 0.45);
   gate.add(portcullis);
   root.add(gate);
   stages[2]!.push(keep, gate);
@@ -395,14 +621,10 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
     towers.add(r);
     roofs.push(r);
     roofTops.push(new THREE.Vector3(x, 0.5 + th + 0.5, z));
-    for (const y of [th * 0.45, th * 0.75]) {
-      const w = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.42, 0.05), windows);
-      w.position.set(x, 0.5 + y, z + 1.04);
-      towers.add(w);
-      const head = new THREE.Mesh(new THREE.CircleGeometry(0.11, 10, 0, Math.PI), windows);
-      head.position.set(x, 0.5 + y + 0.21, z + 1.065);
-      towers.add(head);
-    }
+    windowAt(towers, x, 0.5 + th * 0.45, z + 0.98, 0, 0.22, 0.44, false);
+    windowAt(towers, x, 0.5 + th * 0.75, z + 0.98, 0, 0.22, 0.44, z > 0 && x > 0);
+    // A window on the outward side as well.
+    windowAt(towers, x + Math.sign(x) * 0.98, 0.5 + th * 0.6, z, (Math.sign(x) * Math.PI) / 2, 0.2, 0.4, false);
     // A gold ring at the eaves and a gold finial on the roof (they fall with it).
     const eave = new THREE.Mesh(new THREE.TorusGeometry(1.16, 0.05, 6, seg), gold);
     eave.rotation.x = Math.PI / 2;
@@ -461,6 +683,8 @@ export function buildCastle(team: { light: string; dark: string }, quality: 'hig
     roofs,
     roofTops,
     banners,
+    doorFoot: new THREE.Vector3(0, 0.6, S / 2 + 0.6),
+    bridgeTip: new THREE.Vector3(0, 0.6, front + 0.08 + 4.3),
     torches: [-2.4, -1.4, 1.4, 2.4, 0].map((x, i) => new THREE.Vector3(x, i === 4 ? 0.5 + 5.2 + 0.1 : 0.5 + H + 0.25, i === 4 ? -0.9 + 1.5 : S / 2 + 0.45)),
     inner,
     aura,

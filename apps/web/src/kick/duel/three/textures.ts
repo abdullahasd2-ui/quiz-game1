@@ -81,9 +81,44 @@ export function stoneCanvas() {
   });
 }
 
+/** A tangent-space normal map from a canvas's brightness (bright = raised), and a roughness map (joints rougher). */
+export function derivedMaps(c: HTMLCanvasElement, repeat: [number, number], strength = 3) {
+  const w = c.width;
+  const h = c.height;
+  const src = c.getContext('2d')!.getImageData(0, 0, w, h).data;
+  const lum = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) lum[i] = (src[i * 4]! * 0.3 + src[i * 4 + 1]! * 0.59 + src[i * 4 + 2]! * 0.11) / 255;
+  const nc = document.createElement('canvas');
+  nc.width = w;
+  nc.height = h;
+  const rc = document.createElement('canvas');
+  rc.width = w;
+  rc.height = h;
+  const nd = nc.getContext('2d')!.createImageData(w, h);
+  const rd = rc.getContext('2d')!.createImageData(w, h);
+  const at = (x: number, y: number) => lum[((y + h) % h) * w + ((x + w) % w)]!;
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const dx = (at(x + 1, y) - at(x - 1, y)) * strength;
+      const dy = (at(x, y + 1) - at(x, y - 1)) * strength;
+      const l = Math.hypot(dx, dy, 1);
+      const i = (y * w + x) * 4;
+      nd.data[i] = (-dx / l) * 127 + 128;
+      nd.data[i + 1] = (dy / l) * 127 + 128;
+      nd.data[i + 2] = (1 / l) * 127 + 128;
+      nd.data[i + 3] = 255;
+      const r = 150 + (1 - at(x, y)) * 105;
+      rd.data[i] = rd.data[i + 1] = rd.data[i + 2] = Math.min(255, r);
+      rd.data[i + 3] = 255;
+    }
+  nc.getContext('2d')!.putImageData(nd, 0, 0);
+  rc.getContext('2d')!.putImageData(rd, 0, 0);
+  return { normal: texture(nc, repeat, false), rough: texture(rc, repeat, false) };
+}
+
 export function stoneTextures() {
   const c = stoneCanvas();
-  return { map: texture(c, [3, 1.6]), bump: texture(c, [3, 1.6], false) };
+  return { map: texture(c, [3, 1.6]), bump: texture(c, [3, 1.6], false), ...derivedMaps(c, [3, 1.6], 4) };
 }
 
 /** Roof tiles in the team colour: rows of rounded scales, each row shadowed by the one above. */
@@ -188,7 +223,7 @@ export function cobbleTexture(repeat: [number, number]) {
       g.fillRect(rnd() * 512, rnd() * 512, 2 + rnd() * 5, 2 + rnd() * 5);
     }
   }, 19);
-  return { map: texture(c, repeat), bump: texture(c, repeat, false) };
+  return { map: texture(c, repeat), bump: texture(c, repeat, false), ...derivedMaps(c, repeat, 5) };
 }
 
 /** Plain planks for the drawbridge deck: long boards, iron straps. */

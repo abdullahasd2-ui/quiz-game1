@@ -9,6 +9,10 @@ import * as THREE from 'three';
 import { aimChains, BRIDGE_UP, buildCastle, waveBanners, waveDrapes, type CastleParts } from './castle';
 import { Particles, softTexture } from './particles';
 import { World } from './world';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 
 export type Side = 'a' | 'b';
 export type CastleSceneInput = {
@@ -70,6 +74,9 @@ export class CastleScene {
   private shakeCastle: Record<Side, number> = { a: 0, b: 0 };
   private stageScale: Record<Side, number[]> = { a: [0, 0, 0, 0, 0], b: [0, 0, 0, 0, 0] };
   private gate: Record<Side, number> = { a: 0, b: 0 };
+  private door: Record<Side, { a: number; v: number }> = { a: { a: 0, v: 0 }, b: { a: 0, v: 0 } };
+  private bridgeDown: Record<Side, boolean> = { a: false, b: false };
+  private composer: { render: () => void; setSize: (w: number, h: number) => void; dispose: () => void } | null = null;
   private sink: Record<Side, number> = { a: 0, b: 0 };
   private t = 0;
   private winT = 0;
@@ -136,16 +143,11 @@ export class CastleScene {
     s.add(moon);
     s.add(this.flash);
 
-    // Distant mountains (the ground and everything on it is the World, added with the castles).
-    const mountainMat = new THREE.MeshStandardMaterial({ color: '#211a4a', roughness: 1, flatShading: true });
-    for (let i = 0; i < 14; i++) {
-      const h = 9 + Math.random() * 13;
-      const m = new THREE.Mesh(new THREE.ConeGeometry(16 + Math.random() * 14, h, 5 + Math.floor(Math.random() * 3)), mountainMat);
-      const a = -Math.PI * 0.95 + (i / 13) * Math.PI * 0.9;
-      m.position.set(Math.cos(a) * 150, h / 2 - 6, Math.sin(a) * 120 - 30);
-      m.rotation.y = Math.random() * Math.PI;
-      s.add(m);
-    }
+    // A low warm glow from behind the hills: the last of the dusk, rim-lighting roofs, trees and the mountains.
+    const dusk = new THREE.DirectionalLight('#ff9a6a', 0.55);
+    dusk.position.set(25, 10, -60);
+    s.add(dusk);
+    s.environmentIntensity = 0.42;
 
     // The two castles, turned a little toward each other. Blue stands on the right of the screen.
     this.castles = { a: buildCastle(TEAM.a, opts.quality), b: buildCastle(TEAM.b, opts.quality) };
@@ -179,12 +181,30 @@ export class CastleScene {
     }
     this.camera.position.set(0, 26, 60);
     this.loop = this.loop.bind(this);
+    if (opts.quality === 'high') {
+      // Bloom: lanterns, windows, fire and the moon's glitter on the water bleed light the way a lens sees them.
+      const composer = new EffectComposer(r);
+      composer.addPass(new RenderPass(s, this.camera));
+      const bloom = new UnrealBloomPass(new THREE.Vector2(512, 288), 0.55, 0.55, 0.82);
+      composer.addPass(bloom);
+      composer.addPass(new OutputPass());
+      this.composer = {
+        render: () => composer.render(),
+        setSize: (w, h) => {
+          composer.setPixelRatio(r.getPixelRatio());
+          composer.setSize(w, h);
+          bloom.resolution.set(w / 2, h / 2);
+        },
+        dispose: () => composer.dispose(),
+      };
+    }
     this.frame = requestAnimationFrame(this.loop);
   }
 
   resize(w: number, h: number) {
     if (!w || !h) return;
     this.renderer.setSize(w, h, false);
+    this.composer?.setSize(w, h);
     this.camera.aspect = w / h;
     // Narrow screens see the whole battlefield: a wider lens.
     this.camera.fov = w / h < 1.2 ? 58 : w / h < 1.7 ? 46 : 38;
@@ -295,8 +315,23 @@ export class CastleScene {
       c.bridge.rotation.x = -BRIDGE_UP * (1 - b);
       for (const [k, w] of c.wheels.entries()) w.rotation.z += (c.bridge.rotation.x - before) * 6 * (k ? -1 : 1);
       aimChains(c);
-      c.doors[0].rotation.y = -g * 1.65;
-      c.doors[1].rotation.y = g * 1.65;
+      // The doors are heavy: a spring that overshoots a touch and settles, rather than a tween.
+      const dv = this.door[side];
+      const before2 = dv.a;
+      dv.v += ((g * 1.65 - dv.a) * 34 - dv.v * 7.5) * dt;
+      dv.a += dv.v * dt;
+      c.doors[0].rotation.y = -dv.a;
+      c.doors[1].rotation.y = dv.a;
+      // Dust scraped up at the threshold while they swing, and a thud of dust where the bridge lands.
+      if (Math.abs(dv.a - before2) > dt * 0.6 && Math.random() < 0.5) {
+        this.dust.emit(this.world(side, c.doorFoot.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.4, 0, Math.random() * 0.4))), new THREE.Vector3((Math.random() - 0.5) * 0.6, 0.3 + Math.random() * 0.4, 0.4), { life: 1.4, size: 0.9, grow: 1.2, color: '#6b6378', alpha: 0.4, drag: 1.5 });
+      }
+      const landed = b > 0.985;
+      if (landed && !this.bridgeDown[side]) {
+        this.dust.burst(this.world(side, c.bridgeTip), 26, 2.2, { life: 1.6, size: 1.3, grow: 1.6, color: '#6d6580', alpha: 0.55, drag: 2.2, gravity: -0.3 }, 0.2);
+        this.shakeCastle[side] = Math.max(this.shakeCastle[side], 0.25);
+      }
+      this.bridgeDown[side] = landed;
       c.portcullis.position.y = 0.5 + Math.max(0, g * 1.25 - 0.25) * 1.6;
       c.inner.intensity = damp(c.inner.intensity, open ? (win === side ? 70 : 30) : 0, 3, dt);
       if (win === side) c.inner.color.set('#ffd27a');
@@ -400,14 +435,15 @@ export class CastleScene {
     }
 
     for (const p of [this.fire, this.smoke, this.sparks, this.dust]) p.update(dt);
-    this.env.update(this.t, dt, inp.alert ? 1 : 0);
+    if (this.env.update(this.t, dt, inp.alert ? 1 : 0)) this.env.capture(this.renderer, this.scene);
     this.flash.intensity = damp(this.flash.intensity, 0, 7, dt);
     this.sky.uniforms.uHeat!.value = damp(this.sky.uniforms.uHeat!.value as number, inp.heat, 1, dt);
     this.sky.uniforms.uWin!.value = damp(this.sky.uniforms.uWin!.value as number, win ? 0.55 : 0, 0.7, dt);
     this.moon.intensity = win ? damp(this.moon.intensity, 2.2, 1, dt) : 1.6;
 
     this.updateCamera(dt, win);
-    this.renderer.render(this.scene, this.camera);
+    if (this.composer) this.composer.render();
+    else this.renderer.render(this.scene, this.camera);
   }
 
   private camPos = new THREE.Vector3(0, 26, 60);
@@ -452,6 +488,8 @@ export class CastleScene {
       if (Array.isArray(mat)) mat.forEach((x) => x.dispose());
       else mat?.dispose();
     });
+    this.composer?.dispose();
+    this.env.dispose();
     this.renderer.dispose();
   }
 }
