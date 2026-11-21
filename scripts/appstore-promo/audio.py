@@ -304,5 +304,5 @@ d = int(0.012 * SR)
 st[d:, 1] += wide[:-d] * 0.12
 st[:, 0] -= np.concatenate([np.zeros(d), wide[:-d]]) * 0.0
 st = st / np.max(np.abs(st)) * 0.97
-wavfile.write(os.path.join(here, 'mix-fx.wav' if NO_MUSIC else 'mix.wav'), SR, (st * 32767).astype(np.int16))
+wavfile.write(os.path.join(here, os.environ.get('MIX') or ('mix-fx.wav' if NO_MUSIC else 'mix.wav')), SR, (st * 32767).astype(np.int16))
 print('mix', round(TOTAL, 2), 's')
