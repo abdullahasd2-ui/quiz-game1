@@ -61,7 +61,7 @@ export function SoloPlayersButton({ view }: { view: SoloView }) {
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-[17px] font-black text-q-gold">👥 اللاعبون</h2>
-          <button type="button" onClick={() => setOpen(false)} className="text-xl text-white/50" aria-label="إغلاق">
+          <button type="button" onClick={() => setOpen(false)} className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-xl font-black text-white" aria-label="إغلاق">
             ✕
           </button>
         </div>
@@ -111,7 +111,7 @@ export function PlayersButton({ view }: { view: RoomView }) {
       <Modal open={open} onClose={() => setOpen(false)}>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-[17px] font-black text-q-gold">👥 اللاعبون</h2>
-          <button type="button" onClick={() => setOpen(false)} className="text-xl text-white/50" aria-label="إغلاق">
+          <button type="button" onClick={() => setOpen(false)} className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-xl font-black text-white" aria-label="إغلاق">
             ✕
           </button>
         </div>

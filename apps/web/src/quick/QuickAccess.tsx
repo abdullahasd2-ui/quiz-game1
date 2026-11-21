@@ -270,7 +270,7 @@ export function QuickAccess({
                   <div className="text-[11px] text-white/50">ابحث أو اختر — ⭐ تضيف للمفضلة</div>
                 )}
               </div>
-              <button type="button" onClick={close} className="grid size-8 place-items-center rounded-full text-white/60 hover:bg-white/10 hover:text-white" aria-label="إغلاق">
+              <button type="button" onClick={close} className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-xl font-black text-white hover:bg-white/20" aria-label="إغلاق">
                 ✕
               </button>
             </div>

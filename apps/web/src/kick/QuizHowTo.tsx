@@ -253,11 +253,11 @@ export function QuizHowToModal({ open, onClose, forStreamer = false, variant, pa
     <Modal open={open} onClose={onClose}>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-[17px] font-black text-q-purple">{title ?? '📖 طريقة اللعب'}</h2>
-        <button type="button" onClick={onClose} className="text-xl text-white/50" aria-label="إغلاق">
+        <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-xl font-black text-white" aria-label="إغلاق">
           ✕
         </button>
       </div>
-      <div className="max-h-[70dvh] overflow-auto">
+      <div>
         <QuizHowTo forStreamer={forStreamer} variant={variant} pack={pack} />
       </div>
     </Modal>

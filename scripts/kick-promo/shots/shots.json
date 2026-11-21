@@ -1,0 +1,99 @@
+{
+ "k-start": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {
+   "name": {
+    "x": 437,
+    "y": 280.78125,
+    "w": 406,
+    "h": 44.5
+   }
+  }
+ },
+ "k-host-lobby": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {}
+ },
+ "k-screen-lobby0": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-lobby": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-host-modes": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {}
+ },
+ "k-screen-board": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-host-streamer": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {}
+ },
+ "k-screen-choose": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-choose2": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-answer": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-answer2": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-result": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-host-result": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {}
+ },
+ "k-screen-result2": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-screen-podium": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-list-q": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-list-live": {
+  "w": 1920,
+  "h": 1080,
+  "boxes": {}
+ },
+ "k-list-host": {
+  "w": 1280,
+  "h": 900,
+  "boxes": {}
+ }
+}

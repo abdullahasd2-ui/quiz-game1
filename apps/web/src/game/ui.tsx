@@ -1,5 +1,6 @@
 import type { Action, QuestionType, RoomView, TeamIndex, Variant } from '@quiz/shared';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { play } from './fx/sound';
@@ -201,16 +202,36 @@ export function Modal({
   /** Replaces the default pop-in (an `animate-*` class), since two animation classes would override each other. */
   animation?: string;
 }) {
+  // Esc closes it, and the page behind does not scroll while it is open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose?.();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal>
+  // On <body>, above the corner buttons (sound, «للستريمر», shortcuts), which would otherwise cover its close button.
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 px-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-[calc(env(safe-area-inset-bottom)+0.75rem)] backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal
+      dir="rtl"
+    >
       <div
-        className={cn('q-card max-h-[90dvh] w-full max-w-md overflow-y-auto px-5 py-6 text-center', animation, className)}
+        className={cn('q-card max-h-full w-full max-w-md overflow-y-auto overscroll-contain px-5 py-6 text-center', animation, className)}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
