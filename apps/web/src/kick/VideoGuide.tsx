@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { serverUrl } from '@/lib/server';
 
 /** The stream guide video (the real site in test mode, with captions and a voice). */
 export const GUIDE_VIDEO = '/videos/stream-guide.mp4';
@@ -52,8 +53,9 @@ export function VideoGuideButton({
               </button>
             </div>
             <video
-              src={src}
-              poster={src.replace('.mp4', '.jpg')}
+              // In the iPhone app these files are not in the bundle: they load from the site.
+              src={serverUrl(src)}
+              poster={serverUrl(src.replace('.mp4', '.jpg'))}
               controls
               autoPlay
               playsInline
@@ -65,7 +67,7 @@ export function VideoGuideButton({
             <p className="mt-2 text-center text-xs text-white/60">{caption}</p>
             {appQr && (
               <div className="mx-auto mt-3 flex w-fit items-center gap-3 rounded-2xl border border-white/15 bg-q-bg/85 p-2.5 pe-4">
-                <img src="/app-qr.svg" alt="رمز QR لتحميل التطبيق من App Store" className="size-20 rounded-lg bg-white p-1.5" />
+                <img src={serverUrl('/app-qr.svg')} alt="رمز QR لتحميل التطبيق من App Store" className="size-20 rounded-lg bg-white p-1.5" />
                 <div>
                   <div className="text-sm font-black text-white/90">📱 حمّل التطبيق</div>
                   <div className="text-xs font-bold text-white/50">امسح الرمز · App Store</div>

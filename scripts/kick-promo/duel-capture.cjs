@@ -1,0 +1,71 @@
+const { chromium } = require('playwright');
+const B = 'http://localhost:4000';
+const mode = process.argv[2] || 'castle';
+const title = { castle: 'القلعة', chain: 'السلسلة', faza: 'الفزعة' }[mode];
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+(async () => {
+  const br = await chromium.launch();
+  const hctx = await br.newContext({ viewport: { width: 1280, height: 900 }, locale: 'ar' });
+  await hctx.addInitScript(() => { try { localStorage.setItem('jab:qa:seen', '1'); sessionStorage.setItem('jab:intro', '1'); } catch {} });
+  const h = await hctx.newPage();
+  h.on('pageerror', (e) => console.log('HOSTERR', e.message));
+  let correct = 0;
+  const grab = (txt) => { const m = String(txt || '').match(/"correctIndex":(\d)/); if (m) correct = Number(m[1]); };
+  h.on('websocket', (ws) => ws.on('framesent', (f) => grab(f.payload)));
+  h.on('response', async (r) => { if (/question/.test(r.url())) grab(await r.text().catch(() => '')); });
+  await h.goto(B + '/kick/duel');
+  const inputs = h.getByPlaceholder('kick channel name');
+  await inputs.nth(0).fill('abdullah');
+  await inputs.nth(1).fill('rival_tv');
+  await h.getByRole('button', { name: new RegExp(title) }).first().click();
+  const chips = h.locator('section').nth(4).locator('button');
+  await chips.nth(0).click(); await chips.nth(1).click(); await chips.nth(2).click().catch(() => {});
+  await h.getByText('تجربة بدون Kick').click();
+  await h.getByRole('button', { name: /افتح التحدي/ }).click();
+  await wait(800);
+  const url = await h.locator('input[readonly]').inputValue();
+  const sctx = await br.newContext({ viewport: { width: 1920, height: 1080 } });
+  const sc = await sctx.newPage();
+  sc.on('pageerror', (e) => console.log('SCREENERR', e.message));
+  await sc.goto(url);
+  const box = h.getByPlaceholder('فهد: دخول');
+  const teamBtn = h.getByRole('button', { name: /شات قناتك|شات الخصم/ });
+  let team = 'a';
+  const say = async (t, line) => { if (t !== team) { await teamBtn.click(); team = t; } await box.fill(line); await box.press('Enter'); await wait(120); };
+  await wait(1500);
+  await say('a', 'فهد: دخول'); await wait(500);
+  await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-0-lobby-1.png` });
+  for (const n of ['سعد', 'نواف', 'ماجد']) await say('a', `${n}: دخول`);
+  for (const n of ['ريم', 'نورة', 'خالد', 'هند']) await say('b', `${n}: دخول`);
+  await wait(1200);
+  await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-1-lobby.png` });
+  for (let round = 0; round < 3; round++) {
+    await h.getByRole('button', { name: /ابدأ التحدي|السؤال التالي/ }).click();
+    await wait(1500);
+    if (round === 0) await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-2-question.png` });
+    const A = ['فهد', 'سعد', 'نواف', 'ماجد'], Bn = ['ريم', 'نورة', 'خالد', 'هند'];
+    const R = String(correct + 1), W = String(((correct + 1) % 4) + 1);
+    // How many of each team answer right, per round (the chain asks one team at a time: a, b, a…).
+    const plan = { castle: [[3, 1], [1, 3], [4, 2]], chain: [[4, 0], [0, 3], [0, 0]], faza: [[2, 1], [0, 2], [2, 0]] }[mode][round];
+    const turnA = mode !== 'chain' || round % 2 === 0;
+    for (let i = 0; i < 4; i++) {
+      if (mode !== 'chain' || turnA) await say('a', `${A[i]}: ${i < plan[0] ? R : W}`);
+      if (i === 0 && round === 0) await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-2b-live.png` });
+    }
+    for (let i = 0; i < 4; i++) if (mode !== 'chain' || !turnA) await say('b', `${Bn[i]}: ${i < plan[1] ? R : W}`);
+    await h.getByRole('button', { name: /أنهِ السؤال/ }).click({ timeout: 400 }).catch(() => {});
+    await wait(500);
+    await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-3-hit-${round}.png` });
+    await wait(600);
+    await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-3b-hit-${round}.png` });
+    await wait(1600);
+    await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-4-after-${round}.png` });
+  }
+  await h.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-5-host.png`, fullPage: true });
+  const mob = await br.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  const mp = await mob.newPage(); await mp.goto(url); await wait(1500); await mp.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-6-mobile.png`, fullPage: true });
+  await h.getByRole('button', { name: /إنهاء التحدي/ }).click();
+  await wait(1200); await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-7-win-a.png` });
+  await wait(2600); await sc.screenshot({ path: `/home/user/quiz-game1/scripts/kick-promo/shots/duel-${mode}-8-win-b.png` });
+  await br.close();
+})();
