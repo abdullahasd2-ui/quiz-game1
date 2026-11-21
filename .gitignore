@@ -62,3 +62,13 @@ scripts/kick-promo/*.png
 scripts/kick-promo/assets/*.png
 scripts/*-promo/*.mov
 scripts/*-promo/mix-fx.wav
+scripts/appstore-promo/shots
+scripts/appstore-promo/render-*/
+scripts/appstore-promo/pv/
+scripts/appstore-promo/fonts.css
+scripts/appstore-promo/data.js
+scripts/appstore-promo/timeline-*.json
+scripts/appstore-promo/mix-*.wav
+scripts/appstore-promo/*.mp4
+scripts/appstore-promo/*.png
+scripts/appstore-promo/assets/*.png
