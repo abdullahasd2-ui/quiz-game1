@@ -88,6 +88,8 @@ export class CastleScene {
   private readonly quality: 'high' | 'low';
   private dpr = 1;
   private dprMax = 1;
+  private mobile = false;
+  private lost = false;
   private aspect = 16 / 9;
   private frameAvg = 16;
   private govern = 0;
@@ -96,14 +98,22 @@ export class CastleScene {
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
-    opts: { quality: 'high' | 'low'; still?: boolean; victory?: boolean },
+    opts: { quality: 'high' | 'low'; still?: boolean; victory?: boolean; onLost?: () => void },
   ) {
     this.quality = opts.quality;
     this.still = Boolean(opts.still);
     // Always multisampled, and at the screen's real pixel density (a Retina iPad draws twice as many pixels), capped so a
     // 4K display does not melt the GPU. A frame-time governor then trims or restores resolution to hold the frame rate.
     const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' }));
-    this.dprMax = Math.min(window.devicePixelRatio || 1, opts.quality === 'high' ? 2 : 2);
+    // Phones and tablets (iPad included) have far less GPU memory than a desktop: Safari kills the WebGL context
+    // (a white canvas) if the scene asks for too much. On them: no bloom pass, a smaller shadow map, and a lower cap.
+    this.mobile = matchMedia('(pointer: coarse)').matches || /iPad|iPhone|Android/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    this.dprMax = Math.min(window.devicePixelRatio || 1, this.mobile ? 1.6 : 2);
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      this.lost = true;
+      opts.onLost?.();
+    });
     this.dpr = this.dprMax;
     r.setPixelRatio(this.dpr);
     r.outputColorSpace = THREE.SRGBColorSpace;
@@ -140,7 +150,7 @@ export class CastleScene {
     const moon = (this.moon = new THREE.DirectionalLight('#dfe6ff', 2.8));
     moon.position.set(-14, 26, 18);
     moon.castShadow = true;
-    moon.shadow.mapSize.setScalar(opts.quality === 'high' ? 4096 : 2048);
+    moon.shadow.mapSize.setScalar(this.mobile ? 1024 : opts.quality === 'high' ? 4096 : 2048);
     const sc = moon.shadow.camera;
     sc.left = -22;
     sc.right = 22;
@@ -205,7 +215,7 @@ export class CastleScene {
         }
       }
     });
-    if (opts.quality === 'high') {
+    if (opts.quality === 'high' && !this.mobile) {
       // Bloom: lanterns, windows, fire and the moon's glitter on the water bleed light the way a lens sees them.
       // Multisampled target, so the bloom path keeps clean edges too.
       const composer = new EffectComposer(r, new THREE.WebGLRenderTarget(1, 1, { samples: 4, type: THREE.HalfFloatType }));
@@ -310,7 +320,7 @@ export class CastleScene {
 
   private loop(now: number) {
     this.frame = requestAnimationFrame(this.loop);
-    if (document.hidden) return;
+    if (document.hidden || this.lost) return;
     const raw = now - this.last;
     const dt = Math.min(0.05, raw / 1000);
     // Resolution governor: drop density when frames run long, restore it when there is headroom.

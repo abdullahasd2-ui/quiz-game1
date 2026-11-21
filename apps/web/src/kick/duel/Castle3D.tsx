@@ -5,8 +5,19 @@ import { useEffect, useRef, useState } from 'react';
 import type { CastleScene, CastleSceneInput } from './three/scene';
 
 let support: boolean | null = null;
+const OFF = 'castle3d-off';
+/** The GPU dropped the scene (out of memory): every stage switches to the drawn castles for the rest of the visit. */
+function turnOff() {
+  support = false;
+  window.dispatchEvent(new Event(OFF));
+}
 export function use3D() {
   const [ok, setOk] = useState<boolean | null>(support);
+  useEffect(() => {
+    const off = () => setOk(false);
+    window.addEventListener(OFF, off);
+    return () => window.removeEventListener(OFF, off);
+  }, []);
   useEffect(() => {
     if (support !== null) return;
     void import('./three/scene').then((m) => {
@@ -32,7 +43,7 @@ export function Castle3D({ input, big, victory = false, className }: { input: Ca
       try {
         // Strong devices get the full scene even off the broadcast screen (an iPad, a desktop host page).
         const strong = big || (navigator.hardwareConcurrency ?? 4) >= 6;
-        const s = new CastleScene(canvas.current, { quality: strong ? 'high' : 'low', victory });
+        const s = new CastleScene(canvas.current, { quality: strong ? 'high' : 'low', victory, onLost: turnOff });
         scene.current = s;
         s.update(latest.current);
         const el = canvas.current;
@@ -42,6 +53,7 @@ export function Castle3D({ input, big, victory = false, className }: { input: Ca
         ro.observe(el);
       } catch {
         setFailed(true);
+        turnOff();
       }
     });
     return () => {
