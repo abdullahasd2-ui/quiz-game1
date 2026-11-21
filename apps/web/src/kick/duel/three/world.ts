@@ -80,7 +80,7 @@ export class World {
     const st = stoneTextures();
     const dressed = new THREE.MeshStandardMaterial({ map: st.map, normalMap: st.normal, normalScale: new THREE.Vector2(0.8, 0.8), roughnessMap: st.rough, color: '#c9c3d6', roughness: 1 });
     const dressedCaustic = withCaustics(dressed.clone(), time, 'dressed');
-    const marble = new THREE.MeshStandardMaterial({ color: '#cfc8d8', roughness: 0.45, metalness: 0.02 });
+    const marble = new THREE.MeshStandardMaterial({ color: '#9e97ad', roughness: 0.6, metalness: 0.02 });
     const iron = new THREE.MeshStandardMaterial({ color: '#2b2a33', metalness: 0.75, roughness: 0.42 });
     const brass = new THREE.MeshStandardMaterial({ color: '#c9973e', metalness: 0.9, roughness: 0.35 });
     const gold = new THREE.MeshStandardMaterial({ color: '#e8b64c', metalness: 0.9, roughness: 0.3, emissive: '#3a2200', emissiveIntensity: 0.4 });
