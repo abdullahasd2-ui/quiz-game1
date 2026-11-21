@@ -1,4 +1,4 @@
-import type { DuelState } from '@quiz/shared';
+import { teamSize, type DuelState } from '@quiz/shared';
 import { useEffect, useRef } from 'react';
 import { play } from '@/game/fx/sound';
 
@@ -8,6 +8,17 @@ import { play } from '@/game/fx/sound';
  */
 export function useDuelSounds(s: DuelState | null, on: boolean) {
   const last = useRef<{ key: string; phase: string; live: number }>({ key: '', phase: '', live: 0 });
+  // The castle's drawbridge comes down for each newcomer.
+  const sizes = useRef<string>('');
+  useEffect(() => {
+    if (!s || !on || s.settings.mode !== 'castle') return;
+    const now = `${teamSize(s, 'a')}:${teamSize(s, 'b')}`;
+    const was = sizes.current;
+    sizes.current = now;
+    if (!was || now === was) return;
+    const [a0, b0] = was.split(':').map(Number);
+    if (teamSize(s, 'a') > a0! || teamSize(s, 'b') > b0!) play('gate');
+  }, [s, on]);
   useEffect(() => {
     if (!s || !on) return;
     const key = `${s.session}:${s.rounds}`;

@@ -21,6 +21,7 @@ const LABEL: Record<Cue, string> = {
   wrong: 'خسرت نقاط',
   swap: 'مبادلة',
   fanfare: 'النتيجة النهائية',
+  gate: 'بوابة القلعة (الجسر المتحرك)',
 };
 
 const WORDS = ['جغرافيا', 'أعلام دول', 'معالم', 'كرة قدم'];
@@ -155,6 +156,7 @@ const SCHEDULE_PAUSE: Record<Cue, number> = {
   wrong: 800,
   swap: 800,
   fanfare: 1900,
+  gate: 1000,
 };
 
 /** A finished round where team 0 hit its third right answer in a row (doubled), for the result screen preview. */

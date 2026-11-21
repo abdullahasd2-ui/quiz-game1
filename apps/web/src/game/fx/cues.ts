@@ -7,7 +7,7 @@
  * (OfflineAudioContext, used to check levels).
  */
 
-export const CUES = ['tap', 'pop', 'ding', 'whoosh', 'lock', 'tick', 'tickUrgent', 'boom', 'win', 'wrong', 'swap', 'fanfare'] as const;
+export const CUES = ['tap', 'pop', 'ding', 'whoosh', 'lock', 'tick', 'tickUrgent', 'boom', 'win', 'wrong', 'swap', 'fanfare', 'gate'] as const;
 export type Cue = (typeof CUES)[number];
 
 type Ctx = BaseAudioContext;
@@ -146,6 +146,13 @@ export const SCHEDULE: Record<Cue, (ctx: Ctx, out: AudioNode, t: number) => numb
     tone(ctx, out, t + 0.12, { from: 880, peak: 0.2, decay: 0.08 });
     tone(ctx, out, t + 0.3, { from: 1175, peak: 0.2, decay: 0.1 });
     return 0.6;
+  },
+  /** The castle's drawbridge: a chain rattling over the winch, then the deck landing with a wooden thud. */
+  gate(ctx, out, t) {
+    for (let i = 0; i < 9; i++) noise(ctx, out, t + i * 0.055 + (i % 2) * 0.012, { filter: 'bandpass', from: 2600 + (i % 3) * 700, q: 6, peak: 0.09, attack: 0.002, decay: 0.035 });
+    tone(ctx, out, t + 0.55, { from: 120, to: 58, peak: 0.3, decay: 0.22, sweep: 0.15 });
+    noise(ctx, out, t + 0.55, { filter: 'lowpass', from: 700, to: 200, peak: 0.16, attack: 0.003, decay: 0.16 });
+    return 0.9;
   },
   /** The final result: a short fanfare. */
   fanfare(ctx, out, t) {
