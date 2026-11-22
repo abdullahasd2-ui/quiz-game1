@@ -58,7 +58,7 @@ def take_video(take):
             d = (fr[i + 1]['t'] - x['t']) if i + 1 < len(fr) else 1.0
             f.write(f"file '{os.path.join(REC, take, 'frames', x['f'])}'\nduration {max(d, 0.001):.4f}\n")
         f.write(f"file '{os.path.join(REC, take, 'frames', fr[-1]['f'])}'\n")
-    run(['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-vf', f'scale={W}:{H}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.45:3:3:0.0,fps={FPS},format=yuv420p', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
+    run(['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-vf', f'scale={W}:{H}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.45:3:3:0.0,fps=60,tblend=all_mode=average,fps={FPS},format=yuv420p', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
     return out, fr[0]['t'], json.load(open(os.path.join(REC, take, 'marks.json')))
 
 
