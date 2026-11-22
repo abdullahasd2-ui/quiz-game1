@@ -29,7 +29,7 @@ export async function adminStatsRoutes(
     const gameDay = sql`(created_at at time zone ${STATS_TIMEZONE})::date`;
     const rows = <T>(q: ReturnType<typeof sql>) => db.execute(q) as unknown as Promise<T[]>;
 
-    const [visits, games, today, byDay, platforms, modes, topCategories] = await Promise.all([
+    const [visits, games, today, byDay, platforms, modes, topCategories, tour] = await Promise.all([
       rows<{ visitors: number; visits: number; newVisitors: number }>(sql`
         select count(distinct device_id)::int as "visitors", coalesce(sum(visits), 0)::int as "visits",
           (select count(*)::int from (select min(day) as first from daily_visits group by device_id) f where f.first >= ${since}) as "newVisitors"
@@ -65,7 +65,9 @@ export async function adminStatsRoutes(
         join categories c on c.id = picked.id::int
         where g.started_at is not null and (g.created_at at time zone ${STATS_TIMEZONE})::date >= ${since}
         group by c.id, c.name order by 3 desc, c.name limit 10`),
+      rows<{ step: string; n: number }>(sql`select step, coalesce(sum(count), 0)::int as "n" from tour_runs where day >= ${since} group by step`),
     ]);
+    const tourN = (k: string) => tour.find((t) => t.step === k)?.n ?? 0;
 
     const median = games[0]?.median;
     return {
@@ -84,6 +86,7 @@ export async function adminStatsRoutes(
       platforms,
       modes,
       topCategories,
+      tour: { open: tourN('open'), finish: tourN('finish'), play: tourN('play') },
     };
   });
 

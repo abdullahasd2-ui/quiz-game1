@@ -1,3 +1,4 @@
+import { tourRoutes } from './api/public/tour';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import cors from '@fastify/cors';
@@ -46,6 +47,7 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   app.get('/api/health', async () => ({ ok: true }));
   await app.register(publicCategoryRoutes, { prefix: '/api/categories' });
   await app.register(popularRoutes, { prefix: '/api/popular' });
+  await app.register(tourRoutes, { prefix: '/api/tour' });
   await app.register(appUpdateRoutes, { prefix: '/api/app', dir: env.OTA_DIR, publicOrigin: env.PUBLIC_ORIGIN });
 
   const game = attachGameServer(app, gameOptions);
