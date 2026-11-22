@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
 import { isNative, streamLink } from '@/lib/links';
-import { GAME_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
+import { GAME_VIDEO, TOUR_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
 import { Tour } from '../tour/Tour';
 
 /** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
@@ -366,6 +366,16 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
             src={GAME_VIDEO}
             title="🎬 جاوب أو بادل في 90 ثانية"
             caption="كيف تنشئ غرفة، وتختار الفئات، وتجاوب أو تبادل مع خصمك. والتفاصيل كاملة في «طريقة اللعب»."
+            saveAs="jawab-badel-90s.mp4"
+          />
+          <VideoGuideButton
+            className="q-chip border-q-purple/40 bg-q-purple/10 text-[#d8b4fe]"
+            label="📱 فيديو «اكتشف طريقة اللعب»"
+            src={TOUR_VIDEO}
+            portrait
+            title="📱 اكتشف طريقة اللعب في 30 ثانية"
+            caption="جولة كاملة من التجربة التفاعلية داخل التطبيق، وبعدها لعب حقيقي مع الأصحاب."
+            saveAs="jawab-badel-discover.mp4"
           />
           <button type="button" className="q-chip" onClick={() => (setTab('join'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             🔗 عندي كود

@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { api } from '@/lib/api';
+import { SaveVideoButton, TOUR_VIDEO } from '@/kick/VideoGuide';
 import { cn } from '@/lib/utils';
 import { Background3D } from '../fx/Background3D';
 import { Confetti, prefersReducedMotion } from '../fx/Confetti';
@@ -454,6 +455,10 @@ function TourBody({ auto, onClose, onPlay }: { auto: boolean; onClose: () => voi
               >
                 🚀 ابدأ اللعب الآن
               </button>
+              <div className="mt-4 flex justify-center">
+                <SaveVideoButton src={TOUR_VIDEO} name="jawab-badel-discover.mp4" title="جاوب أو بادل: اكتشف طريقة اللعب" />
+              </div>
+              <div className="mt-1 text-[11px] text-white/45">فيديو هذي التجربة في 30 ثانية، تحفظه وتنشره</div>
               <button type="button" className="mt-3 text-sm font-bold text-white/60 underline-offset-4 hover:underline" onClick={restart}>
                 ↺ عيد التجربة
               </button>
