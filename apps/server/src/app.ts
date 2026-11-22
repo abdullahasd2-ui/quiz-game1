@@ -1,3 +1,5 @@
+import { imageProxyRoutes } from './api/public/img';
+import { restoreBundledUploads } from './lib/bundled-uploads';
 import { tourRoutes } from './api/public/tour';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -48,6 +50,9 @@ export async function buildApp(gameOptions: GameServerOptions = {}) {
   await app.register(publicCategoryRoutes, { prefix: '/api/categories' });
   await app.register(popularRoutes, { prefix: '/api/popular' });
   await app.register(tourRoutes, { prefix: '/api/tour' });
+  await app.register(imageProxyRoutes, { prefix: '/api/img', dir: path.resolve(env.UPLOAD_DIR) });
+  // The legacy bank's pictures ship with the server; put back any the uploads volume is missing.
+  await restoreBundledUploads(path.resolve(env.UPLOAD_DIR)).catch((err) => app.log.warn({ err }, 'restore bundled uploads'));
   await app.register(appUpdateRoutes, { prefix: '/api/app', dir: env.OTA_DIR, publicOrigin: env.PUBLIC_ORIGIN });
 
   const game = attachGameServer(app, gameOptions);

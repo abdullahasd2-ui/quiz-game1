@@ -1,3 +1,4 @@
+import { imageSrc } from '@/lib/server';
 import { LEGACY_DRAW_PREFIX } from '@quiz/shared';
 import { ImageIcon, Loader2Icon, UploadIcon, XIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -36,7 +37,7 @@ export function ImageField({ value, onChange, invalid }: Props) {
       }}
     >
       <div className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
-        {value && !isLegacy ? <img src={value} alt="" className="size-full object-cover" /> : <ImageIcon className="size-6 text-muted-foreground" />}
+        {value ? <img src={imageSrc(value)} alt="" className="size-full object-cover" /> : <ImageIcon className="size-6 text-muted-foreground" />}
       </div>
       <div className="min-w-0 flex-1 text-sm">
         {isLegacy ? (

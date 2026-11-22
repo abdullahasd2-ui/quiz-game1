@@ -91,7 +91,7 @@ export type UsageStats = {
 };
 
 /** A real question from the bank for the interactive tour (the tour shows the right answer after the pick). */
-export type TourQuestion = { text: string; options: string[]; correctIndex: number; points: number; type: string; imageUrl: string | null };
+export type TourQuestion = { text: string; options: string[]; correctIndex: number; points: number; type: QuestionType; imageUrl: string | null; revealUrl: string | null };
 
 export type ApiErrorBody = { error: string; issues?: { path: string; message: string }[] };
 

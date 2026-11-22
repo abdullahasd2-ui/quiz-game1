@@ -395,6 +395,14 @@ describe('tour («اكتشف طريقة اللعب»)', () => {
   });
 });
 
+describe('question pictures', () => {
+  it('only fetches pictures from the bank\'s known hosts', async () => {
+    expect((await app.inject({ method: 'GET', url: '/api/img?u=nope' })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'GET', url: `/api/img?u=${encodeURIComponent('https://evil.example/x.jpg')}` })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'GET', url: `/api/img?u=${encodeURIComponent('http://i.imgur.com/x.jpg')}` })).statusCode).toBe(400);
+  });
+});
+
 describe('admin live score', () => {
   it('needs an admin, and a live room', async () => {
     const url = '/api/admin/stats/live/ABCDEF/score';

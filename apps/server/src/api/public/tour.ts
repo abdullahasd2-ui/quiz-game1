@@ -20,7 +20,7 @@ export async function tourRoutes(app: FastifyInstance) {
     let picked = null;
     for (let i = 0; i < 4 && (!picked || picked.type !== 'text'); i++) picked = (await drawQuestion(q.data.category, q.data.points)) ?? picked;
     if (!picked) return reply.code(404).send({ error: 'ما فيه سؤال لهذي الخانة' });
-    return { text: picked.text, options: picked.options, correctIndex: picked.correctIndex, points: q.data.points, type: picked.type, imageUrl: picked.imageUrl ?? null };
+    return { text: picked.text, options: picked.options, correctIndex: picked.correctIndex, points: q.data.points, type: picked.type, imageUrl: picked.imageUrl ?? null, revealUrl: picked.revealUrl ?? null };
   });
   app.post('/event', { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (req, reply) => {
     const b = eventBody.safeParse(req.body);

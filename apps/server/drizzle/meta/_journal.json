@@ -43,6 +43,13 @@
       "when": 1795366823915,
       "tag": "0005_tour_stats",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795375611919,
+      "tag": "0006_retire_unfree_logos",
+      "breakpoints": true
     }
   ]
 }
