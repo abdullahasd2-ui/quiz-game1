@@ -58,7 +58,7 @@ def take_video(take):
             d = (fr[i + 1]['t'] - x['t']) if i + 1 < len(fr) else 1.0
             f.write(f"file '{os.path.join(REC, take, 'frames', x['f'])}'\nduration {max(d, 0.001):.4f}\n")
         f.write(f"file '{os.path.join(REC, take, 'frames', fr[-1]['f'])}'\n")
-    run(['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-vf', f'scale={W}:{H}:flags=lanczos,fps={FPS},format=yuv420p', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
+    run(['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-vf', f'scale={W}:{H}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.45:3:3:0.0,fps={FPS},format=yuv420p', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
     return out, fr[0]['t'], json.load(open(os.path.join(REC, take, 'marks.json')))
 
 
@@ -73,12 +73,12 @@ for i, (take, mark, off, dur, cap) in enumerate(SEGMENTS):
     ss = marks[mark] - t0 + off
     out = os.path.join(OUT, f'seg{i}.mp4')
     if cap is None:
-        run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-vf', f'fps={FPS},format=yuv420p', '-an', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
+        run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-vf', f'fps={FPS},format=yuv420p', '-an', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
     else:
         png = os.path.join(CAPS, f'{cap}.png')
         run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-loop', '1', '-t', f'{dur:.3f}', '-i', png,
              '-filter_complex', f"[1:v]format=rgba,fade=t=in:st=0.15:d=0.35:alpha=1[c];[0:v][c]overlay=0:0:format=auto,fps={FPS},format=yuv420p[v]",
-             '-map', '[v]', '-an', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
+             '-map', '[v]', '-an', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
     segs.append(out)
     starts.append(t)
     t += dur - XF
@@ -94,7 +94,7 @@ for i in range(1, len(segs)):
     prev = lab
     acc += SEGMENTS[i][3] - XF
 picture = os.path.join(OUT, 'picture.mp4')
-run(['ffmpeg', '-y', *inputs, '-filter_complex', ';'.join(fc), '-map', prev, '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', '-r', str(FPS), picture])
+run(['ffmpeg', '-y', *inputs, '-filter_complex', ';'.join(fc), '-map', prev, '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', '-r', str(FPS), picture])
 
 # The sound: effects on the cuts and on what happens in the footage (no voice; music optional).
 events = []
@@ -152,7 +152,7 @@ final = os.path.join(OUT, f'jawab-badel-app-preview{"-tour" if CUT == "tour" els
 run(['ffmpeg', '-y', '-i', picture, '-i', os.path.join(here, 'mix-preview.wav'),
      '-map', '0:v', '-map', '1:a', '-t', f'{TOTAL:.3f}',
      '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.0', '-pix_fmt', 'yuv420p', '-r', str(FPS),
-     '-b:v', '11M', '-maxrate', '12M', '-bufsize', '24M', '-preset', 'slow', '-x264-params', 'nal-hrd=vbr',
+     '-b:v', '11.8M', '-maxrate', '12M', '-bufsize', '24M', '-preset', 'veryslow', '-tune', 'animation', '-x264-params', 'nal-hrd=vbr:aq-mode=3:deblock=-1,-1',
      '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', '-ac', '2',
      '-movflags', '+faststart', final])
 print('total', round(TOTAL, 3), 's ->', final)

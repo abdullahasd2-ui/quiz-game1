@@ -14,6 +14,8 @@ const IPAD = process.env.IPAD === '1';
 const OUT = path.join(__dirname, IPAD ? 'rec-ipad' : 'rec');
 const VW = IPAD ? 600 : 443;
 const VH = IPAD ? 800 : 960;
+// Supersampled: drawn at 3× and scaled down to the final size later, so text and edges come out razor sharp.
+const SS = Number(process.env.SS || 3);
 const FONT_CSS = fs.readFileSync(path.join(__dirname, 'fonts.css'), 'utf8');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const RIGHT = Object.fromEntries(
@@ -25,7 +27,7 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
 (async () => {
   const browser = await chromium.launch();
   const mk = async () => {
-    const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, deviceScaleFactor: 2, locale: 'ar', isMobile: true, hasTouch: true });
+    const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, deviceScaleFactor: SS, locale: 'ar', isMobile: true, hasTouch: true });
     await ctx.route(/fonts\.googleapis\.com/, (r) => r.fulfill({ status: 200, contentType: 'text/css', body: FONT_CSS }));
     await ctx.route(/fonts\.gstatic\.com/, (r) => r.abort());
     const p = await ctx.newPage();
@@ -47,12 +49,12 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
     const marks = {};
     const cdp = await p.context().newCDPSession(p);
     cdp.on('Page.screencastFrame', async (f) => {
-      const name = `${String(frames.length).padStart(6, '0')}.jpg`;
+      const name = `${String(frames.length).padStart(6, '0')}.png`;
       fs.writeFileSync(path.join(dir, 'frames', name), Buffer.from(f.data, 'base64'));
       frames.push({ f: name, t: f.metadata.timestamp });
       await cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }).catch(() => {});
     });
-    await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 95, maxWidth: VW * 2, maxHeight: VH * 2, everyNthFrame: 1 });
+    await cdp.send('Page.startScreencast', { format: 'png', maxWidth: VW * SS, maxHeight: VH * SS, everyNthFrame: 1 });
     const mark = (k) => { marks[k] = Date.now() / 1000; console.log('  mark', take, k); };
     mark('start');
     try { await fn(mark); } finally {
