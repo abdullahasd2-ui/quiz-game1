@@ -80,3 +80,6 @@ scripts/appstore-promo/preview-iphone/
 scripts/appstore-promo/captions/
 scripts/appstore-promo/timeline-preview.json
 scripts/appstore-promo/mix-preview.wav
+scripts/appstore-promo/rec-ipad/
+scripts/appstore-promo/preview-ipad/
+scripts/appstore-promo/captions-ipad/

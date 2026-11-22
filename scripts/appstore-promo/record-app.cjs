@@ -9,7 +9,11 @@ const path = require('path');
 const { execSync } = require('child_process');
 const BASE = process.env.BASE || 'http://localhost:5180';
 const DB = process.env.DB || 'promo';
-const OUT = path.join(__dirname, 'rec');
+// IPAD=1: an iPad (600×800 CSS px at 2× = 1200×1600, the iPad App Preview size) instead of the iPhone.
+const IPAD = process.env.IPAD === '1';
+const OUT = path.join(__dirname, IPAD ? 'rec-ipad' : 'rec');
+const VW = IPAD ? 600 : 443;
+const VH = IPAD ? 800 : 960;
 const FONT_CSS = fs.readFileSync(path.join(__dirname, 'fonts.css'), 'utf8');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const RIGHT = Object.fromEntries(
@@ -21,7 +25,7 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
 (async () => {
   const browser = await chromium.launch();
   const mk = async () => {
-    const ctx = await browser.newContext({ viewport: { width: 443, height: 960 }, deviceScaleFactor: 2, locale: 'ar', isMobile: true, hasTouch: true });
+    const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, deviceScaleFactor: 2, locale: 'ar', isMobile: true, hasTouch: true });
     await ctx.route(/fonts\.googleapis\.com/, (r) => r.fulfill({ status: 200, contentType: 'text/css', body: FONT_CSS }));
     await ctx.route(/fonts\.gstatic\.com/, (r) => r.abort());
     const p = await ctx.newPage();
@@ -48,7 +52,7 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
       frames.push({ f: name, t: f.metadata.timestamp });
       await cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }).catch(() => {});
     });
-    await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 95, maxWidth: 886, maxHeight: 1920, everyNthFrame: 1 });
+    await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 95, maxWidth: VW * 2, maxHeight: VH * 2, everyNthFrame: 1 });
     const mark = (k) => { marks[k] = Date.now() / 1000; console.log('  mark', take, k); };
     mark('start');
     try { await fn(mark); } finally {

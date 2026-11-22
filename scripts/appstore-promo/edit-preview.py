@@ -9,10 +9,12 @@ Run: python3 edit-preview.py  (needs rec/ from record-app.cjs, caption PNGs from
 import json, os, subprocess, bisect
 
 here = os.path.dirname(os.path.abspath(__file__))
-REC = os.path.join(here, 'rec')
-OUT = os.path.join(here, 'preview-iphone')
+IPAD = os.environ.get('IPAD') == '1'
+REC = os.path.join(here, 'rec-ipad' if IPAD else 'rec')
+OUT = os.path.join(here, 'preview-ipad' if IPAD else 'preview-iphone')
+CAPS = os.path.join(here, 'captions-ipad' if IPAD else 'captions')
 os.makedirs(OUT, exist_ok=True)
-W, H, FPS = 886, 1920, 30
+W, H, FPS = (1200, 1600, 30) if IPAD else (886, 1920, 30)
 XF = 0.35  # cross-fade length
 
 # (take, mark, offset from the mark, length, caption key)
@@ -57,7 +59,7 @@ t = 0.0
 for i, (take, mark, off, dur, cap) in enumerate(SEGMENTS):
     src, t0, marks = takes[take]
     ss = marks[mark] - t0 + off
-    png = os.path.join(here, 'captions', f'{cap}.png')
+    png = os.path.join(CAPS, f'{cap}.png')
     out = os.path.join(OUT, f'seg{i}.mp4')
     run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-loop', '1', '-t', f'{dur:.3f}', '-i', png,
          '-filter_complex', f"[1:v]format=rgba,fade=t=in:st=0.15:d=0.35:alpha=1[c];[0:v][c]overlay=0:0:format=auto,fps={FPS},format=yuv420p[v]",
@@ -108,7 +110,7 @@ env = dict(os.environ, TL='timeline-preview.json', MIX='mix-preview.wav', NO_MUS
 subprocess.run(['python3', os.path.join(here, 'audio.py')], check=True, env=env)
 
 # Final encode to Apple's App Preview spec.
-final = os.path.join(OUT, 'jawab-badel-app-preview-886x1920.mp4')
+final = os.path.join(OUT, f'jawab-badel-app-preview-{W}x{H}.mp4')
 run(['ffmpeg', '-y', '-i', picture, '-i', os.path.join(here, 'mix-preview.wav'),
      '-map', '0:v', '-map', '1:a', '-t', f'{TOTAL:.3f}',
      '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.0', '-pix_fmt', 'yuv420p', '-r', str(FPS),
