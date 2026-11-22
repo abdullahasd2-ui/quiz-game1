@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { RoomView, Variant } from '@quiz/shared';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
-import { openStream } from '@/lib/links';
+import { isNative, openStream } from '@/lib/links';
 import { serverUrl } from '@/lib/server';
 import { setSoundEnabled, useSoundEnabled } from '@/game/fx/sound';
 import { emit, preselectCategory } from './bus';
@@ -147,7 +147,7 @@ export function GameQuick({ view, leave, onKeys }: { view: RoomView | null; leav
       { id: 'sound', icon: sound ? '🔊' : '🔇', title: sound ? 'كتم الأصوات' : 'تشغيل الأصوات', badge: 'M', stay: true, run: () => setSoundEnabled(!sound) },
       ...(matchMedia('(pointer: coarse)').matches ? [] : [{ id: 'keys', icon: '⌨️', title: 'اختصارات لوحة المفاتيح', badge: '؟', run: onKeys }]),
       ...(atHome ? [{ id: 'how', icon: '📖', title: 'طريقة اللعب', hint: 'القواعد وأمثلة النقاط', keywords: 'help قواعد', run: () => emit('home:how') }] : []),
-      { id: 'stream', icon: '🟢', title: 'صفحة الستريمر (Kick)', hint: 'العب مع شات البث', keywords: 'kick stream بث', run: openStream },
+      ...(isNative() ? [] : [{ id: 'stream', icon: '🟢', title: 'صفحة الستريمر (Kick)', hint: 'العب مع شات البث', keywords: 'kick stream بث', run: openStream }]),
       { id: 'support', icon: '💬', title: 'الدعم', run: () => window.open(serverUrl('/support'), '_blank', 'noopener') },
       { id: 'privacy', icon: '🔒', title: 'سياسة الخصوصية', run: () => window.open(serverUrl('/privacy'), '_blank', 'noopener') },
     ],

@@ -4,6 +4,7 @@ import { play, resumeAudioIfNeeded, unlockAudio } from './fx/sound';
 import { SoundToggle } from './fx/SoundToggle';
 import { Intro } from './fx/Intro';
 import { StreamerLink } from './fx/StreamerLink';
+import { isNative } from '@/lib/links';
 import { useGameFx } from './fx/useGameFx';
 import { BoardScreen, WaitingForPick } from './screens/BoardScreen';
 import { FinalScreen } from './screens/FinalScreen';
@@ -115,7 +116,7 @@ export function GamePage() {
       <HotkeysHelp open={help} onClose={() => setHelp(false)} rows={GAME_KEYS} fullscreen={false} />
       {!solo && <GameQuick view={view} leave={leave} onKeys={() => setHelp(true)} />}
       <GameStart status={view?.status ?? null} />
-      {!view && !solo && <StreamerLink />}
+      {!view && !solo && !isNative() && <StreamerLink />}
       {(view ?? solo) && (view ?? solo)!.status !== 'done' && (
         <button
           type="button"
