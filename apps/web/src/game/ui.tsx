@@ -1,7 +1,7 @@
 import type { Action, QuestionType, RoomView, TeamIndex, Variant } from '@quiz/shared';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { serverUrl } from '@/lib/server';
+import { imageSrc, serverUrl } from '@/lib/server';
 import { cn } from '@/lib/utils';
 import { play } from './fx/sound';
 
@@ -179,7 +179,7 @@ export function QuestionImage({ url, type, revealed = false, large = false }: { 
   return (
     <div className="mt-2.5 mb-1 flex flex-col items-center justify-center overflow-hidden rounded-xl bg-q-bg p-2.5">
       <img
-        src={serverUrl(url)}
+        src={imageSrc(url)}
         alt=""
         className={cn('max-w-full rounded-lg object-contain transition-[filter] duration-500', large ? 'max-h-64' : 'max-h-44', blurred && 'blur-md')}
       />

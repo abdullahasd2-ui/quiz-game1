@@ -13,6 +13,7 @@ import { api } from '@/lib/api';
 import { SaveVideoButton, TOUR_VIDEO } from '@/kick/VideoGuide';
 import { cn } from '@/lib/utils';
 import { Background3D } from '../fx/Background3D';
+import { QuestionImage } from '../ui';
 import { Confetti, prefersReducedMotion } from '../fx/Confetti';
 import { CountUp } from '../fx/CountUp';
 import { play, unlockAudio } from '../fx/sound';
@@ -324,7 +325,8 @@ function TourBody({ auto, onClose, onPlay }: { auto: boolean; onClose: () => voi
                 </span>
                 <span className="tour-pill gold">{q.points} نقطة</span>
               </div>
-              {q.imageUrl && q.type !== 'text' && <img src={q.imageUrl} alt="" className="mx-auto mb-3 max-h-44 rounded-xl object-contain" />}
+              {/* Picture questions: the game's own image (blurred or teaser until the answer, then the full picture). */}
+              <QuestionImage url={revealed && q.revealUrl ? q.revealUrl : q.imageUrl} type={q.type} revealed={revealed} large />
               <div className="tour-q-text">{q.text}</div>
             </div>
 
