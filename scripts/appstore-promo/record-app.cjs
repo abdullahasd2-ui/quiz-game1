@@ -220,5 +220,27 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
     await B.context().close();
   });
 
+  // ── Take 3: «اكتشف طريقة اللعب» playing itself (?tour=auto), the app's own interactive tour ──
+  await part('tour', async () => {
+    const A = await mk();
+    await A.goto(BASE + '/');
+    await wait(2000);
+    await film(A, 'tour', async (mark) => {
+      await A.evaluate(() => history.replaceState(null, '', '/?tour=auto'));
+      await A.goto(BASE + '/?tour=auto');
+      mark('tour');
+      // Name each stage as it appears (for the sound design), until the round's result is up.
+      let last = '';
+      for (let i = 0; i < 400; i++) {
+        const st = await A.evaluate(() => document.querySelector('.tour-root h2')?.textContent || (document.querySelector('.tour-final') ? 'final' : 'intro'));
+        if (st !== last) { mark(`s:${st}`); last = st; }
+        if (st === 'final') break;
+        await wait(100);
+      }
+      await wait(3500);
+    });
+    await A.context().close();
+  });
+
   await browser.close();
 })();

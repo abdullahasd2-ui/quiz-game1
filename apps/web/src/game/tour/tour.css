@@ -1,0 +1,719 @@
+/* «اكتشف طريقة اللعب»: the game's own colours (violet night, gold, cyan, team blue and red), staged like a cinematic.
+   Only transform / opacity / filter / box-shadow move. */
+
+.tour-root {
+  font-family: inherit;
+}
+.tour-vignette {
+  background:
+    radial-gradient(80% 60% at 50% 35%, rgba(124, 58, 237, 0.18), transparent 70%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(3, 3, 14, 0.85));
+}
+.tour-scene {
+  animation: tour-in 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+@keyframes tour-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.97);
+    filter: blur(10px);
+  }
+}
+.tour-badge {
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #f7c948;
+  background: rgba(247, 201, 72, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(247, 201, 72, 0.35);
+}
+.tour-step {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  position: relative;
+}
+.tour-step.done {
+  background: linear-gradient(90deg, #f7c948, #ff6b35);
+}
+.tour-step.now::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f7c948, #ff6b35);
+  box-shadow: 0 0 12px rgba(247, 201, 72, 0.8);
+  animation: tour-fill 0.9s cubic-bezier(0.3, 1, 0.3, 1) both;
+  transform-origin: right;
+}
+@keyframes tour-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* ── Intro ─────────────────────────────────────────────────────────────── */
+.tour-intro {
+  position: relative;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  color: inherit;
+}
+.tour-word {
+  display: inline-block;
+  animation:
+    tour-word 0.8s cubic-bezier(0.2, 1.35, 0.4, 1) both,
+    tour-wipe 0.7s cubic-bezier(0.3, 0.9, 0.3, 1) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes tour-word {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(1.5);
+    filter: blur(12px);
+  }
+}
+@keyframes tour-wipe {
+  from {
+    clip-path: inset(-20% -10% -20% 100%);
+  }
+  to {
+    clip-path: inset(-20% -10% -20% -10%);
+  }
+}
+.tour-glint {
+  position: absolute;
+  inset: -10% -20%;
+  background: linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+  mix-blend-mode: overlay;
+  animation: tour-glint 1.4s ease-in-out 1.5s both;
+  pointer-events: none;
+}
+@keyframes tour-glint {
+  from {
+    transform: translateX(80%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-80%);
+    opacity: 0;
+  }
+}
+.tour-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30rem;
+  height: 30rem;
+  margin: -15rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(247, 201, 72, 0.45), rgba(168, 85, 247, 0.25) 35%, transparent 65%);
+  animation: tour-burst 1.6s cubic-bezier(0.2, 0.9, 0.2, 1) 0.9s both;
+  pointer-events: none;
+}
+@keyframes tour-burst {
+  from {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+}
+.tour-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18rem;
+  height: 18rem;
+  margin: -9rem;
+  border-radius: 999px;
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.5);
+  animation: tour-ring 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) 1.05s both;
+  pointer-events: none;
+}
+@keyframes tour-ring {
+  from {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.tour-tag {
+  animation: tour-in 0.7s ease 1.6s both;
+}
+
+/* ── Start: teams and the code ─────────────────────────────────────────── */
+.tour-team {
+  border-radius: 1.4rem;
+  padding: 1rem;
+  text-align: center;
+  animation: tour-team 0.7s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+  animation-delay: var(--d, 0s);
+}
+.tour-team.blue {
+  background: linear-gradient(160deg, rgba(52, 152, 219, 0.28), rgba(15, 15, 40, 0.9));
+  box-shadow:
+    inset 0 0 0 1.5px rgba(52, 152, 219, 0.6),
+    0 0 40px -12px rgba(52, 152, 219, 0.9);
+}
+.tour-team.red {
+  background: linear-gradient(160deg, rgba(231, 76, 60, 0.28), rgba(15, 15, 40, 0.9));
+  box-shadow:
+    inset 0 0 0 1.5px rgba(231, 76, 60, 0.6),
+    0 0 40px -12px rgba(231, 76, 60, 0.9);
+}
+@keyframes tour-team {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85);
+  }
+}
+.tour-code {
+  border-radius: 1rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 1.4rem;
+  background: linear-gradient(180deg, rgba(247, 201, 72, 0.15), rgba(15, 15, 40, 0.9));
+  box-shadow:
+    inset 0 0 0 1.5px rgba(247, 201, 72, 0.45),
+    0 0 30px -8px rgba(247, 201, 72, 0.7);
+  animation: tour-team 0.7s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+  animation-delay: var(--d, 0s);
+}
+.tour-rise {
+  animation: tour-in 0.6s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+/* ── Categories ────────────────────────────────────────────────────────── */
+.tour-cat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1.15;
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, rgba(40, 34, 84, 0.85), rgba(16, 15, 40, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1.5px rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1),
+    box-shadow 0.35s;
+  animation: tour-pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation-delay: calc(0.15s + var(--i, 0) * 0.06s);
+}
+@keyframes tour-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-4deg);
+  }
+}
+.tour-cat:active {
+  transform: scale(0.95);
+}
+.tour-cat.on {
+  transform: translateY(-3px) scale(1.04);
+  background: linear-gradient(180deg, rgba(247, 201, 72, 0.25), rgba(30, 22, 10, 0.92));
+  box-shadow:
+    inset 0 0 0 2px #f7c948,
+    0 14px 34px -12px rgba(247, 201, 72, 0.8);
+}
+.tour-tick {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: #1a1206;
+  background: #f7c948;
+  animation: tour-pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+/* ── Board ─────────────────────────────────────────────────────────────── */
+.tour-colhead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  border-radius: 0.9rem;
+  padding: 0.5rem 0.3rem;
+  background: rgba(168, 85, 247, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(168, 85, 247, 0.35);
+  animation: tour-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.08s);
+}
+.tour-cell {
+  border-radius: 0.9rem;
+  padding: 0.85rem 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #f7c948;
+  background: linear-gradient(180deg, rgba(34, 30, 72, 0.9), rgba(18, 16, 44, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1.5px rgba(247, 201, 72, 0.18);
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+  animation: tour-flip 0.55s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.045s);
+}
+@keyframes tour-flip {
+  from {
+    opacity: 0;
+    transform: perspective(500px) rotateX(-80deg);
+  }
+}
+.tour-cell:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 2px #f7c948,
+    0 10px 24px -10px rgba(247, 201, 72, 0.8);
+}
+.tour-cell.busy {
+  animation: tour-busy 0.8s ease-in-out infinite alternate;
+}
+@keyframes tour-busy {
+  to {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 2px #f7c948, 0 0 30px rgba(247, 201, 72, 0.8);
+  }
+}
+
+/* ── Question, choice, options ─────────────────────────────────────────── */
+.tour-q {
+  border-radius: 1.5rem;
+  padding: 1rem 1.1rem 1.2rem;
+  background: linear-gradient(180deg, rgba(28, 24, 64, 0.94), rgba(12, 11, 30, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 24px 60px -30px rgba(0, 0, 0, 0.9);
+}
+.tour-q-text {
+  text-align: center;
+  font-size: clamp(1.2rem, 4.6vw, 1.75rem);
+  font-weight: 900;
+  line-height: 1.5;
+  animation: tour-in 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) 0.1s both;
+}
+.tour-pill {
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  background: rgba(168, 85, 247, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(168, 85, 247, 0.4);
+}
+.tour-pill.gold {
+  color: #f7c948;
+  background: rgba(247, 201, 72, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(247, 201, 72, 0.45);
+}
+.tour-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  border-radius: 1.3rem;
+  padding: 1rem 0.5rem;
+  transition:
+    transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1),
+    opacity 0.3s,
+    box-shadow 0.35s;
+  animation: tour-pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 0.35s both;
+}
+.tour-choice.green {
+  background: linear-gradient(180deg, #2ecc71, #1e8c4d);
+  box-shadow: 0 10px 30px -12px rgba(46, 204, 113, 0.9);
+}
+.tour-choice.red {
+  background: linear-gradient(180deg, #ff6b5b, #c0392b);
+  box-shadow: 0 10px 30px -12px rgba(231, 76, 60, 0.9);
+  animation-delay: 0.45s;
+}
+.tour-choice:disabled:not(.chosen) {
+  opacity: 0.3;
+  transform: scale(0.94);
+}
+.tour-choice.chosen {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 40px rgba(255, 255, 255, 0.5);
+}
+.tour-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1.1rem;
+  padding: 0.85rem 1rem;
+  font-size: 1.05rem;
+  font-weight: 900;
+  background: linear-gradient(180deg, rgba(34, 30, 72, 0.92), rgba(20, 18, 46, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1.5px rgba(255, 255, 255, 0.09);
+  transition:
+    transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1),
+    opacity 0.4s,
+    box-shadow 0.4s,
+    filter 0.4s;
+  animation: tour-opt 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.09s);
+}
+@keyframes tour-opt {
+  from {
+    opacity: 0;
+    transform: translateY(18px) perspective(600px) rotateX(30deg);
+  }
+}
+.tour-opt .n {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.7rem;
+  color: #1a1206;
+  background: linear-gradient(135deg, #ffd76a, #f7a83b);
+}
+.tour-opt.picked {
+  box-shadow:
+    0 0 0 2px #f7c948,
+    0 0 26px -6px rgba(247, 201, 72, 0.9);
+}
+.tour-opt.right {
+  transform: scale(1.03);
+  background: linear-gradient(180deg, rgba(22, 101, 52, 0.9), rgba(14, 60, 34, 0.95));
+  box-shadow:
+    0 0 0 2px #34d399,
+    0 0 40px -6px rgba(52, 211, 153, 0.8);
+}
+.tour-opt.wrong {
+  background: linear-gradient(180deg, rgba(127, 29, 29, 0.9), rgba(70, 14, 14, 0.95));
+  box-shadow: 0 0 0 2px #f87171;
+  animation: tour-shake 0.5s ease both;
+}
+@keyframes tour-shake {
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+.tour-opt.dim {
+  opacity: 0.35;
+  filter: saturate(0.4);
+}
+.tour-stamp {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  font-weight: 900;
+  background: #34d399;
+  color: #052e1a;
+  animation: tour-stamp 0.5s cubic-bezier(0.2, 1.8, 0.4, 1) both;
+}
+.tour-stamp.bad {
+  background: #f87171;
+  color: #3b0909;
+}
+@keyframes tour-stamp {
+  from {
+    opacity: 0;
+    transform: scale(2.4) rotate(-20deg);
+  }
+}
+.tour-verdict {
+  position: relative;
+  margin-top: 1rem;
+  border-radius: 1.3rem;
+  padding: 1rem;
+  text-align: center;
+  animation: tour-verdict 0.6s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+.tour-verdict.good {
+  background: radial-gradient(120% 140% at 50% 0%, rgba(52, 211, 153, 0.3), rgba(10, 30, 20, 0.8));
+  box-shadow: inset 0 0 0 1.5px rgba(52, 211, 153, 0.55);
+}
+.tour-verdict.bad {
+  background: radial-gradient(120% 140% at 50% 0%, rgba(248, 113, 113, 0.3), rgba(40, 10, 10, 0.8));
+  box-shadow: inset 0 0 0 1.5px rgba(248, 113, 113, 0.55);
+}
+.tour-verdict.flat {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+@keyframes tour-verdict {
+  from {
+    opacity: 0;
+    transform: scale(1.4);
+    filter: blur(8px);
+  }
+}
+.tour-dots i {
+  display: inline-block;
+  width: 0.38rem;
+  height: 0.38rem;
+  margin: 0 0.1rem;
+  border-radius: 999px;
+  background: currentColor;
+  animation: tour-dot 1.2s ease-in-out infinite;
+}
+.tour-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.tour-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes tour-dot {
+  30% {
+    transform: translateY(-0.35rem);
+  }
+}
+
+/* ── Points ────────────────────────────────────────────────────────────── */
+.tour-score {
+  position: relative;
+  border-radius: 1.3rem;
+  padding: 0.9rem;
+  text-align: center;
+  animation: tour-pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.tour-score.blue {
+  background: linear-gradient(160deg, rgba(52, 152, 219, 0.3), rgba(15, 15, 40, 0.92));
+  box-shadow: inset 0 0 0 1.5px rgba(52, 152, 219, 0.55);
+}
+.tour-score.red {
+  background: linear-gradient(160deg, rgba(231, 76, 60, 0.3), rgba(15, 15, 40, 0.92));
+  box-shadow: inset 0 0 0 1.5px rgba(231, 76, 60, 0.55);
+}
+.tour-delta {
+  position: absolute;
+  top: -0.7rem;
+  left: 50%;
+  font-weight: 900;
+  font-size: 1.2rem;
+  animation: tour-delta 1.6s cubic-bezier(0.2, 0.9, 0.2, 1) 0.3s both;
+}
+@keyframes tour-delta {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 30px) scale(0.6);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+.tour-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  opacity: 0.55;
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+  animation: tour-in 0.5s ease both;
+  animation-delay: calc(0.5s + var(--i, 0) * 0.1s);
+}
+.tour-rule.good b:last-child {
+  color: #34d399;
+}
+.tour-rule.gold b:last-child {
+  color: #f7c948;
+}
+.tour-rule.bad b:last-child {
+  color: #f87171;
+}
+.tour-rule.hit {
+  opacity: 1;
+  transform: scale(1.03);
+  background: rgba(247, 201, 72, 0.12);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(247, 201, 72, 0.6),
+    0 0 26px -8px rgba(247, 201, 72, 0.8);
+}
+
+/* ── Final ─────────────────────────────────────────────────────────────── */
+.tour-final {
+  position: relative;
+  isolation: isolate;
+}
+.tour-rays {
+  position: absolute;
+  left: 50%;
+  top: 3.5rem;
+  width: 34rem;
+  height: 34rem;
+  margin: -17rem;
+  z-index: -1;
+  background: repeating-conic-gradient(from 0deg, rgba(247, 201, 72, 0.18) 0deg 8deg, transparent 8deg 22deg);
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 65%);
+  mask: radial-gradient(circle, #000 20%, transparent 65%);
+  animation: tour-spin 18s linear infinite;
+}
+@keyframes tour-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.tour-trophy {
+  font-size: 5.5rem;
+  filter: drop-shadow(0 10px 30px rgba(247, 201, 72, 0.6));
+  animation: tour-trophy 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+@keyframes tour-trophy {
+  from {
+    opacity: 0;
+    transform: translateY(-80px) scale(0.4) rotate(-20deg);
+  }
+}
+
+/* The auto-player shows each press a beat before it happens. */
+.tour-press {
+  animation: tour-press 0.42s ease both !important;
+}
+@keyframes tour-press {
+  50% {
+    transform: scale(0.93);
+    box-shadow:
+      0 0 0 3px rgba(255, 255, 255, 0.9),
+      0 0 30px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.tour-next {
+  animation: tour-in 0.6s ease 0.6s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-root *,
+  .tour-root *::before,
+  .tour-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* The home page's «اكتشف طريقة اللعب» button: a glass pill with a living gradient edge and a play disc. */
+.q-tour-btn {
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1.3rem;
+  padding: 0.75rem 0.9rem;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(120deg, rgba(124, 58, 237, 0.45), rgba(56, 189, 248, 0.28) 55%, rgba(247, 201, 72, 0.3));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1.5px rgba(255, 255, 255, 0.18),
+    0 18px 40px -18px rgba(124, 58, 237, 0.9);
+  transition:
+    transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1),
+    box-shadow 0.3s;
+}
+.q-tour-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 1.5px rgba(247, 201, 72, 0.6),
+    0 22px 46px -16px rgba(124, 58, 237, 1);
+}
+.q-tour-btn:active {
+  transform: scale(0.98);
+}
+.q-tour-btn-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 45%, transparent 60%);
+  background-size: 250% 100%;
+  animation: q-tour-sheen 3.2s ease-in-out infinite;
+}
+@keyframes q-tour-sheen {
+  0%,
+  40% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -130% 0;
+  }
+}
+.q-tour-btn-icon {
+  display: grid;
+  place-items: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  flex: none;
+  border-radius: 0.95rem;
+  font-size: 1.3rem;
+  background: rgba(7, 7, 26, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.q-tour-btn-go {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: #1a1206;
+  background: linear-gradient(135deg, #ffe27a, #f7a83b);
+  box-shadow: 0 0 0 0 rgba(247, 201, 72, 0.7);
+  animation: q-tour-pulse 2s ease-out infinite;
+}
+@keyframes q-tour-pulse {
+  70% {
+    box-shadow: 0 0 0 12px rgba(247, 201, 72, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(247, 201, 72, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-tour-btn-glow,
+  .q-tour-btn-go {
+    animation: none;
+  }
+}

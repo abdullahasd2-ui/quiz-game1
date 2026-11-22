@@ -150,3 +150,14 @@ export const kickStreams = pgTable(
   },
   (t) => [index('kick_streams_started_at_idx').on(t.startedAt)],
 );
+
+/** «اكتشف طريقة اللعب»: per day, how many opened the interactive tour, finished it, and tapped «ابدأ اللعب الآن». */
+export const tourRuns = pgTable(
+  'tour_runs',
+  {
+    day: date('day').notNull(),
+    step: varchar('step', { length: 16 }).notNull(),
+    count: integer('count').notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.step] })],
+);

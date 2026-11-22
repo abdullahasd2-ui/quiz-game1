@@ -251,6 +251,25 @@ function UsageSection() {
         <ChartCard title="أكثر الفئات لعبًا" description="عدد الألعاب التي اختارتها" loading={usage.isPending}>
           {u && <CategoryBoard u={u} />}
         </ChartCard>
+        <ChartCard title="🎓 اكتشف طريقة اللعب" description="تجربة الشرح التفاعلية في الصفحة الرئيسية" loading={usage.isPending}>
+          {u && (
+            <div className="grid grid-cols-3 gap-3 text-center">
+              {[
+                ['فتحوها', u.tour?.open ?? 0],
+                ['كمّلوها للنهاية', u.tour?.finish ?? 0],
+                ['ضغطوا «ابدأ اللعب»', u.tour?.play ?? 0],
+              ].map(([l, n]) => (
+                <div key={l as string} className="rounded-lg border p-3">
+                  <div className="text-2xl font-black tabular-nums">{n as number}</div>
+                  <div className="text-xs text-muted-foreground">{l as string}</div>
+                </div>
+              ))}
+              <div className="col-span-3 text-xs text-muted-foreground">
+                {u.tour?.open ? `نسبة اللي كمّلوها: ${Math.round(((u.tour.finish ?? 0) / u.tour.open) * 100)}%` : 'ما فيه بيانات في هذي الفترة'}
+              </div>
+            </div>
+          )}
+        </ChartCard>
       </div>
     </section>
   );

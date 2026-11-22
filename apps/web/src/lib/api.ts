@@ -1,4 +1,4 @@
-import { fieldLabel, type Admin, type AdminAccount, type LiveStats, type UsageStats, type KickStats, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput, type QuestionStatus } from '@quiz/shared';
+import { fieldLabel, type Admin, type AdminAccount, type LiveStats, type UsageStats, type KickStats, type ApiErrorBody, type Category, type CategoryInput, type CoverageRow, type Page, type PublicCategory, type Question, type QuestionInput, type QuestionStatus, type TourQuestion } from '@quiz/shared';
 import { serverUrl } from './server';
 
 export class ApiError extends Error {
@@ -33,6 +33,8 @@ const qs = (params: Record<string, unknown>) => {
 
 export const api = {
   publicCategories: () => request<PublicCategory[]>('GET', '/api/categories'),
+  tourQuestion: (category: number, points: number) => request<TourQuestion>('GET', `/api/tour/question?category=${category}&points=${points}`),
+  tourEvent: (step: 'open' | 'finish' | 'play') => request<{ ok: true }>('POST', '/api/tour/event', { step }).catch(() => undefined),
 
   me: () => request<Admin>('GET', '/api/admin/me'),
   login: (email: string, password: string) => request<Admin>('POST', '/api/admin/login', { email, password }),

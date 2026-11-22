@@ -384,6 +384,17 @@ describe('popular', () => {
   });
 });
 
+describe('tour («اكتشف طريقة اللعب»)', () => {
+  it('refuses a bad cell, counts opens and finishes, and shows them in the admin usage stats', async () => {
+    expect((await app.inject({ method: 'GET', url: '/api/tour/question?category=1&points=250' })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'POST', url: '/api/tour/event', payload: { step: 'nope' } })).statusCode).toBe(400);
+    for (const step of ['open', 'open', 'finish']) expect((await app.inject({ method: 'POST', url: '/api/tour/event', payload: { step } })).statusCode).toBe(200);
+    const usage = (await app.inject({ method: 'GET', url: '/api/admin/stats/usage?days=7', headers: { cookie } })).json() as { tour: { open: number; finish: number; play: number } };
+    expect(usage.tour.open).toBeGreaterThanOrEqual(2);
+    expect(usage.tour.finish).toBeGreaterThanOrEqual(1);
+  });
+});
+
 describe('admin live score', () => {
   it('needs an admin, and a live room', async () => {
     const url = '/api/admin/stats/live/ABCDEF/score';

@@ -86,7 +86,12 @@ export type UsageStats = {
   /** `solo`: «فردي» (every player on their own). */
   modes: { mode: RoomMode; variant: Variant; solo?: boolean; games: number }[];
   topCategories: { categoryId: number; name: string; games: number }[];
+  /** «اكتشف طريقة اللعب»: opened, finished, and «ابدأ اللعب الآن» tapped at its end, in the chosen days. */
+  tour: { open: number; finish: number; play: number };
 };
+
+/** A real question from the bank for the interactive tour (the tour shows the right answer after the pick). */
+export type TourQuestion = { text: string; options: string[]; correctIndex: number; points: number; type: string; imageUrl: string | null };
 
 export type ApiErrorBody = { error: string; issues?: { path: string; message: string }[] };
 

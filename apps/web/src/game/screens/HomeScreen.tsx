@@ -11,6 +11,7 @@ import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
 import { streamLink } from '@/lib/links';
 import { GAME_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
+import { Tour } from '../tour/Tour';
 
 /** Each mode's own look: colours, an emblem that shows the idea in motion, and its rule in one line. */
 const MODE_LOOK: Record<Variant, { from: string; to: string; ring: string; text: string; emblem: ReactNode; tag: string }> = {
@@ -240,6 +241,11 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
   }
 
   const goPlay = () => document.getElementById('modes')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // «اكتشف طريقة اللعب»: ?tour opens it on load, ?tour=auto plays it by itself (for recording the store preview).
+  const [tour, setTour] = useState<false | 'on' | 'auto'>(() => {
+    const t = new URLSearchParams(window.location.search).get('tour');
+    return t === null ? false : t === 'auto' ? 'auto' : 'on';
+  });
   const chosen = [...MODES, ...EXTRA_MODES].find((m) => m.id === variant)!;
   const [extra, setExtra] = useState(() => EXTRA_MODES.some((m) => m.id === variant));
 
@@ -331,6 +337,28 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
             </span>
           </button>
         </div>
+        <button type="button" onClick={() => setTour('on')} className="q-tour-btn relative mx-auto mt-3 flex w-full max-w-sm sm:max-w-md" aria-label="اكتشف طريقة اللعب: تجربة تفاعلية لجولة كاملة">
+          <span className="q-tour-btn-glow" aria-hidden />
+          <span className="q-tour-btn-icon" aria-hidden>
+            ✨
+          </span>
+          <span className="flex-1 text-start leading-tight">
+            <span className="block text-[17px] font-black text-white">اكتشف طريقة اللعب</span>
+            <span className="block text-[11.5px] font-bold text-white/70">جرّب جولة كاملة بنفسك في أقل من دقيقة</span>
+          </span>
+          <span className="q-tour-btn-go" aria-hidden>
+            ▶
+          </span>
+        </button>
+        <Tour
+          open={tour !== false}
+          auto={tour === 'auto'}
+          onClose={() => setTour(false)}
+          onPlay={() => {
+            setTour(false);
+            window.setTimeout(goPlay, 80);
+          }}
+        />
         <div className="relative mt-4 flex flex-wrap justify-center gap-2">
           <VideoGuideButton
             className="q-chip border-q-gold/40 bg-q-gold/10 text-q-gold"

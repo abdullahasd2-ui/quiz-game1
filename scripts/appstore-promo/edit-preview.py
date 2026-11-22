@@ -29,6 +29,18 @@ SEGMENTS = [
     ('list', 'type', 0.0, 4.0, 'c8'),
     ('game', 'final', 0.0, 3.7, 'c9'),
 ]
+# CUT=tour: the app's interactive tour «اكتشف طريقة اللعب» playing itself (labelled «تجربة تعليمية» on screen), then
+# real multiplayer footage: friends joining and a real result, so the preview ends on the game itself.
+CUT = os.environ.get('CUT', 'game')
+if CUT == 'tour':
+    tm = json.load(open(os.path.join(REC, 'tour', 'marks.json')))
+    tour_len = round(tm['s:final'] - tm['s:intro'] + 2.6, 2)
+    rest = 29.9 - tour_len + 2 * XF
+    SEGMENTS = [
+        ('tour', 's:intro', 0.0, tour_len, None),
+        ('game', 'joined1', -0.5, round(rest / 2, 2), 'c10'),
+        ('game', 'result', -0.1, round(rest - round(rest / 2, 2), 2), 'c11'),
+    ]
 TOTAL = sum(s[3] for s in SEGMENTS) - XF * (len(SEGMENTS) - 1)
 
 
@@ -59,11 +71,14 @@ t = 0.0
 for i, (take, mark, off, dur, cap) in enumerate(SEGMENTS):
     src, t0, marks = takes[take]
     ss = marks[mark] - t0 + off
-    png = os.path.join(CAPS, f'{cap}.png')
     out = os.path.join(OUT, f'seg{i}.mp4')
-    run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-loop', '1', '-t', f'{dur:.3f}', '-i', png,
-         '-filter_complex', f"[1:v]format=rgba,fade=t=in:st=0.15:d=0.35:alpha=1[c];[0:v][c]overlay=0:0:format=auto,fps={FPS},format=yuv420p[v]",
-         '-map', '[v]', '-an', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
+    if cap is None:
+        run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-vf', f'fps={FPS},format=yuv420p', '-an', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
+    else:
+        png = os.path.join(CAPS, f'{cap}.png')
+        run(['ffmpeg', '-y', '-ss', f'{ss:.3f}', '-t', f'{dur:.3f}', '-i', src, '-loop', '1', '-t', f'{dur:.3f}', '-i', png,
+             '-filter_complex', f"[1:v]format=rgba,fade=t=in:st=0.15:d=0.35:alpha=1[c];[0:v][c]overlay=0:0:format=auto,fps={FPS},format=yuv420p[v]",
+             '-map', '[v]', '-an', '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out])
     segs.append(out)
     starts.append(t)
     t += dur - XF
@@ -86,7 +101,28 @@ events = []
 for i, s0 in enumerate(starts):
     if i:
         events.append({'t': round(s0, 3), 's': 'whoosh', 'v': 0.7})
-events += [
+if CUT == 'tour':
+    t0 = tm['s:intro']
+    at = lambda k, d=0.0: round(tm[k] - t0 + d, 3)
+    events = [{'t': starts[1], 's': 'whoosh', 'v': 0.7}, {'t': starts[2], 's': 'whoosh', 'v': 0.7}]
+    events += [{'t': 0.4, 's': 'riser', 'v': 0.6}, {'t': 1.15, 's': 'impact', 'v': 0.9}, {'t': 1.25, 's': 'sparkle', 'v': 0.9}]
+    for k in [k for k in tm if k.startswith('s:') and k not in ('s:intro',)]:
+        events.append({'t': at(k), 's': 'whoosh', 'v': 0.6})
+    events += [{'t': at('s:اختاروا 3 فئات', 0.9 + i * 0.52), 's': 'pop', 'v': 1} for i in range(3)]
+    events += [
+        {'t': at('s:اختاروا سؤال من اللوحة', 1.5), 's': 'click', 'v': 1},
+        {'t': at('s:قراركم السري', 2.3), 's': 'stamp', 'v': 1},
+        {'t': at('s:جاوبوا!', 1.7), 's': 'click', 'v': 1},
+        {'t': at('s:جاوبوا!', 2.45), 's': 'ding', 'v': 1},
+        {'t': at('s:جاوبوا!', 2.5), 's': 'sparkle', 'v': 0.8},
+        {'t': at('s:final', 0.1), 's': 'impact', 'v': 0.9},
+        {'t': at('s:final', 0.2), 's': 'sparkle', 'v': 1},
+        {'t': starts[1] + 0.5, 's': 'pop', 'v': 1},
+        {'t': starts[2] + 0.3, 's': 'ding', 'v': 1},
+    ]
+    events = [e for e in events if 0 <= e['t'] < TOTAL]
+    tl = {'total': TOTAL, 'drop': 1.15, 'events': sorted(events, key=lambda e: e['t']), 'voice': [], 'scenes': [{'key': 'end', 'start': starts[2]}]}
+events_game = [] if CUT == 'tour' else [
     {'t': 0.0, 's': 'riser', 'v': 0.6},
     {'t': 0.9, 's': 'impact', 'v': 0.8},
     {'t': starts[2] + 0.9, 's': 'click', 'v': 1},  # typing the team name
@@ -102,15 +138,17 @@ events += [
     {'t': starts[8] + 0.2, 's': 'impact', 'v': 0.9},
     {'t': starts[8] + 0.3, 's': 'sparkle', 'v': 1},
 ]
-for k in range(8):
-    events.append({'t': round(starts[7] + 0.3 + k * 0.45, 3), 's': 'tick', 'v': 0.6})
-tl = {'total': TOTAL, 'drop': 0.9, 'events': sorted(events, key=lambda e: e['t']), 'voice': [], 'scenes': [{'key': 'end', 'start': starts[8]}]}
+if CUT != 'tour':
+    events += events_game
+    for k in range(8):
+        events.append({'t': round(starts[7] + 0.3 + k * 0.45, 3), 's': 'tick', 'v': 0.6})
+    tl = {'total': TOTAL, 'drop': 0.9, 'events': sorted(events, key=lambda e: e['t']), 'voice': [], 'scenes': [{'key': 'end', 'start': starts[8]}]}
 json.dump(tl, open(os.path.join(here, 'timeline-preview.json'), 'w'), indent=1)
 env = dict(os.environ, TL='timeline-preview.json', MIX='mix-preview.wav', NO_MUSIC=os.environ.get('NO_MUSIC', '1'))
 subprocess.run(['python3', os.path.join(here, 'audio.py')], check=True, env=env)
 
 # Final encode to Apple's App Preview spec.
-final = os.path.join(OUT, f'jawab-badel-app-preview-{W}x{H}.mp4')
+final = os.path.join(OUT, f'jawab-badel-app-preview{"-tour" if CUT == "tour" else ""}-{W}x{H}.mp4')
 run(['ffmpeg', '-y', '-i', picture, '-i', os.path.join(here, 'mix-preview.wav'),
      '-map', '0:v', '-map', '1:a', '-t', f'{TOTAL:.3f}',
      '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.0', '-pix_fmt', 'yuv420p', '-r', str(FPS),

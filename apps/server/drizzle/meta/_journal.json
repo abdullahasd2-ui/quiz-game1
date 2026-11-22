@@ -36,6 +36,13 @@
       "when": 1795117599171,
       "tag": "0004_duel_stats",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795366823915,
+      "tag": "0005_tour_stats",
+      "breakpoints": true
     }
   ]
 }
