@@ -181,7 +181,7 @@ export function QuestionImage({ url, type, revealed = false, large = false }: { 
       <img
         src={imageSrc(url)}
         alt=""
-        className={cn('max-w-full rounded-lg object-contain transition-[filter] duration-500', large ? 'max-h-64' : 'max-h-44', blurred && 'blur-md')}
+        className={cn('max-w-full rounded-lg object-contain transition-[filter] duration-500', large ? 'max-h-64' : 'max-h-44', blurred && 'blur-lg')}
       />
       {!revealed && <div className="mt-1.5 text-[11px] text-white/50">🔍 {blurred ? 'اكتشف الصورة المغبشة!' : 'اكتشف الصورة!'}</div>}
     </div>
