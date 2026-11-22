@@ -75,3 +75,8 @@ scripts/appstore-promo/assets/*.png
 scripts/appstore-promo/mix.wav
 scripts/appstore-promo/shots-app/
 scripts/appstore-promo/data-app.js
+scripts/appstore-promo/rec/
+scripts/appstore-promo/preview-iphone/
+scripts/appstore-promo/captions/
+scripts/appstore-promo/timeline-preview.json
+scripts/appstore-promo/mix-preview.wav
