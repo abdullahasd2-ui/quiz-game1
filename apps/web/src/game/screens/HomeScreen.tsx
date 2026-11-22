@@ -9,7 +9,7 @@ import { HotBadge, usePopular } from '../popular';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { takePreselected, useBus } from '@/quick/bus';
-import { streamLink } from '@/lib/links';
+import { isNative, streamLink } from '@/lib/links';
 import { GAME_VIDEO, VideoGuideButton } from '@/kick/VideoGuide';
 import { Tour } from '../tour/Tour';
 
@@ -373,9 +373,12 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
           <button type="button" className="q-chip" onClick={() => (setMode('tv'), setTab('create'), document.getElementById('play-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))}>
             📺 العب على التلفاز
           </button>
-          <a className="q-chip" {...streamLink()}>
-            🟢 العب مع شات Kick
-          </a>
+          {/* The iPhone/Android app has nothing of Kick: the stream mode lives on the website only. */}
+          {!isNative() && (
+            <a className="q-chip" {...streamLink()}>
+              🟢 العب مع شات Kick
+            </a>
+          )}
         </div>
       </section>
 
@@ -412,6 +415,7 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
             {MODE_ICON[variant]} التالي: جهّز الغرفة لـ «{chosen.title}» ↓
           </button>
         </div>
+        {!isNative() && (
         <a
           {...streamLink()}
           className="mt-1 flex items-center gap-3 rounded-2xl border border-[#53fc18]/25 bg-[#53fc18]/5 p-3 text-start transition-colors hover:border-[#53fc18]/60"
@@ -425,6 +429,7 @@ export function HomeScreen({ initialCode, initialSolo = false }: { initialCode: 
             ←
           </span>
         </a>
+        )}
       </section>
 
       {/* ── Play: device + create / join ── */}
@@ -798,7 +803,7 @@ function HowToPlay({ open, onClose, variant }: { open: boolean; onClose: () => v
           <div>• في اللعب الفردي ما فيه فرق، وكل لاعب يلعب لحاله ونقاطه له بروحه. تقدرون تكونون من لاعبين إلى 12 لاعب.</div>
           <div>• واحد ينشئ الغرفة ويختار «فردي»، والباقي يدخلون بالكود ويكتبون أسماءهم بس، بدون ما يختارون فريق.</div>
           <div>• اللاعبين يتناوبون على اختيار السؤال من اللوحة، وكل سؤال الكل يختار قراره سرًا في نفس الوقت.</div>
-          <div>• إذا اخترت «بادل» أو «اقلب» أو «اعكس» تطلع لك قائمة اللاعبين تحت الخيار، وتختار منها اللاعب اللي تبي تلعب على جوابه، مثل ما الستريمر يختار واحد من المشاركين في البث.</div>
+          <div>• إذا اخترت «بادل» أو «اقلب» أو «اعكس» تطلع لك قائمة اللاعبين تحت الخيار، وتختار منها اللاعب اللي تبي تلعب على جوابه{isNative() ? '.' : '، مثل ما الستريمر يختار واحد من المشاركين في البث.'}</div>
           <div>• إذا بادلت جواب لاعب وطلع جوابه صح تاخذ دبل النقاط، وهو ياخذ صفر لأن جوابه انزرف. وإذا طلع جوابه غلط تنقص من نقاطك.</div>
           <div>• إذا اللاعب اللي اخترته ما جاوب بنفسه، لأنه هو بعد اختار بادل أو اقلب أو اعكس، فما تاخذ شي. وإذا اثنين اختاروا بعض فالاثنين ياخذون صفر.</div>
           <div>• كل الأطوار موجودة في اللعب الفردي ما عدا «خبّي أو اكشف» لأنه يحتاج فريقين. وفي «عدّها» كل لاعب يكتب أجوبته لحاله، وأكثر ثلاثة لاعبين ياخذون 5 و3 و2 نقاط زيادة.</div>
