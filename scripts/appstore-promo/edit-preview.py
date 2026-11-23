@@ -52,6 +52,16 @@ def take_video(take):
     """The recording as a constant 30 fps video: each screencast frame held until the next one arrived."""
     out = os.path.join(OUT, f'take-{take}.mp4')
     fr = json.load(open(os.path.join(REC, take, 'frames.json')))
+    marks = json.load(open(os.path.join(REC, take, 'marks.json')))
+    # Stretches filmed in slow time (record-app's warp) are put back to real speed: frame and mark times are mapped.
+    slow = [(v, float(k.split(':')[1])) for k, v in marks.items() if k.startswith('slow:')]
+    if slow and 'fast' in marks:
+        s0, r = slow[0]
+        s1 = marks['fast']
+        warp = lambda t: t if t <= s0 else s0 + (min(t, s1) - s0) * r + max(0.0, t - s1)
+        fr = [dict(x, t=warp(x['t'])) for x in fr]
+        marks = {k: warp(v) for k, v in marks.items()}
+        json.dump(marks, open(os.path.join(REC, take, 'marks.warped.json'), 'w'))
     lst = os.path.join(OUT, f'take-{take}.txt')
     with open(lst, 'w') as f:
         for i, x in enumerate(fr):
@@ -59,7 +69,7 @@ def take_video(take):
             f.write(f"file '{os.path.join(REC, take, 'frames', x['f'])}'\nduration {max(d, 0.001):.4f}\n")
         f.write(f"file '{os.path.join(REC, take, 'frames', fr[-1]['f'])}'\n")
     run(['ffmpeg', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-vf', f'scale={W}:{H}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.45:3:3:0.0,fps=60,tblend=all_mode=average,fps={FPS},format=yuv420p', '-c:v', 'libx264', '-crf', '8', '-preset', 'medium', out])
-    return out, fr[0]['t'], json.load(open(os.path.join(REC, take, 'marks.json')))
+    return out, fr[0]['t'], marks
 
 
 takes = {t: take_video(t) for t in sorted({s[0] for s in SEGMENTS})}

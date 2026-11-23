@@ -16,6 +16,10 @@ const VW = IPAD ? 600 : 443;
 const VH = IPAD ? 800 : 960;
 // Supersampled: drawn at 3× and scaled down to the final size later, so text and edges come out razor sharp.
 const SS = Number(process.env.SS || 3);
+// FMT=jpeg: lighter frames, so heavy screens (the result's blur and fire) keep a full frame rate.
+// The result screen is filmed at this fraction of real time.
+const SLOW = Number(process.env.SLOW || 0.12);
+const FMT = process.env.FMT === 'jpeg' ? 'jpeg' : 'png';
 const FONT_CSS = fs.readFileSync(path.join(__dirname, 'fonts.css'), 'utf8');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const RIGHT = Object.fromEntries(
@@ -32,6 +36,30 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
     await ctx.route(/fonts\.gstatic\.com/, (r) => r.abort());
     const p = await ctx.newPage();
     await p.addInitScript(() => {
+      // A time warp for heavy screens: page clocks, frames and timers can run slower than the wall clock, so the
+      // browser draws every frame; the editor plays that stretch back at normal speed (see edit-preview.py).
+      const realNow = performance.now.bind(performance);
+      const realDate = Date.now;
+      let rate = 1;
+      let base = 0;
+      let at = realNow();
+      let dBase = realDate();
+      let dAt = realDate();
+      performance.now = () => base + (realNow() - at) * rate;
+      Date.now = () => dBase + (realDate() - dAt) * rate;
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = (cb) => raf(() => cb(performance.now()));
+      const st = window.setTimeout.bind(window);
+      const si = window.setInterval.bind(window);
+      window.setTimeout = (fn, ms, ...a) => st(fn, (ms || 0) / rate, ...a);
+      window.setInterval = (fn, ms, ...a) => si(fn, (ms || 0) / rate, ...a);
+      window.__warp = (r) => {
+        base = performance.now();
+        at = realNow();
+        dBase = Date.now();
+        dAt = realDate();
+        rate = r;
+      };
       try { localStorage.setItem('jab:qa:seen', '1'); sessionStorage.setItem('jab:intro', '1'); } catch {}
       const s = document.createElement('style');
       // Only hides the desktop keyboard-shortcut hint and the text caret; nothing of the app's own UI is added.
@@ -49,12 +77,12 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
     const marks = {};
     const cdp = await p.context().newCDPSession(p);
     cdp.on('Page.screencastFrame', async (f) => {
-      const name = `${String(frames.length).padStart(6, '0')}.png`;
+      const name = `${String(frames.length).padStart(6, '0')}.${FMT === 'jpeg' ? 'jpg' : 'png'}`;
       fs.writeFileSync(path.join(dir, 'frames', name), Buffer.from(f.data, 'base64'));
       frames.push({ f: name, t: f.metadata.timestamp });
       await cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }).catch(() => {});
     });
-    await cdp.send('Page.startScreencast', { format: 'png', maxWidth: VW * SS, maxHeight: VH * SS, everyNthFrame: 1 });
+    await cdp.send('Page.startScreencast', { format: FMT, ...(FMT === 'jpeg' ? { quality: 95 } : {}), maxWidth: VW * SS, maxHeight: VH * SS, everyNthFrame: 1 });
     const mark = (k) => { marks[k] = Date.now() / 1000; console.log('  mark', take, k); };
     mark('start');
     try { await fn(mark); } finally {
@@ -162,10 +190,19 @@ const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
       await wait(1200);
       await B.getByRole('button', { name: /أجاوب بنفسي/ }).click();
       await wait(1600);
+      // The result screen is heavy to draw: film it with the page's time at a quarter speed (CSS animations too).
+      const cdpA = await A.context().newCDPSession(A);
+      await cdpA.send('Animation.enable');
+      await A.evaluate((r) => window.__warp(r), SLOW);
+      await cdpA.send('Animation.setPlaybackRate', { playbackRate: SLOW });
+      mark(`slow:${SLOW}`);
       await answer(B, true);
-      await wait(400);
+      await wait(400 / SLOW);
       mark('result');
-      await wait(3200);
+      await wait(3200 / SLOW);
+      await A.evaluate(() => window.__warp(1));
+      await cdpA.send('Animation.setPlaybackRate', { playbackRate: 1 });
+      mark('fast');
       // Play the board out (quickly) so the game reaches its winner.
       for (let guard = 0; guard < 30; guard++) {
         const next = A.getByRole('button', { name: /التالي|النتيجة النهائية/ });
