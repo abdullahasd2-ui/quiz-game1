@@ -2,7 +2,7 @@ import { canAdvance, isSpecial, POINTS, type RoomView } from '@quiz/shared';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { haptic } from '@/lib/native';
-import { serverUrl } from '@/lib/server';
+import { imageSrc } from '@/lib/server';
 import { Kbd } from '@/lib/hotkeys';
 import { cn } from '@/lib/utils';
 import { send } from '../connection';
@@ -43,8 +43,8 @@ export function ResultOverlay({ view }: { view: RoomView }) {
       <div key={String(won)} className="mb-2 text-5xl motion-safe:animate-fx-drop">
         {icon}
       </div>
-      <h2 className="mb-3 text-xl font-black">{bothSteal ? `كلاهم ${view.variant === 'flip' ? 'قلبا' : 'بادلا'} — لا نقاط!` : 'نتيجة الجولة'}</h2>
-      {picture && <img src={serverUrl(picture)} alt="" className="mx-auto mb-3.5 block max-h-56 max-w-full rounded-xl" />}
+      <h2 className="mb-3 text-xl font-black text-white">{bothSteal ? `كلاهم ${view.variant === 'flip' ? 'قلبا' : 'بادلا'} — لا نقاط!` : 'نتيجة الجولة'}</h2>
+      {picture && <img src={imageSrc(picture)} alt="" className="mx-auto mb-3.5 block max-h-56 max-w-full rounded-xl" />}
       {/* The answer lands like a stamp, then the two teams flip in one after the other and their totals roll up. */}
       <div className="mb-3 rounded-xl border border-q-green/40 bg-q-green/10 px-3 py-2.5 text-[#2ecc71] shadow-[0_0_24px_-10px_rgba(46,204,113,0.8)] motion-safe:animate-stamp" style={{ animationDelay: '0.15s' }}>
         <div className="text-[11px] text-[#2ecc71]/80">✅ الإجابة الصحيحة</div>

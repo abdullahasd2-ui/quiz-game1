@@ -7,8 +7,6 @@ import { serverUrl } from '@/lib/server';
 export const GUIDE_VIDEO = '/videos/stream-guide.mp4';
 /** The main game's 90-second promo (the real site on a laptop and two phones playing a room). */
 export const GAME_VIDEO = '/videos/game-promo.mp4';
-/** «اكتشف طريقة اللعب» in 30 seconds, upright (phone) — the interactive tour recorded in the app, then a real game. */
-export const TOUR_VIDEO = '/videos/tour-promo.mp4';
 
 /**
  * Saves a video to the device so people can post it: on phones the share sheet (with «حفظ الفيديو» on iPhone,
